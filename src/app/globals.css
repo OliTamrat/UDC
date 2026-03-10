@@ -255,3 +255,31 @@ html.light .metric-card:hover {
   0% { stroke-dashoffset: 0; }
   100% { stroke-dashoffset: -30; }
 }
+
+/* Ward label tooltip styling */
+html.dark .ward-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #FDB927 !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  font-family: Inter, system-ui, sans-serif !important;
+  text-shadow: 0 0 8px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,0.6) !important;
+}
+html.dark .ward-label::before {
+  display: none !important;
+}
+html.light .ward-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #92400E !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  font-family: Inter, system-ui, sans-serif !important;
+  text-shadow: 0 0 6px rgba(255,255,255,0.8) !important;
+}
+html.light .ward-label::before {
+  display: none !important;
+}

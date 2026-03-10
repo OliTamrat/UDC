@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import MetricCards from "@/components/dashboard/MetricCards";
@@ -13,8 +14,9 @@ import {
   StormwaterChart,
   MultiParameterChart,
 } from "@/components/charts/WaterQualityCharts";
+import TimeSlider, { type MonthlySnapshot } from "@/components/map/TimeSlider";
 import { Droplets, MapPin, TrendingUp, Shield } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import type { MonitoringStation } from "@/data/dc-waterways";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -32,8 +34,18 @@ const DCMap = dynamic(() => import("@/components/map/DCMap"), {
 
 export default function Dashboard() {
   const [selectedStation, setSelectedStation] = useState<MonitoringStation | null>(null);
+  const [monthSnapshot, setMonthSnapshot] = useState<MonthlySnapshot | null>(null);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const router = useRouter();
+
+  const handleStationNavigate = useCallback((stationId: string) => {
+    router.push(`/station/${stationId}`);
+  }, [router]);
+
+  const handleMonthChange = useCallback((snapshot: MonthlySnapshot) => {
+    setMonthSnapshot(snapshot);
+  }, []);
 
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
@@ -100,7 +112,7 @@ export default function Dashboard() {
               <div>
                 <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Interactive Watershed Map</h2>
                 <p className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-                  Anacostia River, tributaries, and monitoring stations across DC
+                  Anacostia River, tributaries, monitoring stations — toggle layers with the control panel
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -112,7 +124,13 @@ export default function Dashboard() {
               <DCMap
                 onStationSelect={setSelectedStation}
                 selectedStation={selectedStation}
+                onStationNavigate={handleStationNavigate}
+                monthSnapshot={monthSnapshot}
               />
+            </div>
+            {/* Time Slider */}
+            <div className="mt-4">
+              <TimeSlider onMonthChange={handleMonthChange} />
             </div>
           </section>
 
@@ -142,7 +160,7 @@ export default function Dashboard() {
 
           {/* Station Table */}
           <section id="stormwater">
-            <StationTable />
+            <StationTable onStationClick={handleStationNavigate} />
           </section>
 
           {/* Footer */}
