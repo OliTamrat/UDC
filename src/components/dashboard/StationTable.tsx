@@ -2,6 +2,7 @@
 
 import { monitoringStations } from "@/data/dc-waterways";
 import { MapPin, AlertCircle, CheckCircle2, Wrench } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 
 function StatusBadge({ status }: { status: string }) {
   const config = {
@@ -34,24 +35,27 @@ function WaterQualityIndicator({ value, thresholds }: { value: number; threshold
 }
 
 export default function StationTable() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   return (
     <div className="glass-panel rounded-xl overflow-hidden">
-      <div className="p-4 border-b border-panel-border">
-        <h3 className="text-sm font-semibold text-white">Monitoring Stations</h3>
-        <p className="text-xs text-slate-500 mt-0.5">Real-time status across the Anacostia watershed</p>
+      <div className={`p-4 border-b ${isDark ? "border-panel-border" : "border-slate-200"}`}>
+        <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Monitoring Stations</h3>
+        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Real-time status across the Anacostia watershed</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-panel-border bg-udc-dark/30">
-              <th className="text-left py-2 px-4 text-xs font-medium text-slate-500 uppercase">Station</th>
-              <th className="text-left py-2 px-4 text-xs font-medium text-slate-500 uppercase">Type</th>
-              <th className="text-left py-2 px-4 text-xs font-medium text-slate-500 uppercase">Status</th>
-              <th className="text-left py-2 px-4 text-xs font-medium text-slate-500 uppercase">DO (mg/L)</th>
-              <th className="text-left py-2 px-4 text-xs font-medium text-slate-500 uppercase">pH</th>
-              <th className="text-left py-2 px-4 text-xs font-medium text-slate-500 uppercase">Turbidity</th>
-              <th className="text-left py-2 px-4 text-xs font-medium text-slate-500 uppercase">E. coli</th>
-              <th className="text-left py-2 px-4 text-xs font-medium text-slate-500 uppercase">Updated</th>
+            <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Station</th>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Type</th>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Status</th>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>DO (mg/L)</th>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>pH</th>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Turbidity</th>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>E. coli</th>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Updated</th>
             </tr>
           </thead>
           <tbody>
@@ -60,19 +64,23 @@ export default function StationTable() {
               return (
                 <tr
                   key={station.id}
-                  className="border-b border-panel-border/50 hover:bg-panel-hover transition-colors cursor-pointer"
+                  className={`border-b transition-colors cursor-pointer ${
+                    isDark
+                      ? "border-panel-border/50 hover:bg-panel-hover"
+                      : "border-slate-100 hover:bg-slate-50"
+                  }`}
                 >
                   <td className="py-2.5 px-4">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-water-blue flex-shrink-0" />
                       <div>
-                        <div className="text-xs font-medium text-white">{station.name}</div>
-                        <div className="text-[10px] text-slate-500">{station.id}</div>
+                        <div className={`text-xs font-medium ${isDark ? "text-white" : "text-slate-900"}`}>{station.name}</div>
+                        <div className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{station.id}</div>
                       </div>
                     </div>
                   </td>
                   <td className="py-2.5 px-4">
-                    <span className="text-xs text-slate-400 capitalize">{station.type.replace("-", " ")}</span>
+                    <span className={`text-xs capitalize ${isDark ? "text-slate-400" : "text-slate-600"}`}>{station.type.replace("-", " ")}</span>
                   </td>
                   <td className="py-2.5 px-4">
                     <StatusBadge status={station.status} />
@@ -88,15 +96,12 @@ export default function StationTable() {
                   </td>
                   <td className="py-2.5 px-4">
                     {r ? (
-                      <WaterQualityIndicator
-                        value={r.eColiCount}
-                        thresholds={{ good: 400, moderate: 1000 }}
-                      />
+                      <WaterQualityIndicator value={r.eColiCount} thresholds={{ good: 400, moderate: 1000 }} />
                     ) : (
-                      <span className="text-xs text-slate-600">—</span>
+                      <span className={`text-xs ${isDark ? "text-slate-600" : "text-slate-400"}`}>—</span>
                     )}
                   </td>
-                  <td className="py-2.5 px-4 text-[10px] text-slate-500">
+                  <td className={`py-2.5 px-4 text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                     {r ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—"}
                   </td>
                 </tr>

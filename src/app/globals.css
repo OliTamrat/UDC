@@ -13,63 +13,204 @@
   --color-panel-bg: #0F1D32;
   --color-panel-border: #1E3A5F;
   --color-panel-hover: #162D4A;
+
+  /* Light theme panel colors */
+  --color-panel-bg-light: #FFFFFF;
+  --color-panel-border-light: #E2E8F0;
+  --color-panel-hover-light: #F1F5F9;
+  --color-surface-light: #F8FAFC;
 }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
+/* ============================================
+   DARK THEME (default)
+   ============================================ */
+html.dark body {
+  background-color: #0A1628;
+  color: #F1F5F9;
+}
+
+/* Custom scrollbar - dark */
+html.dark ::-webkit-scrollbar {
   width: 6px;
 }
-::-webkit-scrollbar-track {
+html.dark ::-webkit-scrollbar-track {
   background: var(--color-udc-dark);
 }
-::-webkit-scrollbar-thumb {
+html.dark ::-webkit-scrollbar-thumb {
   background: var(--color-panel-border);
   border-radius: 3px;
 }
-::-webkit-scrollbar-thumb:hover {
+html.dark ::-webkit-scrollbar-thumb:hover {
   background: var(--color-udc-blue);
 }
 
-/* Leaflet overrides for dark theme */
-.leaflet-container {
+/* Leaflet dark theme overrides */
+html.dark .leaflet-container {
   background: #0A1628 !important;
 }
-.leaflet-tile-pane {
-  filter: brightness(0.85) contrast(1.1) saturate(0.9);
-}
-.leaflet-control-zoom a {
+html.dark .leaflet-control-zoom a {
   background-color: #0F1D32 !important;
   color: #F8FAFC !important;
   border-color: #1E3A5F !important;
 }
-.leaflet-control-zoom a:hover {
+html.dark .leaflet-control-zoom a:hover {
   background-color: #162D4A !important;
 }
-.leaflet-popup-content-wrapper {
+html.dark .leaflet-popup-content-wrapper {
   background: #0F1D32 !important;
   color: #F8FAFC !important;
   border: 1px solid #1E3A5F;
   border-radius: 12px !important;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
 }
-.leaflet-popup-tip {
+html.dark .leaflet-popup-tip {
   background: #0F1D32 !important;
 }
-.leaflet-popup-close-button {
+html.dark .leaflet-popup-close-button {
   color: #94A3B8 !important;
 }
-.leaflet-control-attribution {
+html.dark .leaflet-control-attribution {
   background: rgba(15, 29, 50, 0.8) !important;
   color: #64748B !important;
   font-size: 10px !important;
 }
-.leaflet-control-attribution a {
+html.dark .leaflet-control-attribution a {
   color: #3B82F6 !important;
 }
+
+/* ============================================
+   LIGHT THEME
+   ============================================ */
+html.light body {
+  background-color: #F8FAFC;
+  color: #1E293B;
+}
+
+/* Custom scrollbar - light */
+html.light ::-webkit-scrollbar {
+  width: 6px;
+}
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Leaflet light theme overrides */
+html.light .leaflet-container {
+  background: #F0F4F8 !important;
+}
+html.light .leaflet-control-zoom a {
+  background-color: #FFFFFF !important;
+  color: #1E293B !important;
+  border-color: #E2E8F0 !important;
+}
+html.light .leaflet-control-zoom a:hover {
+  background-color: #F1F5F9 !important;
+}
+html.light .leaflet-popup-content-wrapper {
+  background: #FFFFFF !important;
+  color: #1E293B !important;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+html.light .leaflet-popup-tip {
+  background: #FFFFFF !important;
+}
+html.light .leaflet-popup-close-button {
+  color: #64748B !important;
+}
+html.light .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #64748B !important;
+  font-size: 10px !important;
+}
+html.light .leaflet-control-attribution a {
+  color: #2563EB !important;
+}
+
+/* ============================================
+   THEME-AWARE COMPONENT CLASSES
+   ============================================ */
+
+/* Glass panels */
+html.dark .glass-panel {
+  background: rgba(15, 29, 50, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(30, 58, 95, 0.5);
+}
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Theme-aware panels (sidebar, header, cards) */
+html.dark .theme-panel {
+  background-color: #0F1D32;
+  border-color: #1E3A5F;
+}
+html.light .theme-panel {
+  background-color: #FFFFFF;
+  border-color: #E2E8F0;
+}
+
+html.dark .theme-panel-hover:hover {
+  background-color: #162D4A;
+}
+html.light .theme-panel-hover:hover {
+  background-color: #F1F5F9;
+}
+
+/* Theme-aware text */
+html.dark .theme-text-primary { color: #F8FAFC; }
+html.light .theme-text-primary { color: #0F172A; }
+
+html.dark .theme-text-secondary { color: #94A3B8; }
+html.light .theme-text-secondary { color: #64748B; }
+
+html.dark .theme-text-muted { color: #64748B; }
+html.light .theme-text-muted { color: #94A3B8; }
+
+/* Theme-aware backgrounds */
+html.dark .theme-bg { background-color: #0A1628; }
+html.light .theme-bg { background-color: #F8FAFC; }
+
+html.dark .theme-bg-elevated { background-color: #0F1D32; }
+html.light .theme-bg-elevated { background-color: #FFFFFF; }
+
+html.dark .theme-bg-subtle { background-color: rgba(10, 22, 40, 0.5); }
+html.light .theme-bg-subtle { background-color: #F1F5F9; }
+
+html.dark .theme-border { border-color: #1E3A5F; }
+html.light .theme-border { border-color: #E2E8F0; }
+
+/* Theme-aware inputs */
+html.dark .theme-input {
+  background-color: rgba(10, 22, 40, 0.5);
+  border-color: #1E3A5F;
+  color: #E2E8F0;
+}
+html.light .theme-input {
+  background-color: #F1F5F9;
+  border-color: #E2E8F0;
+  color: #1E293B;
+}
+
+/* ============================================
+   SHARED STYLES
+   ============================================ */
 
 /* Pulse animation for active stations */
 @keyframes pulse-ring {
@@ -94,19 +235,23 @@ body {
   background-clip: text;
 }
 
-/* Glass morphism panels */
-.glass-panel {
-  background: rgba(15, 29, 50, 0.7);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(30, 58, 95, 0.5);
-}
-
 /* Metric card animations */
 .metric-card {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.metric-card:hover {
+html.dark .metric-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
   border-color: rgba(59, 130, 246, 0.3);
+}
+html.light .metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+/* Water shimmer animation for river polylines */
+@keyframes water-flow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -30; }
 }
