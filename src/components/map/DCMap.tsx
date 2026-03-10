@@ -96,7 +96,7 @@ export default function DCMap({
     }
 
     const map = leaflet.map("dc-map", {
-      center: [38.895, -76.975],
+      center: [38.892, -76.970],
       zoom: 12,
       zoomControl: true,
       attributionControl: true,
