@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import {
-  dcStreams,
   monitoringStations,
   type MonitoringStation,
 } from "@/data/dc-waterways";
@@ -29,12 +28,6 @@ function getStationColor(station: MonitoringStation, ecoliMultiplier?: number): 
   if (ecoli > 1000) return "#EF4444";
   if (ecoli > 400) return "#F59E0B";
   return "#22C55E";
-}
-
-function getHealthColor(healthIndex: number): string {
-  if (healthIndex >= 60) return "#22C55E";
-  if (healthIndex >= 40) return "#F59E0B";
-  return "#EF4444";
 }
 
 const TILE_LAYERS = {
@@ -109,9 +102,6 @@ export default function DCMap({
       maxZoom: 19,
     }).addTo(map);
 
-    const waterColor = isDark ? "#2563EB" : "#1D4ED8";
-    const waterColorLight = isDark ? "#3B82F6" : "#2563EB";
-    const waterFill = isDark ? "rgba(37, 99, 235, 0.15)" : "rgba(29, 78, 216, 0.25)";
 
     // =============================================
     // WATERSHED BOUNDARY
@@ -201,41 +191,40 @@ export default function DCMap({
     }
 
     // =============================================
-    // WATERWAYS — Real DC GIS GeoJSON layers
+    // WATERWAYS — Real DC GIS GeoJSON layers only
     // =============================================
+    let destroyed = false;
     if (layers.waterways) {
       // Load real DC GIS waterbody polygons (river surface areas)
       fetch("/dc-waterbodies.geojson")
         .then(r => r.json())
         .then((geojson) => {
+          if (destroyed) return;
           leaflet.geoJSON(geojson, {
             style: {
-              color: waterColor,
+              color: isDark ? "#38BDF8" : "#0369A1",
               weight: isDark ? 1 : 1.5,
-              opacity: isDark ? 0.6 : 0.8,
-              fillColor: waterColorLight,
-              fillOpacity: isDark ? 0.25 : 0.35,
+              opacity: isDark ? 0.7 : 0.9,
+              fillColor: isDark ? "#0EA5E9" : "#0284C7",
+              fillOpacity: isDark ? 0.3 : 0.4,
             },
           }).addTo(map);
         })
-        .catch(() => {/* silently skip if file not available */});
+        .catch(() => {});
 
       // Load real DC GIS hydrography centerlines (named streams)
       fetch("/dc-waterways.geojson")
         .then(r => r.json())
         .then((geojson) => {
+          if (destroyed) return;
           leaflet.geoJSON(geojson, {
             style: (feature) => {
               const name = feature?.properties?.name || "";
               const isRiver = name === "Anacostia" || name === "Potomac River";
               return {
-                color: isRiver ? waterColor : getHealthColor(
-                  name === "Rock Creek" ? 62 :
-                  name === "Watts Branch Creek" ? 42 :
-                  name === "Oxon Run" ? 40 : 50
-                ),
-                weight: isRiver ? (isDark ? 3 : 4) : (isDark ? 2 : 2.5),
-                opacity: isDark ? 0.85 : 0.9,
+                color: isDark ? "#38BDF8" : "#0369A1",
+                weight: isRiver ? (isDark ? 3 : 4) : (isDark ? 1.5 : 2),
+                opacity: isRiver ? (isDark ? 0.9 : 1) : (isDark ? 0.7 : 0.8),
                 lineCap: "round" as const,
                 lineJoin: "round" as const,
               };
@@ -248,25 +237,7 @@ export default function DCMap({
             },
           }).addTo(map);
         })
-        .catch(() => {/* silently skip */});
-
-      // Also draw the data-driven polylines for health index coloring on tributaries
-      dcStreams.forEach((stream) => {
-        if (stream.id === "potomac-river" || stream.id === "rock-creek") return;
-        const healthColor = getHealthColor(stream.healthIndex);
-        const baseWeight = stream.type === "river" ? 4 : 2.5;
-
-        leaflet.polyline(stream.coordinates, {
-          color: healthColor, weight: baseWeight + 6, opacity: isDark ? 0.06 : 0.08,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(stream.coordinates, {
-          color: healthColor, weight: baseWeight, opacity: isDark ? 0.7 : 0.85,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        })
-          .bindTooltip(`${stream.name} (Health: ${stream.healthIndex}/100)`, { direction: "top" })
-          .addTo(map);
-      });
+        .catch(() => {});
     }
 
     // =============================================
@@ -400,6 +371,7 @@ export default function DCMap({
     }
 
     return () => {
+      destroyed = true;
       map.remove();
       if (typeof window !== "undefined") {
         delete (window as unknown as Record<string, unknown>).__navigateStation;
