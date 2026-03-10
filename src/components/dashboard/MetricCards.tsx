@@ -11,6 +11,7 @@ import {
   Radio,
 } from "lucide-react";
 import { monitoringStations } from "@/data/dc-waterways";
+import { useTheme } from "@/context/ThemeContext";
 
 function getAverageReading(key: string): number {
   const activeStations = monitoringStations.filter(
@@ -33,6 +34,8 @@ const metrics = [
     color: "text-green-400",
     bgColor: "bg-green-500/10",
     borderColor: "border-green-500/20",
+    lightBorderColor: "border-green-200",
+    lightBgColor: "bg-green-50",
     trend: "+2 this month",
     trendUp: true,
   },
@@ -44,6 +47,8 @@ const metrics = [
     color: "text-blue-400",
     bgColor: "bg-blue-500/10",
     borderColor: "border-blue-500/20",
+    lightBorderColor: "border-blue-200",
+    lightBgColor: "bg-blue-50",
     trend: "Within EPA standards",
     trendUp: true,
   },
@@ -55,6 +60,8 @@ const metrics = [
     color: "text-cyan-400",
     bgColor: "bg-cyan-500/10",
     borderColor: "border-cyan-500/20",
+    lightBorderColor: "border-cyan-200",
+    lightBgColor: "bg-cyan-50",
     trend: "Seasonal normal",
     trendUp: true,
   },
@@ -65,6 +72,8 @@ const metrics = [
     color: "text-emerald-400",
     bgColor: "bg-emerald-500/10",
     borderColor: "border-emerald-500/20",
+    lightBorderColor: "border-emerald-200",
+    lightBgColor: "bg-emerald-50",
     trend: "Neutral range",
     trendUp: true,
   },
@@ -76,6 +85,8 @@ const metrics = [
     color: "text-amber-400",
     bgColor: "bg-amber-500/10",
     borderColor: "border-amber-500/20",
+    lightBorderColor: "border-amber-200",
+    lightBgColor: "bg-amber-50",
     trend: "Above baseline",
     trendUp: false,
   },
@@ -88,6 +99,8 @@ const metrics = [
     color: "text-red-400",
     bgColor: "bg-red-500/10",
     borderColor: "border-red-500/20",
+    lightBorderColor: "border-red-200",
+    lightBgColor: "bg-red-50",
     trend: "Stations above EPA limit",
     trendUp: false,
   },
@@ -98,6 +111,8 @@ const metrics = [
     color: "text-green-400",
     bgColor: "bg-green-500/10",
     borderColor: "border-green-500/20",
+    lightBorderColor: "border-green-200",
+    lightBgColor: "bg-green-50",
     trend: "Active UDC sites",
     trendUp: true,
   },
@@ -108,12 +123,17 @@ const metrics = [
     color: "text-purple-400",
     bgColor: "bg-purple-500/10",
     borderColor: "border-purple-500/20",
+    lightBorderColor: "border-purple-200",
+    lightBgColor: "bg-purple-50",
     trend: "WRRI/CAUSES projects",
     trendUp: true,
   },
 ];
 
 export default function MetricCards() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {metrics.map((metric) => {
@@ -121,26 +141,26 @@ export default function MetricCards() {
         return (
           <div
             key={metric.label}
-            className={`metric-card rounded-xl border ${metric.borderColor} ${metric.bgColor} p-4`}
+            className={`metric-card rounded-xl border p-4 ${
+              isDark
+                ? `${metric.borderColor} ${metric.bgColor}`
+                : `${metric.lightBorderColor} ${metric.lightBgColor}`
+            }`}
           >
             <div className="flex items-start justify-between mb-2">
-              <div className={`p-2 rounded-lg ${metric.bgColor}`}>
+              <div className={`p-2 rounded-lg ${isDark ? metric.bgColor : metric.lightBgColor}`}>
                 <Icon className={`w-4 h-4 ${metric.color}`} />
               </div>
               {metric.total && (
-                <span className="text-xs text-slate-500">/ {metric.total}</span>
+                <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>/ {metric.total}</span>
               )}
             </div>
             <div className="flex items-baseline gap-1">
               <span className={`text-2xl font-bold ${metric.color}`}>{metric.value}</span>
-              {metric.unit && <span className="text-xs text-slate-500">{metric.unit}</span>}
+              {metric.unit && <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>{metric.unit}</span>}
             </div>
-            <p className="text-xs text-slate-400 mt-1">{metric.label}</p>
-            <p
-              className={`text-[10px] mt-2 ${
-                metric.trendUp ? "text-green-500" : "text-amber-500"
-              }`}
-            >
+            <p className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{metric.label}</p>
+            <p className={`text-[10px] mt-2 ${metric.trendUp ? "text-green-500" : "text-amber-500"}`}>
               {metric.trend}
             </p>
           </div>

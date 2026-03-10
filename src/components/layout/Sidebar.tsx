@@ -17,6 +17,7 @@ import {
   Globe,
   Users,
 } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard, section: "overview" },
@@ -40,22 +41,26 @@ const sections = [
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-screen bg-panel-bg border-r border-panel-border z-50 flex flex-col transition-all duration-300 ${
+      className={`fixed left-0 top-0 h-screen border-r z-50 flex flex-col transition-all duration-300 ${
         collapsed ? "w-[68px]" : "w-[240px]"
+      } ${
+        isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
       }`}
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b border-panel-border">
+      <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-panel-border" : "border-slate-200"}`}>
         <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0">
           UDC
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <h1 className="font-bold text-sm text-white leading-tight">Water Resources</h1>
-            <p className="text-[10px] text-slate-400 leading-tight">CAUSES / WRRI Dashboard</p>
+            <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-slate-900"}`}>Water Resources</h1>
+            <p className={`text-[10px] leading-tight ${isDark ? "text-slate-400" : "text-slate-500"}`}>CAUSES / WRRI Dashboard</p>
           </div>
         )}
       </div>
@@ -67,7 +72,7 @@ export default function Sidebar() {
           return (
             <div key={section.key} className="mb-3">
               {!collapsed && (
-                <p className="px-3 py-1 text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                   {section.label}
                 </p>
               )}
@@ -80,8 +85,12 @@ export default function Sidebar() {
                     href={item.href}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all mb-0.5 ${
                       isActive
-                        ? "bg-udc-blue/20 text-water-blue font-medium border border-udc-blue/30"
-                        : "text-slate-400 hover:text-white hover:bg-panel-hover"
+                        ? isDark
+                          ? "bg-udc-blue/20 text-water-blue font-medium border border-udc-blue/30"
+                          : "bg-blue-50 text-blue-600 font-medium border border-blue-200"
+                        : isDark
+                          ? "text-slate-400 hover:text-white hover:bg-panel-hover"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                     } ${collapsed ? "justify-center" : ""}`}
                     title={collapsed ? item.label : undefined}
                   >
@@ -96,21 +105,21 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-panel-border p-3">
+      <div className={`border-t p-3 ${isDark ? "border-panel-border" : "border-slate-200"}`}>
         <Link
           href="#settings"
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-panel-hover transition-all ${
-            collapsed ? "justify-center" : ""
-          }`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
+            isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+          } ${collapsed ? "justify-center" : ""}`}
         >
           <Settings className="w-4 h-4" />
           {!collapsed && <span>Settings</span>}
         </Link>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-panel-hover transition-all w-full ${
-            collapsed ? "justify-center" : ""
-          }`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
+            isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+          } ${collapsed ? "justify-center" : ""}`}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           {!collapsed && <span>Collapse</span>}

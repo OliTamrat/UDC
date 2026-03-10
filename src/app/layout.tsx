@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "@/context/ThemeContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <link
           rel="stylesheet"
@@ -38,8 +39,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-udc-dark text-slate-100 antialiased">
-        {children}
+      <body className="bg-udc-dark dark:bg-udc-dark light:bg-slate-50 text-slate-100 antialiased transition-colors duration-300">
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
