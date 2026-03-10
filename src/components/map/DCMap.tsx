@@ -11,6 +11,8 @@ import {
   floodZones,
   imperviousZones,
 } from "@/data/dc-boundaries";
+import waterbodiesGeoJSON from "@/data/dc-waterbodies.json";
+import waterwaysGeoJSON from "@/data/dc-waterways.json";
 import { useTheme } from "@/context/ThemeContext";
 import MapLayerControls, { type MapLayerState } from "./MapLayerControls";
 import type { MonthlySnapshot } from "./TimeSlider";
@@ -191,53 +193,40 @@ export default function DCMap({
     }
 
     // =============================================
-    // WATERWAYS — Real DC GIS GeoJSON layers only
+    // WATERWAYS — Real DC GIS GeoJSON data (imported directly)
     // =============================================
-    let destroyed = false;
     if (layers.waterways) {
-      // Load real DC GIS waterbody polygons (river surface areas)
-      fetch("/dc-waterbodies.geojson")
-        .then(r => r.json())
-        .then((geojson) => {
-          if (destroyed) return;
-          leaflet.geoJSON(geojson, {
-            style: {
-              color: isDark ? "#38BDF8" : "#0369A1",
-              weight: isDark ? 1 : 1.5,
-              opacity: isDark ? 0.7 : 0.9,
-              fillColor: isDark ? "#0EA5E9" : "#0284C7",
-              fillOpacity: isDark ? 0.3 : 0.4,
-            },
-          }).addTo(map);
-        })
-        .catch(() => {});
+      // Waterbody polygons — filled river/lake surface areas
+      leaflet.geoJSON(waterbodiesGeoJSON as GeoJSON.FeatureCollection, {
+        style: {
+          color: isDark ? "#38BDF8" : "#0369A1",
+          weight: isDark ? 1 : 1.5,
+          opacity: isDark ? 0.7 : 0.9,
+          fillColor: isDark ? "#0EA5E9" : "#0284C7",
+          fillOpacity: isDark ? 0.3 : 0.4,
+        },
+      }).addTo(map);
 
-      // Load real DC GIS hydrography centerlines (named streams)
-      fetch("/dc-waterways.geojson")
-        .then(r => r.json())
-        .then((geojson) => {
-          if (destroyed) return;
-          leaflet.geoJSON(geojson, {
-            style: (feature) => {
-              const name = feature?.properties?.name || "";
-              const isRiver = name === "Anacostia" || name === "Potomac River";
-              return {
-                color: isDark ? "#38BDF8" : "#0369A1",
-                weight: isRiver ? (isDark ? 3 : 4) : (isDark ? 1.5 : 2),
-                opacity: isRiver ? (isDark ? 0.9 : 1) : (isDark ? 0.7 : 0.8),
-                lineCap: "round" as const,
-                lineJoin: "round" as const,
-              };
-            },
-            onEachFeature: (feature, layer) => {
-              const name = feature?.properties?.name;
-              if (name) {
-                layer.bindTooltip(name, { direction: "top", sticky: true });
-              }
-            },
-          }).addTo(map);
-        })
-        .catch(() => {});
+      // Hydrography centerlines — named streams and rivers
+      leaflet.geoJSON(waterwaysGeoJSON as GeoJSON.FeatureCollection, {
+        style: (feature) => {
+          const name = feature?.properties?.name || "";
+          const isRiver = name === "Anacostia" || name === "Potomac River";
+          return {
+            color: isDark ? "#38BDF8" : "#0369A1",
+            weight: isRiver ? (isDark ? 3 : 4) : (isDark ? 1.5 : 2),
+            opacity: isRiver ? (isDark ? 0.9 : 1) : (isDark ? 0.7 : 0.8),
+            lineCap: "round" as const,
+            lineJoin: "round" as const,
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const name = feature?.properties?.name;
+          if (name) {
+            layer.bindTooltip(name, { direction: "top", sticky: true });
+          }
+        },
+      }).addTo(map);
     }
 
     // =============================================
@@ -371,7 +360,6 @@ export default function DCMap({
     }
 
     return () => {
-      destroyed = true;
       map.remove();
       if (typeof window !== "undefined") {
         delete (window as unknown as Record<string, unknown>).__navigateStation;
