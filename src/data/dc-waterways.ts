@@ -31,82 +31,65 @@ export interface WaterwaySegment {
   healthIndex: number; // 0-100
 }
 
-// Anacostia River main channel — geographic path through DC
-// Traced from Bladensburg (NE) to Potomac confluence (SW) following the real river course
-// Verified against USGS stations, bridge coordinates, and NPS/landmark GPS data
+// Anacostia River main channel — centerline derived from DC GIS waterbody polygons
+// Source: DC Open Data "Waterbodies" dataset (DCGIS planimetric data)
+// Supplemented with Bladensburg section from USGS/landmark verification
 export const anacostiaRiver: WaterwaySegment = {
   id: "anacostia-main",
   name: "Anacostia River",
   type: "river",
   healthIndex: 58,
   coordinates: [
-    // Bladensburg Waterfront Park / DC-MD boundary (upstream)
-    // Verified: Bladensburg Waterfront Park at 38.9368, -76.9387
+    // Bladensburg Waterfront Park area — upstream entry into DC (from USGS landmarks)
     [38.9396, -76.9339],
-    [38.9382, -76.9356],
+    [38.9380, -76.9360],
     [38.9368, -76.9387], // Bladensburg Waterfront Park
-    [38.9352, -76.9398],
-    // River curves south-southwest past Colmar Manor
-    [38.9330, -76.9410],
-    [38.9305, -76.9415],
-    [38.9280, -76.9418],
-    // Approaching Kenilworth — river bends westward
-    [38.9255, -76.9420],
-    [38.9230, -76.9418],
-    [38.9205, -76.9415],
-    // Kenilworth Aquatic Gardens area
-    // Verified: Kenilworth Aquatic Gardens at 38.9126, -76.9418
-    [38.9180, -76.9415],
-    [38.9155, -76.9418],
-    [38.9130, -76.9420], // Adjacent to Kenilworth Aquatic Gardens
-    // Kenilworth Marsh — river curves south then southwest
-    [38.9105, -76.9428],
-    [38.9080, -76.9440],
-    [38.9055, -76.9458],
-    // Past National Arboretum — river bends more to the west
-    [38.9030, -76.9485],
-    [38.9010, -76.9520],
-    [38.8990, -76.9555],
-    // Langston Golf Course / Kingman Island area
-    // Verified: Kingman Island at 38.8958, -76.9639
-    [38.8975, -76.9585],
-    [38.8962, -76.9620],
-    [38.8958, -76.9639], // Kingman Island
-    // Benning Road Bridge (Ethel Kennedy Bridge)
-    [38.8945, -76.9648],
-    [38.8930, -76.9652],
-    [38.8915, -76.9650],
-    // East Capitol Street Bridge (Whitney Young Memorial Bridge)
-    // Verified: 38.8898, -76.9650
-    [38.8898, -76.9650],
-    // Anacostia Park — river curves southwest
-    [38.8878, -76.9665],
-    [38.8858, -76.9695],
-    [38.8838, -76.9730],
-    [38.8815, -76.9770],
-    // 11th Street Bridges area — river widens
-    // Verified: ~38.8743, -76.9916
-    [38.8792, -76.9810],
-    [38.8770, -76.9855],
-    [38.8750, -76.9900],
-    [38.8743, -76.9916], // 11th Street Bridges
-    // South of 11th St — river bends toward Buzzard Point
-    [38.8730, -76.9945],
-    [38.8720, -76.9970],
-    // Frederick Douglass Memorial Bridge
-    // Verified: 38.8687, -77.0052
-    [38.8705, -77.0000],
-    [38.8695, -77.0025],
-    [38.8687, -77.0052], // Frederick Douglass Memorial Bridge
-    // Navy Yard / Nationals Park waterfront
-    // Verified: Nationals Park at 38.8730, -77.0080 (on the west bank)
-    [38.8675, -77.0075],
-    [38.8665, -77.0095],
-    // Approaching Potomac confluence at Buzzard Point
-    // Verified: Buzzard Point at 38.8640, -77.0128
-    [38.8655, -77.0110],
-    [38.8647, -77.0120],
-    [38.8640, -77.0128], // Buzzard Point — Potomac confluence
+    [38.9350, -76.9400],
+    [38.9330, -76.9408],
+    [38.9310, -76.9412],
+    [38.9290, -76.9416],
+    [38.9270, -76.9418],
+    [38.9250, -76.9420],
+    [38.9230, -76.9420],
+    [38.9210, -76.9422],
+    // DC GIS polygon-derived centerline below (lat-bin averaged from waterbody outline)
+    [38.9190, -76.9424],
+    [38.9175, -76.9429],
+    [38.9170, -76.9434],
+    [38.9145, -76.9491],
+    [38.9135, -76.9496],
+    [38.9115, -76.9494],
+    [38.9110, -76.9499],
+    [38.9090, -76.9554],
+    [38.9085, -76.9560],
+    [38.9030, -76.9554],
+    [38.9005, -76.9539],
+    [38.9000, -76.9544],
+    [38.8995, -76.9556],
+    [38.8980, -76.9616],
+    [38.8970, -76.9638],
+    [38.8955, -76.9641],
+    [38.8930, -76.9650],
+    [38.8895, -76.9651],
+    [38.8875, -76.9659],
+    [38.8845, -76.9679],
+    [38.8820, -76.9706],
+    [38.8805, -76.9716],
+    [38.8795, -76.9726],
+    [38.8780, -76.9753],
+    [38.8730, -76.9879],
+    [38.8710, -76.9922],
+    [38.8680, -77.0044],
+    [38.8670, -77.0075],
+    [38.8665, -77.0082],
+    [38.8650, -77.0091],
+    [38.8621, -77.0089],
+    [38.8614, -77.0093],
+    [38.8596, -77.0123],
+    [38.8580, -77.0143],
+    [38.8542, -77.0170],
+    [38.8460, -77.0212],
+    [38.8400, -77.0231],
   ],
 };
 
@@ -119,17 +102,26 @@ export const dcStreams: WaterwaySegment[] = [
     type: "tributary",
     healthIndex: 42,
     coordinates: [
-      // Verified: GNIS coordinates 38.9057, -76.9571
-      // Flows from Capitol Heights area (east) northwest to Anacostia near Kenilworth
-      [38.8948, -76.9285], // Upstream near Capitol Heights / Eastern Ave
-      [38.8970, -76.9318],
-      [38.8995, -76.9348],
-      [38.9015, -76.9370], // Near Minnesota Ave (USGS station WB-001 area)
-      [38.9030, -76.9390],
-      [38.9045, -76.9408],
-      [38.9057, -76.9425],
-      [38.9068, -76.9435],
-      [38.9080, -76.9440], // Confluence with Anacostia near Kenilworth Marsh
+      // From DC GIS Hydrography Centerline (735 raw points, 60 segments)
+      // Flows from east DC westward to Anacostia near Kenilworth
+      [38.8904, -76.9115], // Upstream near Eastern Ave / DC border
+      [38.8910, -76.9140],
+      [38.8916, -76.9143],
+      [38.8916, -76.9148],
+      [38.8910, -76.9173],
+      [38.8921, -76.9179],
+      [38.8936, -76.9256],
+      [38.8948, -76.9282],
+      [38.8991, -76.9336],
+      [38.8994, -76.9373],
+      [38.8991, -76.9400],
+      [38.9001, -76.9410],
+      [38.9014, -76.9420],
+      [38.9018, -76.9445],
+      [38.9029, -76.9453],
+      [38.9058, -76.9488],
+      [38.9062, -76.9518],
+      [38.9061, -76.9579], // Confluence with Anacostia
     ],
   },
   {
@@ -204,19 +196,40 @@ export const dcStreams: WaterwaySegment[] = [
     type: "tributary",
     healthIndex: 40,
     coordinates: [
-      // Enters DC at Southern Ave & Mississippi Ave SE, flows southwest
-      // Through Ward 8, crosses under South Capitol St, exits to Oxon Cove / Potomac
-      [38.8505, -76.9648], // Entry into DC at Southern Ave SE
-      [38.8488, -76.9690],
-      [38.8470, -76.9738],
-      [38.8448, -76.9782],
-      [38.8425, -76.9825],
-      [38.8400, -76.9870],
-      [38.8375, -76.9918],
-      [38.8348, -76.9960], // Crosses under South Capitol St
-      [38.8318, -77.0005],
-      [38.8285, -77.0048],
-      [38.8248, -77.0095], // Exits DC toward Oxon Cove and Potomac
+      // From DC GIS Hydrography Centerline (452 raw points, 29 segments)
+      // Enters DC at Southern Ave, flows southwest through Ward 8
+      [38.8433, -76.9718],
+      [38.8433, -76.9728],
+      [38.8431, -76.9739],
+      [38.8425, -76.9750],
+      [38.8421, -76.9771],
+      [38.8419, -76.9781],
+      [38.8422, -76.9788],
+      [38.8413, -76.9798],
+      [38.8409, -76.9819],
+      [38.8406, -76.9840],
+      [38.8403, -76.9848],
+      [38.8398, -76.9851],
+      [38.8396, -76.9857],
+      [38.8392, -76.9869],
+      [38.8387, -76.9880],
+      [38.8384, -76.9896],
+      [38.8377, -76.9926],
+      [38.8375, -76.9937],
+      [38.8368, -76.9962],
+      [38.8363, -76.9971],
+      [38.8340, -77.0004],
+      [38.8339, -77.0013],
+      [38.8318, -77.0032],
+      [38.8298, -77.0048],
+      [38.8272, -77.0052],
+      [38.8252, -77.0044],
+      [38.8230, -77.0046],
+      [38.8216, -77.0047],
+      [38.8209, -77.0041],
+      [38.8200, -77.0046],
+      [38.8186, -77.0057],
+      [38.8166, -77.0064],
     ],
   },
   {
@@ -225,35 +238,62 @@ export const dcStreams: WaterwaySegment[] = [
     type: "tributary",
     healthIndex: 62,
     coordinates: [
-      // Verified: USGS 01648000 at Sherrill Dr (38.9725, -77.04)
-      // Verified: Rock Creek Park at MD border ~38.967, -77.046
-      // Verified: Mouth near Watergate at ~38.900, -77.054
+      // Derived from DC GIS Hydrography Centerline dataset (1399 raw points)
       // Enters DC from Maryland, flows south through NW DC to Potomac
-      [38.9670, -77.0460], // DC-Maryland border
-      [38.9640, -77.0435],
-      [38.9610, -77.0418],
-      [38.9580, -77.0408], // Near Sherrill Drive / USGS station
-      [38.9550, -77.0400],
-      [38.9520, -77.0408],
-      [38.9490, -77.0420],
-      [38.9455, -77.0435], // Military Rd area
-      [38.9420, -77.0448],
-      [38.9385, -77.0458], // Broad Branch confluence
-      [38.9350, -77.0472],
-      [38.9315, -77.0485], // Piney Branch confluence
-      [38.9280, -77.0495],
-      [38.9245, -77.0505],
-      [38.9210, -77.0510], // Klingle Valley
-      [38.9175, -77.0510],
-      [38.9140, -77.0505],
-      [38.9105, -77.0502], // Calvert St / Connecticut Ave area
-      [38.9070, -77.0508],
-      [38.9040, -77.0518],
-      [38.9010, -77.0530], // P Street / Dumbarton Oaks area
-      [38.8980, -77.0540],
-      [38.8950, -77.0545],
-      [38.8920, -77.0540], // Rock Creek & Potomac Parkway
-      [38.8900, -77.0540], // Mouth at Potomac / Watergate area
+      [38.9941, -77.0445], // DC-Maryland border
+      [38.9933, -77.0442],
+      [38.9912, -77.0445],
+      [38.9900, -77.0444],
+      [38.9885, -77.0421],
+      [38.9876, -77.0431],
+      [38.9850, -77.0422],
+      [38.9836, -77.0427],
+      [38.9822, -77.0400],
+      [38.9813, -77.0404],
+      [38.9805, -77.0420],
+      [38.9797, -77.0446],
+      [38.9782, -77.0439],
+      [38.9763, -77.0399],
+      [38.9740, -77.0395],
+      [38.9718, -77.0402],
+      [38.9705, -77.0448],
+      [38.9691, -77.0452],
+      [38.9676, -77.0465],
+      [38.9653, -77.0474],
+      [38.9630, -77.0460],
+      [38.9600, -77.0407],
+      [38.9579, -77.0421],
+      [38.9547, -77.0423],
+      [38.9525, -77.0445],
+      [38.9509, -77.0453],
+      [38.9497, -77.0470],
+      [38.9491, -77.0468],
+      [38.9485, -77.0450],
+      [38.9482, -77.0456],
+      [38.9480, -77.0451],
+      [38.9471, -77.0450],
+      [38.9436, -77.0498],
+      [38.9417, -77.0511],
+      [38.9381, -77.0521],
+      [38.9366, -77.0478],
+      [38.9351, -77.0482],
+      [38.9328, -77.0509],
+      [38.9285, -77.0450],
+      [38.9266, -77.0451],
+      [38.9252, -77.0486],
+      [38.9222, -77.0486],
+      [38.9197, -77.0527],
+      [38.9183, -77.0577],
+      [38.9157, -77.0589],
+      [38.9125, -77.0543],
+      [38.9099, -77.0503],
+      [38.9088, -77.0529],
+      [38.9076, -77.0543],
+      [38.9064, -77.0548],
+      [38.9040, -77.0565],
+      [38.9016, -77.0584],
+      [38.8999, -77.0575],
+      [38.8989, -77.0588], // Mouth at Potomac / Watergate area
     ],
   },
   {
@@ -262,32 +302,50 @@ export const dcStreams: WaterwaySegment[] = [
     type: "river",
     healthIndex: 65,
     coordinates: [
-      // Along DC's western/southern border, NW to SE
-      // Verified against Key Bridge, TR Island, Memorial Bridge, Tidal Basin, Buzzard Point, JBAB, Blue Plains
-      [38.9050, -77.0680], // Near Key Bridge (verified 38.9034, -77.0677)
-      [38.9010, -77.0640],
-      [38.8970, -77.0625], // Theodore Roosevelt Island (verified 38.8951, -77.0619)
-      [38.8930, -77.0590],
-      [38.8895, -77.0565],
-      [38.8874, -77.0552], // Arlington Memorial Bridge (verified 38.8874, -77.0552)
-      [38.8850, -77.0520],
-      [38.8830, -77.0475],
-      [38.8810, -77.0430], // Near Tidal Basin outlet (verified 38.884, -77.039)
-      [38.8785, -77.0375],
-      [38.8760, -77.0310], // Washington Channel
-      [38.8730, -77.0240],
-      [38.8700, -77.0180],
-      [38.8670, -77.0148],
-      [38.8640, -77.0128], // Anacostia confluence / Buzzard Point (verified 38.864, -77.013)
-      [38.8590, -77.0140],
-      [38.8540, -77.0155],
-      [38.8490, -77.0170], // Joint Base Anacostia-Bolling (verified 38.842, -77.018)
-      [38.8420, -77.0185],
-      [38.8350, -77.0210],
-      [38.8280, -77.0248], // Blue Plains area (verified 38.814, -77.028)
-      [38.8210, -77.0290],
-      [38.8145, -77.0340],
-      [38.8080, -77.0400], // Southern DC boundary
+      // Centerline derived from DC GIS waterbody polygon (66,168 point outline)
+      // NW to SE along DC border
+      [38.9370, -77.1169], // NW DC boundary near Chain Bridge
+      [38.9330, -77.1159],
+      [38.9280, -77.1129],
+      [38.9200, -77.1046],
+      [38.9140, -77.1006],
+      [38.9120, -77.0946],
+      [38.9080, -77.0765],
+      [38.9070, -77.0747],
+      [38.9050, -77.0738],
+      [38.9040, -77.0727],
+      [38.8990, -77.0634],
+      [38.8980, -77.0624],
+      [38.8890, -77.0583],
+      [38.8870, -77.0583],
+      [38.8840, -77.0599],
+      [38.8830, -77.0595],
+      [38.8790, -77.0532],
+      [38.8730, -77.0462],
+      [38.8690, -77.0401],
+      [38.8670, -77.0385],
+      [38.8630, -77.0388],
+      [38.8610, -77.0374],
+      [38.8580, -77.0340],
+      [38.8530, -77.0256],
+      [38.8520, -77.0252],
+      [38.8500, -77.0256],
+      [38.8410, -77.0287],
+      [38.8400, -77.0284],
+      [38.8370, -77.0254],
+      [38.8360, -77.0251],
+      [38.8350, -77.0257],
+      [38.8320, -77.0305],
+      [38.8300, -77.0322],
+      [38.8270, -77.0326],
+      [38.8240, -77.0320],
+      [38.8190, -77.0333],
+      [38.8160, -77.0325],
+      [38.8140, -77.0311],
+      [38.8090, -77.0247],
+      [38.8070, -77.0242],
+      [38.7999, -77.0316],
+      [38.7920, -77.0385],
     ],
   },
 ];
@@ -316,7 +374,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "ANA-002",
     name: "Anacostia at Kenilworth",
-    position: [38.9130, -76.9420], // On the river at Kenilworth Aquatic Gardens
+    position: [38.9135, -76.9496], // On the river at Kenilworth Aquatic Gardens
     type: "river",
     status: "active",
     parameters: ["DO", "pH", "Temp", "Turbidity", "E. coli"],
@@ -335,7 +393,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "ANA-003",
     name: "Anacostia at Navy Yard",
-    position: [38.8687, -77.0052], // On the river near Frederick Douglass Bridge / Navy Yard
+    position: [38.8670, -77.0075], // On the river near Frederick Douglass Bridge / Navy Yard
     type: "river",
     status: "active",
     parameters: ["DO", "pH", "Temp", "Turbidity", "E. coli", "Nutrients"],
@@ -354,7 +412,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "ANA-004",
     name: "Anacostia at Anacostia Park",
-    position: [38.8858, -76.9695], // On the river at Anacostia Park
+    position: [38.8845, -76.9679], // On the river at Anacostia Park
     type: "river",
     status: "active",
     parameters: ["DO", "pH", "Temp", "Turbidity"],
@@ -490,7 +548,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "SW-002",
     name: "Stormwater Outfall - South Capitol",
-    position: [38.8743, -76.9916], // Near 11th St Bridges on the river
+    position: [38.8730, -76.9879], // Near 11th St Bridges on the river
     type: "stormwater",
     status: "offline",
     parameters: ["Flow Rate", "TSS", "Heavy Metals"],
