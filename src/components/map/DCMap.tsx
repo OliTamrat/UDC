@@ -1,25 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   anacostiaRiver,
   dcStreams,
   monitoringStations,
   type MonitoringStation,
 } from "@/data/dc-waterways";
+import {
+  dcWardBoundaries,
+  anacostiaWatershed,
+  floodZones,
+  imperviousZones,
+} from "@/data/dc-boundaries";
 import { useTheme } from "@/context/ThemeContext";
+import MapLayerControls, { type MapLayerState } from "./MapLayerControls";
+import type { MonthlySnapshot } from "./TimeSlider";
 
 let L: typeof import("leaflet") | null = null;
 
-function getStationColor(station: MonitoringStation): string {
+function getStationColor(station: MonitoringStation, ecoliMultiplier?: number): string {
   if (station.status === "offline") return "#6B7280";
   if (station.status === "maintenance") return "#F59E0B";
   if (station.type === "green-infrastructure") return "#22C55E";
   if (station.type === "stormwater") return "#8B5CF6";
   const reading = station.lastReading;
   if (!reading) return "#3B82F6";
-  if (reading.eColiCount > 1000) return "#EF4444";
-  if (reading.eColiCount > 400) return "#F59E0B";
+  const ecoli = ecoliMultiplier ? reading.eColiCount * ecoliMultiplier : reading.eColiCount;
+  if (ecoli > 1000) return "#EF4444";
+  if (ecoli > 400) return "#F59E0B";
   return "#22C55E";
 }
 
@@ -29,27 +38,42 @@ function getHealthColor(healthIndex: number): string {
   return "#EF4444";
 }
 
-// Tile layer configs for dark and light themes
 const TILE_LAYERS = {
   dark: {
     url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
   },
   light: {
     url: "https://{s}.basemaps.cartocdn.com/voyager/{z}/{x}/{y}{r}.png",
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
   },
 };
 
 export default function DCMap({
   onStationSelect,
+  onStationNavigate,
+  monthSnapshot,
 }: {
   onStationSelect?: (station: MonitoringStation | null) => void;
   selectedStation?: MonitoringStation | null;
+  onStationNavigate?: (stationId: string) => void;
+  monthSnapshot?: MonthlySnapshot | null;
 }) {
   const [mapReady, setMapReady] = useState(false);
+  const [layers, setLayers] = useState<MapLayerState>({
+    wardBoundaries: false,
+    watershedBoundary: false,
+    floodZones: false,
+    imperviousSurfaces: false,
+    monitoringStations: true,
+    waterways: true,
+  });
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+
+  const handleLayerToggle = useCallback((layer: keyof MapLayerState) => {
+    setLayers(prev => ({ ...prev, [layer]: !prev[layer] }));
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -66,7 +90,6 @@ export default function DCMap({
     const container = document.getElementById("dc-map");
     if (!container) return;
 
-    // Clean up any existing map
     if ((container as HTMLElement & { _leaflet_id?: number })._leaflet_id) {
       (container as HTMLElement & { _leaflet_id?: number })._leaflet_id = undefined;
       container.innerHTML = "";
@@ -79,7 +102,7 @@ export default function DCMap({
       attributionControl: true,
     });
 
-    // Theme-aware tile layer
+    // Theme-aware tiles
     const tileConfig = isDark ? TILE_LAYERS.dark : TILE_LAYERS.light;
     leaflet.tileLayer(tileConfig.url, {
       attribution: tileConfig.attribution,
@@ -87,368 +110,257 @@ export default function DCMap({
       maxZoom: 19,
     }).addTo(map);
 
-    // Colors adapt to theme
     const waterColor = "#2563EB";
     const waterColorLight = "#3B82F6";
-    const riverWidth = 6;
 
     // =============================================
-    // ANACOSTIA RIVER — realistic water rendering
+    // WATERSHED BOUNDARY
     // =============================================
-
-    // Layer 1: Wide ambient glow (water body presence)
-    leaflet.polyline(anacostiaRiver.coordinates, {
-      color: waterColor,
-      weight: 28,
-      opacity: isDark ? 0.08 : 0.06,
-      smoothFactor: 1.5,
-      lineCap: "round",
-      lineJoin: "round",
-    }).addTo(map);
-
-    // Layer 2: Medium glow (water surface reflection)
-    leaflet.polyline(anacostiaRiver.coordinates, {
-      color: waterColorLight,
-      weight: 16,
-      opacity: isDark ? 0.15 : 0.1,
-      smoothFactor: 1.5,
-      lineCap: "round",
-      lineJoin: "round",
-    }).addTo(map);
-
-    // Layer 3: Main river body
-    leaflet.polyline(anacostiaRiver.coordinates, {
-      color: waterColor,
-      weight: riverWidth,
-      opacity: 0.85,
-      smoothFactor: 1.5,
-      lineCap: "round",
-      lineJoin: "round",
-    }).addTo(map);
-
-    // Layer 4: Bright center highlight (water surface sheen)
-    leaflet.polyline(anacostiaRiver.coordinates, {
-      color: "#60A5FA",
-      weight: 2,
-      opacity: isDark ? 0.5 : 0.35,
-      smoothFactor: 1.5,
-      lineCap: "round",
-      lineJoin: "round",
-    })
-      .bindTooltip("Anacostia River", {
-        permanent: false,
-        direction: "top",
+    if (layers.watershedBoundary) {
+      leaflet.polygon(anacostiaWatershed.coordinates, {
+        color: "#06B6D4",
+        weight: 2,
+        opacity: 0.6,
+        fillColor: "#06B6D4",
+        fillOpacity: isDark ? 0.06 : 0.04,
+        dashArray: "10 6",
       })
-      .addTo(map);
-
-    // =============================================
-    // POTOMAC RIVER — wider, more prominent
-    // =============================================
-    const potomac = dcStreams.find(s => s.id === "potomac-river");
-    if (potomac) {
-      // Wide ambient glow
-      leaflet.polyline(potomac.coordinates, {
-        color: waterColor,
-        weight: 32,
-        opacity: isDark ? 0.07 : 0.05,
-        smoothFactor: 1.5,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(map);
-
-      // Medium glow
-      leaflet.polyline(potomac.coordinates, {
-        color: waterColorLight,
-        weight: 18,
-        opacity: isDark ? 0.12 : 0.08,
-        smoothFactor: 1.5,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(map);
-
-      // Main body
-      leaflet.polyline(potomac.coordinates, {
-        color: waterColor,
-        weight: 7,
-        opacity: 0.8,
-        smoothFactor: 1.5,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(map);
-
-      // Center highlight
-      leaflet.polyline(potomac.coordinates, {
-        color: "#60A5FA",
-        weight: 2.5,
-        opacity: isDark ? 0.45 : 0.3,
-        smoothFactor: 1.5,
-        lineCap: "round",
-        lineJoin: "round",
-      })
-        .bindTooltip(`Potomac River (Health: ${potomac.healthIndex}/100)`, {
-          permanent: false,
-          direction: "top",
-        })
+        .bindTooltip(`${anacostiaWatershed.name} (${anacostiaWatershed.area})`, { direction: "center" })
         .addTo(map);
     }
 
     // =============================================
-    // DC STREAMS & TRIBUTARIES — realistic styling
+    // WARD BOUNDARIES
     // =============================================
-    dcStreams.forEach((stream) => {
-      if (stream.id === "potomac-river") return; // Already rendered above
-
-      const healthColor = getHealthColor(stream.healthIndex);
-      const isRiver = stream.type === "river";
-      const baseWeight = isRiver ? 5 : 3;
-
-      // Glow effect
-      leaflet.polyline(stream.coordinates, {
-        color: healthColor,
-        weight: baseWeight + 8,
-        opacity: isDark ? 0.08 : 0.05,
-        smoothFactor: 1.5,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(map);
-
-      // Stream body
-      leaflet.polyline(stream.coordinates, {
-        color: healthColor,
-        weight: baseWeight,
-        opacity: 0.75,
-        smoothFactor: 1.5,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(map);
-
-      // Center highlight for streams
-      leaflet.polyline(stream.coordinates, {
-        color: isDark ? "#93C5FD" : "#60A5FA",
-        weight: 1,
-        opacity: isDark ? 0.35 : 0.25,
-        smoothFactor: 1.5,
-        lineCap: "round",
-        lineJoin: "round",
-      })
-        .bindTooltip(`${stream.name} (Health: ${stream.healthIndex}/100)`, {
-          permanent: false,
-          direction: "top",
+    if (layers.wardBoundaries) {
+      const riskColors: Record<string, string> = { Low: "#22C55E", Medium: "#F59E0B", High: "#EF4444" };
+      dcWardBoundaries.forEach((ward) => {
+        const fillColor = riskColors[ward.floodRisk] || "#FDB927";
+        leaflet.polygon(ward.coordinates, {
+          color: "#FDB927",
+          weight: 2,
+          opacity: isDark ? 0.7 : 0.6,
+          fillColor: fillColor,
+          fillOpacity: isDark ? 0.08 : 0.06,
         })
-        .addTo(map);
-    });
-
-    // =============================================
-    // MONITORING STATION MARKERS
-    // =============================================
-    const popupBg = isDark ? "rgba(15, 29, 50, 0.95)" : "rgba(255, 255, 255, 0.98)";
-    const popupText = isDark ? "#F8FAFC" : "#1E293B";
-    const popupSecondary = isDark ? "#94A3B8" : "#64748B";
-    const popupMuted = isDark ? "#64748B" : "#94A3B8";
-    const popupDataBg = isDark ? "rgba(10,22,40,0.5)" : "#F1F5F9";
-    const popupDataLabel = isDark ? "#64748B" : "#94A3B8";
-
-    monitoringStations.forEach((station) => {
-      const color = getStationColor(station);
-      const isGI = station.type === "green-infrastructure";
-      const isSW = station.type === "stormwater";
-      const size = station.type === "river" ? 12 : 10;
-
-      // Custom icon - green infrastructure gets a leaf-like square icon
-      let iconHtml: string;
-      if (isGI) {
-        iconHtml = `
-          <div style="
-            width: ${size + 4}px;
-            height: ${size + 4}px;
-            background: linear-gradient(135deg, #22C55E, #16A34A);
-            border: 2px solid rgba(255,255,255,0.9);
-            border-radius: 4px;
-            box-shadow: 0 0 14px rgba(34,197,94,0.5), 0 0 6px rgba(34,197,94,0.3);
-            position: relative;
-            transform: rotate(45deg);
-          ">
-            ${station.status === "active" ? `
-              <div style="
-                position: absolute;
-                width: ${size + 14}px;
-                height: ${size + 14}px;
-                border-radius: 4px;
-                border: 2px solid #22C55E;
-                top: -7px;
-                left: -7px;
-                animation: pulse-ring 2.5s ease-out infinite;
-                opacity: 0.5;
-              "></div>
-            ` : ""}
-          </div>
-        `;
-      } else if (isSW) {
-        iconHtml = `
-          <div style="
-            width: ${size}px;
-            height: ${size}px;
-            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
-            border: 2px solid rgba(255,255,255,0.8);
-            border-radius: 3px;
-            box-shadow: 0 0 12px ${color}80, 0 0 4px ${color}40;
-            position: relative;
-          ">
-            ${station.status === "active" ? `
-              <div style="
-                position: absolute;
-                width: ${size + 8}px;
-                height: ${size + 8}px;
-                border-radius: 3px;
-                border: 2px solid ${color};
-                top: -6px;
-                left: -6px;
-                animation: pulse-ring 2s ease-out infinite;
-                opacity: 0.6;
-              "></div>
-            ` : ""}
-          </div>
-        `;
-      } else {
-        iconHtml = `
-          <div style="
-            width: ${size}px;
-            height: ${size}px;
-            background: ${color};
-            border: 2px solid rgba(255,255,255,0.8);
-            border-radius: 50%;
-            box-shadow: 0 0 12px ${color}80, 0 0 4px ${color}40;
-            position: relative;
-          ">
-            ${station.status === "active" ? `
-              <div style="
-                position: absolute;
-                width: ${size + 8}px;
-                height: ${size + 8}px;
-                border-radius: 50%;
-                border: 2px solid ${color};
-                top: -6px;
-                left: -6px;
-                animation: pulse-ring 2s ease-out infinite;
-                opacity: 0.6;
-              "></div>
-            ` : ""}
-          </div>
-        `;
-      }
-
-      const icon = leaflet.divIcon({
-        className: "custom-station-marker",
-        html: iconHtml,
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2],
-      });
-
-      const marker = leaflet.marker(station.position, { icon }).addTo(map);
-
-      // Popup content
-      const reading = station.lastReading;
-      const statusColor = station.status === "active" ? "#22C55E" : station.status === "maintenance" ? "#F59E0B" : "#6B7280";
-
-      let popupHtml = `
-        <div style="min-width:260px;font-family:Inter,system-ui,sans-serif;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-            <h3 style="font-weight:600;font-size:13px;color:${popupText};margin:0;">${station.name}</h3>
-            <span style="font-size:11px;font-weight:500;color:${statusColor};text-transform:capitalize;">${station.status}</span>
-          </div>
-          <div style="font-size:11px;color:${popupSecondary};margin-bottom:8px;">
-            ID: ${station.id} | Type: ${station.type.replace("-", " ")}
-          </div>
-      `;
-
-      if (reading) {
-        const ecoliColor = reading.eColiCount > 400 ? "#F87171" : "#4ADE80";
-        popupHtml += `
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-            <div style="background:${popupDataBg};border-radius:6px;padding:6px;">
-              <div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Temp</div>
-              <div style="font-size:13px;font-weight:600;color:#22D3EE;">${reading.temperature}°C</div>
-            </div>
-            <div style="background:${popupDataBg};border-radius:6px;padding:6px;">
-              <div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">DO</div>
-              <div style="font-size:13px;font-weight:600;color:#60A5FA;">${reading.dissolvedOxygen} mg/L</div>
-            </div>
-            <div style="background:${popupDataBg};border-radius:6px;padding:6px;">
-              <div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">pH</div>
-              <div style="font-size:13px;font-weight:600;color:#4ADE80;">${reading.pH}</div>
-            </div>
-            <div style="background:${popupDataBg};border-radius:6px;padding:6px;">
-              <div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Turbidity</div>
-              <div style="font-size:13px;font-weight:600;color:#FBBF24;">${reading.turbidity} NTU</div>
-            </div>
-            <div style="background:${popupDataBg};border-radius:6px;padding:6px;grid-column:span 2;">
-              <div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">E. coli</div>
-              <div style="font-size:13px;font-weight:600;color:${ecoliColor};">
-                ${reading.eColiCount.toLocaleString()} CFU/100mL
+          .bindTooltip(`Ward ${ward.ward}`, {
+            permanent: true,
+            direction: "center",
+            className: "ward-label",
+          })
+          .bindPopup(`
+            <div style="font-family:Inter,system-ui,sans-serif;min-width:180px;">
+              <h3 style="font-weight:700;font-size:14px;color:${isDark ? "#F8FAFC" : "#1E293B"};margin:0 0 6px;">Ward ${ward.ward}</h3>
+              <div style="display:grid;gap:4px;font-size:11px;color:${isDark ? "#94A3B8" : "#64748B"};">
+                <div>Population: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.population.toLocaleString()}</strong></div>
+                <div>Council: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.councilMember}</strong></div>
+                <div>Flood Risk: <strong style="color:${riskColors[ward.floodRisk]}">${ward.floodRisk}</strong></div>
+                <div>Impervious: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.impervious}%</strong></div>
               </div>
             </div>
-          </div>
-          <div style="margin-top:6px;font-size:10px;color:${popupMuted};">
-            Last updated: ${new Date(reading.timestamp).toLocaleString()}
-          </div>
-        `;
-      }
-
-      popupHtml += `</div>`;
-      marker.bindPopup(popupHtml, { maxWidth: 300, className: "station-popup" });
-      marker.on("click", () => onStationSelect?.(station));
-    });
+          `, { maxWidth: 250, className: "station-popup" })
+          .addTo(map);
+      });
+    }
 
     // =============================================
-    // UDC CAMPUS MARKER
+    // FLOOD ZONES
+    // =============================================
+    if (layers.floodZones) {
+      floodZones.forEach((zone) => {
+        const color = zone.riskLevel === "AE" ? "#EF4444" : "#F59E0B";
+        leaflet.polygon(zone.coordinates, {
+          color: color,
+          weight: 1.5,
+          opacity: 0.7,
+          fillColor: color,
+          fillOpacity: isDark ? 0.2 : 0.15,
+          dashArray: zone.riskLevel === "AE" ? undefined : "4 4",
+        })
+          .bindTooltip(`${zone.name} (Zone ${zone.riskLevel})`, { direction: "top" })
+          .addTo(map);
+      });
+    }
+
+    // =============================================
+    // IMPERVIOUS SURFACES
+    // =============================================
+    if (layers.imperviousSurfaces) {
+      imperviousZones.forEach((zone) => {
+        const opacity = zone.percentage / 100;
+        leaflet.polygon(zone.coordinates, {
+          color: "#8B5CF6",
+          weight: 1.5,
+          opacity: 0.6,
+          fillColor: "#8B5CF6",
+          fillOpacity: isDark ? opacity * 0.3 : opacity * 0.2,
+        })
+          .bindTooltip(`${zone.name} (${zone.percentage}% impervious)`, { direction: "top" })
+          .addTo(map);
+      });
+    }
+
+    // =============================================
+    // WATERWAYS
+    // =============================================
+    if (layers.waterways) {
+      // Anacostia River — multi-layer realistic rendering
+      leaflet.polyline(anacostiaRiver.coordinates, {
+        color: waterColor, weight: 28, opacity: isDark ? 0.08 : 0.06,
+        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+      }).addTo(map);
+      leaflet.polyline(anacostiaRiver.coordinates, {
+        color: waterColorLight, weight: 16, opacity: isDark ? 0.15 : 0.1,
+        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+      }).addTo(map);
+      leaflet.polyline(anacostiaRiver.coordinates, {
+        color: waterColor, weight: 6, opacity: 0.85,
+        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+      }).addTo(map);
+      leaflet.polyline(anacostiaRiver.coordinates, {
+        color: "#60A5FA", weight: 2, opacity: isDark ? 0.5 : 0.35,
+        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+      })
+        .bindTooltip("Anacostia River", { permanent: false, direction: "top" })
+        .addTo(map);
+
+      // Potomac River
+      const potomac = dcStreams.find(s => s.id === "potomac-river");
+      if (potomac) {
+        leaflet.polyline(potomac.coordinates, {
+          color: waterColor, weight: 32, opacity: isDark ? 0.07 : 0.05,
+          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+        }).addTo(map);
+        leaflet.polyline(potomac.coordinates, {
+          color: waterColorLight, weight: 18, opacity: isDark ? 0.12 : 0.08,
+          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+        }).addTo(map);
+        leaflet.polyline(potomac.coordinates, {
+          color: waterColor, weight: 7, opacity: 0.8,
+          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+        }).addTo(map);
+        leaflet.polyline(potomac.coordinates, {
+          color: "#60A5FA", weight: 2.5, opacity: isDark ? 0.45 : 0.3,
+          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+        })
+          .bindTooltip(`Potomac River (Health: ${potomac.healthIndex}/100)`, { direction: "top" })
+          .addTo(map);
+      }
+
+      // Streams & tributaries
+      dcStreams.forEach((stream) => {
+        if (stream.id === "potomac-river") return;
+        const healthColor = getHealthColor(stream.healthIndex);
+        const baseWeight = stream.type === "river" ? 5 : 3;
+
+        leaflet.polyline(stream.coordinates, {
+          color: healthColor, weight: baseWeight + 8, opacity: isDark ? 0.08 : 0.05,
+          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+        }).addTo(map);
+        leaflet.polyline(stream.coordinates, {
+          color: healthColor, weight: baseWeight, opacity: 0.75,
+          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+        }).addTo(map);
+        leaflet.polyline(stream.coordinates, {
+          color: isDark ? "#93C5FD" : "#60A5FA", weight: 1, opacity: isDark ? 0.35 : 0.25,
+          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+        })
+          .bindTooltip(`${stream.name} (Health: ${stream.healthIndex}/100)`, { direction: "top" })
+          .addTo(map);
+      });
+    }
+
+    // =============================================
+    // MONITORING STATIONS
+    // =============================================
+    if (layers.monitoringStations) {
+      const popupBg = isDark ? "rgba(15, 29, 50, 0.95)" : "rgba(255, 255, 255, 0.98)";
+      const popupText = isDark ? "#F8FAFC" : "#1E293B";
+      const popupSecondary = isDark ? "#94A3B8" : "#64748B";
+      const popupMuted = isDark ? "#64748B" : "#94A3B8";
+      const popupDataBg = isDark ? "rgba(10,22,40,0.5)" : "#F1F5F9";
+      const popupDataLabel = isDark ? "#64748B" : "#94A3B8";
+
+      monitoringStations.forEach((station) => {
+        const ecoliMult = monthSnapshot?.ecoliMultiplier;
+        const color = getStationColor(station, ecoliMult);
+        const isGI = station.type === "green-infrastructure";
+        const isSW = station.type === "stormwater";
+        const size = station.type === "river" ? 12 : 10;
+
+        let iconHtml: string;
+        if (isGI) {
+          iconHtml = `<div style="width:${size + 4}px;height:${size + 4}px;background:linear-gradient(135deg,#22C55E,#16A34A);border:2px solid rgba(255,255,255,0.9);border-radius:4px;box-shadow:0 0 14px rgba(34,197,94,0.5);position:relative;transform:rotate(45deg);">${station.status === "active" ? `<div style="position:absolute;width:${size + 14}px;height:${size + 14}px;border-radius:4px;border:2px solid #22C55E;top:-7px;left:-7px;animation:pulse-ring 2.5s ease-out infinite;opacity:0.5;"></div>` : ""}</div>`;
+        } else if (isSW) {
+          iconHtml = `<div style="width:${size}px;height:${size}px;background:linear-gradient(135deg,#8B5CF6,#7C3AED);border:2px solid rgba(255,255,255,0.8);border-radius:3px;box-shadow:0 0 12px ${color}80;position:relative;">${station.status === "active" ? `<div style="position:absolute;width:${size + 8}px;height:${size + 8}px;border-radius:3px;border:2px solid ${color};top:-6px;left:-6px;animation:pulse-ring 2s ease-out infinite;opacity:0.6;"></div>` : ""}</div>`;
+        } else {
+          iconHtml = `<div style="width:${size}px;height:${size}px;background:${color};border:2px solid rgba(255,255,255,0.8);border-radius:50%;box-shadow:0 0 12px ${color}80;position:relative;">${station.status === "active" ? `<div style="position:absolute;width:${size + 8}px;height:${size + 8}px;border-radius:50%;border:2px solid ${color};top:-6px;left:-6px;animation:pulse-ring 2s ease-out infinite;opacity:0.6;"></div>` : ""}</div>`;
+        }
+
+        const icon = leaflet.divIcon({
+          className: "custom-station-marker",
+          html: iconHtml,
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2],
+        });
+
+        const marker = leaflet.marker(station.position, { icon }).addTo(map);
+        const reading = station.lastReading;
+        const statusColor = station.status === "active" ? "#22C55E" : station.status === "maintenance" ? "#F59E0B" : "#6B7280";
+        const viewDetailBtn = onStationNavigate
+          ? `<div style="margin-top:8px;text-align:center;"><button onclick="window.__navigateStation('${station.id}')" style="background:#3B82F6;color:white;border:none;padding:5px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:Inter,system-ui,sans-serif;">View Full Details →</button></div>`
+          : "";
+
+        let popupHtml = `
+          <div style="min-width:260px;font-family:Inter,system-ui,sans-serif;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <h3 style="font-weight:600;font-size:13px;color:${popupText};margin:0;">${station.name}</h3>
+              <span style="font-size:11px;font-weight:500;color:${statusColor};text-transform:capitalize;">${station.status}</span>
+            </div>
+            <div style="font-size:11px;color:${popupSecondary};margin-bottom:8px;">ID: ${station.id} | Type: ${station.type.replace("-", " ")}</div>`;
+
+        if (reading) {
+          const ecoliColor = reading.eColiCount > 400 ? "#F87171" : "#4ADE80";
+          popupHtml += `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Temp</div><div style="font-size:13px;font-weight:600;color:#22D3EE;">${reading.temperature}°C</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">DO</div><div style="font-size:13px;font-weight:600;color:#60A5FA;">${reading.dissolvedOxygen} mg/L</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">pH</div><div style="font-size:13px;font-weight:600;color:#4ADE80;">${reading.pH}</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Turbidity</div><div style="font-size:13px;font-weight:600;color:#FBBF24;">${reading.turbidity} NTU</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;grid-column:span 2;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">E. coli</div><div style="font-size:13px;font-weight:600;color:${ecoliColor};">${reading.eColiCount.toLocaleString()} CFU/100mL</div></div>
+            </div>
+            <div style="margin-top:6px;font-size:10px;color:${popupMuted};">Last updated: ${new Date(reading.timestamp).toLocaleString()}</div>`;
+        }
+
+        popupHtml += viewDetailBtn + `</div>`;
+        marker.bindPopup(popupHtml, { maxWidth: 300, className: "station-popup" });
+        marker.on("click", () => onStationSelect?.(station));
+      });
+    }
+
+    // =============================================
+    // UDC CAMPUS
     // =============================================
     const udcIcon = leaflet.divIcon({
       className: "udc-campus-marker",
-      html: `
-        <div style="
-          background: linear-gradient(135deg, #FDB927, #CE1141);
-          width: 22px;
-          height: 22px;
-          border-radius: 4px;
-          border: 2px solid white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 800;
-          font-size: 8px;
-          color: white;
-          box-shadow: 0 0 16px rgba(253,185,39,0.5), 0 2px 8px rgba(0,0,0,0.3);
-        ">UDC</div>
-      `,
+      html: `<div style="background:linear-gradient(135deg,#FDB927,#CE1141);width:22px;height:22px;border-radius:4px;border:2px solid white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:8px;color:white;box-shadow:0 0 16px rgba(253,185,39,0.5),0 2px 8px rgba(0,0,0,0.3);">UDC</div>`,
       iconSize: [22, 22],
       iconAnchor: [11, 11],
     });
-
+    const popupText = isDark ? "#F8FAFC" : "#1E293B";
+    const popupSecondary = isDark ? "#94A3B8" : "#64748B";
     leaflet.marker([38.9435, -77.0230], { icon: udcIcon })
-      .bindPopup(`
-        <div style="font-family:Inter,system-ui,sans-serif;">
-          <h3 style="font-weight:700;font-size:14px;color:${popupText};margin:0 0 4px 0;">University of the District of Columbia</h3>
-          <p style="font-size:11px;color:${popupSecondary};margin:0 0 6px 0;">CAUSES / WRRI Research Hub</p>
-          <p style="font-size:11px;color:${isDark ? "#CBD5E1" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p>
-        </div>
-      `)
+      .bindPopup(`<div style="font-family:Inter,system-ui,sans-serif;"><h3 style="font-weight:700;font-size:14px;color:${popupText};margin:0 0 4px;">University of the District of Columbia</h3><p style="font-size:11px;color:${popupSecondary};margin:0 0 6px;">CAUSES / WRRI Research Hub</p><p style="font-size:11px;color:${isDark ? "#CBD5E1" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p></div>`)
       .addTo(map);
 
-    // =============================================
-    // DC BOUNDARY
-    // =============================================
+    // DC Boundary
     const dcBoundary: [number, number][] = [
       [38.9955, -77.0415], [38.9940, -76.9095], [38.8275, -76.9115],
       [38.7920, -77.0405], [38.8345, -77.0405], [38.9340, -77.0420], [38.9955, -77.0415],
     ];
-
     leaflet.polygon(dcBoundary, {
-      color: "#FDB927",
-      weight: 1.5,
-      opacity: isDark ? 0.4 : 0.5,
-      fillColor: "#FDB927",
-      fillOpacity: isDark ? 0.02 : 0.03,
-      dashArray: "6 4",
+      color: "#FDB927", weight: 1.5, opacity: isDark ? 0.4 : 0.5,
+      fillColor: "#FDB927", fillOpacity: isDark ? 0.02 : 0.03, dashArray: "6 4",
     }).addTo(map);
 
     // =============================================
@@ -458,76 +370,49 @@ export default function DCMap({
     const legendBorder = isDark ? "rgba(30, 58, 95, 0.5)" : "rgba(226, 232, 240, 0.8)";
     const legendText = isDark ? "#F8FAFC" : "#1E293B";
     const legendMuted = isDark ? "#94A3B8" : "#64748B";
-    const legendSep = isDark ? "rgba(30,58,95,0.5)" : "rgba(226,232,240,0.8)";
 
     const legend = new leaflet.Control({ position: "bottomright" });
     legend.onAdd = () => {
       const div = document.createElement("div");
-      div.style.cssText = `
-        background: ${legendBg};
-        backdrop-filter: blur(12px);
-        border: 1px solid ${legendBorder};
-        border-radius: 10px;
-        padding: 12px;
-        font-family: Inter, system-ui, sans-serif;
-        color: ${legendText};
-        font-size: 11px;
-        min-width: 170px;
-        box-shadow: 0 4px 12px rgba(0,0,0,${isDark ? "0.3" : "0.1"});
-      `;
+      div.style.cssText = `background:${legendBg};backdrop-filter:blur(12px);border:1px solid ${legendBorder};border-radius:10px;padding:12px;font-family:Inter,system-ui,sans-serif;color:${legendText};font-size:11px;min-width:170px;box-shadow:0 4px 12px rgba(0,0,0,${isDark ? "0.3" : "0.1"});`;
       div.innerHTML = `
         <div style="font-weight:600;margin-bottom:8px;font-size:12px;">Map Legend</div>
         <div style="display:flex;flex-direction:column;gap:5px;">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:24px;height:4px;background:linear-gradient(90deg, #2563EB, #60A5FA);border-radius:2px;"></div>
-            <span>Anacostia River</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:24px;height:4px;background:linear-gradient(90deg, #2563EB, #60A5FA);border-radius:2px;"></div>
-            <span>Potomac River</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:24px;height:3px;background:#22C55E;border-radius:2px;"></div>
-            <span style="color:${legendMuted};">Healthy Stream (&ge;60)</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:24px;height:3px;background:#F59E0B;border-radius:2px;"></div>
-            <span style="color:${legendMuted};">Moderate (40-59)</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:24px;height:3px;background:#EF4444;border-radius:2px;"></div>
-            <span style="color:${legendMuted};">Poor Health (&lt;40)</span>
-          </div>
-          <div style="border-top:1px solid ${legendSep};padding-top:5px;margin-top:3px;"></div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:8px;height:8px;background:#3B82F6;border-radius:50%;border:1.5px solid white;box-shadow:0 0 4px rgba(59,130,246,0.4);"></div>
-            <span>River Station</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:8px;height:8px;background:linear-gradient(135deg,#22C55E,#16A34A);border-radius:2px;border:1.5px solid white;transform:rotate(45deg);box-shadow:0 0 4px rgba(34,197,94,0.4);"></div>
-            <span>Green Infrastructure</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:8px;height:8px;background:linear-gradient(135deg,#8B5CF6,#7C3AED);border-radius:2px;border:1.5px solid white;box-shadow:0 0 4px rgba(139,92,246,0.4);"></div>
-            <span>Stormwater BMP</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <div style="width:22px;height:10px;background:linear-gradient(135deg,#FDB927,#CE1141);border-radius:2px;border:1px solid white;font-size:5px;color:white;font-weight:800;text-align:center;line-height:10px;">UDC</div>
-            <span>UDC Campus</span>
-          </div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:4px;background:linear-gradient(90deg,#2563EB,#60A5FA);border-radius:2px;"></div><span>Rivers</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#22C55E;border-radius:2px;"></div><span style="color:${legendMuted}">Healthy (&ge;60)</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#F59E0B;border-radius:2px;"></div><span style="color:${legendMuted}">Moderate (40-59)</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#EF4444;border-radius:2px;"></div><span style="color:${legendMuted}">Poor (&lt;40)</span></div>
+          <div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:#3B82F6;border-radius:50%;border:1.5px solid white;"></div><span>River Station</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:linear-gradient(135deg,#22C55E,#16A34A);border-radius:2px;border:1.5px solid white;transform:rotate(45deg);"></div><span>Green Infra.</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:linear-gradient(135deg,#8B5CF6,#7C3AED);border-radius:2px;border:1.5px solid white;"></div><span>Stormwater</span></div>
+          ${layers.floodZones ? `<div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#EF444433;border:1px solid #EF4444;border-radius:2px;"></div><span>Flood Zone</span></div>` : ""}
+          ${layers.imperviousSurfaces ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#8B5CF633;border:1px solid #8B5CF6;border-radius:2px;"></div><span>Impervious</span></div>` : ""}
+          ${layers.watershedBoundary ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;border:1.5px dashed #06B6D4;border-radius:2px;"></div><span>Watershed</span></div>` : ""}
         </div>
       `;
       return div;
     };
     legend.addTo(map);
 
-    return () => { map.remove(); };
-  }, [mapReady, onStationSelect, isDark]);
+    // Station navigation bridge
+    if (onStationNavigate) {
+      (window as unknown as Record<string, unknown>).__navigateStation = (id: string) => onStationNavigate(id);
+    }
+
+    return () => {
+      map.remove();
+      if (typeof window !== "undefined") {
+        delete (window as unknown as Record<string, unknown>).__navigateStation;
+      }
+    };
+  }, [mapReady, onStationSelect, onStationNavigate, isDark, layers, monthSnapshot]);
 
   return (
     <div className={`relative w-full h-full rounded-xl overflow-hidden border transition-colors duration-300 ${
       isDark ? "border-panel-border" : "border-slate-200"
     }`}>
+      <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
       <div id="dc-map" className="w-full h-full min-h-[500px]" />
       {!mapReady && (
         <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>

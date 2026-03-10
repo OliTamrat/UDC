@@ -1,7 +1,7 @@
 "use client";
 
 import { monitoringStations } from "@/data/dc-waterways";
-import { MapPin, AlertCircle, CheckCircle2, Wrench } from "lucide-react";
+import { MapPin, AlertCircle, CheckCircle2, Wrench, ExternalLink } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
 function StatusBadge({ status }: { status: string }) {
@@ -34,7 +34,7 @@ function WaterQualityIndicator({ value, thresholds }: { value: number; threshold
   );
 }
 
-export default function StationTable() {
+export default function StationTable({ onStationClick }: { onStationClick?: (stationId: string) => void }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
@@ -56,6 +56,7 @@ export default function StationTable() {
               <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Turbidity</th>
               <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>E. coli</th>
               <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Updated</th>
+              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}></th>
             </tr>
           </thead>
           <tbody>
@@ -64,6 +65,7 @@ export default function StationTable() {
               return (
                 <tr
                   key={station.id}
+                  onClick={() => onStationClick?.(station.id)}
                   className={`border-b transition-colors cursor-pointer ${
                     isDark
                       ? "border-panel-border/50 hover:bg-panel-hover"
@@ -103,6 +105,9 @@ export default function StationTable() {
                   </td>
                   <td className={`py-2.5 px-4 text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                     {r ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—"}
+                  </td>
+                  <td className="py-2.5 px-4">
+                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-600 hover:text-blue-400" : "text-slate-300 hover:text-blue-500"} transition-colors`} />
                   </td>
                 </tr>
               );
