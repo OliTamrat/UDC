@@ -37,11 +37,14 @@ export default function Header() {
   }, []);
 
   return (
-    <header className={`h-14 border-b flex items-center justify-between px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
+    <header className={`h-14 border-b flex items-center justify-between px-3 md:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
       isDark ? "border-panel-border bg-panel-bg/80" : "border-slate-200 bg-white/80"
     }`}>
+      {/* Left side — search (hidden on mobile, shown on md+) */}
       <div className="flex items-center gap-4">
-        <div className="relative">
+        {/* Spacer for mobile hamburger button */}
+        <div className="w-10 md:hidden" />
+        <div className="relative hidden md:block">
           <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
           <input
             type="text"
@@ -54,8 +57,11 @@ export default function Header() {
           />
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+
+      {/* Right side */}
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Date — hidden on small screens */}
+        <div className={`hidden lg:flex items-center gap-2 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
           <Calendar className="w-3.5 h-3.5" />
           <span>{dateStr}</span>
         </div>
@@ -117,13 +123,14 @@ export default function Header() {
           <Bell className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
           <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-udc-red" />
         </button>
-        <button className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors border ${
+        {/* User button — hide label on mobile */}
+        <button className={`flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg transition-colors border ${
           isDark
             ? "hover:bg-panel-hover border-panel-border"
             : "hover:bg-slate-50 border-slate-200"
         }`}>
           <User className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
-          <span className={`text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
+          <span className={`text-sm hidden md:inline ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
         </button>
       </div>
     </header>

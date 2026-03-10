@@ -50,11 +50,11 @@ export default function Dashboard() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main className="flex-1 ml-[240px]">
+      <main className="flex-1 ml-0 md:ml-[240px]">
         <Header />
-        <div className="p-6 space-y-6">
+        <div className="p-3 md:p-6 space-y-4 md:space-y-6">
           {/* Hero Section */}
-          <section className={`relative overflow-hidden rounded-2xl border p-8 ${
+          <section className={`relative overflow-hidden rounded-2xl border p-4 md:p-8 ${
             isDark
               ? "border-panel-border bg-gradient-to-br from-udc-navy via-panel-bg to-udc-dark"
               : "border-slate-200 bg-gradient-to-br from-blue-50 via-white to-slate-50"
@@ -71,7 +71,7 @@ export default function Dashboard() {
                   CAUSES / WRRI
                 </span>
               </div>
-              <h1 className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+              <h1 className={`text-2xl md:text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 DC Water Resources{" "}
                 <span className="gradient-text">Data Dashboard</span>
               </h1>
@@ -120,7 +120,7 @@ export default function Dashboard() {
                 <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>Live monitoring data</span>
               </div>
             </div>
-            <div className="h-[550px]">
+            <div className="h-[350px] md:h-[550px]">
               <DCMap
                 onStationSelect={setSelectedStation}
                 selectedStation={selectedStation}

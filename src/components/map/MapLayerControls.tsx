@@ -22,9 +22,6 @@ const LAYER_CONFIG: { key: keyof MapLayerState; label: string; color: string; gr
   { key: "waterways", label: "Rivers & Streams", color: "#3B82F6", group: "Base" },
   { key: "monitoringStations", label: "Monitoring Stations", color: "#22C55E", group: "Base" },
   { key: "wardBoundaries", label: "DC Ward Boundaries", color: "#FDB927", group: "Boundaries" },
-  { key: "watershedBoundary", label: "Anacostia Watershed", color: "#06B6D4", group: "Boundaries" },
-  { key: "floodZones", label: "FEMA Flood Zones", color: "#EF4444", group: "Overlays" },
-  { key: "imperviousSurfaces", label: "Impervious Surfaces", color: "#8B5CF6", group: "Overlays" },
 ];
 
 export default function MapLayerControls({ layers, onLayerToggle }: MapLayerControlsProps) {

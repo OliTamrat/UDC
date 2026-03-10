@@ -43,9 +43,9 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main className="flex-1 ml-[240px]">
+        <main className="flex-1 ml-0 md:ml-[240px]">
           <Header />
-          <div className="p-6 flex items-center justify-center h-[60vh]">
+          <div className="p-3 md:p-6 flex items-center justify-center h-[60vh]">
             <div className="text-center">
               <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Station Not Found</h2>
               <p className={`text-sm mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>No station with ID &quot;{stationId}&quot; exists.</p>
@@ -81,9 +81,9 @@ export default function StationDetailPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main className="flex-1 ml-[240px]">
+      <main className="flex-1 ml-0 md:ml-[240px]">
         <Header />
-        <div className="p-6 space-y-6">
+        <div className="p-3 md:p-6 space-y-4 md:space-y-6">
           {/* Back + Title */}
           <div className="flex items-start gap-4">
             <button

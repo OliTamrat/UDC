@@ -5,12 +5,6 @@ import {
   monitoringStations,
   type MonitoringStation,
 } from "@/data/dc-waterways";
-import {
-  dcWardBoundaries,
-  anacostiaWatershed,
-  floodZones,
-  imperviousZones,
-} from "@/data/dc-boundaries";
 import waterbodiesGeoJSON from "@/data/dc-waterbodies.json";
 import waterwaysGeoJSON from "@/data/dc-waterways.json";
 import { useTheme } from "@/context/ThemeContext";
@@ -32,16 +26,29 @@ function getStationColor(station: MonitoringStation, ecoliMultiplier?: number): 
   return "#22C55E";
 }
 
+// Tile layers — OSM for light mode (most reliable), CartoDB dark for dark mode
 const TILE_LAYERS = {
   dark: {
     url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
   },
   light: {
-    url: "https://{s}.basemaps.cartocdn.com/voyager/{z}/{x}/{y}{r}.png",
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
 };
+
+// Major river names for prominent rendering
+const MAJOR_RIVERS = new Set(["Potomac River", "Anacostia", "Rock Creek"]);
+const NAMED_TRIBUTARIES = new Set([
+  "Watts Branch Creek", "Oxon Run", "Oxon Run Tributary",
+  "Chesapeake and Ohio Canal", "Washington Channel",
+  "Kingman Lake", "Tidal Basin", "Beaverdam Creek", "Barnaby Run",
+]);
+
+// DC center — focused on Anacostia confluence area
+const DC_CENTER: [number, number] = [38.9072, -77.0169];
+const DC_ZOOM = 12;
 
 export default function DCMap({
   onStationSelect,
@@ -90,110 +97,62 @@ export default function DCMap({
     }
 
     const map = leaflet.map("dc-map", {
-      center: [38.892, -76.970],
-      zoom: 12,
+      center: DC_CENTER,
+      zoom: DC_ZOOM,
       zoomControl: true,
       attributionControl: true,
     });
 
-    // Theme-aware tiles
+    // Theme-aware tile layer
     const tileConfig = isDark ? TILE_LAYERS.dark : TILE_LAYERS.light;
     leaflet.tileLayer(tileConfig.url, {
       attribution: tileConfig.attribution,
-      subdomains: "abcd",
+      subdomains: isDark ? "abcd" : "abc",
       maxZoom: 19,
     }).addTo(map);
 
-
     // =============================================
-    // WATERSHED BOUNDARY
-    // =============================================
-    if (layers.watershedBoundary) {
-      leaflet.polygon(anacostiaWatershed.coordinates, {
-        color: "#06B6D4",
-        weight: 2,
-        opacity: 0.6,
-        fillColor: "#06B6D4",
-        fillOpacity: isDark ? 0.06 : 0.04,
-        dashArray: "10 6",
-      })
-        .bindTooltip(`${anacostiaWatershed.name} (${anacostiaWatershed.area})`, { direction: "center" })
-        .addTo(map);
-    }
-
-    // =============================================
-    // WARD BOUNDARIES
+    // WARD BOUNDARIES — Real DC GIS GeoJSON
     // =============================================
     if (layers.wardBoundaries) {
-      const riskColors: Record<string, string> = { Low: "#22C55E", Medium: "#F59E0B", High: "#EF4444" };
-      dcWardBoundaries.forEach((ward) => {
-        const fillColor = riskColors[ward.floodRisk] || "#FDB927";
-        leaflet.polygon(ward.coordinates, {
-          color: "#FDB927",
-          weight: 2,
-          opacity: isDark ? 0.7 : 0.6,
-          fillColor: fillColor,
-          fillOpacity: isDark ? 0.08 : 0.06,
+      fetch("/dc-wards.geojson")
+        .then(res => res.json())
+        .then((wardData: GeoJSON.FeatureCollection) => {
+          leaflet.geoJSON(wardData, {
+            style: {
+              color: "#FDB927",
+              weight: 2,
+              opacity: isDark ? 0.7 : 0.6,
+              fillColor: "#FDB927",
+              fillOpacity: isDark ? 0.06 : 0.04,
+            },
+            onEachFeature: (feature, layer) => {
+              const props = feature.properties;
+              if (props) {
+                const wardName = props.NAME || `Ward ${props.WARD}`;
+                layer.bindTooltip(wardName, {
+                  permanent: true,
+                  direction: "center",
+                  className: "ward-label",
+                });
+                layer.bindPopup(`
+                  <div style="font-family:Inter,system-ui,sans-serif;min-width:180px;">
+                    <h3 style="font-weight:700;font-size:14px;color:${isDark ? "#F8FAFC" : "#1E293B"};margin:0 0 6px;">${wardName}</h3>
+                    <div style="display:grid;gap:4px;font-size:11px;color:${isDark ? "#94A3B8" : "#64748B"};">
+                      ${props.REP_NAME ? `<div>Council: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${props.REP_NAME}</strong></div>` : ""}
+                      ${props.AREASQMI ? `<div>Area: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${Number(props.AREASQMI).toFixed(2)} sq mi</strong></div>` : ""}
+                    </div>
+                  </div>
+                `, { maxWidth: 250, className: "station-popup" });
+              }
+            },
+          }).addTo(map);
         })
-          .bindTooltip(`Ward ${ward.ward}`, {
-            permanent: true,
-            direction: "center",
-            className: "ward-label",
-          })
-          .bindPopup(`
-            <div style="font-family:Inter,system-ui,sans-serif;min-width:180px;">
-              <h3 style="font-weight:700;font-size:14px;color:${isDark ? "#F8FAFC" : "#1E293B"};margin:0 0 6px;">Ward ${ward.ward}</h3>
-              <div style="display:grid;gap:4px;font-size:11px;color:${isDark ? "#94A3B8" : "#64748B"};">
-                <div>Population: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.population.toLocaleString()}</strong></div>
-                <div>Council: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.councilMember}</strong></div>
-                <div>Flood Risk: <strong style="color:${riskColors[ward.floodRisk]}">${ward.floodRisk}</strong></div>
-                <div>Impervious: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.impervious}%</strong></div>
-              </div>
-            </div>
-          `, { maxWidth: 250, className: "station-popup" })
-          .addTo(map);
-      });
+        .catch(() => { /* ward data failed to load — silent fallback */ });
     }
 
     // =============================================
-    // FLOOD ZONES
-    // =============================================
-    if (layers.floodZones) {
-      floodZones.forEach((zone) => {
-        const color = zone.riskLevel === "AE" ? "#EF4444" : "#F59E0B";
-        leaflet.polygon(zone.coordinates, {
-          color: color,
-          weight: 1.5,
-          opacity: 0.7,
-          fillColor: color,
-          fillOpacity: isDark ? 0.2 : 0.15,
-          dashArray: zone.riskLevel === "AE" ? undefined : "4 4",
-        })
-          .bindTooltip(`${zone.name} (Zone ${zone.riskLevel})`, { direction: "top" })
-          .addTo(map);
-      });
-    }
-
-    // =============================================
-    // IMPERVIOUS SURFACES
-    // =============================================
-    if (layers.imperviousSurfaces) {
-      imperviousZones.forEach((zone) => {
-        const opacity = zone.percentage / 100;
-        leaflet.polygon(zone.coordinates, {
-          color: "#8B5CF6",
-          weight: 1.5,
-          opacity: 0.6,
-          fillColor: "#8B5CF6",
-          fillOpacity: isDark ? opacity * 0.3 : opacity * 0.2,
-        })
-          .bindTooltip(`${zone.name} (${zone.percentage}% impervious)`, { direction: "top" })
-          .addTo(map);
-      });
-    }
-
-    // =============================================
-    // WATERWAYS — Real DC GIS GeoJSON data (imported directly)
+    // WATERWAYS — Real DC GIS GeoJSON hydrography
     // =============================================
     if (layers.waterways) {
       // Waterbody polygons — filled river/lake surface areas
@@ -203,19 +162,40 @@ export default function DCMap({
           weight: isDark ? 1 : 1.5,
           opacity: isDark ? 0.7 : 0.9,
           fillColor: isDark ? "#0EA5E9" : "#0284C7",
-          fillOpacity: isDark ? 0.3 : 0.4,
+          fillOpacity: isDark ? 0.25 : 0.35,
         },
       }).addTo(map);
 
-      // Hydrography centerlines — named streams and rivers
+      // Hydrography centerlines — rivers, creeks, and streams
       leaflet.geoJSON(waterwaysGeoJSON as GeoJSON.FeatureCollection, {
         style: (feature) => {
           const name = feature?.properties?.name || "";
-          const isRiver = name === "Anacostia" || name === "Potomac River";
+          const isMajor = MAJOR_RIVERS.has(name);
+          const isTributary = NAMED_TRIBUTARIES.has(name);
+
+          if (isMajor) {
+            return {
+              color: isDark ? "#38BDF8" : "#0369A1",
+              weight: isDark ? 3.5 : 4,
+              opacity: isDark ? 0.9 : 1,
+              lineCap: "round" as const,
+              lineJoin: "round" as const,
+            };
+          }
+          if (isTributary) {
+            return {
+              color: isDark ? "#7DD3FC" : "#0284C7",
+              weight: isDark ? 2 : 2.5,
+              opacity: isDark ? 0.7 : 0.8,
+              lineCap: "round" as const,
+              lineJoin: "round" as const,
+            };
+          }
+          // Minor/unnamed streams
           return {
-            color: isDark ? "#38BDF8" : "#0369A1",
-            weight: isRiver ? (isDark ? 3 : 4) : (isDark ? 1.5 : 2),
-            opacity: isRiver ? (isDark ? 0.9 : 1) : (isDark ? 0.7 : 0.8),
+            color: isDark ? "#BAE6FD" : "#0EA5E9",
+            weight: 1,
+            opacity: isDark ? 0.4 : 0.5,
             lineCap: "round" as const,
             lineJoin: "round" as const,
           };
@@ -233,7 +213,6 @@ export default function DCMap({
     // MONITORING STATIONS
     // =============================================
     if (layers.monitoringStations) {
-      const popupBg = isDark ? "rgba(15, 29, 50, 0.95)" : "rgba(255, 255, 255, 0.98)";
       const popupText = isDark ? "#F8FAFC" : "#1E293B";
       const popupSecondary = isDark ? "#94A3B8" : "#64748B";
       const popupMuted = isDark ? "#64748B" : "#94A3B8";
@@ -306,21 +285,11 @@ export default function DCMap({
       iconSize: [22, 22],
       iconAnchor: [11, 11],
     });
-    const popupText = isDark ? "#F8FAFC" : "#1E293B";
-    const popupSecondary = isDark ? "#94A3B8" : "#64748B";
+    const udcPopupText = isDark ? "#F8FAFC" : "#1E293B";
+    const udcPopupSecondary = isDark ? "#94A3B8" : "#64748B";
     leaflet.marker([38.9435, -77.0230], { icon: udcIcon })
-      .bindPopup(`<div style="font-family:Inter,system-ui,sans-serif;"><h3 style="font-weight:700;font-size:14px;color:${popupText};margin:0 0 4px;">University of the District of Columbia</h3><p style="font-size:11px;color:${popupSecondary};margin:0 0 6px;">CAUSES / WRRI Research Hub</p><p style="font-size:11px;color:${isDark ? "#CBD5E1" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p></div>`)
+      .bindPopup(`<div style="font-family:Inter,system-ui,sans-serif;"><h3 style="font-weight:700;font-size:14px;color:${udcPopupText};margin:0 0 4px;">University of the District of Columbia</h3><p style="font-size:11px;color:${udcPopupSecondary};margin:0 0 6px;">CAUSES / WRRI Research Hub</p><p style="font-size:11px;color:${isDark ? "#CBD5E1" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p></div>`)
       .addTo(map);
-
-    // DC Boundary
-    const dcBoundary: [number, number][] = [
-      [38.9955, -77.0415], [38.9940, -76.9095], [38.8275, -76.9115],
-      [38.7920, -77.0405], [38.8345, -77.0405], [38.9340, -77.0420], [38.9955, -77.0415],
-    ];
-    leaflet.polygon(dcBoundary, {
-      color: "#FDB927", weight: 1.5, opacity: isDark ? 0.4 : 0.5,
-      fillColor: "#FDB927", fillOpacity: isDark ? 0.02 : 0.03, dashArray: "6 4",
-    }).addTo(map);
 
     // =============================================
     // LEGEND
@@ -337,17 +306,15 @@ export default function DCMap({
       div.innerHTML = `
         <div style="font-weight:600;margin-bottom:8px;font-size:12px;">Map Legend</div>
         <div style="display:flex;flex-direction:column;gap:5px;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:4px;background:linear-gradient(90deg,#2563EB,#60A5FA);border-radius:2px;"></div><span>Rivers</span></div>
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#22C55E;border-radius:2px;"></div><span style="color:${legendMuted}">Healthy (&ge;60)</span></div>
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#F59E0B;border-radius:2px;"></div><span style="color:${legendMuted}">Moderate (40-59)</span></div>
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#EF4444;border-radius:2px;"></div><span style="color:${legendMuted}">Poor (&lt;40)</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:4px;background:${isDark ? "#38BDF8" : "#0369A1"};border-radius:2px;"></div><span>Major Rivers</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:2px;background:${isDark ? "#7DD3FC" : "#0284C7"};border-radius:2px;"></div><span style="color:${legendMuted}">Tributaries</span></div>
           <div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div>
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:#3B82F6;border-radius:50%;border:1.5px solid white;"></div><span>River Station</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:#22C55E;border-radius:50%;border:1.5px solid white;"></div><span>Healthy Station</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:#F59E0B;border-radius:50%;border:1.5px solid white;"></div><span style="color:${legendMuted}">Maintenance</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:#EF4444;border-radius:50%;border:1.5px solid white;"></div><span style="color:${legendMuted}">High E. coli</span></div>
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:linear-gradient(135deg,#22C55E,#16A34A);border-radius:2px;border:1.5px solid white;transform:rotate(45deg);"></div><span>Green Infra.</span></div>
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:linear-gradient(135deg,#8B5CF6,#7C3AED);border-radius:2px;border:1.5px solid white;"></div><span>Stormwater</span></div>
-          ${layers.floodZones ? `<div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#EF444433;border:1px solid #EF4444;border-radius:2px;"></div><span>Flood Zone</span></div>` : ""}
-          ${layers.imperviousSurfaces ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#8B5CF633;border:1px solid #8B5CF6;border-radius:2px;"></div><span>Impervious</span></div>` : ""}
-          ${layers.watershedBoundary ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;border:1.5px dashed #06B6D4;border-radius:2px;"></div><span>Watershed</span></div>` : ""}
+          ${layers.wardBoundaries ? `<div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;border:2px solid #FDB927;border-radius:2px;"></div><span>Ward Boundaries</span></div>` : ""}
         </div>
       `;
       return div;

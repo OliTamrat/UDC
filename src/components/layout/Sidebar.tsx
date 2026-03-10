@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -16,6 +16,8 @@ import {
   ChevronRight,
   Globe,
   Users,
+  Menu,
+  X,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -40,28 +42,46 @@ const sections = [
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
-  return (
-    <aside
-      className={`fixed left-0 top-0 h-screen border-r z-50 flex flex-col transition-all duration-300 ${
-        collapsed ? "w-[68px]" : "w-[240px]"
-      } ${
-        isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
-      }`}
-    >
+  // Close mobile menu on navigation
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) setMobileOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const sidebarContent = (
+    <>
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-panel-border" : "border-slate-200"}`}>
         <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0">
           UDC
         </div>
-        {!collapsed && (
-          <div className="overflow-hidden">
+        {(!collapsed || mobileOpen) && (
+          <div className="overflow-hidden flex-1">
             <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-slate-900"}`}>Water Resources</h1>
             <p className={`text-[10px] leading-tight ${isDark ? "text-slate-400" : "text-slate-500"}`}>CAUSES / WRRI Dashboard</p>
           </div>
+        )}
+        {/* Mobile close button */}
+        {mobileOpen && (
+          <button
+            onClick={() => setMobileOpen(false)}
+            className={`md:hidden p-1 rounded-lg ${isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"}`}
+          >
+            <X className="w-5 h-5" />
+          </button>
         )}
       </div>
 
@@ -71,7 +91,7 @@ export default function Sidebar() {
           const items = navItems.filter((item) => item.section === section.key);
           return (
             <div key={section.key} className="mb-3">
-              {!collapsed && (
+              {(!collapsed || mobileOpen) && (
                 <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                   {section.label}
                 </p>
@@ -83,6 +103,7 @@ export default function Sidebar() {
                   <Link
                     key={item.href + item.label}
                     href={item.href}
+                    onClick={() => setMobileOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all mb-0.5 ${
                       isActive
                         ? isDark
@@ -91,11 +112,11 @@ export default function Sidebar() {
                         : isDark
                           ? "text-slate-400 hover:text-white hover:bg-panel-hover"
                           : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                    } ${collapsed ? "justify-center" : ""}`}
-                    title={collapsed ? item.label : undefined}
+                    } ${collapsed && !mobileOpen ? "justify-center" : ""}`}
+                    title={collapsed && !mobileOpen ? item.label : undefined}
                   >
                     <Icon className="w-4 h-4 flex-shrink-0" />
-                    {!collapsed && <span>{item.label}</span>}
+                    {(!collapsed || mobileOpen) && <span>{item.label}</span>}
                   </Link>
                 );
               })}
@@ -110,14 +131,15 @@ export default function Sidebar() {
           href="#settings"
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
-          } ${collapsed ? "justify-center" : ""}`}
+          } ${collapsed && !mobileOpen ? "justify-center" : ""}`}
         >
           <Settings className="w-4 h-4" />
-          {!collapsed && <span>Settings</span>}
+          {(!collapsed || mobileOpen) && <span>Settings</span>}
         </Link>
+        {/* Collapse toggle — desktop only */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
+          className={`hidden md:flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
           } ${collapsed ? "justify-center" : ""}`}
         >
@@ -125,6 +147,47 @@ export default function Sidebar() {
           {!collapsed && <span>Collapse</span>}
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile hamburger button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className={`fixed top-3 left-3 z-[60] md:hidden p-2 rounded-lg border shadow-lg ${
+          isDark
+            ? "bg-panel-bg border-panel-border text-slate-300"
+            : "bg-white border-slate-200 text-slate-600"
+        }`}
+      >
+        <Menu className="w-5 h-5" />
+      </button>
+
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-[55] md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar — hidden on mobile, fixed on desktop; slide-in drawer on mobile when open */}
+      <aside
+        className={`fixed left-0 top-0 h-screen border-r z-[56] flex flex-col transition-all duration-300 ${
+          isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
+        } ${
+          // Mobile: hidden by default, slide in when open
+          mobileOpen
+            ? "translate-x-0 w-[280px]"
+            : "-translate-x-full md:translate-x-0"
+        } ${
+          // Desktop: normal width behavior
+          collapsed ? "md:w-[68px]" : "md:w-[240px]"
+        }`}
+      >
+        {sidebarContent}
+      </aside>
+    </>
   );
 }

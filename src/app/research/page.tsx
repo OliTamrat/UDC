@@ -55,9 +55,9 @@ export default function ResearchPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main className="flex-1 ml-[240px]">
+      <main className="flex-1 ml-0 md:ml-[240px]">
         <Header />
-        <div className="p-6 space-y-6">
+        <div className="p-3 md:p-6 space-y-4 md:space-y-6">
           {/* Page Header */}
           <section className={`relative overflow-hidden rounded-2xl border p-8 ${
             isDark
