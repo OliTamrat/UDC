@@ -2,6 +2,7 @@
 
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
+import { useTheme } from "@/context/ThemeContext";
 import {
   GraduationCap,
   BookOpen,
@@ -190,14 +191,21 @@ const openDatasets = [
 ];
 
 export default function EducationPage() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   return (
-    <div className="flex min-h-screen">
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
       <main className="flex-1 ml-[240px]">
         <Header />
         <div className="p-6 space-y-6">
           {/* Page Header */}
-          <section className="relative overflow-hidden rounded-2xl border border-panel-border bg-gradient-to-br from-emerald-900/20 via-panel-bg to-udc-dark p-8">
+          <section className={`relative overflow-hidden rounded-2xl border p-8 ${
+            isDark
+              ? "border-panel-border bg-gradient-to-br from-emerald-900/20 via-panel-bg to-udc-dark"
+              : "border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-slate-50"
+          }`}>
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-2">
                 <GraduationCap className="w-5 h-5 text-emerald-400" />
@@ -205,10 +213,10 @@ export default function EducationPage() {
                   Education & Outreach
                 </span>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">
+              <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 Learn About DC&apos;s Water Resources
               </h1>
-              <p className="text-sm text-slate-400 max-w-2xl">
+              <p className={`text-sm max-w-2xl ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                 Educational resources for DC residents, UDC students, and faculty. From
                 introductory water quality concepts to advanced data analysis — empowering informed
                 stewardship of our waterways.
@@ -251,8 +259,8 @@ export default function EducationPage() {
                 <div className={`p-3 rounded-lg ${audience.bgColor} w-fit mb-3`}>
                   <audience.icon className={`w-5 h-5 ${audience.color}`} />
                 </div>
-                <h3 className="text-sm font-semibold text-white mb-1">{audience.title}</h3>
-                <p className="text-xs text-slate-400">{audience.description}</p>
+                <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{audience.title}</h3>
+                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>{audience.description}</p>
                 <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
                   <span>Explore</span>
                   <ArrowRight className="w-3 h-3" />
@@ -265,8 +273,8 @@ export default function EducationPage() {
           <section>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-lg font-semibold text-white">Learning Modules</h2>
-                <p className="text-xs text-slate-500">
+                <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Learning Modules</h2>
+                <p className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
                   Self-paced educational content for all knowledge levels
                 </p>
               </div>
@@ -274,7 +282,11 @@ export default function EducationPage() {
                 {["All", "Beginner", "Intermediate", "Advanced"].map((level) => (
                   <button
                     key={level}
-                    className="px-3 py-1 rounded-full text-xs bg-panel-bg border border-panel-border text-slate-400 hover:border-slate-500 transition-all"
+                    className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                      isDark
+                        ? "bg-panel-bg border-panel-border text-slate-400 hover:border-slate-500"
+                        : "bg-white border-slate-200 text-slate-500 hover:border-slate-400"
+                    }`}
                   >
                     {level}
                   </button>
@@ -292,7 +304,7 @@ export default function EducationPage() {
                       <module.icon className={`w-4 h-4 ${module.color}`} />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-slate-500">{module.duration}</span>
+                      <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{module.duration}</span>
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded-full border ${
                           module.level === "Beginner"
@@ -306,14 +318,14 @@ export default function EducationPage() {
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-sm font-semibold text-white mb-2">{module.title}</h3>
-                  <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                  <h3 className={`text-sm font-semibold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>{module.title}</h3>
+                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     {module.description}
                   </p>
                   <ul className="space-y-1.5">
                     {module.topics.map((topic) => (
-                      <li key={topic} className="flex items-center gap-2 text-xs text-slate-500">
-                        <BookOpen className="w-3 h-3 text-slate-600" />
+                      <li key={topic} className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                        <BookOpen className={`w-3 h-3 ${isDark ? "text-slate-600" : "text-slate-400"}`} />
                         {topic}
                       </li>
                     ))}
@@ -329,8 +341,8 @@ export default function EducationPage() {
 
           {/* Community Events */}
           <section id="community">
-            <h2 className="text-lg font-semibold text-white mb-1">Community Events</h2>
-            <p className="text-xs text-slate-500 mb-4">
+            <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Community Events</h2>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
               Upcoming opportunities to engage with DC water resources
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -344,9 +356,9 @@ export default function EducationPage() {
                       {event.type}
                     </span>
                   </div>
-                  <h3 className="text-sm font-semibold text-white mb-1">{event.title}</h3>
-                  <p className="text-xs text-slate-400 mb-3">{event.description}</p>
-                  <div className="flex items-center gap-4 text-xs text-slate-500">
+                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{event.title}</h3>
+                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{event.description}</p>
+                  <div className={`flex items-center gap-4 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       <span>{event.date}</span>
@@ -363,8 +375,8 @@ export default function EducationPage() {
 
           {/* Open Data */}
           <section id="resources">
-            <h2 className="text-lg font-semibold text-white mb-1">Open Data Portal</h2>
-            <p className="text-xs text-slate-500 mb-4">
+            <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Open Data Portal</h2>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
               Download research datasets for analysis and education
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -382,9 +394,9 @@ export default function EducationPage() {
                       Download
                     </button>
                   </div>
-                  <h3 className="text-sm font-semibold text-white mb-1">{dataset.name}</h3>
-                  <p className="text-xs text-slate-400 mb-3">{dataset.description}</p>
-                  <div className="flex items-center gap-4 text-[10px] text-slate-500">
+                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{dataset.name}</h3>
+                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{dataset.description}</p>
+                  <div className={`flex items-center gap-4 text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
                     <span>Format: {dataset.format}</span>
                     <span>Size: {dataset.size}</span>
                     <span>Records: {dataset.records}</span>

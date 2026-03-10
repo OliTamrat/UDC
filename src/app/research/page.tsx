@@ -15,6 +15,7 @@ import {
   Filter,
 } from "lucide-react";
 import { useState } from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 const tagColors: Record<string, string> = {
   "green-infrastructure": "bg-green-500/10 text-green-400 border-green-500/20",
@@ -38,6 +39,8 @@ const allTags = Array.from(new Set(researchProjects.flatMap((p) => p.tags)));
 export default function ResearchPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const filteredProjects = researchProjects.filter((project) => {
     const matchesSearch =
@@ -50,13 +53,17 @@ export default function ResearchPage() {
   });
 
   return (
-    <div className="flex min-h-screen">
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
       <main className="flex-1 ml-[240px]">
         <Header />
         <div className="p-6 space-y-6">
           {/* Page Header */}
-          <section className="relative overflow-hidden rounded-2xl border border-panel-border bg-gradient-to-br from-purple-900/20 via-panel-bg to-udc-dark p-8">
+          <section className={`relative overflow-hidden rounded-2xl border p-8 ${
+            isDark
+              ? "border-panel-border bg-gradient-to-br from-purple-900/20 via-panel-bg to-udc-dark"
+              : "border-slate-200 bg-gradient-to-br from-purple-50 via-white to-slate-50"
+          }`}>
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-2">
                 <FlaskConical className="w-5 h-5 text-purple-400" />
@@ -64,10 +71,10 @@ export default function ResearchPage() {
                   Research Portal
                 </span>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">
+              <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 WRRI & CAUSES Research Projects
               </h1>
-              <p className="text-sm text-slate-400 max-w-2xl">
+              <p className={`text-sm max-w-2xl ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                 Active research initiatives from UDC&apos;s Water Resources Research Institute and
                 the College of Agriculture, Urban Sustainability & Environmental Sciences.
                 Addressing critical water quality, stormwater management, and environmental justice
@@ -79,23 +86,29 @@ export default function ResearchPage() {
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
               <input
                 type="text"
                 placeholder="Search projects, PIs, descriptions..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-panel-bg border border-panel-border rounded-lg pl-10 pr-4 py-2 text-sm text-slate-300 placeholder:text-slate-600 focus:outline-none focus:border-udc-blue/50"
+                className={`w-full border rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none transition-colors ${
+                  isDark
+                    ? "bg-panel-bg border-panel-border text-slate-300 placeholder:text-slate-600 focus:border-udc-blue/50"
+                    : "bg-white border-slate-200 text-slate-700 placeholder:text-slate-400 focus:border-blue-400"
+                }`}
               />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <Filter className="w-4 h-4 text-slate-500" />
+              <Filter className={`w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
               <button
                 onClick={() => setSelectedTag(null)}
                 className={`px-3 py-1 rounded-full text-xs border transition-all ${
                   !selectedTag
                     ? "bg-water-blue/20 text-water-blue border-water-blue/30"
-                    : "bg-panel-bg text-slate-400 border-panel-border hover:border-slate-500"
+                    : isDark
+                      ? "bg-panel-bg text-slate-400 border-panel-border hover:border-slate-500"
+                      : "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
                 }`}
               >
                 All
@@ -107,7 +120,9 @@ export default function ResearchPage() {
                   className={`px-3 py-1 rounded-full text-xs border transition-all ${
                     selectedTag === tag
                       ? tagColors[tag] || "bg-slate-500/10 text-slate-400 border-slate-500/20"
-                      : "bg-panel-bg text-slate-400 border-panel-border hover:border-slate-500"
+                      : isDark
+                        ? "bg-panel-bg text-slate-400 border-panel-border hover:border-slate-500"
+                        : "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
                   }`}
                 >
                   {tag.replace(/-/g, " ")}
@@ -132,36 +147,36 @@ export default function ResearchPage() {
                       {project.status}
                     </span>
                   </div>
-                  <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-panel-hover">
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                  <button className={`opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg ${isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"}`}>
+                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
                   </button>
                 </div>
 
-                <h3 className="text-sm font-semibold text-white mb-2 leading-snug">
+                <h3 className={`text-sm font-semibold mb-2 leading-snug ${isDark ? "text-white" : "text-slate-900"}`}>
                   {project.title}
                 </h3>
 
-                <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                <p className={`text-xs mb-4 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                   {project.description}
                 </p>
 
                 <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <User className="w-3.5 h-3.5 text-slate-500" />
-                    <span className="font-medium text-slate-300">{project.pi}</span>
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    <User className={`w-3.5 h-3.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+                    <span className={`font-medium ${isDark ? "text-slate-300" : "text-slate-700"}`}>{project.pi}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <Building2 className="w-3.5 h-3.5 text-slate-500" />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    <Building2 className={`w-3.5 h-3.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
                     <span>{project.department}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    <Calendar className={`w-3.5 h-3.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
                     <span>
                       {project.startDate} — {project.endDate}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <DollarSign className="w-3.5 h-3.5 text-slate-500" />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    <DollarSign className={`w-3.5 h-3.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
                     <span>{project.funding}</span>
                   </div>
                 </div>
@@ -185,7 +200,7 @@ export default function ResearchPage() {
 
           {/* Data Sources */}
           <section className="glass-panel rounded-xl p-6">
-            <h2 className="text-sm font-semibold text-white mb-4">Data Integration Sources</h2>
+            <h2 className={`text-sm font-semibold mb-4 ${isDark ? "text-white" : "text-slate-900"}`}>Data Integration Sources</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 {
@@ -227,10 +242,12 @@ export default function ResearchPage() {
               ].map((source) => (
                 <div
                   key={source.name}
-                  className="rounded-lg border border-panel-border p-4 hover:border-blue-500/30 transition-all"
+                  className={`rounded-lg border p-4 hover:border-blue-500/30 transition-all ${
+                    isDark ? "border-panel-border" : "border-slate-200 bg-white"
+                  }`}
                 >
-                  <h4 className="text-xs font-semibold text-white mb-1">{source.name}</h4>
-                  <p className="text-[10px] text-slate-400 mb-3">{source.description}</p>
+                  <h4 className={`text-xs font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{source.name}</h4>
+                  <p className={`text-[10px] mb-3 ${isDark ? "text-slate-400" : "text-slate-500"}`}>{source.description}</p>
                   <div className="flex flex-wrap gap-1">
                     {source.datasets.map((ds) => (
                       <span

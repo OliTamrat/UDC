@@ -39,7 +39,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-udc-dark dark:bg-udc-dark light:bg-slate-50 text-slate-100 antialiased transition-colors duration-300">
+      <body className="antialiased transition-colors duration-300">
         <ThemeProvider>
           {children}
         </ThemeProvider>
