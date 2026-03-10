@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import {
-  anacostiaRiver,
   dcStreams,
   monitoringStations,
   type MonitoringStation,
@@ -110,8 +109,9 @@ export default function DCMap({
       maxZoom: 19,
     }).addTo(map);
 
-    const waterColor = "#2563EB";
-    const waterColorLight = "#3B82F6";
+    const waterColor = isDark ? "#2563EB" : "#1D4ED8";
+    const waterColorLight = isDark ? "#3B82F6" : "#2563EB";
+    const waterFill = isDark ? "rgba(37, 99, 235, 0.15)" : "rgba(29, 78, 216, 0.25)";
 
     // =============================================
     // WATERSHED BOUNDARY
@@ -201,68 +201,67 @@ export default function DCMap({
     }
 
     // =============================================
-    // WATERWAYS
+    // WATERWAYS — Real DC GIS GeoJSON layers
     // =============================================
     if (layers.waterways) {
-      // Anacostia River — multi-layer realistic rendering
-      leaflet.polyline(anacostiaRiver.coordinates, {
-        color: waterColor, weight: 28, opacity: isDark ? 0.08 : 0.06,
-        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-      }).addTo(map);
-      leaflet.polyline(anacostiaRiver.coordinates, {
-        color: waterColorLight, weight: 16, opacity: isDark ? 0.15 : 0.1,
-        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-      }).addTo(map);
-      leaflet.polyline(anacostiaRiver.coordinates, {
-        color: waterColor, weight: 6, opacity: 0.85,
-        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-      }).addTo(map);
-      leaflet.polyline(anacostiaRiver.coordinates, {
-        color: "#60A5FA", weight: 2, opacity: isDark ? 0.5 : 0.35,
-        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-      })
-        .bindTooltip("Anacostia River", { permanent: false, direction: "top" })
-        .addTo(map);
-
-      // Potomac River
-      const potomac = dcStreams.find(s => s.id === "potomac-river");
-      if (potomac) {
-        leaflet.polyline(potomac.coordinates, {
-          color: waterColor, weight: 32, opacity: isDark ? 0.07 : 0.05,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(potomac.coordinates, {
-          color: waterColorLight, weight: 18, opacity: isDark ? 0.12 : 0.08,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(potomac.coordinates, {
-          color: waterColor, weight: 7, opacity: 0.8,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(potomac.coordinates, {
-          color: "#60A5FA", weight: 2.5, opacity: isDark ? 0.45 : 0.3,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+      // Load real DC GIS waterbody polygons (river surface areas)
+      fetch("/dc-waterbodies.geojson")
+        .then(r => r.json())
+        .then((geojson) => {
+          leaflet.geoJSON(geojson, {
+            style: {
+              color: waterColor,
+              weight: isDark ? 1 : 1.5,
+              opacity: isDark ? 0.6 : 0.8,
+              fillColor: waterColorLight,
+              fillOpacity: isDark ? 0.25 : 0.35,
+            },
+          }).addTo(map);
         })
-          .bindTooltip(`Potomac River (Health: ${potomac.healthIndex}/100)`, { direction: "top" })
-          .addTo(map);
-      }
+        .catch(() => {/* silently skip if file not available */});
 
-      // Streams & tributaries
+      // Load real DC GIS hydrography centerlines (named streams)
+      fetch("/dc-waterways.geojson")
+        .then(r => r.json())
+        .then((geojson) => {
+          leaflet.geoJSON(geojson, {
+            style: (feature) => {
+              const name = feature?.properties?.name || "";
+              const isRiver = name === "Anacostia" || name === "Potomac River";
+              return {
+                color: isRiver ? waterColor : getHealthColor(
+                  name === "Rock Creek" ? 62 :
+                  name === "Watts Branch Creek" ? 42 :
+                  name === "Oxon Run" ? 40 : 50
+                ),
+                weight: isRiver ? (isDark ? 3 : 4) : (isDark ? 2 : 2.5),
+                opacity: isDark ? 0.85 : 0.9,
+                lineCap: "round" as const,
+                lineJoin: "round" as const,
+              };
+            },
+            onEachFeature: (feature, layer) => {
+              const name = feature?.properties?.name;
+              if (name) {
+                layer.bindTooltip(name, { direction: "top", sticky: true });
+              }
+            },
+          }).addTo(map);
+        })
+        .catch(() => {/* silently skip */});
+
+      // Also draw the data-driven polylines for health index coloring on tributaries
       dcStreams.forEach((stream) => {
-        if (stream.id === "potomac-river") return;
+        if (stream.id === "potomac-river" || stream.id === "rock-creek") return;
         const healthColor = getHealthColor(stream.healthIndex);
-        const baseWeight = stream.type === "river" ? 5 : 3;
+        const baseWeight = stream.type === "river" ? 4 : 2.5;
 
         leaflet.polyline(stream.coordinates, {
-          color: healthColor, weight: baseWeight + 8, opacity: isDark ? 0.08 : 0.05,
+          color: healthColor, weight: baseWeight + 6, opacity: isDark ? 0.06 : 0.08,
           smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
         }).addTo(map);
         leaflet.polyline(stream.coordinates, {
-          color: healthColor, weight: baseWeight, opacity: 0.75,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(stream.coordinates, {
-          color: isDark ? "#93C5FD" : "#60A5FA", weight: 1, opacity: isDark ? 0.35 : 0.25,
+          color: healthColor, weight: baseWeight, opacity: isDark ? 0.7 : 0.85,
           smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
         })
           .bindTooltip(`${stream.name} (Health: ${stream.healthIndex}/100)`, { direction: "top" })
