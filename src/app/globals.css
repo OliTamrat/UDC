@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  --color-udc-gold: #FDB927;
+  --color-udc-red: #CE1141;
+  --color-udc-navy: #002B5C;
+  --color-udc-dark: #0A1628;
+  --color-udc-blue: #1E4D8C;
+  --color-water-clean: #22C55E;
+  --color-water-moderate: #F59E0B;
+  --color-water-poor: #EF4444;
+  --color-water-blue: #3B82F6;
+  --color-panel-bg: #0F1D32;
+  --color-panel-border: #1E3A5F;
+  --color-panel-hover: #162D4A;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-udc-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-panel-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-udc-blue);
+}
+
+/* Leaflet overrides for dark theme */
+.leaflet-container {
+  background: #0A1628 !important;
+}
+.leaflet-tile-pane {
+  filter: brightness(0.85) contrast(1.1) saturate(0.9);
+}
+.leaflet-control-zoom a {
+  background-color: #0F1D32 !important;
+  color: #F8FAFC !important;
+  border-color: #1E3A5F !important;
+}
+.leaflet-control-zoom a:hover {
+  background-color: #162D4A !important;
+}
+.leaflet-popup-content-wrapper {
+  background: #0F1D32 !important;
+  color: #F8FAFC !important;
+  border: 1px solid #1E3A5F;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+}
+.leaflet-popup-tip {
+  background: #0F1D32 !important;
+}
+.leaflet-popup-close-button {
+  color: #94A3B8 !important;
+}
+.leaflet-control-attribution {
+  background: rgba(15, 29, 50, 0.8) !important;
+  color: #64748B !important;
+  font-size: 10px !important;
+}
+.leaflet-control-attribution a {
+  color: #3B82F6 !important;
+}
+
+/* Pulse animation for active stations */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  80%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+.station-marker-active::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #3B82F6, #22D3EE, #10B981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass morphism panels */
+.glass-panel {
+  background: rgba(15, 29, 50, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(30, 58, 95, 0.5);
+}
+
+/* Metric card animations */
+.metric-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+}
