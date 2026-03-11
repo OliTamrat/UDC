@@ -44,7 +44,7 @@ function useChartTheme() {
       boxShadow: isDark ? "0 4px 12px rgba(0,0,0,0.3)" : "0 4px 12px rgba(0,0,0,0.08)",
     },
     titleColor: isDark ? "text-white" : "text-slate-900",
-    subtitleColor: isDark ? "text-slate-500" : "text-slate-500",
+    subtitleColor: isDark ? "text-slate-400" : "text-slate-600",
   };
 }
 
