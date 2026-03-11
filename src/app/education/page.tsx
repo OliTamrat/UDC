@@ -340,7 +340,7 @@ export default function EducationPage() {
               <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 Learn About DC&apos;s Water Resources
               </h1>
-              <p className={`text-sm max-w-2xl ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`text-sm max-w-2xl ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 Educational resources for DC residents, UDC students, and faculty. From
                 introductory water quality concepts to advanced data analysis — empowering informed
                 stewardship of our waterways.
@@ -393,7 +393,7 @@ export default function EducationPage() {
                   <audience.icon className={`w-5 h-5 ${audience.color}`} />
                 </div>
                 <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{audience.title}</h3>
-                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>{audience.description}</p>
+                <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>{audience.description}</p>
                 <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
                   <span>{audience.cta}</span>
                   <ArrowRight className="w-3 h-3" />
@@ -408,7 +408,7 @@ export default function EducationPage() {
               <HelpCircle className="w-5 h-5 text-amber-400" />
               <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>What Does This Reading Mean?</h2>
             </div>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               Interactive exercises — click to reveal the answer and learn how to interpret real water quality data
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -439,7 +439,7 @@ export default function EducationPage() {
                             }`}>{ex.threshold}</span>
                           </div>
                           <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-700"}`}>{ex.question}</p>
-                          <span className={`text-[10px] mt-2 inline-flex items-center gap-1 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                          <span className={`text-[10px] mt-2 inline-flex items-center gap-1 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                             {revealed ? "Hide" : "Reveal"} answer
                             <ArrowRight className={`w-2.5 h-2.5 transition-transform ${revealed ? "rotate-90" : ""}`} />
                           </span>
@@ -477,7 +477,7 @@ export default function EducationPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Learning Modules</h2>
-                <p className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                   Self-paced educational content for all knowledge levels
                 </p>
               </div>
@@ -515,7 +515,7 @@ export default function EducationPage() {
                       <module.icon className={`w-4 h-4 ${module.color}`} />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{module.duration}</span>
+                      <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>{module.duration}</span>
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded-full border ${
                           module.level === "Beginner"
@@ -530,13 +530,13 @@ export default function EducationPage() {
                     </div>
                   </div>
                   <h3 className={`text-sm font-semibold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>{module.title}</h3>
-                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                     {module.description}
                   </p>
                   <ul className="space-y-1.5">
                     {module.topics.map((topic) => (
-                      <li key={topic} className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-                        <BookOpen className={`w-3 h-3 ${isDark ? "text-slate-600" : "text-slate-400"}`} />
+                      <li key={topic} className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                        <BookOpen className={`w-3 h-3 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
                         {topic}
                       </li>
                     ))}
@@ -576,7 +576,7 @@ export default function EducationPage() {
 
                 {/* Topics Covered */}
                 <div>
-                  <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-slate-500" : "text-slate-400"}`}>Topics Covered</h4>
+                  <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Topics Covered</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {activeModule.topics.map((topic) => (
                       <div key={topic} className={`flex items-center gap-2 p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
@@ -589,13 +589,13 @@ export default function EducationPage() {
 
                 {/* Learning Outcomes */}
                 <div>
-                  <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                  <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     <Target className="w-3 h-3 inline mr-1" />
                     Learning Outcomes
                   </h4>
                   <div className="space-y-2">
                     {activeModule.outcomes.map((outcome, i) => (
-                      <div key={i} className={`flex items-start gap-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                      <div key={i} className={`flex items-start gap-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                         <CheckCircle2 className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 ${activeModule.color}`} />
                         <span className="text-xs leading-relaxed">{outcome}</span>
                       </div>
@@ -625,7 +625,7 @@ export default function EducationPage() {
           {/* Community Events */}
           <section id="community">
             <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Community Events</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               Upcoming opportunities to engage with DC water resources
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -640,8 +640,8 @@ export default function EducationPage() {
                     </span>
                   </div>
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{event.title}</h3>
-                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>{event.description}</p>
-                  <div className={`flex items-center gap-4 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>{event.description}</p>
+                  <div className={`flex items-center gap-4 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       <span>{event.date}</span>
@@ -659,7 +659,7 @@ export default function EducationPage() {
           {/* Analysis Templates */}
           <section>
             <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Analysis Templates</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               Download ready-to-use scripts that fetch real data from the dashboard API
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -703,7 +703,7 @@ export default function EducationPage() {
                     </a>
                   </div>
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{tmpl.name}</h3>
-                  <p className={`text-xs mb-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{tmpl.description}</p>
+                  <p className={`text-xs mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>{tmpl.description}</p>
                   <code className={`text-[10px] block p-2 rounded ${isDark ? "bg-udc-dark/50 text-slate-500" : "bg-slate-100 text-slate-500"}`}>
                     {tmpl.requires}
                   </code>
@@ -715,7 +715,7 @@ export default function EducationPage() {
           {/* Open Data */}
           <section id="resources">
             <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Open Data Portal</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               Download research datasets for analysis and education. Data is available via the API or as direct downloads.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -744,8 +744,8 @@ export default function EducationPage() {
                     )}
                   </div>
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{dataset.name}</h3>
-                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>{dataset.description}</p>
-                  <div className={`flex items-center gap-4 text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>{dataset.description}</p>
+                  <div className={`flex items-center gap-4 text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     <span>Format: {dataset.format}</span>
                     <span>Size: {dataset.size}</span>
                     <span>Records: {dataset.records}</span>
@@ -761,7 +761,7 @@ export default function EducationPage() {
               <Globe className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
               <div>
                 <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Programmatic API Access</h3>
-                <p className={`text-xs leading-relaxed mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <p className={`text-xs leading-relaxed mb-3 ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                   All data is available via REST API for integration into your own applications,
                   research scripts, or community tools. No authentication required for read access.
                 </p>

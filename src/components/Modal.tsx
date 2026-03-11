@@ -72,7 +72,7 @@ export default function Modal({ open, onClose, title, subtitle, icon, children, 
             <div>
               <h2 className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-900"}`}>{title}</h2>
               {subtitle && (
-                <p className={`text-xs mt-0.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>{subtitle}</p>
+                <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{subtitle}</p>
               )}
             </div>
           </div>

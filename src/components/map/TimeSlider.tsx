@@ -77,7 +77,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
             <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
               Water Quality Timeline — 2025
             </h4>
-            <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            <p className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               Seasonal variation in water quality parameters
             </p>
           </div>
@@ -147,7 +147,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
           </div>
 
           {/* Month labels */}
-          <div className={`text-[10px] font-medium min-w-[30px] text-right ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+          <div className={`text-[10px] font-medium min-w-[30px] text-right ${isDark ? "text-slate-400" : "text-slate-600"}`}>
             {MONTHS[monthIndex]}
           </div>
         </div>
@@ -160,7 +160,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               className={`flex-1 text-center text-[8px] transition-colors ${
                 idx === monthIndex
                   ? isDark ? "text-white font-semibold" : "text-slate-900 font-semibold"
-                  : isDark ? "text-slate-600" : "text-slate-400"
+                  : isDark ? "text-slate-500" : "text-slate-400"
               }`}
             >
               {m}
@@ -172,17 +172,17 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
         <div className="flex items-center gap-4 mt-3 pt-3 border-t" style={{ borderColor: isDark ? "#1E3A5F" : "#E2E8F0" }}>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#22C55E" : "#16A34A" }} />
-            <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>Good quality</span>
+            <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Good quality</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#F59E0B" : "#D97706" }} />
-            <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>Moderate</span>
+            <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Moderate</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#EF4444" : "#DC2626" }} />
-            <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>Poor quality</span>
+            <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Poor quality</span>
           </div>
-          <div className={`ml-auto text-[10px] ${isDark ? "text-slate-600" : "text-slate-400"}`}>
+          <div className={`ml-auto text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
             E. coli severity: {(SEASONAL_ECOLI_MULTIPLIER[monthIndex] * 100).toFixed(0)}% of peak
           </div>
         </div>
