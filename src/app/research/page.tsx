@@ -64,7 +64,7 @@ export default function ResearchPage() {
         <Header />
         <div className="p-3 sm:p-4 md:p-6 space-y-6">
           {/* Page Header */}
-          <section className={`relative overflow-hidden rounded-2xl border p-8 ${
+          <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
               ? "border-panel-border bg-gradient-to-br from-purple-900/20 via-panel-bg to-udc-dark"
               : "border-slate-200 bg-gradient-to-br from-purple-50 via-white to-slate-50"
@@ -148,7 +148,7 @@ export default function ResearchPage() {
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                className="glass-panel rounded-xl p-5 hover:border-purple-500/30 transition-all group"
+                className="glass-panel rounded-xl p-3 sm:p-5 hover:border-purple-500/30 transition-all group"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -224,7 +224,7 @@ export default function ResearchPage() {
           <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               href="/methodology"
-              className={`glass-panel rounded-xl p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
+              className={`glass-panel rounded-xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
             >
               <BookOpen className="w-5 h-5 text-blue-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Methodology & Data Dictionary</h3>
@@ -238,7 +238,7 @@ export default function ResearchPage() {
             <a
               href="/api/export?format=csv"
               download
-              className={`glass-panel rounded-xl p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
+              className={`glass-panel rounded-xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
             >
               <Download className="w-5 h-5 text-green-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Export Full Dataset</h3>
@@ -251,7 +251,7 @@ export default function ResearchPage() {
             </a>
             <Link
               href="/education#resources"
-              className={`glass-panel rounded-xl p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
+              className={`glass-panel rounded-xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
             >
               <Globe className="w-5 h-5 text-purple-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>API & Open Data</h3>
@@ -265,12 +265,12 @@ export default function ResearchPage() {
           </section>
 
           {/* Data Sources */}
-          <section className="glass-panel rounded-xl p-6">
+          <section className="glass-panel rounded-xl p-3 sm:p-4 md:p-6">
             <h2 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Data Integration Sources</h2>
             <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
               Partner organizations and external data feeds integrated into the dashboard
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
               {[
                 {
                   name: "DC Dept. of Energy & Environment (DOEE)",

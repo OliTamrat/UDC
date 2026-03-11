@@ -23,7 +23,7 @@ import { useTheme } from "@/context/ThemeContext";
 const DCMap = dynamic(() => import("@/components/map/DCMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[500px] rounded-xl glass-panel flex items-center justify-center">
+    <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-xl glass-panel flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
         <span className="text-sm text-slate-400">Loading DC Map...</span>
@@ -71,7 +71,7 @@ export default function Dashboard() {
                   CAUSES / WRRI
                 </span>
               </div>
-              <h1 className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+              <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 DC Water Resources{" "}
                 <span className="gradient-text">Data Dashboard</span>
               </h1>
@@ -125,7 +125,7 @@ export default function Dashboard() {
 
           {/* Interactive Map */}
           <section id="map">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <div>
                 <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Interactive Watershed Map</h2>
                 <p className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
@@ -137,7 +137,7 @@ export default function Dashboard() {
                 <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>USGS &amp; DOEE monitoring network</span>
               </div>
             </div>
-            <div className="h-[550px]">
+            <div className="h-[300px] sm:h-[400px] md:h-[550px]">
               <DCMap
                 onStationSelect={setSelectedStation}
                 selectedStation={selectedStation}
