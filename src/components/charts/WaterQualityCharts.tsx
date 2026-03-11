@@ -51,7 +51,7 @@ function useChartTheme() {
 export function DOTrendChart() {
   const t = useChartTheme();
   return (
-    <div className="glass-panel rounded-xl p-4">
+    <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Dissolved Oxygen Trends</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (mg/L) - 2025</p>
       <ResponsiveContainer width="100%" height={220}>
@@ -77,7 +77,7 @@ export function DOTrendChart() {
 export function TemperatureTrendChart() {
   const t = useChartTheme();
   return (
-    <div className="glass-panel rounded-xl p-4">
+    <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Water Temperature</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (°C) - 2025</p>
       <ResponsiveContainer width="100%" height={220}>
@@ -102,7 +102,7 @@ export function TemperatureTrendChart() {
 export function EColiChart() {
   const t = useChartTheme();
   return (
-    <div className="glass-panel rounded-xl p-4">
+    <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>E. coli Levels</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (CFU/100mL) - 2025</p>
       <ResponsiveContainer width="100%" height={220}>
@@ -122,7 +122,7 @@ export function EColiChart() {
 export function StormwaterChart() {
   const t = useChartTheme();
   return (
-    <div className="glass-panel rounded-xl p-4">
+    <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Stormwater Runoff Volume</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly totals (million gallons) - 2025</p>
       <ResponsiveContainer width="100%" height={220}>
@@ -141,7 +141,7 @@ export function StormwaterChart() {
 export function MultiParameterChart() {
   const t = useChartTheme();
   return (
-    <div className="glass-panel rounded-xl p-4">
+    <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Multi-Parameter Overview</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Normalized water quality trends - 2025</p>
       <ResponsiveContainer width="100%" height={280}>

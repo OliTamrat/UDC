@@ -94,15 +94,16 @@ export default function Header() {
   }
 
   return (
-    <header className={`h-14 border-b flex items-center justify-between px-3 sm:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
+    <header className={`h-14 border-b flex items-center justify-between px-2 sm:px-4 md:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 overflow-hidden ${
       isDark ? "border-panel-border bg-panel-bg/80" : "border-slate-200 bg-white/80"
     }`}>
-      <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+      {/* Left side: hamburger + logo + search */}
+      <div className="flex items-center gap-1.5 sm:gap-3 flex-1 min-w-0">
         {/* Hamburger — mobile/tablet only */}
         <button
           onClick={openMobile}
           aria-label="Open navigation menu"
-          className={`lg:hidden p-2 -ml-1 rounded-lg transition-colors ${
+          className={`lg:hidden p-1.5 sm:p-2 rounded-lg transition-colors flex-shrink-0 ${
             isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
           }`}
         >
@@ -114,12 +115,13 @@ export default function Header() {
           UDC
         </div>
 
-        <div className="relative flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-none lg:flex-none lg:w-72" ref={searchRef} role="search">
-          <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} aria-hidden="true" />
+        {/* Search */}
+        <div className="relative flex-1 min-w-0 lg:flex-none lg:w-72" ref={searchRef} role="search">
+          <Search className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} aria-hidden="true" />
           <input
             type="search"
             aria-label="Search stations, data, and research"
-            placeholder="Search stations, data, research..."
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => {
               const val = e.target.value;
@@ -129,7 +131,7 @@ export default function Header() {
               }
             }}
             onFocus={() => { if (searchQuery) setShowResults(true); }}
-            className={`w-full border rounded-lg pl-10 pr-4 py-1.5 text-sm focus:outline-none transition-colors ${
+            className={`w-full border rounded-lg pl-8 sm:pl-10 pr-3 py-1.5 text-sm focus:outline-none transition-colors ${
               isDark
                 ? "bg-udc-dark/50 border-panel-border text-slate-300 placeholder:text-slate-600 focus:border-udc-blue/50"
                 : "bg-slate-100 border-slate-200 text-slate-700 placeholder:text-slate-400 focus:border-blue-400"
@@ -169,15 +171,16 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="flex items-center gap-1 sm:gap-2 md:gap-4 flex-shrink-0">
-        {/* Date — hidden on small screens */}
+      {/* Right side: date, live, theme, bell, stakeholder */}
+      <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-3 flex-shrink-0 ml-2">
+        {/* Date — hidden below md */}
         <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
           <Calendar className="w-3.5 h-3.5" />
           <span className="hidden lg:inline">{dateStr}</span>
           <span className="lg:hidden">{now.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
         </div>
 
-        {/* Live indicator */}
+        {/* Live indicator — hidden below sm */}
         <div className="hidden sm:flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-water-clean animate-pulse" />
           <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>Live</span>
@@ -187,7 +190,7 @@ export default function Header() {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setShowThemeMenu(!showThemeMenu)}
-            className={`p-2 rounded-lg transition-colors ${
+            className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
               isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
             }`}
             title="Change appearance"
@@ -233,8 +236,9 @@ export default function Header() {
           )}
         </div>
 
+        {/* Notifications — hidden on very small screens */}
         <button
-          className={`relative p-2 rounded-lg transition-colors ${
+          className={`hidden sm:block relative p-1.5 sm:p-2 rounded-lg transition-colors ${
             isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"
           }`}
           title="Notifications — coming soon"
@@ -243,9 +247,9 @@ export default function Header() {
           <Bell className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} aria-hidden="true" />
         </button>
 
-        {/* Stakeholder button — label hidden on small screens */}
+        {/* Stakeholder button — hidden on mobile, icon-only on tablet */}
         <button
-          className={`flex items-center gap-2 px-2 sm:px-3 py-1.5 rounded-lg transition-colors border ${
+          className={`hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg transition-colors border ${
             isDark
               ? "hover:bg-panel-hover border-panel-border"
               : "hover:bg-slate-50 border-slate-200"
@@ -254,7 +258,7 @@ export default function Header() {
           aria-label="Stakeholder portal (coming soon)"
         >
           <User className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} aria-hidden="true" />
-          <span className={`hidden sm:inline text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
+          <span className={`hidden md:inline text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
         </button>
       </div>
     </header>
