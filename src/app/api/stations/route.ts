@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { getDbClient } from "@/lib/db";
 
 export async function GET() {
-  const db = getDb();
+  const db = await getDbClient();
 
-  const stations = db.prepare(`
+  const { rows: stations } = await db.query(`
     SELECT
       s.*,
       r.timestamp AS last_reading_time,
@@ -20,7 +20,7 @@ export async function GET() {
     LEFT JOIN readings r ON r.station_id = s.id
       AND r.timestamp = (SELECT MAX(timestamp) FROM readings WHERE station_id = s.id)
     ORDER BY s.name
-  `).all() as Record<string, unknown>[];
+  `);
 
   const result = stations.map((s) => ({
     id: s.id,
