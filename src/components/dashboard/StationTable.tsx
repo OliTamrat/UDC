@@ -22,6 +22,22 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+const SOURCE_STYLES: Record<string, { abbr: string; color: string }> = {
+  usgs:   { abbr: "USGS",   color: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
+  epa:    { abbr: "EPA",    color: "text-green-400 bg-green-500/10 border-green-500/30" },
+  seed:   { abbr: "Model",  color: "text-slate-400 bg-slate-500/10 border-slate-500/30" },
+  manual: { abbr: "Manual", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" },
+};
+
+function SourceBadge({ source }: { source?: string }) {
+  const cfg = SOURCE_STYLES[source || "seed"] || SOURCE_STYLES.seed;
+  return (
+    <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-medium border ${cfg.color}`}>
+      {cfg.abbr}
+    </span>
+  );
+}
+
 function WaterQualityIndicator({ value, thresholds }: { value: number; thresholds: { good: number; moderate: number } }) {
   if (value == null) return <span className="text-sm text-slate-500">—</span>;
   let color = "bg-green-400";
@@ -76,18 +92,18 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
         <p className={`text-xs mt-0.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Real-time status across the Anacostia watershed</p>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm" aria-label="Monitoring stations with latest water quality readings">
           <thead>
             <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Station</th>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Type</th>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Status</th>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>DO (mg/L)</th>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>pH</th>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Turbidity</th>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>E. coli</th>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Updated</th>
-              <th className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}></th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Station</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Type</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Status</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>DO (mg/L)</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>pH</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Turbidity</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>E. coli</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Updated</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}><span className="sr-only">Details</span></th>
             </tr>
           </thead>
           <tbody>
@@ -97,10 +113,14 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
                 <tr
                   key={station.id}
                   onClick={() => onStationClick?.(station.id)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onStationClick?.(station.id); } }}
+                  tabIndex={0}
+                  role="link"
+                  aria-label={`View details for ${station.name}`}
                   className={`border-b transition-colors cursor-pointer ${
                     isDark
-                      ? "border-panel-border/50 hover:bg-panel-hover"
-                      : "border-slate-100 hover:bg-slate-50"
+                      ? "border-panel-border/50 hover:bg-panel-hover focus:bg-panel-hover focus:outline-none focus:ring-1 focus:ring-water-blue"
+                      : "border-slate-100 hover:bg-slate-50 focus:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-400"
                   }`}
                 >
                   <td className="py-2.5 px-4">
@@ -134,8 +154,11 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
                       <span className={`text-xs ${isDark ? "text-slate-600" : "text-slate-400"}`}>—</span>
                     )}
                   </td>
-                  <td className={`py-2.5 px-4 text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-                    {r ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—"}
+                  <td className={`py-2.5 px-4 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px]">{r ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—"}</span>
+                      {r && <SourceBadge source={(r as unknown as Record<string, unknown>).source as string | undefined} />}
+                    </div>
                   </td>
                   <td className="py-2.5 px-4">
                     <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-600 hover:text-blue-400" : "text-slate-300 hover:text-blue-500"} transition-colors`} />

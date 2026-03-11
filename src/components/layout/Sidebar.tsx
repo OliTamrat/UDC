@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Globe,
   Users,
+  BookOpen,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -26,6 +27,7 @@ const navItems = [
   { href: "/#stormwater", label: "Stormwater", icon: TreePine, section: "monitoring" },
   { href: "/#analytics", label: "Analytics", icon: BarChart3, section: "monitoring" },
   { href: "/research", label: "Research", icon: FlaskConical, section: "research" },
+  { href: "/methodology", label: "Methodology", icon: BookOpen, section: "research" },
   { href: "/education", label: "Education", icon: GraduationCap, section: "community" },
   { href: "/education#community", label: "Community", icon: Users, section: "community" },
   { href: "/education#resources", label: "Open Data", icon: Globe, section: "community" },
@@ -46,6 +48,7 @@ export default function Sidebar() {
 
   return (
     <aside
+      aria-label="Main navigation"
       className={`fixed left-0 top-0 h-screen border-r z-50 flex flex-col transition-all duration-300 ${
         collapsed ? "w-[68px]" : "w-[240px]"
       } ${
@@ -117,11 +120,12 @@ export default function Sidebar() {
         </Link>
         <button
           onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
           } ${collapsed ? "justify-center" : ""}`}
         >
-          {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          {collapsed ? <ChevronRight className="w-4 h-4" aria-hidden="true" /> : <ChevronLeft className="w-4 h-4" aria-hidden="true" />}
           {!collapsed && <span>Collapse</span>}
         </button>
       </div>

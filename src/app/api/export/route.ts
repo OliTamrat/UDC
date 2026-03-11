@@ -1,6 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDbClient } from "@/lib/db";
 
+function buildCitation(stationId: string | null, rowCount: number): {
+  text: string;
+  dataset: string;
+  publisher: string;
+  accessed: string;
+  url: string;
+} {
+  const now = new Date().toISOString();
+  const dateStr = now.split("T")[0];
+  return {
+    text: `UDC Water Resources Research Institute. (2026). ${
+      stationId ? `Station ${stationId} Water Quality Data` : "Anacostia Watershed Water Quality Data"
+    } [Dataset]. University of the District of Columbia CAUSES. Accessed ${dateStr}.`,
+    dataset: stationId
+      ? `UDC WRRI Station ${stationId} Water Quality Readings`
+      : "UDC WRRI Anacostia Watershed Water Quality Readings",
+    publisher: "University of the District of Columbia — College of Agriculture, Urban Sustainability and Environmental Sciences (CAUSES)",
+    accessed: now,
+    url: stationId
+      ? `/api/export?format=json&station=${stationId}`
+      : "/api/export?format=json",
+  };
+}
+
 export async function GET(request: NextRequest) {
   const db = await getDbClient();
   const searchParams = request.nextUrl.searchParams;
@@ -25,13 +49,26 @@ export async function GET(request: NextRequest) {
 
   const { rows } = await db.query(query, params);
 
+  const citation = buildCitation(stationId, rows.length);
+
   if (format === "csv") {
+    // Citation header block for CSV
+    const citationLines = [
+      `# Citation: ${citation.text}`,
+      `# Dataset: ${citation.dataset}`,
+      `# Publisher: ${citation.publisher}`,
+      `# Exported: ${citation.accessed}`,
+      `# Records: ${rows.length}`,
+      `# Data sources: ${[...new Set(rows.map((r) => r.source).filter(Boolean))].join(", ") || "N/A"}`,
+      "#",
+    ];
+
     const headers = [
       "station_id", "station_name", "station_type", "timestamp",
       "temperature", "dissolved_oxygen", "ph", "turbidity",
       "conductivity", "ecoli_count", "nitrate_n", "phosphorus", "source",
     ];
-    const csvLines = [headers.join(",")];
+    const csvLines = [...citationLines, headers.join(",")];
     for (const row of rows) {
       csvLines.push(headers.map((h) => {
         const val = row[h];
@@ -44,14 +81,16 @@ export async function GET(request: NextRequest) {
     return new NextResponse(csvLines.join("\n"), {
       headers: {
         "Content-Type": "text/csv",
-        "Content-Disposition": "attachment; filename=udc-water-data.csv",
+        "Content-Disposition": `attachment; filename=udc-water-data${stationId ? `-${stationId}` : ""}.csv`,
       },
     });
   }
 
   return NextResponse.json({
-    exported_at: new Date().toISOString(),
+    citation,
+    exported_at: citation.accessed,
     count: rows.length,
+    sources: [...new Set(rows.map((r) => r.source).filter(Boolean))],
     data: rows,
   });
 }

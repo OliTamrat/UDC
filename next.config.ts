@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://unpkg.com https://vercel.live https://*.vercel.live",
-              "connect-src 'self' https://waterservices.usgs.gov https://*.basemaps.cartocdn.com https://vercel.live https://*.vercel.live wss://ws-us3.pusher.com",
+              "connect-src 'self' https://waterservices.usgs.gov https://www.waterqualitydata.us https://*.basemaps.cartocdn.com https://vercel.live https://*.vercel.live wss://ws-us3.pusher.com",
               "frame-src 'self' https://vercel.live https://*.vercel.live",
             ].join("; "),
           },
