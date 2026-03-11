@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { getDbClient } from "@/lib/db";
 
 export async function GET() {
   let dbStatus = "unknown";
   let stationCount = 0;
 
   try {
-    const db = getDb();
-    const row = db.prepare("SELECT COUNT(*) as count FROM stations").get() as { count: number } | undefined;
-    stationCount = row?.count ?? 0;
+    const db = await getDbClient();
+    const { rows } = await db.query("SELECT COUNT(*) as count FROM stations");
+    stationCount = Number(rows[0]?.count ?? 0);
     dbStatus = stationCount > 0 ? "connected" : "empty";
   } catch (err) {
     dbStatus = `error: ${err instanceof Error ? err.message : String(err)}`;
@@ -25,6 +25,7 @@ export async function GET() {
       database: {
         status: dbStatus,
         stations: stationCount,
+        provider: process.env.DATABASE_URL ? "neon-postgresql" : "sqlite",
       },
       environment: process.env.VERCEL ? "vercel" : "local",
     },
