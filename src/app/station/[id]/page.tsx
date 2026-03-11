@@ -237,17 +237,17 @@ export default function StationDetailPage() {
           {reading && (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {[
-                { label: "Temperature", value: `${reading.temperature}°C`, icon: Thermometer, color: "text-cyan-400", bgDark: "bg-cyan-500/10 border-cyan-500/20", bgLight: "bg-cyan-50 border-cyan-200" },
-                { label: "Dissolved Oxygen", value: `${reading.dissolvedOxygen} mg/L`, icon: Droplets, color: "text-blue-400", bgDark: "bg-blue-500/10 border-blue-500/20", bgLight: "bg-blue-50 border-blue-200",
-                  alert: !isGI && reading.dissolvedOxygen < 5 },
-                { label: "pH Level", value: `${reading.pH}`, icon: Activity, color: "text-emerald-400", bgDark: "bg-emerald-500/10 border-emerald-500/20", bgLight: "bg-emerald-50 border-emerald-200" },
-                { label: "Turbidity", value: `${reading.turbidity} NTU`, icon: Waves, color: "text-amber-400", bgDark: "bg-amber-500/10 border-amber-500/20", bgLight: "bg-amber-50 border-amber-200" },
-                { label: "E. coli", value: `${reading.eColiCount.toLocaleString()}`, unit: "CFU/100mL", icon: AlertTriangle,
-                  color: reading.eColiCount > 410 ? "text-red-400" : "text-green-400",
-                  bgDark: reading.eColiCount > 410 ? "bg-red-500/10 border-red-500/20" : "bg-green-500/10 border-green-500/20",
-                  bgLight: reading.eColiCount > 410 ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200",
-                  alert: reading.eColiCount > 410 },
-                { label: "Conductivity", value: `${reading.conductivity}`, unit: "µS/cm", icon: Activity, color: "text-purple-400", bgDark: "bg-purple-500/10 border-purple-500/20", bgLight: "bg-purple-50 border-purple-200" },
+                { label: "Temperature", value: reading.temperature != null ? `${reading.temperature}°C` : "—", icon: Thermometer, color: "text-cyan-400", bgDark: "bg-cyan-500/10 border-cyan-500/20", bgLight: "bg-cyan-50 border-cyan-200" },
+                { label: "Dissolved Oxygen", value: reading.dissolvedOxygen != null ? `${reading.dissolvedOxygen} mg/L` : "—", icon: Droplets, color: "text-blue-400", bgDark: "bg-blue-500/10 border-blue-500/20", bgLight: "bg-blue-50 border-blue-200",
+                  alert: !isGI && (reading.dissolvedOxygen ?? Infinity) < 5 },
+                { label: "pH Level", value: reading.pH != null ? `${reading.pH}` : "—", icon: Activity, color: "text-emerald-400", bgDark: "bg-emerald-500/10 border-emerald-500/20", bgLight: "bg-emerald-50 border-emerald-200" },
+                { label: "Turbidity", value: reading.turbidity != null ? `${reading.turbidity} NTU` : "—", icon: Waves, color: "text-amber-400", bgDark: "bg-amber-500/10 border-amber-500/20", bgLight: "bg-amber-50 border-amber-200" },
+                { label: "E. coli", value: reading.eColiCount != null ? `${reading.eColiCount.toLocaleString()}` : "—", unit: "CFU/100mL", icon: AlertTriangle,
+                  color: (reading.eColiCount ?? 0) > 410 ? "text-red-400" : "text-green-400",
+                  bgDark: (reading.eColiCount ?? 0) > 410 ? "bg-red-500/10 border-red-500/20" : "bg-green-500/10 border-green-500/20",
+                  bgLight: (reading.eColiCount ?? 0) > 410 ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200",
+                  alert: (reading.eColiCount ?? 0) > 410 },
+                { label: "Conductivity", value: reading.conductivity != null ? `${reading.conductivity}` : "—", unit: "µS/cm", icon: Activity, color: "text-purple-400", bgDark: "bg-purple-500/10 border-purple-500/20", bgLight: "bg-purple-50 border-purple-200" },
               ].map((metric) => {
                 const Icon = metric.icon;
                 return (
