@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { getDbClient } from "@/lib/db";
 
 export async function GET(request: NextRequest) {
-  const db = getDb();
+  const db = await getDbClient();
   const searchParams = request.nextUrl.searchParams;
   const format = searchParams.get("format") || "json";
   const stationId = searchParams.get("station");
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   }
   query += " ORDER BY r.timestamp ASC";
 
-  const rows = db.prepare(query).all(...params) as Record<string, unknown>[];
+  const { rows } = await db.query(query, params);
 
   if (format === "csv") {
     const headers = [

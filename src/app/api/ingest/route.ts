@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { getDbClient } from "@/lib/db";
 import { logger } from "@/lib/logger";
 
 // USGS NWIS parameter codes for water quality
-const USGS_PARAMS = {
+const USGS_PARAMS: Record<string, string> = {
   "00010": "temperature",    // Water temperature (°C)
   "00300": "dissolved_oxygen", // Dissolved oxygen (mg/L)
   "00400": "ph",              // pH
   "63680": "turbidity",       // Turbidity (NTU)
   "00095": "conductivity",    // Specific conductance (µS/cm)
-} as const;
+};
 
 // USGS site IDs near the Anacostia watershed
-// These are real USGS monitoring sites
 const USGS_SITES = [
   { usgs: "01651000", stationId: "ANA-001" }, // Anacostia River at Hyattsville
   { usgs: "01651750", stationId: "ANA-003" }, // Anacostia River at DC
@@ -35,14 +34,9 @@ interface USGSResponse {
 }
 
 async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
-  const db = getDb();
+  const db = await getDbClient();
   const errors: string[] = [];
   let totalCount = 0;
-
-  const insertReading = db.prepare(`
-    INSERT OR IGNORE INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, source)
-    VALUES (@station_id, @timestamp, @temperature, @dissolved_oxygen, @ph, @turbidity, @conductivity, 'usgs')
-  `);
 
   for (const site of USGS_SITES) {
     const paramCodes = Object.keys(USGS_PARAMS).join(",");
@@ -64,7 +58,7 @@ async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
 
       for (const series of timeSeries) {
         const paramCode = series.variable?.variableCode?.[0]?.value;
-        const dbField = paramCode ? USGS_PARAMS[paramCode as keyof typeof USGS_PARAMS] : undefined;
+        const dbField = paramCode ? USGS_PARAMS[paramCode] : undefined;
         if (!dbField) continue;
 
         for (const val of series.values?.[0]?.value ?? []) {
@@ -76,24 +70,25 @@ async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
       }
 
       // Insert grouped readings
-      const insertMany = db.transaction(() => {
-        let count = 0;
-        for (const [timestamp, values] of Object.entries(readingsByTime)) {
-          insertReading.run({
-            station_id: site.stationId,
+      let count = 0;
+      for (const [timestamp, values] of Object.entries(readingsByTime)) {
+        await db.query(
+          `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, source)
+           VALUES (?, ?, ?, ?, ?, ?, ?, 'usgs')
+           ON CONFLICT DO NOTHING`,
+          [
+            site.stationId,
             timestamp,
-            temperature: values.temperature ?? null,
-            dissolved_oxygen: values.dissolved_oxygen ?? null,
-            ph: values.ph ?? null,
-            turbidity: values.turbidity ?? null,
-            conductivity: values.conductivity ?? null,
-          });
-          count++;
-        }
-        return count;
-      });
+            values.temperature ?? null,
+            values.dissolved_oxygen ?? null,
+            values.ph ?? null,
+            values.turbidity ?? null,
+            values.conductivity ?? null,
+          ]
+        );
+        count++;
+      }
 
-      const count = insertMany();
       totalCount += count;
       logger.info(`USGS ingest: ${count} readings from site ${site.usgs}`);
     } catch (err) {
@@ -117,14 +112,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const db = getDb();
+  const db = await getDbClient();
   const searchParams = request.nextUrl.searchParams;
   const source = searchParams.get("source") || "usgs";
-
-  const logEntry = db.prepare(`
-    INSERT INTO ingestion_log (source, status, records_count, error_message, completed_at)
-    VALUES (?, ?, ?, ?, datetime('now'))
-  `);
 
   try {
     let result: { count: number; errors: string[] };
@@ -136,7 +126,12 @@ export async function POST(request: NextRequest) {
     }
 
     const status = result.errors.length === 0 ? "success" : "error";
-    logEntry.run(source, status, result.count, result.errors.join("; ") || null);
+    const nowFn = process.env.DATABASE_URL ? "NOW()" : "datetime('now')";
+    await db.query(
+      `INSERT INTO ingestion_log (source, status, records_count, error_message, completed_at)
+       VALUES (?, ?, ?, ?, ${nowFn})`,
+      [source, status, result.count, result.errors.join("; ") || null]
+    );
 
     return NextResponse.json({
       source,
@@ -146,7 +141,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    logEntry.run(source, "error", 0, msg);
+    const nowFn2 = process.env.DATABASE_URL ? "NOW()" : "datetime('now')";
+    await db.query(
+      `INSERT INTO ingestion_log (source, status, records_count, error_message, completed_at)
+       VALUES (?, ?, ?, ?, ${nowFn2})`,
+      [source, "error", 0, msg]
+    ).catch(() => {}); // Don't fail if logging fails
     logger.error("Ingestion failed", { source, error: msg });
     return NextResponse.json({ error: msg }, { status: 500 });
   }

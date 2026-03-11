@@ -1,21 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { getDbClient } from "@/lib/db";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const db = getDb();
+  const db = await getDbClient();
 
-  const station = db.prepare("SELECT * FROM stations WHERE id = ?").get(id);
-  if (!station) {
+  const { rows: stationRows } = await db.query(
+    "SELECT * FROM stations WHERE id = ?",
+    [id]
+  );
+  if (stationRows.length === 0) {
     return NextResponse.json({ error: "Station not found" }, { status: 404 });
   }
 
   const searchParams = request.nextUrl.searchParams;
   const limit = Math.min(parseInt(searchParams.get("limit") || "365"), 1000);
-  const from = searchParams.get("from"); // ISO date string
+  const from = searchParams.get("from");
   const to = searchParams.get("to");
 
   let query = `
@@ -38,9 +41,9 @@ export async function GET(
   query += " ORDER BY timestamp ASC LIMIT ?";
   queryParams.push(limit);
 
-  const readings = db.prepare(query).all(...queryParams);
+  const { rows: readings } = await db.query(query, queryParams);
 
-  const data = (readings as Record<string, unknown>[]).map((r) => ({
+  const data = readings.map((r) => ({
     timestamp: r.timestamp,
     temperature: r.temperature,
     dissolvedOxygen: r.dissolved_oxygen,
