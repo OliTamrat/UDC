@@ -43,7 +43,7 @@ export default function EnvironmentalJustice() {
   return (
     <div className="glass-panel rounded-xl p-4">
       <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Ward-Level Environmental Justice Analysis</h3>
-      <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+      <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
         Combined sewer overflow frequency, impervious surface coverage, and green space access
         by DC ward. Wards 7 and 8 — home to much of the Anacostia watershed — consistently
         experience higher CSO event counts and lower green space access, reflecting longstanding
@@ -59,14 +59,14 @@ export default function EnvironmentalJustice() {
               isDark ? "border-panel-border" : "border-slate-200 bg-white"
             }`}
           >
-            <div className={`text-[10px] uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Ward {ward.ward}</div>
+            <div className={`text-[10px] uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Ward {ward.ward}</div>
             <div
               className="text-xs font-semibold mt-1"
               style={{ color: riskColors[ward.floodRisk] }}
             >
               {ward.floodRisk}
             </div>
-            <div className={`text-[10px] mt-0.5 ${isDark ? "text-slate-500" : "text-slate-400"}`}>{ward.csoEvents} CSOs</div>
+            <div className={`text-[10px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{ward.csoEvents} CSOs</div>
           </div>
         ))}
       </div>
@@ -74,7 +74,7 @@ export default function EnvironmentalJustice() {
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Combined Sewer Overflow Events (Annual)</h4>
+          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>Combined Sewer Overflow Events (Annual)</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={wardData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -90,7 +90,7 @@ export default function EnvironmentalJustice() {
           </ResponsiveContainer>
         </div>
         <div>
-          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Green Space Access (%)</h4>
+          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>Green Space Access (%)</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={wardData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />

@@ -183,7 +183,7 @@ export default function StationDetailPage() {
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="text-center">
               <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Station Not Found</h2>
-              <p className={`text-sm mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>No station with ID &quot;{stationId}&quot; exists.</p>
+              <p className={`text-sm mb-4 ${isDark ? "text-slate-300" : "text-slate-600"}`}>No station with ID &quot;{stationId}&quot; exists.</p>
               <button onClick={() => router.push("/")} className="px-4 py-2 bg-water-blue text-white rounded-lg text-sm">
                 Back to Dashboard
               </button>
@@ -228,21 +228,21 @@ export default function StationDetailPage() {
                   isDark ? "border-panel-border hover:bg-panel-hover" : "border-slate-200 hover:bg-slate-100"
                 }`}
               >
-                <ArrowLeft className={`w-5 h-5 ${isDark ? "text-slate-400" : "text-slate-600"}`} aria-hidden="true" />
+                <ArrowLeft className={`w-5 h-5 ${isDark ? "text-slate-300" : "text-slate-600"}`} aria-hidden="true" />
               </button>
               <h1 className={`text-lg sm:text-2xl font-bold flex-1 min-w-0 ${isDark ? "text-white" : "text-slate-900"}`}>{station.name}</h1>
               <StatusBadge status={station.status} isDark={isDark} />
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 <MapPin className="w-3.5 h-3.5 inline mr-1" />
                 {station.position[0].toFixed(4)}°N, {Math.abs(station.position[1]).toFixed(4)}°W
               </span>
-              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-500" : "text-slate-500"}`}>ID: {station.id}</span>
-              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-500" : "text-slate-500"}`}>Type: {typeLabel}</span>
+              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>ID: {station.id}</span>
+              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>Type: {typeLabel}</span>
             </div>
             {historical && (
-              <p className={`text-xs max-w-2xl ${isDark ? "text-slate-500" : "text-slate-500"}`}>{historical.description}</p>
+              <p className={`text-xs max-w-2xl ${isDark ? "text-slate-400" : "text-slate-600"}`}>{historical.description}</p>
             )}
             <div className="flex gap-2">
               <button
@@ -288,8 +288,8 @@ export default function StationDetailPage() {
                       {metric.alert && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />}
                     </div>
                     <div className={`text-lg sm:text-xl font-bold ${metric.color}`}>{metric.value}</div>
-                    {metric.unit && <div className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{metric.unit}</div>}
-                    <div className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{metric.label}</div>
+                    {metric.unit && <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>{metric.unit}</div>}
+                    <div className={`text-xs mt-1 ${isDark ? "text-slate-300" : "text-slate-600"}`}>{metric.label}</div>
                   </div>
                 );
               })}
@@ -297,7 +297,7 @@ export default function StationDetailPage() {
           )}
 
           {reading && (
-            <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               <span>Last updated: {reading.timestamp ? new Date(reading.timestamp).toLocaleString() : "—"}</span>
               {dataSources.length > 0 && (
                 <span className="flex items-center gap-1.5">
@@ -315,7 +315,7 @@ export default function StationDetailPage() {
             <>
               <div>
                 <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Historical Trends (2025)</h2>
-                <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly averages with EPA compliance thresholds</p>
+                <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly averages with EPA compliance thresholds</p>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -323,7 +323,7 @@ export default function StationDetailPage() {
                 {!isGI && (
                   <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Dissolved oxygen trend chart showing monthly averages with EPA minimum threshold of 5 mg/L">
                     <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Dissolved Oxygen</h3>
-                    <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly average (mg/L) with EPA minimum threshold</p>
+                    <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly average (mg/L) with EPA minimum threshold</p>
                     <ResponsiveContainer width="100%" height={200}>
                       <AreaChart data={historical.data}>
                         <defs>
@@ -346,7 +346,7 @@ export default function StationDetailPage() {
                 {/* Temperature */}
                 <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Water temperature trend chart showing monthly averages in degrees Celsius">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Water Temperature</h3>
-                  <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly average (°C)</p>
+                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly average (°C)</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <AreaChart data={historical.data}>
                       <defs>
@@ -367,7 +367,7 @@ export default function StationDetailPage() {
                 {/* E. coli */}
                 <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="E. coli levels bar chart showing monthly averages with EPA recreational limit of 410 CFU per 100mL">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>E. coli Levels</h3>
-                  <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly average (CFU/100mL) with EPA recreational limit</p>
+                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly average (CFU/100mL) with EPA recreational limit</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={historical.data}>
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -383,7 +383,7 @@ export default function StationDetailPage() {
                 {/* Turbidity */}
                 <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Turbidity trend chart showing monthly averages in NTU">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Turbidity</h3>
-                  <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly average (NTU)</p>
+                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly average (NTU)</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <AreaChart data={historical.data}>
                       <defs>
@@ -406,7 +406,7 @@ export default function StationDetailPage() {
               {!isGI && (
                 <div className="glass-panel rounded-xl p-3 sm:p-4">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Multi-Parameter Comparison</h3>
-                  <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>All parameters overlaid for correlation analysis</p>
+                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>All parameters overlaid for correlation analysis</p>
                   <ResponsiveContainer width="100%" height={220}>
                     <LineChart data={historical.data}>
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />

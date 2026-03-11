@@ -75,7 +75,7 @@ export default function Dashboard() {
                 DC Water Resources{" "}
                 <span className="gradient-text">Data Dashboard</span>
               </h1>
-              <p className={`text-sm max-w-2xl mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`text-sm max-w-2xl mb-4 ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 Monitoring, analysis, and visualization of water quality data across the
                 Anacostia River watershed. Integrating research from UDC&apos;s Water Resources
                 Research Institute with environmental data for DC communities.
@@ -128,13 +128,13 @@ export default function Dashboard() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <div>
                 <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Interactive Watershed Map</h2>
-                <p className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                   Anacostia River, tributaries, monitoring stations — toggle layers with the control panel
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-blue-400" />
-                <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>USGS &amp; DOEE monitoring network</span>
+                <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>USGS &amp; DOEE monitoring network</span>
               </div>
             </div>
             <div className="h-[300px] sm:h-[400px] md:h-[550px]">
@@ -155,7 +155,7 @@ export default function Dashboard() {
           <section id="water-quality">
             <div className="mb-4">
               <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Water Quality Analysis</h2>
-              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                 Historical trends and current conditions across four key monitoring parameters.
                 Dissolved oxygen and E. coli levels are compared against EPA recreational water quality
                 standards. Data is sourced from USGS NWIS sensors and the EPA Water Quality Portal for the
@@ -174,7 +174,7 @@ export default function Dashboard() {
           <section id="analytics">
             <div className="mb-3">
               <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Multi-Parameter Overview</h2>
-              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                 Correlate dissolved oxygen, temperature, pH, and turbidity on a unified timeline.
                 Parameter relationships reveal how seasonal changes and storm events affect overall
                 water health — for example, elevated turbidity after rainfall often coincides with
@@ -188,7 +188,7 @@ export default function Dashboard() {
           <section>
             <div className="mb-3">
               <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Environmental Justice</h2>
-              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                 Water quality issues disproportionately affect communities in DC&apos;s eastern wards.
                 Combined sewer overflows (CSOs), impervious surface coverage, and limited green space access
                 are interconnected factors that UDC&apos;s WRRI tracks across all eight wards to support
@@ -202,7 +202,7 @@ export default function Dashboard() {
           <section id="stormwater">
             <div className="mb-3">
               <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Monitoring Stations</h2>
-              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                 All 12 stations across the Anacostia, Potomac, and Rock Creek watersheds. Click any row
                 to view detailed readings, historical charts, and data export options for that station.
                 Data provenance badges indicate whether readings come from USGS sensors, EPA WQP records,
@@ -224,7 +224,7 @@ export default function Dashboard() {
                   <p className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
                     University of the District of Columbia
                   </p>
-                  <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                     CAUSES / WRRI
                   </p>
                 </div>
@@ -232,19 +232,19 @@ export default function Dashboard() {
 
               {/* Institute info */}
               <div className="space-y-1 max-w-md">
-                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                   Water Resources Research Institute (WRRI)
                 </p>
-                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                   Center for Urban Resilience, Innovation &amp; Infrastructure (CURII)
                 </p>
-                <p className={`text-[11px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                   4200 Connecticut Ave NW, Washington, DC 20008
                 </p>
               </div>
 
               {/* Data links */}
-              <div className={`flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+              <div className={`flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                 <a href="/api/export?format=csv" className="underline hover:text-udc-gold transition-colors">Export CSV</a>
                 <span aria-hidden="true">·</span>
                 <a href="/api/export?format=json" className="underline hover:text-udc-gold transition-colors">Export JSON</a>
@@ -253,7 +253,7 @@ export default function Dashboard() {
               </div>
 
               {/* Funding attribution */}
-              <p className={`text-[10px] ${isDark ? "text-slate-600" : "text-slate-400"}`}>
+              <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                 Funded by DC Government · Data: DOEE, EPA WQP, USGS NWIS, Anacostia Riverkeeper
               </p>
             </div>

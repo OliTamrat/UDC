@@ -117,7 +117,7 @@ export default function Header() {
 
         {/* Search */}
         <div className="relative flex-1 min-w-0 lg:flex-none lg:w-72" ref={searchRef} role="search">
-          <Search className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} aria-hidden="true" />
+          <Search className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-600"}`} aria-hidden="true" />
           <input
             type="search"
             aria-label="Search stations, data, and research"
@@ -142,7 +142,7 @@ export default function Header() {
               isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
             }`}>
               {searchResults.length === 0 ? (
-                <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                   No results found
                 </div>
               ) : (
@@ -159,7 +159,7 @@ export default function Header() {
                     }`} />
                     <div className="min-w-0">
                       <span className="block truncate">{result.name}</span>
-                      <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-slate-600" : "text-slate-400"}`}>
+                      <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                         {result.type}
                       </span>
                     </div>
@@ -174,7 +174,7 @@ export default function Header() {
       {/* Right side: date, live, theme, bell, stakeholder */}
       <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-3 flex-shrink-0 ml-2">
         {/* Date — hidden below md */}
-        <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+        <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
           <Calendar className="w-3.5 h-3.5" />
           <span className="hidden lg:inline">{dateStr}</span>
           <span className="lg:hidden">{now.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
@@ -183,7 +183,7 @@ export default function Header() {
         {/* Live indicator — hidden below sm */}
         <div className="hidden sm:flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-water-clean animate-pulse" />
-          <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>Live</span>
+          <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>Live</span>
         </div>
 
         {/* Theme Switcher */}
@@ -205,7 +205,7 @@ export default function Header() {
               isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
             }`}>
               <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
-                isDark ? "text-slate-500" : "text-slate-400"
+                isDark ? "text-slate-400" : "text-slate-600"
               }`}>
                 Appearance
               </div>
@@ -244,7 +244,7 @@ export default function Header() {
           title="Notifications — coming soon"
           aria-label="Notifications (coming soon)"
         >
-          <Bell className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} aria-hidden="true" />
+          <Bell className={`w-4 h-4 ${isDark ? "text-slate-300" : "text-slate-500"}`} aria-hidden="true" />
         </button>
 
         {/* Stakeholder button — hidden on mobile, icon-only on tablet */}
@@ -257,7 +257,7 @@ export default function Header() {
           title="Stakeholder portal — coming soon"
           aria-label="Stakeholder portal (coming soon)"
         >
-          <User className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} aria-hidden="true" />
+          <User className={`w-4 h-4 ${isDark ? "text-slate-300" : "text-slate-500"}`} aria-hidden="true" />
           <span className={`hidden md:inline text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
         </button>
       </div>
