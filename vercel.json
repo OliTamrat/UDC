@@ -6,5 +6,11 @@
       "includeFiles": "data/**",
       "maxDuration": 30
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/ingest?source=usgs",
+      "schedule": "0 */6 * * *"
+    }
+  ]
 }

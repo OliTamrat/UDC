@@ -105,8 +105,19 @@ async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
   return { count: totalCount, errors };
 }
 
+// GET handler for Vercel Cron — authenticated via CRON_SECRET header
+export async function GET(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret && request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Delegate to the shared ingest logic
+  return runIngest(request);
+}
+
+// POST handler for manual triggers — authenticated via INGEST_API_KEY
 export async function POST(request: NextRequest) {
-  // API key required in production, optional in development
   const authHeader = request.headers.get("authorization");
   const apiKey = process.env.INGEST_API_KEY;
   if (!apiKey && process.env.NODE_ENV === "production") {
@@ -116,6 +127,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  return runIngest(request);
+}
+
+async function runIngest(request: NextRequest) {
   const db = await getDbClient();
   const searchParams = request.nextUrl.searchParams;
   const source = searchParams.get("source") || "usgs";
