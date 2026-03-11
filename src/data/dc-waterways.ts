@@ -412,7 +412,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "ANA-004",
     name: "Anacostia at Anacostia Park",
-    position: [38.8845, -76.9679], // On the river at Anacostia Park
+    position: [38.8799, -76.9708], // USGS 01651812 Anacostia Park Boat Ramp
     type: "river",
     status: "active",
     parameters: ["DO", "pH", "Temp", "Turbidity"],
@@ -429,7 +429,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "WB-001",
     name: "Watts Branch at Minnesota Ave",
-    position: [38.9015, -76.9370], // On Watts Branch near Minnesota Ave
+    position: [38.9013, -76.9433], // USGS 01651800 at Minnesota Ave Bridge
     type: "stream",
     status: "active",
     parameters: ["DO", "pH", "Temp", "Turbidity", "E. coli"],
@@ -497,7 +497,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "GI-002",
     name: "UDC Food Hub Rain Garden - Ward 7",
-    position: [38.8950, -76.9320], // Ward 7, east of the Anacostia
+    position: [38.8893, -76.9149], // East Capitol Urban Farm, 5901 E Capitol St SE
     type: "green-infrastructure",
     status: "active",
     parameters: ["Infiltration Rate", "Runoff Volume", "TSS"],
@@ -514,7 +514,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "GI-003",
     name: "UDC Food Hub Rain Garden - Ward 8",
-    position: [38.8480, -76.9870], // Ward 8, Congress Heights area
+    position: [38.8271, -76.9944], // PR Harris Food Hub, 4600 Livingston Rd SE
     type: "green-infrastructure",
     status: "active",
     parameters: ["Infiltration Rate", "Runoff Volume", "TSS"],
