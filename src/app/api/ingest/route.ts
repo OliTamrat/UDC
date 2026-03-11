@@ -4,17 +4,19 @@ import { logger } from "@/lib/logger";
 
 // USGS NWIS parameter codes for water quality
 const USGS_PARAMS: Record<string, string> = {
-  "00010": "temperature",    // Water temperature (°C)
+  "00010": "temperature",     // Water temperature (°C)
   "00300": "dissolved_oxygen", // Dissolved oxygen (mg/L)
-  "00400": "ph",              // pH
-  "63680": "turbidity",       // Turbidity (NTU)
-  "00095": "conductivity",    // Specific conductance (µS/cm)
+  "00400": "ph",               // pH
+  "63680": "turbidity",        // Turbidity (NTU)
+  "00095": "conductivity",     // Specific conductance (µS/cm)
 };
 
-// USGS site IDs near the Anacostia watershed
+// Active USGS sites with water-quality sensors in the DC/Anacostia watershed
+// See: https://www.usgs.gov/centers/md-de-dc-water/anacostia-water-quality-monitoring-project
 const USGS_SITES = [
-  { usgs: "01651000", stationId: "ANA-001" }, // Anacostia River at Hyattsville
-  { usgs: "01651750", stationId: "ANA-003" }, // Anacostia River at DC
+  { usgs: "01649500", stationId: "ANA-002" }, // NE Branch Anacostia at Riverdale, MD (active WQ)
+  { usgs: "01651000", stationId: "ANA-001" }, // NW Branch Anacostia nr Hyattsville, MD
+  { usgs: "01646500", stationId: "PB-001" },  // Potomac River at Little Falls (active WQ)
 ];
 
 interface USGSTimeSeriesValue {
@@ -51,7 +53,10 @@ async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
 
       const data: USGSResponse = await response.json();
       const timeSeries = data?.value?.timeSeries;
-      if (!timeSeries) continue;
+      if (!timeSeries || timeSeries.length === 0) {
+        logger.info(`USGS ${site.usgs}: no time series returned (site may lack WQ sensors)`);
+        continue;
+      }
 
       // Group values by timestamp
       const readingsByTime: Record<string, Record<string, number>> = {};
@@ -74,8 +79,7 @@ async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
       for (const [timestamp, values] of Object.entries(readingsByTime)) {
         await db.query(
           `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, source)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 'usgs')
-           ON CONFLICT DO NOTHING`,
+           VALUES (?, ?, ?, ?, ?, ?, ?, 'usgs')`,
           [
             site.stationId,
             timestamp,
