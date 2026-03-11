@@ -2,17 +2,36 @@ import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
 
-const DB_PATH = process.env.DB_PATH || path.join(process.cwd(), "data", "udc-water.db");
+const isVercel = !!process.env.VERCEL;
+
+// On Vercel, the project filesystem is read-only; copy the pre-seeded DB to /tmp
+function resolveDbPath(): string {
+  if (process.env.DB_PATH) return process.env.DB_PATH;
+
+  const sourceDb = path.join(process.cwd(), "data", "udc-water.db");
+
+  if (isVercel) {
+    const tmpDb = "/tmp/udc-water.db";
+    // Copy the bundled DB to /tmp if it doesn't already exist there
+    if (!fs.existsSync(tmpDb) && fs.existsSync(sourceDb)) {
+      fs.copyFileSync(sourceDb, tmpDb);
+    }
+    return tmpDb;
+  }
+
+  return sourceDb;
+}
 
 let db: Database.Database | null = null;
 
 export function getDb(): Database.Database {
   if (!db) {
-    const dir = path.dirname(DB_PATH);
+    const dbPath = resolveDbPath();
+    const dir = path.dirname(dbPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    db = new Database(DB_PATH);
+    db = new Database(dbPath);
     db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
     initSchema(db);
