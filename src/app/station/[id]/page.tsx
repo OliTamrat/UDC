@@ -267,7 +267,7 @@ export default function StationDetailPage() {
 
           {reading && (
             <div className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-              Last updated: {new Date(reading.timestamp).toLocaleString()}
+              Last updated: {reading.timestamp ? new Date(reading.timestamp).toLocaleString() : "—"}
             </div>
           )}
 
