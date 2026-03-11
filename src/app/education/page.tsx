@@ -321,9 +321,9 @@ export default function EducationPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px]">
+      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
         <Header />
-        <div className="p-6 space-y-6">
+        <div className="p-3 sm:p-4 md:p-6 space-y-6">
           {/* Page Header */}
           <section className={`relative overflow-hidden rounded-2xl border p-8 ${
             isDark
