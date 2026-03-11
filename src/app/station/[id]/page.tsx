@@ -164,7 +164,7 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main id="main-content" className="flex-1 ml-[240px]">
+        <main id="main-content" className="flex-1 lg:ml-[240px]">
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
@@ -178,7 +178,7 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main id="main-content" className="flex-1 ml-[240px]">
+        <main id="main-content" className="flex-1 lg:ml-[240px]">
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="text-center">
@@ -215,7 +215,7 @@ export default function StationDetailPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main className="flex-1 ml-[240px]">
+      <main className="flex-1 lg:ml-[240px]">
         <Header />
         <div className="p-6 space-y-6">
           {/* Back + Title */}

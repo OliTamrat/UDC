@@ -1,7 +1,8 @@
 "use client";
 
-import { Bell, Search, User, Calendar, Sun, Moon, Monitor, MapPin } from "lucide-react";
+import { Bell, Search, User, Calendar, Sun, Moon, Monitor, MapPin, Menu } from "lucide-react";
 import { useTheme, type Theme } from "@/context/ThemeContext";
+import { useSidebar } from "@/context/SidebarContext";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { monitoringStations, researchProjects } from "@/data/dc-waterways";
@@ -27,6 +28,7 @@ const pageResults: SearchResult[] = [
 
 export default function Header() {
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const { openMobile } = useSidebar();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
@@ -92,11 +94,27 @@ export default function Header() {
   }
 
   return (
-    <header className={`h-14 border-b flex items-center justify-between px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
+    <header className={`h-14 border-b flex items-center justify-between px-3 sm:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
       isDark ? "border-panel-border bg-panel-bg/80" : "border-slate-200 bg-white/80"
     }`}>
-      <div className="flex items-center gap-4">
-        <div className="relative" ref={searchRef} role="search">
+      <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+        {/* Hamburger — mobile/tablet only */}
+        <button
+          onClick={openMobile}
+          aria-label="Open navigation menu"
+          className={`lg:hidden p-2 -ml-1 rounded-lg transition-colors ${
+            isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
+          }`}
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        {/* Mobile logo badge — visible only when sidebar is hidden */}
+        <div className="lg:hidden w-7 h-7 rounded-md bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-[8px] flex-shrink-0">
+          UDC
+        </div>
+
+        <div className="relative flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-none lg:flex-none lg:w-72" ref={searchRef} role="search">
           <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} aria-hidden="true" />
           <input
             type="search"
@@ -111,14 +129,14 @@ export default function Header() {
               }
             }}
             onFocus={() => { if (searchQuery) setShowResults(true); }}
-            className={`w-72 border rounded-lg pl-10 pr-4 py-1.5 text-sm focus:outline-none transition-colors ${
+            className={`w-full border rounded-lg pl-10 pr-4 py-1.5 text-sm focus:outline-none transition-colors ${
               isDark
                 ? "bg-udc-dark/50 border-panel-border text-slate-300 placeholder:text-slate-600 focus:border-udc-blue/50"
                 : "bg-slate-100 border-slate-200 text-slate-700 placeholder:text-slate-400 focus:border-blue-400"
             }`}
           />
           {showResults && searchQuery && (
-            <div className={`absolute left-0 top-full mt-1 w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
+            <div className={`absolute left-0 top-full mt-1 w-full sm:w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
               isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
             }`}>
               {searchResults.length === 0 ? (
@@ -150,12 +168,17 @@ export default function Header() {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+
+      <div className="flex items-center gap-1 sm:gap-2 md:gap-4 flex-shrink-0">
+        {/* Date — hidden on small screens */}
+        <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
           <Calendar className="w-3.5 h-3.5" />
-          <span>{dateStr}</span>
+          <span className="hidden lg:inline">{dateStr}</span>
+          <span className="lg:hidden">{now.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
         </div>
-        <div className="flex items-center gap-1">
+
+        {/* Live indicator */}
+        <div className="hidden sm:flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-water-clean animate-pulse" />
           <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>Live</span>
         </div>
@@ -219,8 +242,10 @@ export default function Header() {
         >
           <Bell className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} aria-hidden="true" />
         </button>
+
+        {/* Stakeholder button — label hidden on small screens */}
         <button
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors border ${
+          className={`flex items-center gap-2 px-2 sm:px-3 py-1.5 rounded-lg transition-colors border ${
             isDark
               ? "hover:bg-panel-hover border-panel-border"
               : "hover:bg-slate-50 border-slate-200"
@@ -229,7 +254,7 @@ export default function Header() {
           aria-label="Stakeholder portal (coming soon)"
         >
           <User className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} aria-hidden="true" />
-          <span className={`text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
+          <span className={`hidden sm:inline text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
         </button>
       </div>
     </header>

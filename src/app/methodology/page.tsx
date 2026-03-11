@@ -143,7 +143,7 @@ export default function MethodologyPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 ml-[240px]">
+      <main id="main-content" className="flex-1 lg:ml-[240px]">
         <Header />
         <div className="p-6 space-y-8">
           {/* Page Header */}
