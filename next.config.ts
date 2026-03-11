@@ -11,12 +11,13 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://*.vercel.live",
+              "script-src-elem 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://unpkg.com",
-              "connect-src 'self' https://waterservices.usgs.gov https://*.basemaps.cartocdn.com https://vercel.live",
-              "frame-src 'self' https://vercel.live",
+              "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://unpkg.com https://vercel.live https://*.vercel.live",
+              "connect-src 'self' https://waterservices.usgs.gov https://*.basemaps.cartocdn.com https://vercel.live https://*.vercel.live wss://ws-us3.pusher.com",
+              "frame-src 'self' https://vercel.live https://*.vercel.live",
             ].join("; "),
           },
           {

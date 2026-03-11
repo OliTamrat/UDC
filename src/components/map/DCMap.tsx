@@ -26,7 +26,8 @@ function getStationColor(station: MonitoringStation, ecoliMultiplier?: number): 
   if (station.type === "stormwater") return "#8B5CF6";
   const reading = station.lastReading;
   if (!reading) return "#3B82F6";
-  const ecoli = ecoliMultiplier ? reading.eColiCount * ecoliMultiplier : reading.eColiCount;
+  const rawEcoli = reading.eColiCount ?? 0;
+  const ecoli = ecoliMultiplier ? rawEcoli * ecoliMultiplier : rawEcoli;
   if (ecoli > 1000) return "#EF4444";
   if (ecoli > 400) return "#F59E0B";
   return "#22C55E";
@@ -152,7 +153,7 @@ export default function DCMap({
             <div style="font-family:Inter,system-ui,sans-serif;min-width:180px;">
               <h3 style="font-weight:700;font-size:14px;color:${isDark ? "#F8FAFC" : "#1E293B"};margin:0 0 6px;">Ward ${ward.ward}</h3>
               <div style="display:grid;gap:4px;font-size:11px;color:${isDark ? "#94A3B8" : "#64748B"};">
-                <div>Population: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.population.toLocaleString()}</strong></div>
+                <div>Population: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.population != null ? ward.population.toLocaleString() : "N/A"}</strong></div>
                 <div>Council: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.councilMember}</strong></div>
                 <div>Flood Risk: <strong style="color:${riskColors[ward.floodRisk]}">${ward.floodRisk}</strong></div>
                 <div>Impervious: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.impervious}%</strong></div>
@@ -329,7 +330,7 @@ export default function DCMap({
               <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Turbidity</div><div style="font-size:13px;font-weight:600;color:#FBBF24;">${reading.turbidity ?? "—"} NTU</div></div>
               <div style="background:${popupDataBg};border-radius:6px;padding:6px;grid-column:span 2;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">E. coli</div><div style="font-size:13px;font-weight:600;color:${ecoliColor};">${reading.eColiCount != null ? reading.eColiCount.toLocaleString() : "—"} CFU/100mL</div></div>
             </div>
-            <div style="margin-top:6px;font-size:10px;color:${popupMuted};">Last updated: ${new Date(reading.timestamp).toLocaleString()}</div>`;
+            <div style="margin-top:6px;font-size:10px;color:${popupMuted};">Last updated: ${reading.timestamp ? new Date(reading.timestamp).toLocaleString() : "—"}</div>`;
         }
 
         popupHtml += viewDetailBtn + `</div>`;
