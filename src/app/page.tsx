@@ -14,6 +14,7 @@ import {
   StormwaterChart,
   MultiParameterChart,
 } from "@/components/charts/WaterQualityCharts";
+import Footer from "@/components/layout/Footer";
 import TimeSlider, { type MonthlySnapshot } from "@/components/map/TimeSlider";
 import { Droplets, MapPin, TrendingUp, Shield } from "lucide-react";
 import { useState, useCallback } from "react";
@@ -213,51 +214,7 @@ export default function Dashboard() {
           </section>
 
           {/* Footer */}
-          <footer className={`border-t pt-6 pb-6 ${isDark ? "border-panel-border" : "border-slate-200"}`}>
-            <div className="flex flex-col items-center gap-4 text-center">
-              {/* Logo + University name */}
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-[10px] flex-shrink-0">
-                  UDC
-                </div>
-                <div className="text-left">
-                  <p className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
-                    University of the District of Columbia
-                  </p>
-                  <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-                    CAUSES / WRRI
-                  </p>
-                </div>
-              </div>
-
-              {/* Institute info */}
-              <div className="space-y-1 max-w-md">
-                <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-                  Water Resources Research Institute (WRRI)
-                </p>
-                <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-                  Center for Urban Resilience, Innovation &amp; Infrastructure (CURII)
-                </p>
-                <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                  4200 Connecticut Ave NW, Washington, DC 20008
-                </p>
-              </div>
-
-              {/* Data links */}
-              <div className={`flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                <a href="/api/export?format=csv" className="underline hover:text-udc-gold transition-colors">Export CSV</a>
-                <span aria-hidden="true">·</span>
-                <a href="/api/export?format=json" className="underline hover:text-udc-gold transition-colors">Export JSON</a>
-                <span aria-hidden="true">·</span>
-                <a href="/methodology" className="underline hover:text-udc-gold transition-colors">Methodology</a>
-              </div>
-
-              {/* Funding attribution */}
-              <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-                Funded by DC Government · Data: DOEE, EPA WQP, USGS NWIS, Anacostia Riverkeeper
-              </p>
-            </div>
-          </footer>
+          <Footer />
         </div>
       </main>
     </div>
