@@ -127,7 +127,7 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
                     {r?.turbidity || "—"}
                   </td>
                   <td className="py-2.5 px-4">
-                    {r ? (
+                    {r?.eColiCount != null ? (
                       <WaterQualityIndicator value={r.eColiCount} thresholds={{ good: 400, moderate: 1000 }} />
                     ) : (
                       <span className={`text-xs ${isDark ? "text-slate-600" : "text-slate-400"}`}>—</span>
