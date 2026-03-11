@@ -61,83 +61,98 @@ export async function POST(req: Request) {
     );
   }
 
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  // Derive base URL from request for tool calls (works on Vercel, Docker, and local dev)
+  const reqUrl = new URL(req.url);
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || `${reqUrl.protocol}//${reqUrl.host}`;
 
-  const result = streamText({
-    model: anthropic("claude-sonnet-4-5-20250514"),
-    system: SYSTEM_PROMPT,
-    messages: await convertToModelMessages(messages),
-    tools: {
-      getStationData: tool({
-        description:
-          "Get current readings and metadata for a specific monitoring station by ID (e.g. ANA-001, WB-001, GI-001)",
-        inputSchema: z.object({
-          stationId: z
-            .string()
-            .describe("The station ID, e.g. ANA-001, WB-001, HR-001, GI-001"),
-        }),
-        execute: async ({ stationId }) => {
-          const baseUrl =
-            process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-          try {
-            const res = await fetch(`${baseUrl}/api/stations`);
-            if (!res.ok) return { error: "Failed to fetch stations" };
-            const data = await res.json();
-            const station = data.stations?.find(
-              (s: Record<string, unknown>) =>
-                (s.id as string).toUpperCase() === stationId.toUpperCase(),
-            );
-            if (!station) return { error: `Station ${stationId} not found` };
-            return station;
-          } catch {
-            return { error: "Could not reach stations API" };
-          }
-        },
-      }),
-      getStationHistory: tool({
-        description:
-          "Get historical water quality readings for a station. Returns time-series data for trend analysis.",
-        inputSchema: z.object({
-          stationId: z.string().describe("The station ID"),
-          limit: z
-            .number()
-            .optional()
-            .describe("Max number of readings to return (default 50)"),
-        }),
-        execute: async ({ stationId, limit }) => {
-          const baseUrl =
-            process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-          try {
-            const url = `${baseUrl}/api/stations/${stationId}/history?limit=${limit || 50}`;
-            const res = await fetch(url);
-            if (!res.ok) return { error: "Failed to fetch history" };
-            return await res.json();
-          } catch {
-            return { error: "Could not reach history API" };
-          }
-        },
-      }),
-      listAllStations: tool({
-        description:
-          "List all 12 monitoring stations with their current status, type, and latest readings.",
-        inputSchema: z.object({}),
-        execute: async () => {
-          const baseUrl =
-            process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-          try {
-            const res = await fetch(`${baseUrl}/api/stations`);
-            if (!res.ok) return { error: "Failed to fetch stations" };
-            return await res.json();
-          } catch {
-            return { error: "Could not reach stations API" };
-          }
-        },
-      }),
-    },
-    stopWhen: stepCountIs(3),
-    maxOutputTokens: 2048,
-    temperature: 0.3,
-  });
+  let body: { messages: UIMessage[] };
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: "Invalid request body" }, { status: 400 });
+  }
 
-  return result.toUIMessageStreamResponse();
+  const { messages } = body;
+
+  try {
+    const result = streamText({
+      model: anthropic("claude-sonnet-4-5-20250514"),
+      system: SYSTEM_PROMPT,
+      messages: await convertToModelMessages(messages),
+      tools: {
+        getStationData: tool({
+          description:
+            "Get current readings and metadata for a specific monitoring station by ID (e.g. ANA-001, WB-001, GI-001)",
+          inputSchema: z.object({
+            stationId: z
+              .string()
+              .describe(
+                "The station ID, e.g. ANA-001, WB-001, HR-001, GI-001",
+              ),
+          }),
+          execute: async ({ stationId }) => {
+            try {
+              const res = await fetch(`${baseUrl}/api/stations`);
+              if (!res.ok) return { error: "Failed to fetch stations" };
+              const data = await res.json();
+              const station = data.stations?.find(
+                (s: Record<string, unknown>) =>
+                  (s.id as string).toUpperCase() === stationId.toUpperCase(),
+              );
+              if (!station) return { error: `Station ${stationId} not found` };
+              return station;
+            } catch {
+              return { error: "Could not reach stations API" };
+            }
+          },
+        }),
+        getStationHistory: tool({
+          description:
+            "Get historical water quality readings for a station. Returns time-series data for trend analysis.",
+          inputSchema: z.object({
+            stationId: z.string().describe("The station ID"),
+            limit: z
+              .number()
+              .optional()
+              .describe("Max number of readings to return (default 50)"),
+          }),
+          execute: async ({ stationId, limit }) => {
+            try {
+              const url = `${baseUrl}/api/stations/${stationId}/history?limit=${limit || 50}`;
+              const res = await fetch(url);
+              if (!res.ok) return { error: "Failed to fetch history" };
+              return await res.json();
+            } catch {
+              return { error: "Could not reach history API" };
+            }
+          },
+        }),
+        listAllStations: tool({
+          description:
+            "List all 12 monitoring stations with their current status, type, and latest readings.",
+          inputSchema: z.object({}),
+          execute: async () => {
+            try {
+              const res = await fetch(`${baseUrl}/api/stations`);
+              if (!res.ok) return { error: "Failed to fetch stations" };
+              return await res.json();
+            } catch {
+              return { error: "Could not reach stations API" };
+            }
+          },
+        }),
+      },
+      stopWhen: stepCountIs(3),
+      maxOutputTokens: 2048,
+      temperature: 0.3,
+    });
+
+    return result.toUIMessageStreamResponse();
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "An unexpected error occurred";
+    console.error("[chat] Stream error:", message);
+    return Response.json({ error: message }, { status: 500 });
+  }
 }
