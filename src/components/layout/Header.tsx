@@ -96,10 +96,11 @@ export default function Header() {
       isDark ? "border-panel-border bg-panel-bg/80" : "border-slate-200 bg-white/80"
     }`}>
       <div className="flex items-center gap-4">
-        <div className="relative" ref={searchRef}>
-          <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+        <div className="relative" ref={searchRef} role="search">
+          <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} aria-hidden="true" />
           <input
-            type="text"
+            type="search"
+            aria-label="Search stations, data, and research"
             placeholder="Search stations, data, research..."
             value={searchQuery}
             onChange={(e) => {
@@ -167,8 +168,11 @@ export default function Header() {
               isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
             }`}
             title="Change appearance"
+            aria-label="Change appearance theme"
+            aria-expanded={showThemeMenu}
+            aria-haspopup="true"
           >
-            <CurrentIcon className="w-4 h-4" />
+            <CurrentIcon className="w-4 h-4" aria-hidden="true" />
           </button>
           {showThemeMenu && (
             <div className={`absolute right-0 top-full mt-1 rounded-lg border shadow-lg py-1 min-w-[140px] z-50 ${
@@ -211,8 +215,9 @@ export default function Header() {
             isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"
           }`}
           title="Notifications — coming soon"
+          aria-label="Notifications (coming soon)"
         >
-          <Bell className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
+          <Bell className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} aria-hidden="true" />
         </button>
         <button
           className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors border ${
@@ -221,8 +226,9 @@ export default function Header() {
               : "hover:bg-slate-50 border-slate-200"
           }`}
           title="Stakeholder portal — coming soon"
+          aria-label="Stakeholder portal (coming soon)"
         >
-          <User className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
+          <User className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} aria-hidden="true" />
           <span className={`text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
         </button>
       </div>

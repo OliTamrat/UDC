@@ -45,6 +45,26 @@ interface HistoricalData {
   data: HistoricalReading[];
 }
 
+// Data provenance — maps source field to human-readable label + style
+const SOURCE_CONFIG: Record<string, { label: string; abbr: string; color: string; bg: string }> = {
+  usgs:   { label: "USGS NWIS",          abbr: "USGS",   color: "text-blue-400",   bg: "bg-blue-500/10 border-blue-500/30" },
+  epa:    { label: "EPA Water Quality Exchange", abbr: "EPA",  color: "text-green-400",  bg: "bg-green-500/10 border-green-500/30" },
+  seed:   { label: "Baseline/Modeled",    abbr: "Model",  color: "text-slate-400",  bg: "bg-slate-500/10 border-slate-500/30" },
+  manual: { label: "Manual Entry",         abbr: "Manual", color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/30" },
+};
+
+function SourceBadge({ source, isDark }: { source: string; isDark: boolean }) {
+  const cfg = SOURCE_CONFIG[source] || SOURCE_CONFIG.manual;
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${cfg.bg} ${cfg.color}`}
+      title={`Data source: ${cfg.label}`}
+    >
+      {cfg.abbr}
+    </span>
+  );
+}
+
 export default function StationDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -54,6 +74,7 @@ export default function StationDetailPage() {
   const stationId = params.id as string;
   const [station, setStation] = useState<MonitoringStation | null>(null);
   const [historical, setHistorical] = useState<HistoricalData | null>(null);
+  const [dataSources, setDataSources] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -87,6 +108,10 @@ export default function StationDetailPage() {
       if (histRes.ok) {
         const histData = await histRes.json();
         if (histData.data && histData.data.length > 0) {
+          // Collect unique data sources for provenance display
+          const sources = [...new Set(histData.data.map((r: { source?: string }) => r.source).filter(Boolean))] as string[];
+          setDataSources(sources);
+
           // Transform API data to chart format (group by month)
           const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
           const byMonth: Record<string, HistoricalReading> = {};
@@ -109,15 +134,19 @@ export default function StationDetailPage() {
             setHistorical({ description: staticHist?.description || "", data: chartData });
           } else {
             setHistorical(getStationHistoricalData(stationId));
+            setDataSources(["seed"]);
           }
         } else {
           setHistorical(getStationHistoricalData(stationId));
+          setDataSources(["seed"]);
         }
       } else {
         setHistorical(getStationHistoricalData(stationId));
+        setDataSources(["seed"]);
       }
     } catch {
       setHistorical(getStationHistoricalData(stationId));
+      setDataSources(["seed"]);
     }
 
     setLoading(false);
@@ -135,7 +164,7 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main className="flex-1 ml-[240px]">
+        <main id="main-content" className="flex-1 ml-[240px]">
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
@@ -149,7 +178,7 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main className="flex-1 ml-[240px]">
+        <main id="main-content" className="flex-1 ml-[240px]">
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="text-center">
@@ -193,11 +222,12 @@ export default function StationDetailPage() {
           <div className="flex items-start gap-4">
             <button
               onClick={() => router.push("/")}
+              aria-label="Back to dashboard"
               className={`p-2 rounded-lg border transition-colors ${
                 isDark ? "border-panel-border hover:bg-panel-hover" : "border-slate-200 hover:bg-slate-100"
               }`}
             >
-              <ArrowLeft className={`w-5 h-5 ${isDark ? "text-slate-400" : "text-slate-600"}`} />
+              <ArrowLeft className={`w-5 h-5 ${isDark ? "text-slate-400" : "text-slate-600"}`} aria-hidden="true" />
             </button>
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-1">
@@ -219,16 +249,19 @@ export default function StationDetailPage() {
             <div className="flex gap-2">
               <button
                 onClick={handleExportCSV}
+                aria-label={`Export CSV data for ${station.name}`}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
                   isDark ? "border-panel-border text-slate-400 hover:bg-panel-hover" : "border-slate-200 text-slate-600 hover:bg-slate-100"
                 }`}
               >
-                <Download className="w-3.5 h-3.5" /> Export CSV
+                <Download className="w-3.5 h-3.5" aria-hidden="true" /> Export CSV
               </button>
-              <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
+              <button
+                aria-label={`Share ${station.name} data`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
                 isDark ? "border-panel-border text-slate-400 hover:bg-panel-hover" : "border-slate-200 text-slate-600 hover:bg-slate-100"
               }`}>
-                <Share2 className="w-3.5 h-3.5" /> Share
+                <Share2 className="w-3.5 h-3.5" aria-hidden="true" /> Share
               </button>
             </div>
           </div>
@@ -266,8 +299,16 @@ export default function StationDetailPage() {
           )}
 
           {reading && (
-            <div className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-              Last updated: {reading.timestamp ? new Date(reading.timestamp).toLocaleString() : "—"}
+            <div className={`flex items-center gap-4 text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+              <span>Last updated: {reading.timestamp ? new Date(reading.timestamp).toLocaleString() : "—"}</span>
+              {dataSources.length > 0 && (
+                <span className="flex items-center gap-1.5">
+                  <span>Sources:</span>
+                  {dataSources.map((src) => (
+                    <SourceBadge key={src} source={src} isDark={isDark} />
+                  ))}
+                </span>
+              )}
             </div>
           )}
 
@@ -282,7 +323,7 @@ export default function StationDetailPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Dissolved Oxygen */}
                 {!isGI && (
-                  <div className="glass-panel rounded-xl p-4">
+                  <div className="glass-panel rounded-xl p-4" role="img" aria-label="Dissolved oxygen trend chart showing monthly averages with EPA minimum threshold of 5 mg/L">
                     <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Dissolved Oxygen</h3>
                     <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly average (mg/L) with EPA minimum threshold</p>
                     <ResponsiveContainer width="100%" height={250}>
@@ -305,7 +346,7 @@ export default function StationDetailPage() {
                 )}
 
                 {/* Temperature */}
-                <div className="glass-panel rounded-xl p-4">
+                <div className="glass-panel rounded-xl p-4" role="img" aria-label="Water temperature trend chart showing monthly averages in degrees Celsius">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Water Temperature</h3>
                   <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly average (°C)</p>
                   <ResponsiveContainer width="100%" height={250}>
@@ -326,7 +367,7 @@ export default function StationDetailPage() {
                 </div>
 
                 {/* E. coli */}
-                <div className="glass-panel rounded-xl p-4">
+                <div className="glass-panel rounded-xl p-4" role="img" aria-label="E. coli levels bar chart showing monthly averages with EPA recreational limit of 410 CFU per 100mL">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>E. coli Levels</h3>
                   <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly average (CFU/100mL) with EPA recreational limit</p>
                   <ResponsiveContainer width="100%" height={250}>
@@ -342,7 +383,7 @@ export default function StationDetailPage() {
                 </div>
 
                 {/* Turbidity */}
-                <div className="glass-panel rounded-xl p-4">
+                <div className="glass-panel rounded-xl p-4" role="img" aria-label="Turbidity trend chart showing monthly averages in NTU">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Turbidity</h3>
                   <p className={`text-xs mb-3 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Monthly average (NTU)</p>
                   <ResponsiveContainer width="100%" height={250}>
