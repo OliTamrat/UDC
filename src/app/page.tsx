@@ -76,15 +76,15 @@ export default function Dashboard() {
                 <span className="gradient-text">Data Dashboard</span>
               </h1>
               <p className={`text-sm max-w-2xl mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                Real-time monitoring, analysis, and visualization of water quality data across the
+                Monitoring, analysis, and visualization of water quality data across the
                 Anacostia River watershed. Integrating research from UDC&apos;s Water Resources
                 Research Institute with environmental data for DC communities.
               </p>
               <div className="flex flex-wrap gap-3">
                 {[
-                  { icon: Droplets, label: "12 Active Sensors", color: "text-blue-400" },
+                  { icon: Droplets, label: "12 Monitoring Stations", color: "text-blue-400" },
                   { icon: MapPin, label: "Anacostia Watershed", color: "text-green-400" },
-                  { icon: TrendingUp, label: "Real-Time Data", color: "text-cyan-400" },
+                  { icon: TrendingUp, label: "USGS Data Integration", color: "text-cyan-400" },
                   { icon: Shield, label: "EPA Standards Tracking", color: "text-amber-400" },
                 ].map((item) => (
                   <div
@@ -101,6 +101,23 @@ export default function Dashboard() {
             </div>
           </section>
 
+          {/* Data Source Notice */}
+          <div className={`flex items-start gap-3 rounded-lg border px-4 py-3 text-xs ${
+            isDark
+              ? "border-blue-500/30 bg-blue-950/30 text-blue-300"
+              : "border-blue-200 bg-blue-50 text-blue-800"
+          }`}>
+            <Shield className="w-4 h-4 mt-0.5 shrink-0" />
+            <div>
+              <span className="font-semibold">Data Sources:</span>{" "}
+              Station locations derived from DC GIS and USGS monitoring sites.
+              Water quality baselines use USGS NWIS instantaneous values (sites 01651000, 01651750)
+              and modeled seasonal patterns from peer-reviewed Anacostia watershed research.
+              Geospatial boundaries from official DC government GIS datasets.
+              This dashboard is a research and educational tool developed by UDC CAUSES/WRRI.
+            </div>
+          </div>
+
           {/* Metric Cards */}
           <section>
             <MetricCards />
@@ -116,8 +133,8 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>Live monitoring data</span>
+                <span className="w-2 h-2 rounded-full bg-blue-400" />
+                <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>USGS &amp; DOEE monitoring network</span>
               </div>
             </div>
             <div className="h-[550px]">

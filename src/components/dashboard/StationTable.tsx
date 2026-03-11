@@ -1,8 +1,9 @@
 "use client";
 
-import { monitoringStations } from "@/data/dc-waterways";
+import { useState, useEffect, useCallback } from "react";
 import { MapPin, AlertCircle, CheckCircle2, Wrench, ExternalLink } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import type { MonitoringStation } from "@/data/dc-waterways";
 
 function StatusBadge({ status }: { status: string }) {
   const config = {
@@ -37,6 +38,35 @@ function WaterQualityIndicator({ value, thresholds }: { value: number; threshold
 export default function StationTable({ onStationClick }: { onStationClick?: (stationId: string) => void }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const [stations, setStations] = useState<MonitoringStation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchStations = useCallback(async () => {
+    try {
+      const res = await fetch("/api/stations");
+      if (res.ok) {
+        setStations(await res.json());
+      }
+    } catch {
+      // Fall back to static data if API unavailable
+      const { monitoringStations } = await import("@/data/dc-waterways");
+      setStations(monitoringStations);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStations();
+  }, [fetchStations]);
+
+  if (loading) {
+    return (
+      <div className="glass-panel rounded-xl p-8 flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="glass-panel rounded-xl overflow-hidden">
@@ -60,7 +90,7 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
             </tr>
           </thead>
           <tbody>
-            {monitoringStations.map((station) => {
+            {stations.map((station) => {
               const r = station.lastReading;
               return (
                 <tr

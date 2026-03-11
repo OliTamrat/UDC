@@ -1,8 +1,10 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { monitoringStations, getStationHistoricalData } from "@/data/dc-waterways";
+import type { MonitoringStation } from "@/data/dc-waterways";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import {
@@ -29,6 +31,20 @@ function StatusBadge({ status, isDark }: { status: string; isDark: boolean }) {
   );
 }
 
+interface HistoricalReading {
+  month: string;
+  dissolvedOxygen: number;
+  temperature: number;
+  pH: number;
+  turbidity: number;
+  eColiCount: number;
+}
+
+interface HistoricalData {
+  description: string;
+  data: HistoricalReading[];
+}
+
 export default function StationDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -36,10 +52,100 @@ export default function StationDetailPage() {
   const isDark = resolvedTheme === "dark";
 
   const stationId = params.id as string;
-  const station = monitoringStations.find((s) => s.id === stationId);
-  const historical = getStationHistoricalData(stationId);
+  const [station, setStation] = useState<MonitoringStation | null>(null);
+  const [historical, setHistorical] = useState<HistoricalData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  if (!station) {
+  const fetchData = useCallback(async () => {
+    // Find station from static data (always available for metadata, position, etc.)
+    const staticStation = monitoringStations.find((s) => s.id === stationId);
+    if (!staticStation) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
+
+    // Try API first for latest station data
+    try {
+      const stationsRes = await fetch("/api/stations");
+      if (stationsRes.ok) {
+        const allStations: MonitoringStation[] = await stationsRes.json();
+        const apiStation = allStations.find((s) => s.id === stationId);
+        if (apiStation) setStation(apiStation);
+        else setStation(staticStation);
+      } else {
+        setStation(staticStation);
+      }
+    } catch {
+      setStation(staticStation);
+    }
+
+    // Try API for history, fall back to static
+    try {
+      const histRes = await fetch(`/api/stations/${stationId}/history`);
+      if (histRes.ok) {
+        const histData = await histRes.json();
+        if (histData.data && histData.data.length > 0) {
+          // Transform API data to chart format (group by month)
+          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const byMonth: Record<string, HistoricalReading> = {};
+          for (const r of histData.data) {
+            const date = new Date(r.timestamp);
+            const monthIdx = date.getMonth();
+            const monthName = months[monthIdx];
+            byMonth[monthName] = {
+              month: monthName,
+              dissolvedOxygen: r.dissolvedOxygen ?? 0,
+              temperature: r.temperature ?? 0,
+              pH: r.pH ?? 0,
+              turbidity: r.turbidity ?? 0,
+              eColiCount: r.eColiCount ?? 0,
+            };
+          }
+          const chartData = months.filter((m) => byMonth[m]).map((m) => byMonth[m]);
+          if (chartData.length > 0) {
+            const staticHist = getStationHistoricalData(stationId);
+            setHistorical({ description: staticHist?.description || "", data: chartData });
+          } else {
+            setHistorical(getStationHistoricalData(stationId));
+          }
+        } else {
+          setHistorical(getStationHistoricalData(stationId));
+        }
+      } else {
+        setHistorical(getStationHistoricalData(stationId));
+      }
+    } catch {
+      setHistorical(getStationHistoricalData(stationId));
+    }
+
+    setLoading(false);
+  }, [stationId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleExportCSV = () => {
+    window.open(`/api/export?format=csv&station=${stationId}`, "_blank");
+  };
+
+  if (loading) {
+    return (
+      <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
+        <Sidebar />
+        <main className="flex-1 ml-[240px]">
+          <Header />
+          <div className="p-6 flex items-center justify-center h-[60vh]">
+            <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (notFound || !station) {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
@@ -72,7 +178,6 @@ export default function StationDetailPage() {
   const typeLabel = station.type.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase());
   const isGI = station.type === "green-infrastructure";
 
-  // EPA thresholds
   const epaLimits = {
     dissolvedOxygen: { min: 5, label: "EPA Minimum (5 mg/L)" },
     eColiCount: { max: 410, label: "EPA Recreational Limit (410 CFU/100mL)" },
@@ -112,9 +217,12 @@ export default function StationDetailPage() {
               )}
             </div>
             <div className="flex gap-2">
-              <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
-                isDark ? "border-panel-border text-slate-400 hover:bg-panel-hover" : "border-slate-200 text-slate-600 hover:bg-slate-100"
-              }`}>
+              <button
+                onClick={handleExportCSV}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
+                  isDark ? "border-panel-border text-slate-400 hover:bg-panel-hover" : "border-slate-200 text-slate-600 hover:bg-slate-100"
+                }`}
+              >
                 <Download className="w-3.5 h-3.5" /> Export CSV
               </button>
               <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
