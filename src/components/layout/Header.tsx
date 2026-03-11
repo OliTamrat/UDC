@@ -24,6 +24,8 @@ interface SearchResult {
 const pageResults: SearchResult[] = [
   { id: "page-research", name: "Research Portal", type: "page", href: "/research" },
   { id: "page-education", name: "Education & Outreach", type: "page", href: "/education" },
+  { id: "page-methodology", name: "Methodology & Data Sources", type: "page", href: "/methodology" },
+  { id: "page-dashboard", name: "Dashboard — Water Quality Overview", type: "page", href: "/" },
 ];
 
 export default function Header() {
@@ -60,13 +62,28 @@ export default function Header() {
     }
 
     for (const project of researchProjects) {
-      if (project.title.toLowerCase().includes(q) || project.tags.some((t: string) => t.toLowerCase().includes(q))) {
-        results.push({ id: project.id, name: project.title, type: "research", href: "/research" });
+      if (
+        project.title.toLowerCase().includes(q) ||
+        project.pi.toLowerCase().includes(q) ||
+        project.department.toLowerCase().includes(q) ||
+        project.description.toLowerCase().includes(q) ||
+        project.funding.toLowerCase().includes(q) ||
+        project.tags.some((t: string) => t.toLowerCase().includes(q))
+      ) {
+        results.push({
+          id: project.id,
+          name: q.length > 0 && project.pi.toLowerCase().includes(q)
+            ? `${project.title} (${project.pi})`
+            : project.title,
+          type: "research",
+          href: "/research",
+        });
       }
     }
 
     for (const page of pageResults) {
-      if (page.name.toLowerCase().includes(q)) {
+      const keywords = page.name.toLowerCase();
+      if (keywords.includes(q) || page.href.toLowerCase().includes(q)) {
         results.push(page);
       }
     }
