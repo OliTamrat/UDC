@@ -32,7 +32,7 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [x] **Data export** — CSV and JSON export via `/api/export?format=csv&station=ANA-001`
 - [x] **USGS ingestion** — `POST /api/ingest?source=usgs` fetches real USGS NWIS instantaneous values
 - [x] **Ingestion logging** — `ingestion_log` table tracks all ingest runs with status and error messages
-- [ ] **Cloud migration** — Apply for Azure for Education, migrate SQLite → Azure PostgreSQL
+- [x] **Neon PostgreSQL** — `@neondatabase/serverless` + `ws`; `DATABASE_URL` env var switches from SQLite
 - [ ] **Cron scheduling** — Set up Azure Functions Timer or Vercel Cron for automated ingestion
 - [x] **Frontend migration** — StationTable, MetricCards, station detail page fetch from API with static fallback
 
@@ -43,12 +43,13 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [ ] User authentication/authorization
 - [ ] Admin panel for data management
 
-## Cloud Migration Plan (Azure for Education)
-- **Target**: Azure App Service + Azure Database for PostgreSQL + Azure Functions
-- **Database schema is portable** — SQLite schema maps directly to PostgreSQL
-- **API routes stay the same** — only the `src/lib/db.ts` connection changes
-- **Environment variables needed**: `DATABASE_URL`, `INGEST_API_KEY`
-- **Apply at**: azure.microsoft.com/en-us/free/students (with .edu email)
+## Database Setup
+- **Local dev**: SQLite via better-sqlite3 (default, no config needed)
+- **Production**: Neon PostgreSQL — set `DATABASE_URL` env var on Vercel
+- **Seed Neon**: `DATABASE_URL=postgresql://... npx tsx scripts/seed.ts`
+- **Seed local**: `npx tsx scripts/seed.ts` (or `npm run db:seed`)
+- **Schema**: Dual schemas in `src/lib/db.ts` (SQLite + PostgreSQL), auto-selected
+- **Future**: Optionally migrate to Azure PostgreSQL (same `DATABASE_URL` swap)
 
 ## Key Files
 - `src/app/page.tsx` — Main dashboard

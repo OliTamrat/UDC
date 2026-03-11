@@ -13,6 +13,7 @@
     "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "@tailwindcss/postcss": "^4.2.1",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^25.4.0",
@@ -28,12 +29,14 @@
     "react-leaflet": "^5.0.0",
     "recharts": "^3.8.0",
     "tailwindcss": "^4.2.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/better-sqlite3": "^7.6.13",
+    "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^5.1.4",
     "jsdom": "^28.1.0",
     "tsx": "^4.21.0",
