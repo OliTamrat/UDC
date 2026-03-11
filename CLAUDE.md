@@ -34,12 +34,12 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [x] **Ingestion logging** — `ingestion_log` table tracks all ingest runs with status and error messages
 - [ ] **Cloud migration** — Apply for Azure for Education, migrate SQLite → Azure PostgreSQL
 - [ ] **Cron scheduling** — Set up Azure Functions Timer or Vercel Cron for automated ingestion
-- [ ] **Frontend migration** — Switch dashboard components from static imports to API fetch calls
+- [x] **Frontend migration** — StationTable, MetricCards, station detail page fetch from API with static fallback
 
-### Phase 4: Nice-to-Have
-- [ ] Contributing guidelines
-- [ ] Architecture diagrams
-- [ ] Docker/Kubernetes configs
+### Phase 4: Nice-to-Have — DONE (Docker, Docs)
+- [x] Contributing guidelines — `CONTRIBUTING.md`
+- [x] Architecture diagrams — ASCII diagram in README
+- [x] Docker/Kubernetes configs — `Dockerfile`, `docker-compose.yml`, `.dockerignore`
 - [ ] User authentication/authorization
 - [ ] Admin panel for data management
 
