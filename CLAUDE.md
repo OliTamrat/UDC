@@ -1,5 +1,20 @@
 # UDC Water Resources Data Dashboard - Project Memory
 
+## Rules for Claude Code
+
+### Security — NEVER Expose Credentials
+- **NEVER** commit, log, or output credentials, API keys, database connection strings, passwords, or tokens
+- **NEVER** hardcode secrets in source files — always use environment variables
+- When referencing `DATABASE_URL`, `INGEST_API_KEY`, or similar, use placeholder values like `postgresql://user:password@host/db`
+- If a user shares a credential in conversation, do NOT echo it back in code, commits, or file contents
+- `.env.local` is gitignored — secrets belong there, never in tracked files
+
+### Git Commit & Push Attribution
+- All commits MUST end with the Claude Code session attribution line:
+  `https://claude.ai/code/<session_id>`
+- Never amend someone else's commit — always create new commits
+- Write clear, descriptive commit messages summarizing the "why"
+
 ## Project Overview
 Interactive water quality monitoring dashboard for UDC's Water Resources Research Institute (WRRI) and CAUSES.
 Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Recharts, React 19.
@@ -60,7 +75,7 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/app/api/export/route.ts` — CSV/JSON data export
 - `src/app/api/ingest/route.ts` — USGS data ingestion
 - `src/app/api/health/route.ts` — Health check endpoint
-- `src/lib/db.ts` — SQLite database connection and schema
+- `src/lib/db.ts` — Database abstraction (SQLite + Neon PostgreSQL)
 - `src/lib/logger.ts` — Client-side logging utility
 - `src/lib/validation.ts` — Input sanitization
 - `src/components/map/DCMap.tsx` — Interactive Leaflet map (dynamic import, SSR disabled)
