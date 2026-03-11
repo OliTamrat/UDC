@@ -6,7 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "UDC Water Resources Dashboard | Data Integration, Analysis & Visualization",
   description:
-    "University of the District of Columbia CAUSES/WRRI interactive water resources dashboard for the Anacostia River watershed. Real-time monitoring, research data, and environmental education for DC communities.",
+    "University of the District of Columbia CAUSES/WRRI interactive water resources dashboard for the Anacostia River watershed. Monitoring, research data, and environmental education for DC communities.",
   keywords: [
     "UDC",
     "University of the District of Columbia",
