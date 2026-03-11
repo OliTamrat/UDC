@@ -1,6 +1,12 @@
-import { streamText, convertToModelMessages, UIMessage, tool, stepCountIs } from "ai";
+import {
+  streamText,
+  convertToModelMessages,
+  UIMessage,
+  tool,
+  stepCountIs,
+  jsonSchema,
+} from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
-import { z } from "zod";
 
 export const maxDuration = 60;
 
@@ -62,9 +68,9 @@ export async function POST(req: Request) {
   }
 
   // Derive base URL from request for tool calls (works on Vercel, Docker, and local dev)
-  const reqUrl = new URL(req.url);
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || `${reqUrl.protocol}//${reqUrl.host}`;
+  const forwardedProto = req.headers.get("x-forwarded-proto") || "https";
+  const host = req.headers.get("host") || new URL(req.url).host;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${forwardedProto}://${host}`;
 
   let body: { messages: UIMessage[] };
   try {
@@ -75,21 +81,41 @@ export async function POST(req: Request) {
 
   const { messages } = body;
 
+  // Guard against empty messages (used by the API key check)
+  if (!messages || messages.length === 0) {
+    return Response.json({ status: "ok" });
+  }
+
+  let modelMessages;
+  try {
+    modelMessages = await convertToModelMessages(messages);
+  } catch (err) {
+    console.error("[chat] Message conversion error:", err);
+    return Response.json(
+      { error: "Failed to process messages" },
+      { status: 400 },
+    );
+  }
+
   try {
     const result = streamText({
       model: anthropic("claude-sonnet-4-5-20250514"),
       system: SYSTEM_PROMPT,
-      messages: await convertToModelMessages(messages),
+      messages: modelMessages,
       tools: {
         getStationData: tool({
           description:
             "Get current readings and metadata for a specific monitoring station by ID (e.g. ANA-001, WB-001, GI-001)",
-          inputSchema: z.object({
-            stationId: z
-              .string()
-              .describe(
-                "The station ID, e.g. ANA-001, WB-001, HR-001, GI-001",
-              ),
+          inputSchema: jsonSchema<{ stationId: string }>({
+            type: "object",
+            properties: {
+              stationId: {
+                type: "string",
+                description:
+                  "The station ID, e.g. ANA-001, WB-001, HR-001, GI-001",
+              },
+            },
+            required: ["stationId"],
           }),
           execute: async ({ stationId }) => {
             try {
@@ -100,7 +126,8 @@ export async function POST(req: Request) {
                 (s: Record<string, unknown>) =>
                   (s.id as string).toUpperCase() === stationId.toUpperCase(),
               );
-              if (!station) return { error: `Station ${stationId} not found` };
+              if (!station)
+                return { error: `Station ${stationId} not found` };
               return station;
             } catch {
               return { error: "Could not reach stations API" };
@@ -110,12 +137,20 @@ export async function POST(req: Request) {
         getStationHistory: tool({
           description:
             "Get historical water quality readings for a station. Returns time-series data for trend analysis.",
-          inputSchema: z.object({
-            stationId: z.string().describe("The station ID"),
-            limit: z
-              .number()
-              .optional()
-              .describe("Max number of readings to return (default 50)"),
+          inputSchema: jsonSchema<{ stationId: string; limit?: number }>({
+            type: "object",
+            properties: {
+              stationId: {
+                type: "string",
+                description: "The station ID",
+              },
+              limit: {
+                type: "number",
+                description:
+                  "Max number of readings to return (default 50)",
+              },
+            },
+            required: ["stationId"],
           }),
           execute: async ({ stationId, limit }) => {
             try {
@@ -131,7 +166,10 @@ export async function POST(req: Request) {
         listAllStations: tool({
           description:
             "List all 12 monitoring stations with their current status, type, and latest readings.",
-          inputSchema: z.object({}),
+          inputSchema: jsonSchema<Record<string, never>>({
+            type: "object",
+            properties: {},
+          }),
           execute: async () => {
             try {
               const res = await fetch(`${baseUrl}/api/stations`);

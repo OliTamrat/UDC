@@ -347,7 +347,10 @@ export default function ResearchAssistant() {
                 }`}
               >
                 <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
-                <p>Something went wrong. Please try again.</p>
+                <div>
+                  <p className="font-semibold mb-1">Something went wrong</p>
+                  <p>{error.message || "Please try again."}</p>
+                </div>
               </div>
             )}
 
