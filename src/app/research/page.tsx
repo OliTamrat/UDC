@@ -13,9 +13,14 @@ import {
   DollarSign,
   Search,
   Filter,
+  BookOpen,
+  Download,
+  Globe,
+  ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
+import Link from "next/link";
 
 const tagColors: Record<string, string> = {
   "green-infrastructure": "bg-green-500/10 text-green-400 border-green-500/20",
@@ -131,6 +136,13 @@ export default function ResearchPage() {
             </div>
           </div>
 
+          {/* Results count */}
+          <div className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            Showing {filteredProjects.length} of {researchProjects.length} projects
+            {selectedTag && <span> tagged <strong className={isDark ? "text-slate-300" : "text-slate-700"}>{selectedTag.replace(/-/g, " ")}</strong></span>}
+            {searchTerm && <span> matching &quot;{searchTerm}&quot;</span>}
+          </div>
+
           {/* Research Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredProjects.map((project) => (
@@ -143,13 +155,23 @@ export default function ResearchPage() {
                     <div className="p-2 rounded-lg bg-purple-500/10">
                       <FlaskConical className="w-4 h-4 text-purple-400" />
                     </div>
-                    <span className="text-[10px] font-medium text-green-400 uppercase bg-green-500/10 px-2 py-0.5 rounded-full border border-green-500/20">
+                    <span className={`text-[10px] font-medium uppercase px-2 py-0.5 rounded-full border ${
+                      project.status === "Active"
+                        ? "text-green-400 bg-green-500/10 border-green-500/20"
+                        : project.status === "Planning"
+                        ? "text-amber-400 bg-amber-500/10 border-amber-500/20"
+                        : "text-blue-400 bg-blue-500/10 border-blue-500/20"
+                    }`}>
                       {project.status}
                     </span>
                   </div>
-                  <button className={`opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg ${isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"}`}>
+                  <Link
+                    href="/methodology"
+                    className={`opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg ${isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"}`}
+                    title="View methodology & data"
+                  >
                     <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
-                  </button>
+                  </Link>
                 </div>
 
                 <h3 className={`text-sm font-semibold mb-2 leading-snug ${isDark ? "text-white" : "text-slate-900"}`}>
@@ -198,9 +220,56 @@ export default function ResearchPage() {
             ))}
           </div>
 
+          {/* Quick Links for Researchers */}
+          <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link
+              href="/methodology"
+              className={`glass-panel rounded-xl p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
+            >
+              <BookOpen className="w-5 h-5 text-blue-400 mb-2" />
+              <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Methodology & Data Dictionary</h3>
+              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                Sampling protocols, QA/QC procedures, parameter definitions, and EPA threshold documentation.
+              </p>
+              <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
+                View documentation <ArrowRight className="w-3 h-3" />
+              </div>
+            </Link>
+            <a
+              href="/api/export?format=csv"
+              download
+              className={`glass-panel rounded-xl p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
+            >
+              <Download className="w-5 h-5 text-green-400 mb-2" />
+              <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Export Full Dataset</h3>
+              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                Download all water quality readings as CSV with citation metadata, source provenance, and station metadata.
+              </p>
+              <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
+                Download CSV <ArrowRight className="w-3 h-3" />
+              </div>
+            </a>
+            <Link
+              href="/education#resources"
+              className={`glass-panel rounded-xl p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"}`}
+            >
+              <Globe className="w-5 h-5 text-purple-400 mb-2" />
+              <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>API & Open Data</h3>
+              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                REST API access, Python/R analysis templates, and programmatic data retrieval for research integration.
+              </p>
+              <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
+                Access API docs <ArrowRight className="w-3 h-3" />
+              </div>
+            </Link>
+          </section>
+
           {/* Data Sources */}
           <section className="glass-panel rounded-xl p-6">
-            <h2 className={`text-sm font-semibold mb-4 ${isDark ? "text-white" : "text-slate-900"}`}>Data Integration Sources</h2>
+            <h2 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Data Integration Sources</h2>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+              Partner organizations and external data feeds integrated into the dashboard
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 {

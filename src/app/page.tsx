@@ -153,10 +153,15 @@ export default function Dashboard() {
 
           {/* Water Quality Section */}
           <section id="water-quality">
-            <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Water Quality Analysis</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-              Historical trends and current conditions across monitoring parameters
-            </p>
+            <div className="mb-4">
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Water Quality Analysis</h2>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                Historical trends and current conditions across four key monitoring parameters.
+                Dissolved oxygen and E. coli levels are compared against EPA recreational water quality
+                standards. Data is sourced from USGS NWIS sensors and the EPA Water Quality Portal for the
+                Anacostia watershed (HUC 02070010).
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DOTrendChart />
               <TemperatureTrendChart />
@@ -167,16 +172,43 @@ export default function Dashboard() {
 
           {/* Multi-parameter overview */}
           <section id="analytics">
+            <div className="mb-3">
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Multi-Parameter Overview</h2>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                Correlate dissolved oxygen, temperature, pH, and turbidity on a unified timeline.
+                Parameter relationships reveal how seasonal changes and storm events affect overall
+                water health — for example, elevated turbidity after rainfall often coincides with
+                depressed dissolved oxygen levels.
+              </p>
+            </div>
             <MultiParameterChart />
           </section>
 
           {/* Environmental Justice */}
           <section>
+            <div className="mb-3">
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Environmental Justice</h2>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                Water quality issues disproportionately affect communities in DC&apos;s eastern wards.
+                Combined sewer overflows (CSOs), impervious surface coverage, and limited green space access
+                are interconnected factors that UDC&apos;s WRRI tracks across all eight wards to support
+                equitable environmental policy and community-led restoration.
+              </p>
+            </div>
             <EnvironmentalJustice />
           </section>
 
           {/* Station Table */}
           <section id="stormwater">
+            <div className="mb-3">
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Monitoring Stations</h2>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                All 12 stations across the Anacostia, Potomac, and Rock Creek watersheds. Click any row
+                to view detailed readings, historical charts, and data export options for that station.
+                Data provenance badges indicate whether readings come from USGS sensors, EPA WQP records,
+                or the seed dataset.
+              </p>
+            </div>
             <StationTable onStationClick={handleStationNavigate} />
           </section>
 
@@ -202,7 +234,12 @@ export default function Dashboard() {
                   Innovation and Infrastructure (CURII)
                 </p>
                 <p className={`text-[10px] mt-1 ${isDark ? "text-slate-600" : "text-slate-400"}`}>
-                  Funded by DC Government | Data sources: DOEE, EPA, USGS, Anacostia Riverkeeper
+                  Funded by DC Government | Data: DOEE, EPA WQP, USGS NWIS, Anacostia Riverkeeper
+                </p>
+                <p className={`text-[10px] mt-0.5 ${isDark ? "text-slate-600" : "text-slate-400"}`}>
+                  Open data: <a href="/api/export?format=csv" className="underline hover:text-udc-gold">CSV</a>{" / "}
+                  <a href="/api/export?format=json" className="underline hover:text-udc-gold">JSON</a>{" | "}
+                  <a href="/methodology" className="underline hover:text-udc-gold">Methodology &amp; Data Dictionary</a>
                 </p>
               </div>
               <div className="text-right">
