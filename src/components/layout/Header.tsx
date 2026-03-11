@@ -94,7 +94,7 @@ export default function Header() {
   }
 
   return (
-    <header className={`h-14 border-b flex items-center justify-between px-2 sm:px-4 md:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 overflow-hidden ${
+    <header className={`h-14 border-b flex items-center justify-between px-2 sm:px-4 md:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
       isDark ? "border-panel-border bg-panel-bg/80" : "border-slate-200 bg-white/80"
     }`}>
       {/* Left side: hamburger + logo + search */}

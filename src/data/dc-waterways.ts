@@ -480,7 +480,7 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "GI-001",
     name: "UDC Van Ness Green Roof",
-    position: [38.9435, -77.0230], // UDC campus at Van Ness
+    position: [38.9436, -77.0631], // UDC campus at 4200 Connecticut Ave NW
     type: "green-infrastructure",
     status: "active",
     parameters: ["Runoff Volume", "Retention Rate", "TSS", "Nutrients"],
