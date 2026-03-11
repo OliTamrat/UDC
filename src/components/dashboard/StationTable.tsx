@@ -92,7 +92,7 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
         <p className={`text-xs mt-0.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Real-time status across the Anacostia watershed</p>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm" aria-label="Monitoring stations with latest water quality readings">
+        <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
             <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Station</th>

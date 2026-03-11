@@ -23,7 +23,7 @@ import { useTheme } from "@/context/ThemeContext";
 const DCMap = dynamic(() => import("@/components/map/DCMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[500px] rounded-xl glass-panel flex items-center justify-center">
+    <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-xl glass-panel flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
         <span className="text-sm text-slate-400">Loading DC Map...</span>
@@ -50,11 +50,11 @@ export default function Dashboard() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px]">
+      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
         <Header />
-        <div className="p-6 space-y-6">
+        <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
           {/* Hero Section */}
-          <section className={`relative overflow-hidden rounded-2xl border p-8 ${
+          <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
               ? "border-panel-border bg-gradient-to-br from-udc-navy via-panel-bg to-udc-dark"
               : "border-slate-200 bg-gradient-to-br from-blue-50 via-white to-slate-50"
@@ -71,7 +71,7 @@ export default function Dashboard() {
                   CAUSES / WRRI
                 </span>
               </div>
-              <h1 className={`text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+              <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 DC Water Resources{" "}
                 <span className="gradient-text">Data Dashboard</span>
               </h1>
@@ -125,7 +125,7 @@ export default function Dashboard() {
 
           {/* Interactive Map */}
           <section id="map">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <div>
                 <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Interactive Watershed Map</h2>
                 <p className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
@@ -137,7 +137,7 @@ export default function Dashboard() {
                 <span className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>USGS &amp; DOEE monitoring network</span>
               </div>
             </div>
-            <div className="h-[550px]">
+            <div className="h-[300px] sm:h-[400px] md:h-[550px]">
               <DCMap
                 onStationSelect={setSelectedStation}
                 selectedStation={selectedStation}
@@ -213,39 +213,49 @@ export default function Dashboard() {
           </section>
 
           {/* Footer */}
-          <footer className={`border-t pt-6 pb-4 ${isDark ? "border-panel-border" : "border-slate-200"}`}>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <footer className={`border-t pt-6 pb-6 ${isDark ? "border-panel-border" : "border-slate-200"}`}>
+            <div className="flex flex-col items-center gap-4 text-center">
+              {/* Logo + University name */}
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-[10px]">
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-[10px] flex-shrink-0">
                   UDC
                 </div>
-                <div>
-                  <p className={`text-xs font-medium ${isDark ? "text-white" : "text-slate-900"}`}>
+                <div className="text-left">
+                  <p className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
                     University of the District of Columbia
                   </p>
-                  <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-                    College of Agriculture, Urban Sustainability & Environmental Sciences (CAUSES)
+                  <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    CAUSES / WRRI
                   </p>
                 </div>
               </div>
-              <div className="text-center">
-                <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-                  Water Resources Research Institute (WRRI) | Center for Urban Resilience,
-                  Innovation and Infrastructure (CURII)
+
+              {/* Institute info */}
+              <div className="space-y-1 max-w-md">
+                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Water Resources Research Institute (WRRI)
                 </p>
-                <p className={`text-[10px] mt-1 ${isDark ? "text-slate-600" : "text-slate-400"}`}>
-                  Funded by DC Government | Data: DOEE, EPA WQP, USGS NWIS, Anacostia Riverkeeper
+                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                  Center for Urban Resilience, Innovation &amp; Infrastructure (CURII)
                 </p>
-                <p className={`text-[10px] mt-0.5 ${isDark ? "text-slate-600" : "text-slate-400"}`}>
-                  Open data: <a href="/api/export?format=csv" className="underline hover:text-udc-gold">CSV</a>{" / "}
-                  <a href="/api/export?format=json" className="underline hover:text-udc-gold">JSON</a>{" | "}
-                  <a href="/methodology" className="underline hover:text-udc-gold">Methodology &amp; Data Dictionary</a>
+                <p className={`text-[11px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                  4200 Connecticut Ave NW, Washington, DC 20008
                 </p>
               </div>
-              <div className="text-right">
-                <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>4200 Connecticut Ave NW</p>
-                <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-500"}`}>Washington, DC 20008</p>
+
+              {/* Data links */}
+              <div className={`flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                <a href="/api/export?format=csv" className="underline hover:text-udc-gold transition-colors">Export CSV</a>
+                <span aria-hidden="true">·</span>
+                <a href="/api/export?format=json" className="underline hover:text-udc-gold transition-colors">Export JSON</a>
+                <span aria-hidden="true">·</span>
+                <a href="/methodology" className="underline hover:text-udc-gold transition-colors">Methodology</a>
               </div>
+
+              {/* Funding attribution */}
+              <p className={`text-[10px] ${isDark ? "text-slate-600" : "text-slate-400"}`}>
+                Funded by DC Government · Data: DOEE, EPA WQP, USGS NWIS, Anacostia Riverkeeper
+              </p>
             </div>
           </footer>
         </div>
