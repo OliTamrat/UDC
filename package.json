@@ -13,12 +13,15 @@
     "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.58",
+    "@ai-sdk/react": "^3.0.118",
     "@neondatabase/serverless": "^1.0.2",
     "@tailwindcss/postcss": "^4.2.1",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^25.4.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "ai": "^6.0.116",
     "better-sqlite3": "^12.6.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.577.0",
@@ -30,7 +33,8 @@
     "recharts": "^3.8.0",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
-    "ws": "^8.19.0"
+    "ws": "^8.19.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
