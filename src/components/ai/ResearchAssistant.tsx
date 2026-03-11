@@ -120,14 +120,14 @@ export default function ResearchAssistant() {
 
       {/* Chat Panel */}
       <div
-        className={`fixed bottom-20 right-5 z-50 transition-all duration-300 origin-bottom-right ${
+        className={`fixed bottom-20 left-3 right-3 sm:left-auto sm:right-5 z-50 transition-all duration-300 origin-bottom-right ${
           isOpen
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 translate-y-4 pointer-events-none"
         }`}
       >
         <div
-          className={`w-[360px] sm:w-[420px] h-[560px] sm:h-[600px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden ${
+          className={`w-full sm:w-[420px] h-[560px] sm:h-[600px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden ${
             isDark
               ? "bg-panel-bg border-panel-border"
               : "bg-white border-slate-200"
