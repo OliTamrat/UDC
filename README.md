@@ -86,6 +86,44 @@ The UDC Water Resources Data Dashboard is a centralized platform that brings tog
 | Mapping | Leaflet |
 | Charts | Recharts |
 | Icons | Lucide React |
+| Database | SQLite (better-sqlite3) |
+| Testing | Vitest |
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Frontend (React)                       │
+│  ┌──────────┐ ┌────────────┐ ┌───────────┐ ┌─────────┐ │
+│  │ Dashboard │ │ Station    │ │ Research  │ │Education│ │
+│  │ (Map,    │ │ Detail     │ │ Portal    │ │& Outreach│ │
+│  │ Charts,  │ │ /station/  │ │ /research │ │/education│ │
+│  │ Tables)  │ │ [id]       │ │           │ │         │ │
+│  └────┬─────┘ └─────┬──────┘ └───────────┘ └─────────┘ │
+│       │              │                                    │
+│       ▼              ▼                                    │
+│  ┌──────────────────────────────────────────────────┐    │
+│  │              Next.js API Routes                    │    │
+│  │  GET /api/stations    GET /api/stations/:id/history│   │
+│  │  GET /api/export      POST /api/ingest             │   │
+│  │  GET /api/health                                   │    │
+│  └────────────────────────┬─────────────────────────┘    │
+└───────────────────────────┼──────────────────────────────┘
+                            │
+                ┌───────────▼───────────┐
+                │    SQLite Database     │
+                │  stations | readings   │
+                │  ingestion_log         │
+                └───────────┬───────────┘
+                            │
+              ┌─────────────▼──────────────┐
+              │   External Data Sources     │
+              │  USGS NWIS | EPA WQX       │
+              │  DC DOEE   | DC GIS        │
+              └────────────────────────────┘
+```
 
 ---
 
@@ -174,6 +212,56 @@ This dashboard supports and integrates data from:
 4. Potomac Source Water Protection Partnership (Dr. Tolessa Deksissa)
 5. Tree Cell Stormwater Filtration Effectiveness (Dr. James Richardson)
 6. Rainwater Reuse Safety Assessment (Dr. Maria Chen)
+
+---
+
+## Deployment
+
+### Production Build
+
+```bash
+npm run build
+npm start       # Starts on port 3000
+```
+
+### Docker
+
+```dockerfile
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+EXPOSE 3000
+CMD ["node", "server.js"]
+```
+
+```bash
+docker build -t udc-dashboard .
+docker run -p 3000:3000 udc-dashboard
+```
+
+### Vercel
+
+Push to GitHub and import the repository at [vercel.com/new](https://vercel.com/new). No additional configuration needed.
+
+### Health Check
+
+The `/api/health` endpoint returns JSON with `status`, `timestamp`, `version`, and `uptime` — use this for load balancer or uptime monitoring probes.
+
+### Testing
+
+```bash
+npm test          # Run all tests once
+npm run test:watch # Watch mode
+```
 
 ---
 

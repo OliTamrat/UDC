@@ -1,8 +1,11 @@
 "use client";
 
-import { Bell, Search, User, Calendar, Sun, Moon, Monitor } from "lucide-react";
+import { Bell, Search, User, Calendar, Sun, Moon, Monitor, MapPin } from "lucide-react";
 import { useTheme, type Theme } from "@/context/ThemeContext";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { monitoringStations, researchProjects } from "@/data/dc-waterways";
+import { sanitizeSearchInput, isInputSafe } from "@/lib/validation";
 
 const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [
   { value: "light", label: "Light", icon: Sun },
@@ -10,10 +13,26 @@ const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [
   { value: "system", label: "System", icon: Monitor },
 ];
 
+interface SearchResult {
+  id: string;
+  name: string;
+  type: "station" | "research" | "page";
+  href: string;
+}
+
+const pageResults: SearchResult[] = [
+  { id: "page-research", name: "Research Portal", type: "page", href: "/research" },
+  { id: "page-education", name: "Education & Outreach", type: "page", href: "/education" },
+];
+
 export default function Header() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showResults, setShowResults] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const now = new Date();
   const dateStr = now.toLocaleDateString("en-US", {
@@ -26,32 +45,108 @@ export default function Header() {
   const isDark = resolvedTheme === "dark";
   const CurrentIcon = theme === "system" ? Monitor : theme === "dark" ? Moon : Sun;
 
+  const searchResults = useMemo<SearchResult[]>(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return [];
+
+    const results: SearchResult[] = [];
+
+    for (const station of monitoringStations) {
+      if (station.name.toLowerCase().includes(q) || station.id.toLowerCase().includes(q) || station.type.toLowerCase().includes(q)) {
+        results.push({ id: station.id, name: station.name, type: "station", href: `/station/${station.id}` });
+      }
+    }
+
+    for (const project of researchProjects) {
+      if (project.title.toLowerCase().includes(q) || project.tags.some((t: string) => t.toLowerCase().includes(q))) {
+        results.push({ id: project.id, name: project.title, type: "research", href: "/research" });
+      }
+    }
+
+    for (const page of pageResults) {
+      if (page.name.toLowerCase().includes(q)) {
+        results.push(page);
+      }
+    }
+
+    return results.slice(0, 8);
+  }, [searchQuery]);
+
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setShowThemeMenu(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowResults(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  function handleResultClick(result: SearchResult) {
+    setSearchQuery("");
+    setShowResults(false);
+    router.push(result.href);
+  }
+
   return (
     <header className={`h-14 border-b flex items-center justify-between px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
       isDark ? "border-panel-border bg-panel-bg/80" : "border-slate-200 bg-white/80"
     }`}>
       <div className="flex items-center gap-4">
-        <div className="relative">
+        <div className="relative" ref={searchRef}>
           <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
           <input
             type="text"
             placeholder="Search stations, data, research..."
+            value={searchQuery}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (isInputSafe(val)) {
+                setSearchQuery(sanitizeSearchInput(val));
+                setShowResults(true);
+              }
+            }}
+            onFocus={() => { if (searchQuery) setShowResults(true); }}
             className={`w-72 border rounded-lg pl-10 pr-4 py-1.5 text-sm focus:outline-none transition-colors ${
               isDark
                 ? "bg-udc-dark/50 border-panel-border text-slate-300 placeholder:text-slate-600 focus:border-udc-blue/50"
                 : "bg-slate-100 border-slate-200 text-slate-700 placeholder:text-slate-400 focus:border-blue-400"
             }`}
           />
+          {showResults && searchQuery && (
+            <div className={`absolute left-0 top-full mt-1 w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
+              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
+            }`}>
+              {searchResults.length === 0 ? (
+                <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                  No results found
+                </div>
+              ) : (
+                searchResults.map((result) => (
+                  <button
+                    key={result.id}
+                    onClick={() => handleResultClick(result)}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors text-left ${
+                      isDark ? "text-slate-300 hover:bg-panel-hover" : "text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    <MapPin className={`w-3.5 h-3.5 shrink-0 ${
+                      result.type === "station" ? "text-blue-400" : result.type === "research" ? "text-green-400" : "text-amber-400"
+                    }`} />
+                    <div className="min-w-0">
+                      <span className="block truncate">{result.name}</span>
+                      <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-slate-600" : "text-slate-400"}`}>
+                        {result.type}
+                      </span>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-4">
@@ -111,17 +206,22 @@ export default function Header() {
           )}
         </div>
 
-        <button className={`relative p-2 rounded-lg transition-colors ${
-          isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"
-        }`}>
+        <button
+          className={`relative p-2 rounded-lg transition-colors ${
+            isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"
+          }`}
+          title="Notifications — coming soon"
+        >
           <Bell className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-udc-red" />
         </button>
-        <button className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors border ${
-          isDark
-            ? "hover:bg-panel-hover border-panel-border"
-            : "hover:bg-slate-50 border-slate-200"
-        }`}>
+        <button
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors border ${
+            isDark
+              ? "hover:bg-panel-hover border-panel-border"
+              : "hover:bg-slate-50 border-slate-200"
+          }`}
+          title="Stakeholder portal — coming soon"
+        >
           <User className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
           <span className={`text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
         </button>

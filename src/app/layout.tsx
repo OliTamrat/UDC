@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/context/ThemeContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "UDC Water Resources Dashboard | Data Integration, Analysis & Visualization",
   description:
-    "University of the District of Columbia CAUSES/WRRI interactive water resources dashboard for the Anacostia River watershed. Real-time monitoring, research data, and environmental education for DC communities.",
+    "University of the District of Columbia CAUSES/WRRI interactive water resources dashboard for the Anacostia River watershed. Monitoring, research data, and environmental education for DC communities.",
   keywords: [
     "UDC",
     "University of the District of Columbia",
@@ -41,7 +42,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased transition-colors duration-300">
         <ThemeProvider>
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </ThemeProvider>
       </body>
     </html>
