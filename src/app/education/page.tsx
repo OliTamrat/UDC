@@ -197,7 +197,7 @@ export default function EducationPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main className="flex-1 ml-[240px]">
+      <main id="main-content" className="flex-1 ml-[240px]">
         <Header />
         <div className="p-6 space-y-6">
           {/* Page Header */}
@@ -368,6 +368,62 @@ export default function EducationPage() {
                       <span>{event.location}</span>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Analysis Templates */}
+          <section>
+            <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Analysis Templates</h2>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+              Download ready-to-use scripts that fetch real data from the dashboard API
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                {
+                  name: "Python Analysis Template",
+                  file: "/templates/udc_water_analysis.py",
+                  lang: "Python",
+                  color: "text-blue-400",
+                  bg: "bg-blue-500/10",
+                  borderColor: "border-blue-500/20",
+                  description: "Pandas + Matplotlib script: fetches station data, calculates summary stats, checks EPA compliance, and generates publication-ready charts.",
+                  requires: "pip install requests pandas matplotlib",
+                },
+                {
+                  name: "R Analysis Template",
+                  file: "/templates/udc_water_analysis.R",
+                  lang: "R",
+                  color: "text-green-400",
+                  bg: "bg-green-500/10",
+                  borderColor: "border-green-500/20",
+                  description: "tidyverse + ggplot2 script: fetches station data, performs statistical analysis, EPA compliance checks, and multi-parameter visualizations.",
+                  requires: 'install.packages(c("httr", "jsonlite", "ggplot2", "dplyr", "tidyr"))',
+                },
+              ].map((tmpl) => (
+                <div
+                  key={tmpl.file}
+                  className="glass-panel rounded-xl p-5 hover:border-blue-500/30 transition-all group"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className={`p-2 rounded-lg ${tmpl.bg}`}>
+                      <FileSpreadsheet className={`w-4 h-4 ${tmpl.color}`} />
+                    </div>
+                    <a
+                      href={tmpl.file}
+                      download
+                      className="flex items-center gap-1 px-3 py-1 rounded-lg bg-water-blue/20 text-water-blue text-xs border border-water-blue/30 hover:bg-water-blue/30 transition-colors"
+                    >
+                      <Download className="w-3 h-3" />
+                      Download .{tmpl.lang === "Python" ? "py" : "R"}
+                    </a>
+                  </div>
+                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{tmpl.name}</h3>
+                  <p className={`text-xs mb-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{tmpl.description}</p>
+                  <code className={`text-[10px] block p-2 rounded ${isDark ? "bg-udc-dark/50 text-slate-500" : "bg-slate-100 text-slate-500"}`}>
+                    {tmpl.requires}
+                  </code>
                 </div>
               ))}
             </div>
