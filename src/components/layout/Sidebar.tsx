@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -17,8 +17,10 @@ import {
   Globe,
   Users,
   BookOpen,
+  X,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useSidebar } from "@/context/SidebarContext";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard, section: "overview" },
@@ -44,28 +46,47 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
+  const { mobileOpen, closeMobile } = useSidebar();
   const isDark = resolvedTheme === "dark";
 
-  return (
-    <aside
-      aria-label="Main navigation"
-      className={`fixed left-0 top-0 h-screen border-r z-50 flex flex-col transition-all duration-300 ${
-        collapsed ? "w-[68px]" : "w-[240px]"
-      } ${
-        isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
-      }`}
-    >
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    closeMobile();
+  }, [pathname, closeMobile]);
+
+  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
+  const sidebarContent = (
+    <>
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-panel-border" : "border-slate-200"}`}>
         <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0">
           UDC
         </div>
         {!collapsed && (
-          <div className="overflow-hidden">
+          <div className="overflow-hidden flex-1 min-w-0">
             <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-slate-900"}`}>Water Resources</h1>
             <p className={`text-[10px] leading-tight ${isDark ? "text-slate-400" : "text-slate-500"}`}>CAUSES / WRRI Dashboard</p>
           </div>
         )}
+        {/* Close button — mobile only */}
+        <button
+          onClick={closeMobile}
+          aria-label="Close navigation"
+          className={`lg:hidden p-1.5 rounded-lg transition-colors ${
+            isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+          }`}
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -118,10 +139,11 @@ export default function Sidebar() {
           <Settings className="w-4 h-4" />
           {!collapsed && <span>Settings</span>}
         </Link>
+        {/* Collapse toggle — desktop only */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
+          className={`hidden lg:flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
           } ${collapsed ? "justify-center" : ""}`}
         >
@@ -129,6 +151,43 @@ export default function Sidebar() {
           {!collapsed && <span>Collapse</span>}
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar — always visible on lg+ */}
+      <aside
+        aria-label="Main navigation"
+        className={`hidden lg:flex fixed left-0 top-0 h-screen border-r z-50 flex-col transition-all duration-300 ${
+          collapsed ? "w-[68px]" : "w-[240px]"
+        } ${
+          isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
+        }`}
+      >
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile sidebar — overlay drawer */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-[60]">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={closeMobile}
+            aria-hidden="true"
+          />
+          {/* Drawer */}
+          <aside
+            aria-label="Main navigation"
+            className={`absolute left-0 top-0 h-full w-[280px] flex flex-col shadow-2xl animate-slide-in-left ${
+              isDark ? "bg-panel-bg border-r border-panel-border" : "bg-white border-r border-slate-200"
+            }`}
+          >
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

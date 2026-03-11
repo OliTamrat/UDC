@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { SidebarProvider } from "@/context/SidebarContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import "./globals.css";
 
@@ -49,9 +50,11 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ThemeProvider>
-          <ErrorBoundary>
-            {children}
-          </ErrorBoundary>
+          <SidebarProvider>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
