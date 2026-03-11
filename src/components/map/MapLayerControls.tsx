@@ -54,17 +54,17 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
         }`}>
           <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: isDark ? "#1E3A5F" : "#E2E8F0" }}>
             <div className="flex items-center gap-2">
-              <Layers className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
+              <Layers className={`w-4 h-4 ${isDark ? "text-slate-300" : "text-slate-500"}`} />
               <span className={`font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Map Layers</span>
             </div>
             <button onClick={() => setExpanded(false)} className={`p-1 rounded hover:bg-opacity-20 ${isDark ? "hover:bg-white" : "hover:bg-slate-200"}`}>
-              <ChevronUp className={`w-3.5 h-3.5 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
+              <ChevronUp className={`w-3.5 h-3.5 ${isDark ? "text-slate-300" : "text-slate-500"}`} />
             </button>
           </div>
           <div className="py-1.5">
             {groups.map((group) => (
               <div key={group}>
-                <div className={`px-3 py-1 text-[9px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                <div className={`px-3 py-1 text-[9px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                   {group}
                 </div>
                 {LAYER_CONFIG.filter(l => l.group === group).map((layerDef) => {
@@ -86,13 +86,13 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
                       <span className={`flex-1 text-left ${
                         isOn
                           ? isDark ? "text-slate-200" : "text-slate-800"
-                          : isDark ? "text-slate-500" : "text-slate-400"
+                          : isDark ? "text-slate-400" : "text-slate-600"
                       }`}>
                         {layerDef.label}
                       </span>
                       {isOn
                         ? <Eye className="w-3 h-3" style={{ color: layerDef.color }} />
-                        : <EyeOff className={`w-3 h-3 ${isDark ? "text-slate-600" : "text-slate-300"}`} />
+                        : <EyeOff className={`w-3 h-3 ${isDark ? "text-slate-500" : "text-slate-300"}`} />
                       }
                     </button>
                   );

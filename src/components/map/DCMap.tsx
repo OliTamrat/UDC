@@ -419,7 +419,7 @@ export default function DCMap({
         <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
-            <span className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>Loading DC Map...</span>
+            <span className={`text-sm ${isDark ? "text-slate-300" : "text-slate-500"}`}>Loading DC Map...</span>
           </div>
         </div>
       )}

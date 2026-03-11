@@ -74,7 +74,7 @@ export default function Sidebar() {
         {!collapsed && (
           <div className="overflow-hidden flex-1 min-w-0">
             <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-slate-900"}`}>Water Resources</h1>
-            <p className={`text-[10px] leading-tight ${isDark ? "text-slate-400" : "text-slate-500"}`}>CAUSES / WRRI Dashboard</p>
+            <p className={`text-[10px] leading-tight ${isDark ? "text-slate-300" : "text-slate-500"}`}>CAUSES / WRRI Dashboard</p>
           </div>
         )}
         {/* Close button — mobile only */}
@@ -96,7 +96,7 @@ export default function Sidebar() {
           return (
             <div key={section.key} className="mb-3">
               {!collapsed && (
-                <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                   {section.label}
                 </p>
               )}

@@ -89,21 +89,21 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
     <div className="glass-panel rounded-xl overflow-hidden">
       <div className={`p-4 border-b ${isDark ? "border-panel-border" : "border-slate-200"}`}>
         <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Monitoring Stations</h3>
-        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-500" : "text-slate-500"}`}>Real-time status across the Anacostia watershed</p>
+        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Real-time status across the Anacostia watershed</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
             <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Station</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Type</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Status</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>DO (mg/L)</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>pH</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Turbidity</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>E. coli</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}>Updated</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-500" : "text-slate-400"}`}><span className="sr-only">Details</span></th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Station</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Type</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Status</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>DO (mg/L)</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>pH</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Turbidity</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>E. coli</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Updated</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}><span className="sr-only">Details</span></th>
             </tr>
           </thead>
           <tbody>
@@ -128,12 +128,12 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
                       <MapPin className="w-3.5 h-3.5 text-water-blue flex-shrink-0" />
                       <div>
                         <div className={`text-xs font-medium ${isDark ? "text-white" : "text-slate-900"}`}>{station.name}</div>
-                        <div className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{station.id}</div>
+                        <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>{station.id}</div>
                       </div>
                     </div>
                   </td>
                   <td className="py-2.5 px-4">
-                    <span className={`text-xs capitalize ${isDark ? "text-slate-400" : "text-slate-600"}`}>{station.type.replace("-", " ")}</span>
+                    <span className={`text-xs capitalize ${isDark ? "text-slate-300" : "text-slate-600"}`}>{station.type.replace("-", " ")}</span>
                   </td>
                   <td className="py-2.5 px-4">
                     <StatusBadge status={station.status} />
@@ -151,10 +151,10 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
                     {r?.eColiCount != null ? (
                       <WaterQualityIndicator value={r.eColiCount} thresholds={{ good: 400, moderate: 1000 }} />
                     ) : (
-                      <span className={`text-xs ${isDark ? "text-slate-600" : "text-slate-400"}`}>—</span>
+                      <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>
                     )}
                   </td>
-                  <td className={`py-2.5 px-4 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                  <td className={`py-2.5 px-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px]">{r ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—"}</span>
                       {r && <SourceBadge source={(r as unknown as Record<string, unknown>).source as string | undefined} />}
