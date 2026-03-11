@@ -2,7 +2,50 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDbClient } from "@/lib/db";
 import { logger } from "@/lib/logger";
 
-// USGS NWIS parameter codes for water quality
+// ---------------------------------------------------------------------------
+// Data validation — reject physically impossible readings
+// ---------------------------------------------------------------------------
+interface ReadingValues {
+  temperature?: number | null;
+  dissolved_oxygen?: number | null;
+  ph?: number | null;
+  turbidity?: number | null;
+  conductivity?: number | null;
+  ecoli_count?: number | null;
+  nitrate_n?: number | null;
+  phosphorus?: number | null;
+}
+
+const VALID_RANGES: Record<string, { min: number; max: number; label: string }> = {
+  temperature:      { min: -5,  max: 45,     label: "Temperature (°C)" },
+  dissolved_oxygen: { min: 0,   max: 20,     label: "Dissolved Oxygen (mg/L)" },
+  ph:               { min: 0,   max: 14,     label: "pH" },
+  turbidity:        { min: 0,   max: 4000,   label: "Turbidity (NTU)" },
+  conductivity:     { min: 0,   max: 10000,  label: "Conductivity (µS/cm)" },
+  ecoli_count:      { min: 0,   max: 100000, label: "E. coli (CFU/100mL)" },
+  nitrate_n:        { min: 0,   max: 100,    label: "Nitrate-N (mg/L)" },
+  phosphorus:       { min: 0,   max: 50,     label: "Phosphorus (mg/L)" },
+};
+
+function validateReading(values: ReadingValues): { valid: ReadingValues; warnings: string[] } {
+  const valid: ReadingValues = { ...values };
+  const warnings: string[] = [];
+
+  for (const [field, range] of Object.entries(VALID_RANGES)) {
+    const val = valid[field as keyof ReadingValues];
+    if (val == null) continue;
+    if (typeof val !== "number" || isNaN(val) || val < range.min || val > range.max) {
+      warnings.push(`${range.label}: ${val} out of range [${range.min}, ${range.max}] — rejected`);
+      (valid as Record<string, unknown>)[field] = null;
+    }
+  }
+
+  return { valid, warnings };
+}
+
+// ---------------------------------------------------------------------------
+// USGS NWIS integration
+// ---------------------------------------------------------------------------
 const USGS_PARAMS: Record<string, string> = {
   "00010": "temperature",     // Water temperature (°C)
   "00300": "dissolved_oxygen", // Dissolved oxygen (mg/L)
@@ -35,9 +78,10 @@ interface USGSResponse {
   };
 }
 
-async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
+async function ingestUSGS(): Promise<{ count: number; errors: string[]; validationWarnings: string[] }> {
   const db = await getDbClient();
   const errors: string[] = [];
+  const validationWarnings: string[] = [];
   let totalCount = 0;
 
   for (const site of USGS_SITES) {
@@ -74,20 +118,25 @@ async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
         }
       }
 
-      // Insert grouped readings
+      // Insert grouped readings with validation
       let count = 0;
       for (const [timestamp, values] of Object.entries(readingsByTime)) {
+        const { valid, warnings } = validateReading(values as ReadingValues);
+        if (warnings.length > 0) {
+          validationWarnings.push(...warnings.map((w) => `USGS ${site.usgs} @ ${timestamp}: ${w}`));
+        }
+
         await db.query(
           `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, source)
            VALUES (?, ?, ?, ?, ?, ?, ?, 'usgs')`,
           [
             site.stationId,
             timestamp,
-            values.temperature ?? null,
-            values.dissolved_oxygen ?? null,
-            values.ph ?? null,
-            values.turbidity ?? null,
-            values.conductivity ?? null,
+            valid.temperature ?? null,
+            valid.dissolved_oxygen ?? null,
+            valid.ph ?? null,
+            valid.turbidity ?? null,
+            valid.conductivity ?? null,
           ]
         );
         count++;
@@ -102,8 +151,145 @@ async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
     }
   }
 
-  return { count: totalCount, errors };
+  return { count: totalCount, errors, validationWarnings };
 }
+
+// ---------------------------------------------------------------------------
+// EPA Water Quality Portal (WQX) integration
+// ---------------------------------------------------------------------------
+
+// EPA characteristic names mapped to our DB fields
+const EPA_CHARACTERISTICS: Record<string, string> = {
+  "Temperature, water":            "temperature",
+  "Dissolved oxygen (DO)":         "dissolved_oxygen",
+  "pH":                            "ph",
+  "Turbidity":                     "turbidity",
+  "Specific conductance":          "conductivity",
+  "Escherichia coli":              "ecoli_count",
+  "Nitrate":                       "nitrate_n",
+  "Phosphorus":                    "phosphorus",
+};
+
+// Anacostia watershed HUC-8 code and specific EPA monitoring locations
+const EPA_HUC = "02070010"; // Anacostia River watershed
+
+// Map EPA monitoring locations to our station IDs
+const EPA_STATION_MAP: Record<string, string> = {
+  "USGS-01651000": "ANA-001",
+  "USGS-01649500": "ANA-002",
+  "USGS-01646500": "PB-001",
+};
+
+interface EPAResult {
+  OrganizationIdentifier?: string;
+  MonitoringLocationIdentifier?: string;
+  ActivityStartDate?: string;
+  ActivityStartTime?: { Time?: string };
+  CharacteristicName?: string;
+  ResultMeasureValue?: string;
+  ResultMeasure?: { MeasureUnitCode?: string };
+}
+
+async function ingestEPA(): Promise<{ count: number; errors: string[]; validationWarnings: string[] }> {
+  const db = await getDbClient();
+  const errors: string[] = [];
+  const validationWarnings: string[] = [];
+  let totalCount = 0;
+
+  // Fetch last 5 years of data from the Anacostia watershed
+  const characteristics = Object.keys(EPA_CHARACTERISTICS).map(encodeURIComponent).join(";");
+  const url = `https://www.waterqualitydata.us/data/Result/search?huc=${EPA_HUC}&characteristicName=${characteristics}&startDateLo=01-01-2020&mimeType=application/json&sorted=no&zip=no`;
+
+  try {
+    const response = await fetch(url, {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(60000), // 60s timeout for large datasets
+    });
+
+    if (!response.ok) {
+      errors.push(`EPA WQP: HTTP ${response.status}`);
+      return { count: 0, errors, validationWarnings };
+    }
+
+    const results: EPAResult[] = await response.json();
+    if (!Array.isArray(results) || results.length === 0) {
+      logger.info("EPA WQP: no results returned for Anacostia watershed");
+      return { count: 0, errors, validationWarnings };
+    }
+
+    // Group results by station + timestamp
+    const grouped: Record<string, Record<string, ReadingValues & { stationId: string }>> = {};
+
+    for (const result of results) {
+      const monLocId = result.MonitoringLocationIdentifier || "";
+      const stationId = EPA_STATION_MAP[monLocId];
+      if (!stationId) continue; // Skip stations we don't track
+
+      const charName = result.CharacteristicName || "";
+      const dbField = EPA_CHARACTERISTICS[charName];
+      if (!dbField) continue;
+
+      const date = result.ActivityStartDate || "";
+      const time = result.ActivityStartTime?.Time || "12:00:00";
+      const timestamp = `${date}T${time}`;
+      if (!date) continue;
+
+      const value = parseFloat(result.ResultMeasureValue || "");
+      if (isNaN(value)) continue;
+
+      const key = `${stationId}::${timestamp}`;
+      if (!grouped[key]) {
+        grouped[key] = {} as Record<string, ReadingValues & { stationId: string }>;
+      }
+      if (!grouped[key][stationId]) {
+        grouped[key][stationId] = { stationId } as ReadingValues & { stationId: string };
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (grouped[key][stationId] as any)[dbField] = value;
+    }
+
+    // Insert validated readings
+    for (const [compositeKey, stationMap] of Object.entries(grouped)) {
+      const timestamp = compositeKey.split("::")[1];
+      for (const [, reading] of Object.entries(stationMap)) {
+        const { valid, warnings } = validateReading(reading);
+        if (warnings.length > 0) {
+          validationWarnings.push(...warnings.map((w) => `EPA ${reading.stationId} @ ${timestamp}: ${w}`));
+        }
+
+        await db.query(
+          `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli_count, nitrate_n, phosphorus, source)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'epa')`,
+          [
+            reading.stationId,
+            timestamp,
+            valid.temperature ?? null,
+            valid.dissolved_oxygen ?? null,
+            valid.ph ?? null,
+            valid.turbidity ?? null,
+            valid.conductivity ?? null,
+            valid.ecoli_count ?? null,
+            valid.nitrate_n ?? null,
+            valid.phosphorus ?? null,
+          ]
+        );
+        totalCount++;
+      }
+    }
+
+    logger.info(`EPA WQP ingest: ${totalCount} readings from Anacostia watershed`);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    errors.push(`EPA WQP: ${msg}`);
+    logger.error("EPA WQP ingest failed", { error: msg });
+  }
+
+  return { count: totalCount, errors, validationWarnings };
+}
+
+// ---------------------------------------------------------------------------
+// API handlers
+// ---------------------------------------------------------------------------
 
 // GET handler for Vercel Cron — authenticated via CRON_SECRET header
 export async function GET(request: NextRequest) {
@@ -136,12 +322,14 @@ async function runIngest(request: NextRequest) {
   const source = searchParams.get("source") || "usgs";
 
   try {
-    let result: { count: number; errors: string[] };
+    let result: { count: number; errors: string[]; validationWarnings: string[] };
 
     if (source === "usgs") {
       result = await ingestUSGS();
+    } else if (source === "epa") {
+      result = await ingestEPA();
     } else {
-      return NextResponse.json({ error: `Unknown source: ${source}` }, { status: 400 });
+      return NextResponse.json({ error: `Unknown source: ${source}. Supported: usgs, epa` }, { status: 400 });
     }
 
     const status = result.errors.length === 0 ? "success" : "error";
@@ -157,6 +345,7 @@ async function runIngest(request: NextRequest) {
       status,
       records_ingested: result.count,
       errors: result.errors,
+      validation_warnings: result.validationWarnings,
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

@@ -15,7 +15,8 @@ export async function GET() {
       r.conductivity,
       r.ecoli_count,
       r.nitrate_n,
-      r.phosphorus
+      r.phosphorus,
+      r.source AS last_reading_source
     FROM stations s
     LEFT JOIN readings r ON r.station_id = s.id
       AND r.timestamp = (SELECT MAX(timestamp) FROM readings WHERE station_id = s.id)
@@ -40,6 +41,7 @@ export async function GET() {
           eColiCount: s.ecoli_count,
           nitrateN: s.nitrate_n,
           phosphorus: s.phosphorus,
+          source: s.last_reading_source || "seed",
         }
       : undefined,
   }));
