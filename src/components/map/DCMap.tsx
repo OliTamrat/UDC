@@ -45,7 +45,7 @@ const TILE_LAYERS = {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
   },
   light: {
-    url: "https://{s}.basemaps.cartocdn.com/voyager/{z}/{x}/{y}{r}.png",
+    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
   },
 };
@@ -350,7 +350,7 @@ export default function DCMap({
     });
     const popupText = isDark ? "#F8FAFC" : "#1E293B";
     const popupSecondary = isDark ? "#94A3B8" : "#64748B";
-    leaflet.marker([38.9435, -77.0230], { icon: udcIcon })
+    leaflet.marker([38.9436, -77.0631], { icon: udcIcon })
       .bindPopup(`<div style="font-family:Inter,system-ui,sans-serif;"><h3 style="font-weight:700;font-size:14px;color:${popupText};margin:0 0 4px;">University of the District of Columbia</h3><p style="font-size:11px;color:${popupSecondary};margin:0 0 6px;">CAUSES / WRRI Research Hub</p><p style="font-size:11px;color:${isDark ? "#CBD5E1" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p></div>`)
       .addTo(map);
 
