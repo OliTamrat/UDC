@@ -79,7 +79,7 @@ export default function ResearchPage() {
               <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 WRRI & CAUSES Research Projects
               </h1>
-              <p className={`text-sm max-w-2xl ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`text-sm max-w-2xl ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 Active research initiatives from UDC&apos;s Water Resources Research Institute and
                 the College of Agriculture, Urban Sustainability & Environmental Sciences.
                 Addressing critical water quality, stormwater management, and environmental justice
@@ -91,7 +91,7 @@ export default function ResearchPage() {
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-600"}`} />
               <input
                 type="text"
                 placeholder="Search projects, PIs, descriptions..."
@@ -105,7 +105,7 @@ export default function ResearchPage() {
               />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <Filter className={`w-4 h-4 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+              <Filter className={`w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-600"}`} />
               <button
                 onClick={() => setSelectedTag(null)}
                 className={`px-3 py-1 rounded-full text-xs border transition-all ${
@@ -137,7 +137,7 @@ export default function ResearchPage() {
           </div>
 
           {/* Results count */}
-          <div className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+          <div className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
             Showing {filteredProjects.length} of {researchProjects.length} projects
             {selectedTag && <span> tagged <strong className={isDark ? "text-slate-300" : "text-slate-700"}>{selectedTag.replace(/-/g, " ")}</strong></span>}
             {searchTerm && <span> matching &quot;{searchTerm}&quot;</span>}
@@ -170,7 +170,7 @@ export default function ResearchPage() {
                     className={`opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg ${isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"}`}
                     title="View methodology & data"
                   >
-                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-400" : "text-slate-500"}`} />
+                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-300" : "text-slate-500"}`} />
                   </Link>
                 </div>
 
@@ -178,27 +178,27 @@ export default function ResearchPage() {
                   {project.title}
                 </h3>
 
-                <p className={`text-xs mb-4 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <p className={`text-xs mb-4 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                   {project.description}
                 </p>
 
                 <div className="space-y-2 mb-4">
-                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                    <User className={`w-3.5 h-3.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+                    <User className={`w-3.5 h-3.5 ${isDark ? "text-slate-400" : "text-slate-600"}`} />
                     <span className={`font-medium ${isDark ? "text-slate-300" : "text-slate-700"}`}>{project.pi}</span>
                   </div>
-                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                    <Building2 className={`w-3.5 h-3.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+                    <Building2 className={`w-3.5 h-3.5 ${isDark ? "text-slate-400" : "text-slate-600"}`} />
                     <span>{project.department}</span>
                   </div>
-                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                    <Calendar className={`w-3.5 h-3.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+                    <Calendar className={`w-3.5 h-3.5 ${isDark ? "text-slate-400" : "text-slate-600"}`} />
                     <span>
                       {project.startDate} — {project.endDate}
                     </span>
                   </div>
-                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                    <DollarSign className={`w-3.5 h-3.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+                    <DollarSign className={`w-3.5 h-3.5 ${isDark ? "text-slate-400" : "text-slate-600"}`} />
                     <span>{project.funding}</span>
                   </div>
                 </div>
@@ -228,7 +228,7 @@ export default function ResearchPage() {
             >
               <BookOpen className="w-5 h-5 text-blue-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Methodology & Data Dictionary</h3>
-              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 Sampling protocols, QA/QC procedures, parameter definitions, and EPA threshold documentation.
               </p>
               <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
@@ -242,7 +242,7 @@ export default function ResearchPage() {
             >
               <Download className="w-5 h-5 text-green-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Export Full Dataset</h3>
-              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 Download all water quality readings as CSV with citation metadata, source provenance, and station metadata.
               </p>
               <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
@@ -255,7 +255,7 @@ export default function ResearchPage() {
             >
               <Globe className="w-5 h-5 text-purple-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>API & Open Data</h3>
-              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 REST API access, Python/R analysis templates, and programmatic data retrieval for research integration.
               </p>
               <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
@@ -267,7 +267,7 @@ export default function ResearchPage() {
           {/* Data Sources */}
           <section className="glass-panel rounded-xl p-3 sm:p-4 md:p-6">
             <h2 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Data Integration Sources</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               Partner organizations and external data feeds integrated into the dashboard
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
@@ -316,7 +316,7 @@ export default function ResearchPage() {
                   }`}
                 >
                   <h4 className={`text-xs font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{source.name}</h4>
-                  <p className={`text-[10px] mb-3 ${isDark ? "text-slate-400" : "text-slate-500"}`}>{source.description}</p>
+                  <p className={`text-[10px] mb-3 ${isDark ? "text-slate-300" : "text-slate-500"}`}>{source.description}</p>
                   <div className="flex flex-wrap gap-1">
                     {source.datasets.map((ds) => (
                       <span
