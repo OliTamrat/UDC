@@ -320,14 +320,14 @@ export default function DCMap({
             <div style="font-size:11px;color:${popupSecondary};margin-bottom:8px;">ID: ${station.id} | Type: ${station.type.replace("-", " ")}</div>`;
 
         if (reading) {
-          const ecoliColor = reading.eColiCount > 400 ? "#F87171" : "#4ADE80";
+          const ecoliColor = (reading.eColiCount ?? 0) > 400 ? "#F87171" : "#4ADE80";
           popupHtml += `
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Temp</div><div style="font-size:13px;font-weight:600;color:#22D3EE;">${reading.temperature}°C</div></div>
-              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">DO</div><div style="font-size:13px;font-weight:600;color:#60A5FA;">${reading.dissolvedOxygen} mg/L</div></div>
-              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">pH</div><div style="font-size:13px;font-weight:600;color:#4ADE80;">${reading.pH}</div></div>
-              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Turbidity</div><div style="font-size:13px;font-weight:600;color:#FBBF24;">${reading.turbidity} NTU</div></div>
-              <div style="background:${popupDataBg};border-radius:6px;padding:6px;grid-column:span 2;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">E. coli</div><div style="font-size:13px;font-weight:600;color:${ecoliColor};">${reading.eColiCount.toLocaleString()} CFU/100mL</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Temp</div><div style="font-size:13px;font-weight:600;color:#22D3EE;">${reading.temperature ?? "—"}°C</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">DO</div><div style="font-size:13px;font-weight:600;color:#60A5FA;">${reading.dissolvedOxygen ?? "—"} mg/L</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">pH</div><div style="font-size:13px;font-weight:600;color:#4ADE80;">${reading.pH ?? "—"}</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Turbidity</div><div style="font-size:13px;font-weight:600;color:#FBBF24;">${reading.turbidity ?? "—"} NTU</div></div>
+              <div style="background:${popupDataBg};border-radius:6px;padding:6px;grid-column:span 2;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">E. coli</div><div style="font-size:13px;font-weight:600;color:${ecoliColor};">${reading.eColiCount != null ? reading.eColiCount.toLocaleString() : "—"} CFU/100mL</div></div>
             </div>
             <div style="margin-top:6px;font-size:10px;color:${popupMuted};">Last updated: ${new Date(reading.timestamp).toLocaleString()}</div>`;
         }
