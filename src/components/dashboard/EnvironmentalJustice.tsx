@@ -42,9 +42,12 @@ export default function EnvironmentalJustice() {
 
   return (
     <div className="glass-panel rounded-xl p-4">
-      <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Environmental Justice - Ward Analysis</h3>
-      <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-        CSO events, impervious surfaces, and green space access by DC ward
+      <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Ward-Level Environmental Justice Analysis</h3>
+      <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+        Combined sewer overflow frequency, impervious surface coverage, and green space access
+        by DC ward. Wards 7 and 8 — home to much of the Anacostia watershed — consistently
+        experience higher CSO event counts and lower green space access, reflecting longstanding
+        environmental inequities that UDC research aims to address.
       </p>
 
       {/* Ward risk indicators */}
@@ -98,6 +101,19 @@ export default function EnvironmentalJustice() {
             </BarChart>
           </ResponsiveContainer>
         </div>
+      </div>
+
+      {/* Insight summary */}
+      <div className={`mt-4 rounded-lg border px-4 py-3 text-xs ${
+        isDark
+          ? "border-amber-500/20 bg-amber-950/20 text-amber-200/80"
+          : "border-amber-200 bg-amber-50 text-amber-900"
+      }`}>
+        <span className="font-semibold">Key finding:</span>{" "}
+        Wards with the highest impervious surface coverage tend to have more CSO events and
+        less green space, contributing to degraded water quality in nearby waterways. Green
+        infrastructure investments — bioretention, permeable pavement, and rain gardens — are
+        a primary strategy tracked by UDC WRRI to reduce runoff and improve equity outcomes.
       </div>
     </div>
   );
