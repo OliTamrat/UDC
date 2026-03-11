@@ -18,6 +18,7 @@ import {
   Users,
   BookOpen,
   X,
+  DatabaseZap,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
@@ -33,6 +34,7 @@ const navItems = [
   { href: "/education", label: "Education", icon: GraduationCap, section: "community" },
   { href: "/education#community", label: "Community", icon: Users, section: "community" },
   { href: "/education#resources", label: "Open Data", icon: Globe, section: "community" },
+  { href: "/admin", label: "Data Admin", icon: DatabaseZap, section: "admin" },
 ];
 
 const sections = [
@@ -40,6 +42,7 @@ const sections = [
   { key: "monitoring", label: "MONITORING" },
   { key: "research", label: "RESEARCH" },
   { key: "community", label: "COMMUNITY" },
+  { key: "admin", label: "ADMIN" },
 ];
 
 export default function Sidebar() {
