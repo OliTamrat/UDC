@@ -12,18 +12,18 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 
 ## Production Readiness Audit — Issues to Address
 
-### Phase 1: Critical (Error Handling & Testing)
-- [ ] **No Error Boundary** — React errors crash the entire app
-- [ ] **No tests** — 0% coverage, no test framework configured (no Jest/Vitest/Playwright)
-- [ ] **No CI/CD** — no GitHub Actions workflows
-- [ ] **No health check endpoint** — no `/api/health` for deployment monitoring
-- [ ] **Non-functional UI elements** — search bar, notifications bell, and stakeholder/profile button in Header are placeholder-only
+### Phase 1: Critical (Error Handling & Testing) — DONE
+- [x] **Error Boundary** — `src/components/ErrorBoundary.tsx` wraps app in layout.tsx
+- [x] **Testing** — Vitest configured, 17 tests across 4 suites (data, error boundary, health, validation)
+- [x] **CI/CD** — `.github/workflows/ci.yml` (test + build on push/PR)
+- [x] **Health check** — `GET /api/health` returns status, timestamp, version, uptime
+- [x] **Functional search** — Header search filters stations, research, pages; tooltips on placeholder buttons
 
-### Phase 2: Important (Logging, Monitoring, Validation)
-- [ ] **No error tracking/logging** — no Sentry, LogRocket, or server logs
-- [ ] **No input validation** — form inputs have placeholders but no sanitization
-- [ ] **No deployment documentation** — README lacks deployment/Docker/env setup instructions
-- [ ] **Missing Content Security Policy headers** — need next.config.ts CSP configuration
+### Phase 2: Important (Logging, Monitoring, Validation) — DONE
+- [x] **Logger utility** — `src/lib/logger.ts` with buffered client-side logging (info/warn/error)
+- [x] **Input validation** — `src/lib/validation.ts` with XSS sanitization, applied to Header search
+- [x] **Deployment docs** — README updated with Docker, Vercel, health check, and testing instructions
+- [x] **Security headers** — CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy in next.config.ts
 
 ### Phase 3: Backend & Data (Future)
 - [ ] **No real-time data integration** — all data is hardcoded static mock data

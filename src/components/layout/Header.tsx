@@ -5,6 +5,7 @@ import { useTheme, type Theme } from "@/context/ThemeContext";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { monitoringStations, researchProjects } from "@/data/dc-waterways";
+import { sanitizeSearchInput, isInputSafe } from "@/lib/validation";
 
 const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [
   { value: "light", label: "Light", icon: Sun },
@@ -101,7 +102,13 @@ export default function Header() {
             type="text"
             placeholder="Search stations, data, research..."
             value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setShowResults(true); }}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (isInputSafe(val)) {
+                setSearchQuery(sanitizeSearchInput(val));
+                setShowResults(true);
+              }
+            }}
             onFocus={() => { if (searchQuery) setShowResults(true); }}
             className={`w-72 border rounded-lg pl-10 pr-4 py-1.5 text-sm focus:outline-none transition-colors ${
               isDark
