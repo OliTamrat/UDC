@@ -23,6 +23,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function WaterQualityIndicator({ value, thresholds }: { value: number; thresholds: { good: number; moderate: number } }) {
+  if (value == null) return <span className="text-sm text-slate-500">—</span>;
   let color = "bg-green-400";
   if (value > thresholds.moderate) color = "bg-red-400";
   else if (value > thresholds.good) color = "bg-amber-400";
