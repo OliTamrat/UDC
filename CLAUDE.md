@@ -64,8 +64,17 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [x] Contributing guidelines — `CONTRIBUTING.md`
 - [x] Architecture diagrams — ASCII diagram in README
 - [x] Docker/Kubernetes configs — `Dockerfile`, `docker-compose.yml`, `.dockerignore`
-- [ ] User authentication/authorization
-- [ ] Admin panel for data management
+- [ ] User authentication/authorization (currently API-key based)
+
+### Phase 6: Faculty Admin Panel — DONE
+- [x] **Admin page** — `/admin` with auth gate (ADMIN_API_KEY env var)
+- [x] **CSV/JSON upload** — Drag-and-drop with auto column mapping + validation
+- [x] **AI-assisted column mapping** — Claude Haiku maps non-standard column names to schema (falls back to heuristics)
+- [x] **Station CRUD** — Add, edit, delete stations from `/api/admin/stations`
+- [x] **Readings CRUD** — View, add, delete readings from `/api/admin/readings` with pagination
+- [x] **Ingestion trigger** — Run USGS/EPA ingestion from admin UI
+- [x] **Ingestion log viewer** — Full history of all data imports
+- [x] **Sidebar link** — "Data Admin" nav item under ADMIN section
 
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)
@@ -85,6 +94,11 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/app/api/ingest/route.ts` — USGS data ingestion
 - `src/app/api/chat/route.ts` — AI research assistant (Claude via Vercel AI SDK)
 - `src/app/api/health/route.ts` — Health check endpoint
+- `src/app/admin/page.tsx` — Faculty admin panel (upload, CRUD, logs)
+- `src/app/api/admin/upload/route.ts` — CSV/JSON upload with auto column mapping
+- `src/app/api/admin/stations/route.ts` — Station CRUD API
+- `src/app/api/admin/readings/route.ts` — Readings CRUD API
+- `src/app/api/admin/ai-map-columns/route.ts` — AI-powered column mapping
 - `src/lib/db.ts` — Database abstraction (SQLite + Neon PostgreSQL)
 - `src/lib/logger.ts` — Client-side logging utility
 - `src/lib/validation.ts` — Input sanitization
@@ -102,5 +116,7 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - Theme persisted in localStorage key: `udc-theme`
 - Next.js standalone output configured in `next.config.ts`
 - AI assistant requires `ANTHROPIC_API_KEY` env var (optional — dashboard works without it)
+- Admin panel uses `ADMIN_API_KEY` env var for access control (no key = open access in dev)
+- AI column mapping in admin uses Claude Haiku (fast/cheap) with heuristic fallback
 - AI SDK v6: uses `tool()`, `stepCountIs()`, `DefaultChatTransport`, `sendMessage` (not v4/v5 API)
 - All external resources use HTTPS (CartoDB tiles, Leaflet CDN, Google Fonts)
