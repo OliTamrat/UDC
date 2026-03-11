@@ -670,9 +670,9 @@ export default function MetricCards() {
 
   if (loading || !metrics) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="glass-panel rounded-xl border p-4 h-28 animate-pulse" />
+          <div key={i} className="glass-panel rounded-xl border p-2 sm:p-4 h-24 sm:h-28 animate-pulse" />
         ))}
       </div>
     );
@@ -731,7 +731,7 @@ export default function MetricCards() {
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
         {cardConfigs.map((card) => {
           const Icon = card.icon;
           const trend = card.getTrend(metrics);
@@ -741,25 +741,25 @@ export default function MetricCards() {
               key={card.label}
               onClick={() => setActiveModal(card.modalKey)}
               aria-label={`View details for ${card.label}`}
-              className={`metric-card rounded-xl border p-4 text-left transition-all hover:scale-[1.02] hover:shadow-lg cursor-pointer group ${
+              className={`metric-card rounded-xl border p-2 sm:p-4 text-left transition-all hover:scale-[1.02] hover:shadow-lg cursor-pointer group ${
                 isDark
                   ? `${card.borderColor} ${card.bgColor} hover:border-opacity-60`
                   : `${card.lightBorderColor} ${card.lightBgColor} hover:shadow-md`
               }`}
             >
-              <div className="flex items-start justify-between mb-2">
-                <div className={`p-2 rounded-lg ${isDark ? card.bgColor : card.lightBgColor}`}>
-                  <Icon className={`w-4 h-4 ${card.color}`} />
+              <div className="flex items-start justify-between mb-1 sm:mb-2">
+                <div className={`p-1.5 sm:p-2 rounded-lg ${isDark ? card.bgColor : card.lightBgColor}`}>
+                  <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${card.color}`} />
                 </div>
                 <div className="flex items-center gap-1">
                   {card.getTotal && (
-                    <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>/ {card.getTotal(metrics)}</span>
+                    <span className={`text-[10px] sm:text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>/ {card.getTotal(metrics)}</span>
                   )}
                   <Info className={`w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity ${isDark ? "text-slate-500" : "text-slate-400"}`} />
                 </div>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className={`text-2xl font-bold ${card.color}`}>{card.getValue(metrics)}</span>
+                <span className={`text-lg sm:text-2xl font-bold ${card.color}`}>{card.getValue(metrics)}</span>
                 {card.unit && <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>{card.unit}</span>}
               </div>
               <p className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{card.label}</p>

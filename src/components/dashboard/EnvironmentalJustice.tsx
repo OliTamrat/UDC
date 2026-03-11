@@ -51,7 +51,7 @@ export default function EnvironmentalJustice() {
       </p>
 
       {/* Ward risk indicators */}
-      <div className="grid grid-cols-4 md:grid-cols-8 gap-2 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 mb-4">
         {environmentalJusticeData.map((ward) => (
           <div
             key={ward.ward}
