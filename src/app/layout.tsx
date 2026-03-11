@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { SidebarProvider } from "@/context/SidebarContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import ResearchAssistantWrapper from "@/components/ai/ResearchAssistantWrapper";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default function RootLayout({
           <SidebarProvider>
             <ErrorBoundary>
               {children}
+              <ResearchAssistantWrapper />
             </ErrorBoundary>
           </SidebarProvider>
         </ThemeProvider>
