@@ -51,6 +51,15 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [ ] **Cron scheduling** — Set up Azure Functions Timer or Vercel Cron for automated ingestion
 - [x] **Frontend migration** — StationTable, MetricCards, station detail page fetch from API with static fallback
 
+### Phase 5: AI Research Assistant — DONE
+- [x] **AI Chat API** — `POST /api/chat` with Claude via Vercel AI SDK v6
+- [x] **Domain system prompt** — EPA thresholds, seasonal patterns, station metadata, WRRI research context
+- [x] **Tool-augmented** — AI can query `/api/stations`, `/api/stations/:id/history` for live data
+- [x] **Chat UI** — Floating panel (`ResearchAssistant.tsx`) with streaming, suggested questions, clear history
+- [x] **Graceful degradation** — Shows config message when `ANTHROPIC_API_KEY` not set
+- [ ] **RAG expansion** — Vector search over research papers and USGS reports (future)
+- [ ] **Chart generation** — AI-generated plots from query results (future)
+
 ### Phase 4: Nice-to-Have — DONE (Docker, Docs)
 - [x] Contributing guidelines — `CONTRIBUTING.md`
 - [x] Architecture diagrams — ASCII diagram in README
@@ -74,10 +83,12 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/app/api/stations/[id]/history/route.ts` — Station history API
 - `src/app/api/export/route.ts` — CSV/JSON data export
 - `src/app/api/ingest/route.ts` — USGS data ingestion
+- `src/app/api/chat/route.ts` — AI research assistant (Claude via Vercel AI SDK)
 - `src/app/api/health/route.ts` — Health check endpoint
 - `src/lib/db.ts` — Database abstraction (SQLite + Neon PostgreSQL)
 - `src/lib/logger.ts` — Client-side logging utility
 - `src/lib/validation.ts` — Input sanitization
+- `src/components/ai/ResearchAssistant.tsx` — AI chat panel (floating widget)
 - `src/components/map/DCMap.tsx` — Interactive Leaflet map (dynamic import, SSR disabled)
 - `src/components/layout/Header.tsx` — Top bar with functional search
 - `src/components/ErrorBoundary.tsx` — React error boundary
@@ -90,4 +101,6 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - Tailwind v4 uses `@theme` directive with CSS variables for UDC brand colors (#FDB927 gold, #CE1141 red, #002B5C navy)
 - Theme persisted in localStorage key: `udc-theme`
 - Next.js standalone output configured in `next.config.ts`
+- AI assistant requires `ANTHROPIC_API_KEY` env var (optional — dashboard works without it)
+- AI SDK v6: uses `tool()`, `stepCountIs()`, `DefaultChatTransport`, `sendMessage` (not v4/v5 API)
 - All external resources use HTTPS (CartoDB tiles, Leaflet CDN, Google Fonts)
