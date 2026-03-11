@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // output: "standalone" is for Docker only; Vercel uses its own serverless build
   async headers() {
     return [
       {
@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://unpkg.com",
-              "connect-src 'self'",
+              "connect-src 'self' https://waterservices.usgs.gov https://*.basemaps.cartocdn.com",
             ].join("; "),
           },
           {
