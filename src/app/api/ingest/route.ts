@@ -107,9 +107,12 @@ async function ingestUSGS(): Promise<{ count: number; errors: string[] }> {
 }
 
 export async function POST(request: NextRequest) {
-  // Simple API key check for ingestion endpoint
+  // API key required in production, optional in development
   const authHeader = request.headers.get("authorization");
   const apiKey = process.env.INGEST_API_KEY;
+  if (!apiKey && process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: "INGEST_API_KEY not configured" }, { status: 503 });
+  }
   if (apiKey && authHeader !== `Bearer ${apiKey}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
