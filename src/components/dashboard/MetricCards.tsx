@@ -64,7 +64,7 @@ function computeMetrics(stations: MonitoringStation[]) {
     },
     {
       label: "E. coli Alerts",
-      value: stations.filter((s) => s.lastReading && s.lastReading.eColiCount > 400).length.toString(),
+      value: stations.filter((s) => s.lastReading && s.lastReading.eColiCount != null && s.lastReading.eColiCount > 400).length.toString(),
       icon: AlertTriangle, color: "text-red-400", bgColor: "bg-red-500/10", borderColor: "border-red-500/20",
       lightBorderColor: "border-red-200", lightBgColor: "bg-red-50",
       trend: "Stations above EPA limit", trendUp: false,
