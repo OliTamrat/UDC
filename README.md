@@ -86,6 +86,44 @@ The UDC Water Resources Data Dashboard is a centralized platform that brings tog
 | Mapping | Leaflet |
 | Charts | Recharts |
 | Icons | Lucide React |
+| Database | SQLite (better-sqlite3) |
+| Testing | Vitest |
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Frontend (React)                       │
+│  ┌──────────┐ ┌────────────┐ ┌───────────┐ ┌─────────┐ │
+│  │ Dashboard │ │ Station    │ │ Research  │ │Education│ │
+│  │ (Map,    │ │ Detail     │ │ Portal    │ │& Outreach│ │
+│  │ Charts,  │ │ /station/  │ │ /research │ │/education│ │
+│  │ Tables)  │ │ [id]       │ │           │ │         │ │
+│  └────┬─────┘ └─────┬──────┘ └───────────┘ └─────────┘ │
+│       │              │                                    │
+│       ▼              ▼                                    │
+│  ┌──────────────────────────────────────────────────┐    │
+│  │              Next.js API Routes                    │    │
+│  │  GET /api/stations    GET /api/stations/:id/history│   │
+│  │  GET /api/export      POST /api/ingest             │   │
+│  │  GET /api/health                                   │    │
+│  └────────────────────────┬─────────────────────────┘    │
+└───────────────────────────┼──────────────────────────────┘
+                            │
+                ┌───────────▼───────────┐
+                │    SQLite Database     │
+                │  stations | readings   │
+                │  ingestion_log         │
+                └───────────┬───────────┘
+                            │
+              ┌─────────────▼──────────────┐
+              │   External Data Sources     │
+              │  USGS NWIS | EPA WQX       │
+              │  DC DOEE   | DC GIS        │
+              └────────────────────────────┘
+```
 
 ---
 
