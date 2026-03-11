@@ -321,11 +321,11 @@ export default function EducationPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px]">
+      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
         <Header />
-        <div className="p-6 space-y-6">
+        <div className="p-3 sm:p-4 md:p-6 space-y-6">
           {/* Page Header */}
-          <section className={`relative overflow-hidden rounded-2xl border p-8 ${
+          <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
               ? "border-panel-border bg-gradient-to-br from-emerald-900/20 via-panel-bg to-udc-dark"
               : "border-slate-200 bg-gradient-to-br from-emerald-50 via-white to-slate-50"
@@ -385,7 +385,7 @@ export default function EducationPage() {
               <button
                 key={audience.title}
                 onClick={audience.action}
-                className={`glass-panel rounded-xl p-5 text-left transition-all group hover:scale-[1.02] ${
+                className={`glass-panel rounded-xl p-3 sm:p-5 text-left transition-all group hover:scale-[1.02] ${
                   isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"
                 }`}
               >
@@ -474,14 +474,14 @@ export default function EducationPage() {
 
           {/* Educational Modules */}
           <section id="modules">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Learning Modules</h2>
                 <p className={`text-xs ${isDark ? "text-slate-500" : "text-slate-500"}`}>
                   Self-paced educational content for all knowledge levels
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {["All", "Beginner", "Intermediate", "Advanced"].map((level) => (
                   <button
                     key={level}
@@ -506,7 +506,7 @@ export default function EducationPage() {
                 <button
                   key={module.title}
                   onClick={() => setActiveModule(module)}
-                  className={`glass-panel rounded-xl p-5 text-left transition-all group cursor-pointer hover:scale-[1.02] ${
+                  className={`glass-panel rounded-xl p-3 sm:p-5 text-left transition-all group cursor-pointer hover:scale-[1.02] ${
                     isDark ? "hover:border-slate-600" : "hover:border-slate-300 hover:shadow-md"
                   }`}
                 >
@@ -632,7 +632,7 @@ export default function EducationPage() {
               {communityEvents.map((event) => (
                 <div
                   key={event.title}
-                  className="glass-panel rounded-xl p-5 hover:border-emerald-500/30 transition-all"
+                  className="glass-panel rounded-xl p-3 sm:p-5 hover:border-emerald-500/30 transition-all"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <span className="text-[10px] font-medium text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
@@ -687,7 +687,7 @@ export default function EducationPage() {
               ].map((tmpl) => (
                 <div
                   key={tmpl.file}
-                  className="glass-panel rounded-xl p-5 hover:border-blue-500/30 transition-all group"
+                  className="glass-panel rounded-xl p-3 sm:p-5 hover:border-blue-500/30 transition-all group"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className={`p-2 rounded-lg ${tmpl.bg}`}>
@@ -722,7 +722,7 @@ export default function EducationPage() {
               {openDatasets.map((dataset) => (
                 <div
                   key={dataset.name}
-                  className="glass-panel rounded-xl p-5 hover:border-blue-500/30 transition-all group"
+                  className="glass-panel rounded-xl p-3 sm:p-5 hover:border-blue-500/30 transition-all group"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="p-2 rounded-lg bg-blue-500/10">
@@ -756,7 +756,7 @@ export default function EducationPage() {
           </section>
 
           {/* API Access Banner */}
-          <section className={`rounded-xl border p-5 ${isDark ? "border-blue-500/20 bg-blue-500/5" : "border-blue-200 bg-blue-50"}`}>
+          <section className={`rounded-xl border p-3 sm:p-5 ${isDark ? "border-blue-500/20 bg-blue-500/5" : "border-blue-200 bg-blue-50"}`}>
             <div className="flex items-start gap-3">
               <Globe className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
               <div>

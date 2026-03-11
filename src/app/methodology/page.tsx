@@ -143,12 +143,12 @@ export default function MethodologyPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px]">
+      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
         <Header />
-        <div className="p-6 space-y-8">
+        <div className="p-3 sm:p-4 md:p-6 space-y-8">
           {/* Page Header */}
           <section
-            className={`relative overflow-hidden rounded-2xl border p-8 ${
+            className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
               isDark
                 ? "border-panel-border bg-gradient-to-br from-blue-900/20 via-panel-bg to-udc-dark"
                 : "border-slate-200 bg-gradient-to-br from-blue-50 via-white to-slate-50"
@@ -278,7 +278,7 @@ export default function MethodologyPage() {
             </p>
             <div className="space-y-4">
               {DATA_DICTIONARY.map((param) => (
-                <div key={param.field} className="glass-panel rounded-xl p-5">
+                <div key={param.field} className="glass-panel rounded-xl p-3 sm:p-5">
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{param.parameter}</h3>
@@ -289,7 +289,7 @@ export default function MethodologyPage() {
                     </span>
                   </div>
                   <p className={`text-xs leading-relaxed mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{param.description}</p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     {[
                       { label: "Method", value: param.method },
                       { label: "Valid Range", value: param.range },
@@ -367,7 +367,7 @@ export default function MethodologyPage() {
                   ],
                 },
               ].map((protocol) => (
-                <div key={protocol.title} className="glass-panel rounded-xl p-5">
+                <div key={protocol.title} className="glass-panel rounded-xl p-3 sm:p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <protocol.icon className={`w-4 h-4 ${isDark ? "text-green-400" : "text-green-600"}`} />
                     <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{protocol.title}</h3>
@@ -394,7 +394,7 @@ export default function MethodologyPage() {
             <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
               Procedures ensuring data reliability and fitness for research use
             </p>
-            <div className="glass-panel rounded-xl p-5">
+            <div className="glass-panel rounded-xl p-3 sm:p-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-slate-900"}`}>Automated Validation (Ingest Pipeline)</h3>
@@ -437,8 +437,8 @@ export default function MethodologyPage() {
           {/* Validation Ranges Quick Reference */}
           <section>
             <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-slate-900"}`}>Validation Ranges (Automated Rejection Thresholds)</h3>
-            <div className="glass-panel rounded-xl overflow-hidden">
-              <table className="w-full text-sm">
+            <div className="glass-panel rounded-xl overflow-x-auto">
+              <table className="w-full text-sm min-w-[500px]">
                 <thead>
                   <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
                     {["Parameter", "Min", "Max", "Unit", "Action if Out-of-Range"].map((h) => (
@@ -473,7 +473,7 @@ export default function MethodologyPage() {
             <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
               Log of all data ingestion events — when data was fetched, how many records were added, and any errors encountered
             </p>
-            <div className="glass-panel rounded-xl overflow-hidden">
+            <div className="glass-panel rounded-xl overflow-x-auto">
               {logsLoading ? (
                 <div className="p-8 flex items-center justify-center">
                   <div className="w-6 h-6 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
@@ -483,7 +483,7 @@ export default function MethodologyPage() {
                   No ingestion events recorded yet. Run <code className="px-1 py-0.5 rounded bg-slate-800 text-slate-300">POST /api/ingest?source=usgs</code> to trigger the first data ingestion.
                 </div>
               ) : (
-                <table className="w-full text-sm">
+                <table className="w-full text-sm min-w-[500px]">
                   <thead>
                     <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
                       {["Date", "Source", "Status", "Records", "Errors"].map((h) => (
@@ -536,7 +536,7 @@ export default function MethodologyPage() {
             <p className={`text-xs mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
               Recommended citations for academic publications and reports
             </p>
-            <div className="glass-panel rounded-xl p-5 space-y-4">
+            <div className="glass-panel rounded-xl p-3 sm:p-5 space-y-4">
               <div>
                 <h3 className={`text-xs font-semibold mb-1 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Dataset Citation (APA 7th)</h3>
                 <div className={`text-xs p-3 rounded-lg border font-mono leading-relaxed ${

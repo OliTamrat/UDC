@@ -42,7 +42,7 @@ export default function Modal({ open, onClose, title, subtitle, icon, children, 
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
@@ -62,7 +62,7 @@ export default function Modal({ open, onClose, title, subtitle, icon, children, 
         }`}
       >
         {/* Header */}
-        <div className={`flex items-start justify-between p-5 pb-3 border-b ${isDark ? "border-panel-border" : "border-slate-100"}`}>
+        <div className={`flex items-start justify-between p-3 sm:p-5 pb-3 border-b ${isDark ? "border-panel-border" : "border-slate-100"}`}>
           <div className="flex items-start gap-3">
             {icon && (
               <div className={`p-2.5 rounded-xl ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
@@ -88,7 +88,7 @@ export default function Modal({ open, onClose, title, subtitle, icon, children, 
         </div>
 
         {/* Body */}
-        <div className="p-5 max-h-[70vh] overflow-y-auto">{children}</div>
+        <div className="p-3 sm:p-5 max-h-[70vh] overflow-y-auto">{children}</div>
       </div>
     </div>
   );
