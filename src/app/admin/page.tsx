@@ -102,6 +102,7 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>("upload");
   const [adminKey, setAdminKey] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   // Login check
   const handleLogin = useCallback(async () => {
@@ -110,26 +111,41 @@ export default function AdminPage() {
         headers: authHeadersNoBody(adminKey),
       });
       if (res.ok) {
+        sessionStorage.setItem("udc-admin-key", adminKey);
         setAuthenticated(true);
       } else {
         alert("Invalid admin key");
       }
     } catch {
-      // No ADMIN_API_KEY set — allow access in dev
-      setAuthenticated(true);
+      alert("Could not reach the server. Please try again.");
     }
   }, [adminKey]);
 
-  // Auto-login when no key is required (dev mode)
+  // On mount: try stored key from sessionStorage, then try no-auth (dev mode)
   useEffect(() => {
-    fetch("/api/admin/stations")
+    const storedKey = sessionStorage.getItem("udc-admin-key") || "";
+    if (storedKey) setAdminKey(storedKey);
+
+    fetch("/api/admin/stations", {
+      headers: storedKey ? { Authorization: `Bearer ${storedKey}` } : {},
+    })
       .then((r) => {
         if (r.ok) setAuthenticated(true);
+        setAuthChecked(true);
       })
-      .catch(() => {});
+      .catch(() => {
+        setAuthChecked(true);
+      });
   }, []);
 
   if (!authenticated) {
+    if (!authChecked) {
+      return (
+        <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
+          <div className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>Checking authentication...</div>
+        </div>
+      );
+    }
     return (
       <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <div className={`w-full max-w-sm p-6 rounded-2xl border shadow-lg ${isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"}`}>
@@ -188,6 +204,20 @@ export default function AdminPage() {
               </div>
             </div>
           </div>
+          <button
+            onClick={() => {
+              sessionStorage.removeItem("udc-admin-key");
+              setAdminKey("");
+              setAuthenticated(false);
+            }}
+            className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+              isDark
+                ? "border-panel-border text-slate-400 hover:text-white hover:bg-panel-hover"
+                : "border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+            }`}
+          >
+            Sign Out
+          </button>
         </div>
       </header>
 
