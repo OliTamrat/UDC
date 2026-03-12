@@ -419,12 +419,15 @@ export default function DCMap({
     const legendText = isDark ? "#F8FAFC" : "#1E293B";
     const legendMuted = isDark ? "#94A3B8" : "#64748B";
 
+    const isMobile = window.innerWidth < 640;
     const legend = new leaflet.Control({ position: "bottomright" });
     legend.onAdd = () => {
-      const div = document.createElement("div");
-      div.style.cssText = `background:${legendBg};backdrop-filter:blur(12px);border:1px solid ${legendBorder};border-radius:10px;padding:12px;font-family:Inter,system-ui,sans-serif;color:${legendText};font-size:11px;min-width:170px;box-shadow:0 4px 12px rgba(0,0,0,${isDark ? "0.3" : "0.1"});`;
-      div.innerHTML = `
-        <div style="font-weight:600;margin-bottom:8px;font-size:12px;">Map Legend</div>
+      const wrapper = document.createElement("div");
+      wrapper.style.cssText = "display:flex;flex-direction:column;align-items:flex-end;";
+
+      const content = document.createElement("div");
+      content.style.cssText = `background:${legendBg};backdrop-filter:blur(12px);border:1px solid ${legendBorder};border-radius:10px;padding:${isMobile ? "8px 10px" : "12px"};font-family:Inter,system-ui,sans-serif;color:${legendText};font-size:${isMobile ? "10px" : "11px"};min-width:${isMobile ? "140px" : "170px"};box-shadow:0 4px 12px rgba(0,0,0,${isDark ? "0.3" : "0.1"});max-height:${isMobile ? "50vh" : "none"};overflow-y:auto;display:${isMobile ? "none" : "block"};`;
+      content.innerHTML = `
         <div style="display:flex;flex-direction:column;gap:5px;">
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:4px;background:linear-gradient(90deg,#2563EB,#60A5FA);border-radius:2px;"></div><span>Rivers</span></div>
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#22C55E;border-radius:2px;"></div><span style="color:${legendMuted}">Healthy (&ge;60)</span></div>
@@ -439,7 +442,26 @@ export default function DCMap({
           ${layers.watershedBoundary ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;border:1.5px dashed #06B6D4;border-radius:2px;"></div><span>Watershed</span></div>` : ""}
         </div>
       `;
-      return div;
+
+      // Toggle button for mobile — always-visible compact button
+      const toggle = document.createElement("button");
+      toggle.style.cssText = `background:${legendBg};backdrop-filter:blur(12px);border:1px solid ${legendBorder};border-radius:8px;padding:6px 10px;font-family:Inter,system-ui,sans-serif;color:${legendText};font-size:10px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,${isDark ? "0.3" : "0.1"});display:${isMobile ? "block" : "none"};margin-bottom:4px;`;
+      toggle.textContent = "Legend ▲";
+      let legendOpen = !isMobile;
+      toggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        legendOpen = !legendOpen;
+        content.style.display = legendOpen ? "block" : "none";
+        toggle.textContent = legendOpen ? "Legend ▼" : "Legend ▲";
+      });
+
+      // Prevent map interactions when touching legend
+      wrapper.addEventListener("mousedown", (e) => e.stopPropagation());
+      wrapper.addEventListener("touchstart", (e) => e.stopPropagation());
+
+      wrapper.appendChild(toggle);
+      wrapper.appendChild(content);
+      return wrapper;
     };
     legend.addTo(map);
 

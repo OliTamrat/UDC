@@ -35,7 +35,7 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
   const groups = [...new Set(LAYER_CONFIG.map(l => l.group))];
 
   return (
-    <div className={`absolute top-3 right-3 z-[1000] ${expanded ? "w-[220px]" : ""}`}>
+    <div className={`absolute top-3 right-3 z-[1000] ${expanded ? "w-[200px] sm:w-[220px]" : ""}`}>
       {!expanded ? (
         <button
           onClick={() => setExpanded(true)}
