@@ -58,8 +58,19 @@ function createNeonClient(databaseUrl: string): DbClient {
 // SQLite implementation (wraps synchronous better-sqlite3 in async interface)
 // ---------------------------------------------------------------------------
 function createSqliteClient(): DbClient {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const Database = require("better-sqlite3") as typeof import("better-sqlite3");
+  let Database: typeof import("better-sqlite3");
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    Database = require("better-sqlite3") as typeof import("better-sqlite3");
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(
+      `Failed to load better-sqlite3 native module. ` +
+      `This usually means native binaries need rebuilding for your platform. ` +
+      `Run: npm rebuild better-sqlite3\n` +
+      `Original error: ${msg}`
+    );
+  }
   const path = require("path") as typeof import("path");
   const fs = require("fs") as typeof import("fs");
 
