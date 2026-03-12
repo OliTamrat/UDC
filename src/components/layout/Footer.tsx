@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   Droplets,
   MapPin,
@@ -16,6 +17,7 @@ import {
 
 export default function Footer() {
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
 
   const linkClass = `transition-colors ${
@@ -43,16 +45,15 @@ export default function Footer() {
                     isDark ? "text-white" : "text-slate-900"
                   }`}
                 >
-                  University of the District of Columbia
+                  {t("footer.udc_full")}
                 </p>
                 <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                  College of Agriculture, Urban Sustainability &amp; Environmental Sciences
+                  {t("footer.causes_full")}
                 </p>
               </div>
             </div>
             <p className={`text-xs leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-              Advancing water resources research, environmental monitoring, and community resilience
-              through data-driven science and green infrastructure innovation.
+              {t("footer.mission")}
             </p>
           </div>
 
@@ -63,11 +64,11 @@ export default function Footer() {
                 isDark ? "text-slate-300" : "text-slate-800"
               }`}
             >
-              Institute
+              {t("footer.institute")}
             </h3>
             <ul className="space-y-2 text-xs">
               <li className={isDark ? "text-slate-400" : "text-slate-600"}>
-                <span className="font-medium">Water Resources Research Institute</span> (WRRI)
+                <span className="font-medium">{t("footer.wrri")}</span> (WRRI)
               </li>
               <li className={isDark ? "text-slate-400" : "text-slate-600"}>
                 Center for Urban Resilience, Innovation &amp; Infrastructure (CURII)
@@ -103,15 +104,15 @@ export default function Footer() {
                 isDark ? "text-slate-300" : "text-slate-800"
               }`}
             >
-              Quick Links
+              {t("footer.quick_links")}
             </h3>
             <ul className="space-y-2 text-xs">
               {[
-                { href: "/research", label: "Research Portal", icon: FlaskConical },
-                { href: "/education", label: "Education & Outreach", icon: GraduationCap },
-                { href: "/methodology", label: "Methodology & Data Sources", icon: BookOpen },
-                { href: "/api/export?format=csv", label: "Export Data (CSV)", icon: FileDown },
-                { href: "/api/export?format=json", label: "Export Data (JSON)", icon: FileDown },
+                { href: "/research", label: t("footer.research_portal"), icon: FlaskConical },
+                { href: "/education", label: t("footer.education_outreach"), icon: GraduationCap },
+                { href: "/methodology", label: t("footer.methodology_sources"), icon: BookOpen },
+                { href: "/api/export?format=csv", label: t("footer.export_csv"), icon: FileDown },
+                { href: "/api/export?format=json", label: t("footer.export_json"), icon: FileDown },
               ].map((link) => (
                 <li key={link.href + link.label}>
                   <a href={link.href} className={`flex items-center gap-2 ${linkClass}`}>
@@ -130,7 +131,7 @@ export default function Footer() {
                 isDark ? "text-slate-300" : "text-slate-800"
               }`}
             >
-              Data Sources
+              {t("footer.data_sources")}
             </h3>
             <ul className="space-y-2 text-xs">
               {[
@@ -181,19 +182,19 @@ export default function Footer() {
       >
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className={`text-[11px] text-center sm:text-left leading-relaxed ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-            Built by{" "}
+            {t("footer.built_by")}{" "}
             <span className={`font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
               Olink Technologies Inc
             </span>{" "}
-            and{" "}
+            {t("footer.and")}{" "}
             <span className={`font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
               DAPS Analytics
             </span>{" "}
-            in collaboration with{" "}
+            {t("footer.in_collaboration")}{" "}
             <span className={`font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
               Dr. Tolessa Deksissa
             </span>
-            , Director of Water Resources Research Institute and Environmental Testing Lab.
+            {t("footer.director_title")}
           </p>
           <div className={`flex items-center gap-1.5 shrink-0 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
             <Droplets className="w-3.5 h-3.5" />
@@ -211,7 +212,7 @@ export default function Footer() {
         }`}
       >
         <p className={`text-[10px] ${isDark ? "text-slate-600" : "text-slate-400"}`}>
-          Funded by DC Government &middot; Data provided by DOEE, EPA WQP, USGS NWIS, and Anacostia Riverkeeper
+          {t("footer.funded")}
         </p>
       </div>
     </footer>

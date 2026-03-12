@@ -1,0 +1,294 @@
+export type Locale = "en" | "es";
+
+export const translations = {
+  en: {
+    // Layout
+    "skip_to_content": "Skip to main content",
+
+    // Sidebar
+    "sidebar.water_resources": "Water Resources",
+    "sidebar.subtitle": "CAUSES / WRRI Dashboard",
+    "sidebar.close_nav": "Close navigation",
+    "sidebar.overview": "OVERVIEW",
+    "sidebar.monitoring": "MONITORING",
+    "sidebar.research": "RESEARCH",
+    "sidebar.community": "COMMUNITY",
+    "sidebar.admin": "ADMIN",
+    "sidebar.dashboard": "Dashboard",
+    "sidebar.interactive_map": "Interactive Map",
+    "sidebar.water_quality": "Water Quality",
+    "sidebar.stormwater": "Stormwater",
+    "sidebar.analytics": "Analytics",
+    "sidebar.research_link": "Research",
+    "sidebar.methodology": "Methodology",
+    "sidebar.education": "Education",
+    "sidebar.community_link": "Community",
+    "sidebar.open_data": "Open Data",
+    "sidebar.data_admin": "Data Admin",
+    "sidebar.settings": "Settings",
+    "sidebar.collapse": "Collapse",
+    "sidebar.expand": "Expand sidebar",
+    "sidebar.collapse_sidebar": "Collapse sidebar",
+
+    // Header
+    "header.search_placeholder": "Search...",
+    "header.search_label": "Search stations, data, and research",
+    "header.no_results": "No results found",
+    "header.live": "Live",
+    "header.appearance": "Appearance",
+    "header.theme_light": "Light",
+    "header.theme_dark": "Dark",
+    "header.theme_system": "System",
+    "header.notifications": "Notifications (coming soon)",
+    "header.stakeholder": "Stakeholder",
+    "header.stakeholder_soon": "Stakeholder portal (coming soon)",
+    "header.open_nav": "Open navigation menu",
+    "header.change_appearance": "Change appearance",
+    "header.language": "Language",
+
+    // Dashboard hero
+    "hero.badge": "CAUSES / WRRI",
+    "hero.title": "DC Water Resources",
+    "hero.title_highlight": "Data Dashboard",
+    "hero.description": "Monitoring, analysis, and visualization of water quality data across the Anacostia River watershed. Integrating research from UDC's Water Resources Research Institute with environmental data for DC communities.",
+    "hero.stations": "12 Monitoring Stations",
+    "hero.watershed": "Anacostia Watershed",
+    "hero.usgs": "USGS Data Integration",
+    "hero.epa": "EPA Standards Tracking",
+
+    // Data source notice
+    "notice.title": "Data Sources:",
+    "notice.text": "Station locations derived from DC GIS and USGS monitoring sites. Water quality baselines use USGS NWIS instantaneous values (sites 01651000, 01651750) and modeled seasonal patterns from peer-reviewed Anacostia watershed research. Geospatial boundaries from official DC government GIS datasets. This dashboard is a research and educational tool developed by UDC CAUSES/WRRI.",
+
+    // Section headings
+    "section.map_title": "Interactive Watershed Map",
+    "section.map_desc": "Anacostia River, tributaries, monitoring stations — toggle layers with the control panel",
+    "section.map_network": "USGS & DOEE monitoring network",
+    "section.wq_title": "Water Quality Analysis",
+    "section.wq_desc": "Historical trends and current conditions across four key monitoring parameters. Dissolved oxygen and E. coli levels are compared against EPA recreational water quality standards. Data is sourced from USGS NWIS sensors and the EPA Water Quality Portal for the Anacostia watershed (HUC 02070010).",
+    "section.multi_title": "Multi-Parameter Overview",
+    "section.multi_desc": "Correlate dissolved oxygen, temperature, pH, and turbidity on a unified timeline. Parameter relationships reveal how seasonal changes and storm events affect overall water health — for example, elevated turbidity after rainfall often coincides with depressed dissolved oxygen levels.",
+    "section.ej_title": "Environmental Justice",
+    "section.ej_desc": "Water quality issues disproportionately affect communities in DC's eastern wards. Combined sewer overflows (CSOs), impervious surface coverage, and limited green space access are interconnected factors that UDC's WRRI tracks across all eight wards to support equitable environmental policy and community-led restoration.",
+    "section.stations_title": "Monitoring Stations",
+    "section.stations_desc": "All 12 stations across the Anacostia, Potomac, and Rock Creek watersheds. Click any row to view detailed readings, historical charts, and data export options for that station. Data provenance badges indicate whether readings come from USGS sensors, EPA WQP records, or the seed dataset.",
+
+    // Metric cards
+    "metric.active_stations": "Active Stations",
+    "metric.avg_do": "Avg. Dissolved Oxygen",
+    "metric.avg_temp": "Avg. Temperature",
+    "metric.avg_ph": "Avg. pH Level",
+    "metric.avg_turbidity": "Avg. Turbidity",
+    "metric.ecoli_alerts": "E. coli Alerts",
+    "metric.green_infra": "Green Infrastructure",
+    "metric.active_research": "Active Research",
+    "metric.within_epa": "Within EPA standards",
+    "metric.below_epa": "Below EPA minimum",
+    "metric.seasonal_normal": "Seasonal normal",
+    "metric.neutral_range": "Neutral range",
+    "metric.outside_optimal": "Outside optimal range",
+    "metric.above_baseline": "Above baseline",
+    "metric.within_normal": "Within normal range",
+    "metric.active_udc": "Active UDC sites",
+    "metric.wrri_causes": "WRRI/CAUSES projects",
+    "metric.this_month": "+2 this month",
+
+    // Station table
+    "table.title": "Monitoring Stations",
+    "table.subtitle": "Real-time status across the Anacostia watershed",
+    "table.station": "Station",
+    "table.type": "Type",
+    "table.status": "Status",
+    "table.do": "DO (mg/L)",
+    "table.ph": "pH",
+    "table.turbidity": "Turbidity",
+    "table.ecoli": "E. coli",
+    "table.updated": "Updated",
+    "table.details": "Details",
+
+    // Environmental justice
+    "ej.chart_title": "Ward-Level Environmental Justice Analysis",
+    "ej.chart_desc": "Combined sewer overflow frequency, impervious surface coverage, and green space access by DC ward. Wards 7 and 8 — home to much of the Anacostia watershed — consistently experience higher CSO event counts and lower green space access, reflecting longstanding environmental inequities that UDC research aims to address.",
+    "ej.cso_chart": "Combined Sewer Overflow Events (Annual)",
+    "ej.green_chart": "Green Space Access (%)",
+    "ej.key_finding": "Key finding:",
+    "ej.finding_text": "Wards with the highest impervious surface coverage tend to have more CSO events and less green space, contributing to degraded water quality in nearby waterways. Green infrastructure investments — bioretention, permeable pavement, and rain gardens — are a primary strategy tracked by UDC WRRI to reduce runoff and improve equity outcomes.",
+
+    // Footer
+    "footer.institute": "Institute",
+    "footer.wrri": "Water Resources Research Institute",
+    "footer.curii": "Center for Urban Resilience, Innovation & Infrastructure (CURII)",
+    "footer.eqtl": "Environmental Quality Testing Laboratory (EQTL)",
+    "footer.quick_links": "Quick Links",
+    "footer.research_portal": "Research Portal",
+    "footer.education_outreach": "Education & Outreach",
+    "footer.methodology_sources": "Methodology & Data Sources",
+    "footer.export_csv": "Export Data (CSV)",
+    "footer.export_json": "Export Data (JSON)",
+    "footer.data_sources": "Data Sources",
+    "footer.built_by": "Built by",
+    "footer.and": "and",
+    "footer.in_collaboration": "in collaboration with",
+    "footer.director_title": ", Director of Water Resources Research Institute and Environmental Testing Lab.",
+    "footer.udc_full": "University of the District of Columbia",
+    "footer.causes_full": "College of Agriculture, Urban Sustainability & Environmental Sciences",
+    "footer.mission": "Advancing water resources research, environmental monitoring, and community resilience through data-driven science and green infrastructure innovation.",
+    "footer.funded": "Funded by DC Government · Data provided by DOEE, EPA WQP, USGS NWIS, and Anacostia Riverkeeper",
+
+    // Search result types
+    "search.station": "station",
+    "search.research": "research",
+    "search.page": "page",
+
+    // Loading
+    "loading.map": "Loading DC Map...",
+  },
+  es: {
+    // Layout
+    "skip_to_content": "Saltar al contenido principal",
+
+    // Sidebar
+    "sidebar.water_resources": "Recursos Hídricos",
+    "sidebar.subtitle": "CAUSES / WRRI Panel",
+    "sidebar.close_nav": "Cerrar navegación",
+    "sidebar.overview": "RESUMEN",
+    "sidebar.monitoring": "MONITOREO",
+    "sidebar.research": "INVESTIGACIÓN",
+    "sidebar.community": "COMUNIDAD",
+    "sidebar.admin": "ADMIN",
+    "sidebar.dashboard": "Panel",
+    "sidebar.interactive_map": "Mapa Interactivo",
+    "sidebar.water_quality": "Calidad del Agua",
+    "sidebar.stormwater": "Aguas Pluviales",
+    "sidebar.analytics": "Análisis",
+    "sidebar.research_link": "Investigación",
+    "sidebar.methodology": "Metodología",
+    "sidebar.education": "Educación",
+    "sidebar.community_link": "Comunidad",
+    "sidebar.open_data": "Datos Abiertos",
+    "sidebar.data_admin": "Admin de Datos",
+    "sidebar.settings": "Configuración",
+    "sidebar.collapse": "Colapsar",
+    "sidebar.expand": "Expandir barra lateral",
+    "sidebar.collapse_sidebar": "Colapsar barra lateral",
+
+    // Header
+    "header.search_placeholder": "Buscar...",
+    "header.search_label": "Buscar estaciones, datos e investigación",
+    "header.no_results": "No se encontraron resultados",
+    "header.live": "En vivo",
+    "header.appearance": "Apariencia",
+    "header.theme_light": "Claro",
+    "header.theme_dark": "Oscuro",
+    "header.theme_system": "Sistema",
+    "header.notifications": "Notificaciones (próximamente)",
+    "header.stakeholder": "Interesados",
+    "header.stakeholder_soon": "Portal de interesados (próximamente)",
+    "header.open_nav": "Abrir menú de navegación",
+    "header.change_appearance": "Cambiar apariencia",
+    "header.language": "Idioma",
+
+    // Dashboard hero
+    "hero.badge": "CAUSES / WRRI",
+    "hero.title": "Recursos Hídricos de DC",
+    "hero.title_highlight": "Panel de Datos",
+    "hero.description": "Monitoreo, análisis y visualización de datos de calidad del agua en la cuenca del río Anacostia. Integrando investigación del Instituto de Investigación de Recursos Hídricos de UDC con datos ambientales para las comunidades de DC.",
+    "hero.stations": "12 Estaciones de Monitoreo",
+    "hero.watershed": "Cuenca del Anacostia",
+    "hero.usgs": "Integración de Datos USGS",
+    "hero.epa": "Seguimiento de Normas EPA",
+
+    // Data source notice
+    "notice.title": "Fuentes de Datos:",
+    "notice.text": "Ubicaciones de estaciones derivadas de DC GIS y sitios de monitoreo USGS. Las líneas base de calidad del agua utilizan valores instantáneos de USGS NWIS (sitios 01651000, 01651750) y patrones estacionales modelados de investigación revisada por pares de la cuenca del Anacostia. Límites geoespaciales de conjuntos de datos GIS oficiales del gobierno de DC. Este panel es una herramienta de investigación y educación desarrollada por UDC CAUSES/WRRI.",
+
+    // Section headings
+    "section.map_title": "Mapa Interactivo de la Cuenca",
+    "section.map_desc": "Río Anacostia, afluentes, estaciones de monitoreo — alterne las capas con el panel de control",
+    "section.map_network": "Red de monitoreo USGS y DOEE",
+    "section.wq_title": "Análisis de Calidad del Agua",
+    "section.wq_desc": "Tendencias históricas y condiciones actuales en cuatro parámetros clave de monitoreo. Los niveles de oxígeno disuelto y E. coli se comparan con los estándares de calidad del agua recreativa de la EPA. Los datos provienen de sensores USGS NWIS y del Portal de Calidad del Agua de la EPA para la cuenca del Anacostia (HUC 02070010).",
+    "section.multi_title": "Resumen Multi-Parámetro",
+    "section.multi_desc": "Correlacione oxígeno disuelto, temperatura, pH y turbidez en una línea de tiempo unificada. Las relaciones entre parámetros revelan cómo los cambios estacionales y eventos de tormenta afectan la salud general del agua.",
+    "section.ej_title": "Justicia Ambiental",
+    "section.ej_desc": "Los problemas de calidad del agua afectan desproporcionadamente a las comunidades en los distritos orientales de DC. Los desbordamientos de alcantarillado combinado (CSOs), la cobertura de superficies impermeables y el acceso limitado a espacios verdes son factores interconectados que el WRRI de UDC rastrea en los ocho distritos.",
+    "section.stations_title": "Estaciones de Monitoreo",
+    "section.stations_desc": "Las 12 estaciones en las cuencas del Anacostia, Potomac y Rock Creek. Haga clic en cualquier fila para ver lecturas detalladas, gráficos históricos y opciones de exportación de datos.",
+
+    // Metric cards
+    "metric.active_stations": "Estaciones Activas",
+    "metric.avg_do": "Oxígeno Disuelto Prom.",
+    "metric.avg_temp": "Temperatura Prom.",
+    "metric.avg_ph": "Nivel pH Prom.",
+    "metric.avg_turbidity": "Turbidez Prom.",
+    "metric.ecoli_alerts": "Alertas E. coli",
+    "metric.green_infra": "Infraestructura Verde",
+    "metric.active_research": "Investigación Activa",
+    "metric.within_epa": "Dentro de normas EPA",
+    "metric.below_epa": "Por debajo del mínimo EPA",
+    "metric.seasonal_normal": "Normal estacional",
+    "metric.neutral_range": "Rango neutro",
+    "metric.outside_optimal": "Fuera del rango óptimo",
+    "metric.above_baseline": "Por encima de la línea base",
+    "metric.within_normal": "Dentro del rango normal",
+    "metric.active_udc": "Sitios activos de UDC",
+    "metric.wrri_causes": "Proyectos WRRI/CAUSES",
+    "metric.this_month": "+2 este mes",
+
+    // Station table
+    "table.title": "Estaciones de Monitoreo",
+    "table.subtitle": "Estado en tiempo real en la cuenca del Anacostia",
+    "table.station": "Estación",
+    "table.type": "Tipo",
+    "table.status": "Estado",
+    "table.do": "OD (mg/L)",
+    "table.ph": "pH",
+    "table.turbidity": "Turbidez",
+    "table.ecoli": "E. coli",
+    "table.updated": "Actualizado",
+    "table.details": "Detalles",
+
+    // Environmental justice
+    "ej.chart_title": "Análisis de Justicia Ambiental por Distrito",
+    "ej.chart_desc": "Frecuencia de desbordamiento de alcantarillado combinado, cobertura de superficie impermeable y acceso a espacios verdes por distrito de DC. Los distritos 7 y 8 — hogar de gran parte de la cuenca del Anacostia — experimentan consistentemente más eventos CSO y menor acceso a espacios verdes.",
+    "ej.cso_chart": "Eventos de Desbordamiento de Alcantarillado (Anuales)",
+    "ej.green_chart": "Acceso a Espacios Verdes (%)",
+    "ej.key_finding": "Hallazgo clave:",
+    "ej.finding_text": "Los distritos con mayor cobertura de superficie impermeable tienden a tener más eventos CSO y menos espacios verdes, contribuyendo a la degradación de la calidad del agua. Las inversiones en infraestructura verde son una estrategia principal seguida por UDC WRRI.",
+
+    // Footer
+    "footer.institute": "Instituto",
+    "footer.wrri": "Instituto de Investigación de Recursos Hídricos",
+    "footer.curii": "Centro de Resiliencia Urbana, Innovación e Infraestructura (CURII)",
+    "footer.eqtl": "Laboratorio de Pruebas de Calidad Ambiental (EQTL)",
+    "footer.quick_links": "Enlaces Rápidos",
+    "footer.research_portal": "Portal de Investigación",
+    "footer.education_outreach": "Educación y Divulgación",
+    "footer.methodology_sources": "Metodología y Fuentes de Datos",
+    "footer.export_csv": "Exportar Datos (CSV)",
+    "footer.export_json": "Exportar Datos (JSON)",
+    "footer.data_sources": "Fuentes de Datos",
+    "footer.built_by": "Construido por",
+    "footer.and": "y",
+    "footer.in_collaboration": "en colaboración con",
+    "footer.director_title": ", Director del Instituto de Investigación de Recursos Hídricos y Laboratorio de Pruebas Ambientales.",
+    "footer.udc_full": "Universidad del Distrito de Columbia",
+    "footer.causes_full": "Facultad de Agricultura, Sostenibilidad Urbana y Ciencias Ambientales",
+    "footer.mission": "Avanzando la investigación de recursos hídricos, monitoreo ambiental y resiliencia comunitaria a través de ciencia basada en datos e innovación en infraestructura verde.",
+    "footer.funded": "Financiado por el Gobierno de DC · Datos proporcionados por DOEE, EPA WQP, USGS NWIS y Anacostia Riverkeeper",
+
+    // Search result types
+    "search.station": "estación",
+    "search.research": "investigación",
+    "search.page": "página",
+
+    // Loading
+    "loading.map": "Cargando mapa de DC...",
+  },
+} as const;
+
+export type TranslationKey = keyof typeof translations.en;
+
+export function t(locale: Locale, key: TranslationKey): string {
+  return translations[locale]?.[key] ?? translations.en[key] ?? key;
+}

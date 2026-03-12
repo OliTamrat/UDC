@@ -1,17 +1,24 @@
 "use client";
 
-import { Bell, Search, User, Calendar, Sun, Moon, Monitor, MapPin, Menu } from "lucide-react";
+import { Bell, Search, User, Calendar, Sun, Moon, Monitor, MapPin, Menu, Languages } from "lucide-react";
 import { useTheme, type Theme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { monitoringStations, researchProjects } from "@/data/dc-waterways";
 import { sanitizeSearchInput, isInputSafe } from "@/lib/validation";
+import type { Locale } from "@/lib/i18n";
 
-const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [
-  { value: "light", label: "Light", icon: Sun },
-  { value: "dark", label: "Dark", icon: Moon },
-  { value: "system", label: "System", icon: Monitor },
+const themeOptions: { value: Theme; labelKey: "header.theme_light" | "header.theme_dark" | "header.theme_system"; icon: typeof Sun }[] = [
+  { value: "light", labelKey: "header.theme_light", icon: Sun },
+  { value: "dark", labelKey: "header.theme_dark", icon: Moon },
+  { value: "system", labelKey: "header.theme_system", icon: Monitor },
+];
+
+const languageOptions: { value: Locale; label: string; flag: string }[] = [
+  { value: "en", label: "English", flag: "🇺🇸" },
+  { value: "es", label: "Español", flag: "🇪🇸" },
 ];
 
 interface SearchResult {
@@ -31,15 +38,18 @@ const pageResults: SearchResult[] = [
 export default function Header() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { openMobile } = useSidebar();
+  const { locale, setLocale, t } = useLanguage();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const now = new Date();
-  const dateStr = now.toLocaleDateString("en-US", {
+  const dateStr = now.toLocaleDateString(locale === "es" ? "es-US" : "en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -68,7 +78,7 @@ export default function Header() {
         project.department.toLowerCase().includes(q) ||
         project.description.toLowerCase().includes(q) ||
         project.funding.toLowerCase().includes(q) ||
-        project.tags.some((t: string) => t.toLowerCase().includes(q))
+        project.tags.some((tag: string) => tag.toLowerCase().includes(q))
       ) {
         results.push({
           id: project.id,
@@ -96,6 +106,9 @@ export default function Header() {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setShowThemeMenu(false);
       }
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setShowLangMenu(false);
+      }
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setShowResults(false);
       }
@@ -119,7 +132,7 @@ export default function Header() {
         {/* Hamburger — mobile/tablet only */}
         <button
           onClick={openMobile}
-          aria-label="Open navigation menu"
+          aria-label={t("header.open_nav")}
           className={`lg:hidden p-1.5 sm:p-2 rounded-lg transition-colors flex-shrink-0 ${
             isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
           }`}
@@ -137,8 +150,8 @@ export default function Header() {
           <Search className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-600"}`} aria-hidden="true" />
           <input
             type="search"
-            aria-label="Search stations, data, and research"
-            placeholder="Search..."
+            aria-label={t("header.search_label")}
+            placeholder={t("header.search_placeholder")}
             value={searchQuery}
             onChange={(e) => {
               const val = e.target.value;
@@ -160,7 +173,7 @@ export default function Header() {
             }`}>
               {searchResults.length === 0 ? (
                 <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                  No results found
+                  {t("header.no_results")}
                 </div>
               ) : (
                 searchResults.map((result) => (
@@ -177,7 +190,7 @@ export default function Header() {
                     <div className="min-w-0">
                       <span className="block truncate">{result.name}</span>
                       <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-                        {result.type}
+                        {t(`search.${result.type}` as "search.station" | "search.research" | "search.page")}
                       </span>
                     </div>
                   </button>
@@ -188,19 +201,68 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Right side: date, live, theme, bell, stakeholder */}
+      {/* Right side: date, live, language, theme, bell, stakeholder */}
       <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-3 flex-shrink-0 ml-2">
         {/* Date — hidden below md */}
         <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
           <Calendar className="w-3.5 h-3.5" />
           <span className="hidden lg:inline">{dateStr}</span>
-          <span className="lg:hidden">{now.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+          <span className="lg:hidden">{now.toLocaleDateString(locale === "es" ? "es-US" : "en-US", { month: "short", day: "numeric" })}</span>
         </div>
 
         {/* Live indicator — hidden below sm */}
         <div className="hidden sm:flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-water-clean animate-pulse" />
-          <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>Live</span>
+          <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t("header.live")}</span>
+        </div>
+
+        {/* Language Switcher */}
+        <div className="relative" ref={langRef}>
+          <button
+            onClick={() => setShowLangMenu(!showLangMenu)}
+            className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
+              isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
+            }`}
+            title={t("header.language")}
+            aria-label={t("header.language")}
+            aria-expanded={showLangMenu}
+            aria-haspopup="true"
+          >
+            <Languages className="w-4 h-4" aria-hidden="true" />
+          </button>
+          {showLangMenu && (
+            <div className={`absolute right-0 top-full mt-1 rounded-lg border shadow-lg py-1 min-w-[140px] z-50 ${
+              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
+            }`}>
+              <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}>
+                {t("header.language")}
+              </div>
+              {languageOptions.map((opt) => {
+                const isActive = locale === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => { setLocale(opt.value); setShowLangMenu(false); }}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                      isActive
+                        ? isDark
+                          ? "bg-udc-blue/20 text-blue-400"
+                          : "bg-blue-50 text-blue-600"
+                        : isDark
+                          ? "text-slate-300 hover:bg-panel-hover"
+                          : "text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    <span>{opt.flag}</span>
+                    <span>{opt.label}</span>
+                    {isActive && <span className="ml-auto text-xs">&#10003;</span>}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Theme Switcher */}
@@ -210,8 +272,8 @@ export default function Header() {
             className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
               isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
             }`}
-            title="Change appearance"
-            aria-label="Change appearance theme"
+            title={t("header.change_appearance")}
+            aria-label={t("header.change_appearance")}
             aria-expanded={showThemeMenu}
             aria-haspopup="true"
           >
@@ -224,7 +286,7 @@ export default function Header() {
               <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
                 isDark ? "text-slate-400" : "text-slate-600"
               }`}>
-                Appearance
+                {t("header.appearance")}
               </div>
               {themeOptions.map((opt) => {
                 const Icon = opt.icon;
@@ -244,7 +306,7 @@ export default function Header() {
                     }`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span>{opt.label}</span>
+                    <span>{t(opt.labelKey)}</span>
                     {isActive && <span className="ml-auto text-xs">&#10003;</span>}
                   </button>
                 );
@@ -258,8 +320,8 @@ export default function Header() {
           className={`hidden sm:block relative p-1.5 sm:p-2 rounded-lg transition-colors ${
             isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"
           }`}
-          title="Notifications — coming soon"
-          aria-label="Notifications (coming soon)"
+          title={t("header.notifications")}
+          aria-label={t("header.notifications")}
         >
           <Bell className={`w-4 h-4 ${isDark ? "text-slate-300" : "text-slate-500"}`} aria-hidden="true" />
         </button>
@@ -271,11 +333,11 @@ export default function Header() {
               ? "hover:bg-panel-hover border-panel-border"
               : "hover:bg-slate-50 border-slate-200"
           }`}
-          title="Stakeholder portal — coming soon"
-          aria-label="Stakeholder portal (coming soon)"
+          title={t("header.stakeholder_soon")}
+          aria-label={t("header.stakeholder_soon")}
         >
           <User className={`w-4 h-4 ${isDark ? "text-slate-300" : "text-slate-500"}`} aria-hidden="true" />
-          <span className={`hidden md:inline text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>Stakeholder</span>
+          <span className={`hidden md:inline text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>{t("header.stakeholder")}</span>
         </button>
       </div>
     </header>

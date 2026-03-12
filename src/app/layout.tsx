@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { SidebarProvider } from "@/context/SidebarContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ResearchAssistantWrapper from "@/components/ai/ResearchAssistantWrapper";
 import "./globals.css";
@@ -51,12 +52,14 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ThemeProvider>
-          <SidebarProvider>
-            <ErrorBoundary>
-              {children}
-              <ResearchAssistantWrapper />
-            </ErrorBoundary>
-          </SidebarProvider>
+          <LanguageProvider>
+            <SidebarProvider>
+              <ErrorBoundary>
+                {children}
+                <ResearchAssistantWrapper />
+              </ErrorBoundary>
+            </SidebarProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

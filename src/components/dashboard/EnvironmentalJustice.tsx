@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { environmentalJusticeData } from "@/data/dc-waterways";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const riskColors: Record<string, string> = {
   Low: "#22C55E",
@@ -26,6 +27,7 @@ const wardData = environmentalJusticeData.map((d) => ({
 
 export default function EnvironmentalJustice() {
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
 
   const tooltipStyle = {
@@ -42,12 +44,9 @@ export default function EnvironmentalJustice() {
 
   return (
     <div className="glass-panel rounded-xl p-4">
-      <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Ward-Level Environmental Justice Analysis</h3>
+      <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("ej.chart_title")}</h3>
       <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-        Combined sewer overflow frequency, impervious surface coverage, and green space access
-        by DC ward. Wards 7 and 8 — home to much of the Anacostia watershed — consistently
-        experience higher CSO event counts and lower green space access, reflecting longstanding
-        environmental inequities that UDC research aims to address.
+        {t("ej.chart_desc")}
       </p>
 
       {/* Ward risk indicators */}
@@ -74,7 +73,7 @@ export default function EnvironmentalJustice() {
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>Combined Sewer Overflow Events (Annual)</h4>
+          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>{t("ej.cso_chart")}</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={wardData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -90,7 +89,7 @@ export default function EnvironmentalJustice() {
           </ResponsiveContainer>
         </div>
         <div>
-          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>Green Space Access (%)</h4>
+          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>{t("ej.green_chart")}</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={wardData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -109,11 +108,8 @@ export default function EnvironmentalJustice() {
           ? "border-amber-500/20 bg-amber-950/20 text-amber-200/80"
           : "border-amber-200 bg-amber-50 text-amber-900"
       }`}>
-        <span className="font-semibold">Key finding:</span>{" "}
-        Wards with the highest impervious surface coverage tend to have more CSO events and
-        less green space, contributing to degraded water quality in nearby waterways. Green
-        infrastructure investments — bioretention, permeable pavement, and rain gardens — are
-        a primary strategy tracked by UDC WRRI to reduce runoff and improve equity outcomes.
+        <span className="font-semibold">{t("ej.key_finding")}</span>{" "}
+        {t("ej.finding_text")}
       </div>
     </div>
   );

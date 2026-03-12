@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { MapPin, AlertCircle, CheckCircle2, Wrench, ExternalLink } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 import type { MonitoringStation } from "@/data/dc-waterways";
 
 function StatusBadge({ status }: { status: string }) {
@@ -54,6 +55,7 @@ function WaterQualityIndicator({ value, thresholds }: { value: number; threshold
 
 export default function StationTable({ onStationClick }: { onStationClick?: (stationId: string) => void }) {
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
   const [stations, setStations] = useState<MonitoringStation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,22 +90,22 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
   return (
     <div className="glass-panel rounded-xl overflow-hidden">
       <div className={`p-4 border-b ${isDark ? "border-panel-border" : "border-slate-200"}`}>
-        <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Monitoring Stations</h3>
-        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Real-time status across the Anacostia watershed</p>
+        <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{t("table.title")}</h3>
+        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.subtitle")}</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
             <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Station</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Type</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Status</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>DO (mg/L)</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>pH</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Turbidity</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>E. coli</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Updated</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}><span className="sr-only">Details</span></th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.station")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.type")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.status")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.do")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.ph")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.turbidity")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.ecoli")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.updated")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}><span className="sr-only">{t("table.details")}</span></th>
             </tr>
           </thead>
           <tbody>
