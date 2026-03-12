@@ -140,6 +140,15 @@ export const translations = {
     "search.research": "research",
     "search.page": "page",
 
+    // Settings modal
+    "settings.title": "Settings",
+    "settings.subtitle": "Customize your dashboard experience",
+    "settings.appearance": "Appearance",
+    "settings.theme_light": "Light",
+    "settings.theme_dark": "Dark",
+    "settings.theme_system": "System",
+    "settings.language": "Language",
+
     // Loading
     "loading.map": "Loading DC Map...",
   },
@@ -281,6 +290,15 @@ export const translations = {
     "search.station": "estación",
     "search.research": "investigación",
     "search.page": "página",
+
+    // Settings modal
+    "settings.title": "Configuración",
+    "settings.subtitle": "Personaliza tu experiencia del panel",
+    "settings.appearance": "Apariencia",
+    "settings.theme_light": "Claro",
+    "settings.theme_dark": "Oscuro",
+    "settings.theme_system": "Sistema",
+    "settings.language": "Idioma",
 
     // Loading
     "loading.map": "Cargando mapa de DC...",
