@@ -99,7 +99,7 @@ export async function POST(req: Request) {
 
   try {
     const result = streamText({
-      model: anthropic("claude-sonnet-4-5-20250514"),
+      model: anthropic("claude-haiku-4-5-20251001"),
       system: SYSTEM_PROMPT,
       messages: modelMessages,
       tools: {
@@ -190,7 +190,15 @@ export async function POST(req: Request) {
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "An unexpected error occurred";
-    console.error("[chat] Stream error:", message);
-    return Response.json({ error: message }, { status: 500 });
+    // Try to extract API error details
+    const details =
+      err && typeof err === "object" && "cause" in err
+        ? String((err as { cause: unknown }).cause)
+        : undefined;
+    console.error("[chat] Stream error:", message, details || "");
+    return Response.json(
+      { error: details || message },
+      { status: 500 },
+    );
   }
 }
