@@ -158,7 +158,11 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
                   </td>
                   <td className={`py-2.5 px-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px]">{r ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—"}</span>
+                      <span className="text-[10px]">{r
+                        ? (r as unknown as Record<string, unknown>).source === "seed"
+                          ? "Baseline"
+                          : new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                        : "—"}</span>
                       {r && <SourceBadge source={(r as unknown as Record<string, unknown>).source as string | undefined} />}
                     </div>
                   </td>
