@@ -96,7 +96,7 @@ export default function ResearchAssistant() {
       {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all duration-300 group ${
+        className={`fixed bottom-5 right-5 z-[10000] flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all duration-300 group ${
           isOpen
             ? isDark
               ? "bg-panel-bg border border-panel-border text-slate-300"
@@ -120,7 +120,7 @@ export default function ResearchAssistant() {
 
       {/* Chat Panel */}
       <div
-        className={`fixed bottom-20 left-3 right-3 sm:left-auto sm:right-5 z-50 transition-all duration-300 origin-bottom-right ${
+        className={`fixed bottom-20 left-3 right-3 sm:left-auto sm:right-5 z-[10000] transition-all duration-300 origin-bottom-right ${
           isOpen
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 translate-y-4 pointer-events-none"
