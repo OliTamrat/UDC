@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Ensure Turbopack resolves from the project root, not a parent directory
+  turbopack: {
+    root: ".",
+  },
   // output: "standalone" is for Docker only; Vercel uses its own serverless build
   async headers() {
     return [
