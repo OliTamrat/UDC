@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDbClient } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 function buildCitation(stationId: string | null, rowCount: number): {
   text: string;
   dataset: string;

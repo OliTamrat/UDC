@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getDbClient } from "@/lib/db";
 
+// Force dynamic rendering so fresh data is always served after ingestion
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const db = await getDbClient();
