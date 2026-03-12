@@ -9,9 +9,9 @@
 - If a user shares a credential in conversation, do NOT echo it back in code, commits, or file contents
 - `.env.local` is gitignored — secrets belong there, never in tracked files
 
-### Git Commit & Push Attribution
-- All commits MUST end with the Claude Code session attribution line:
-  `https://claude.ai/code/<session_id>`
+### Git Commit & Push Rules
+- **NEVER** include Claude Code session attribution URLs in commit messages, PR descriptions, or code comments
+- **NEVER** include any `https://claude.ai/code/...` links anywhere in the codebase or git history
 - Never amend someone else's commit — always create new commits
 - Write clear, descriptive commit messages summarizing the "why"
 
