@@ -22,27 +22,29 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
+import { useLanguage } from "@/context/LanguageContext";
+import type { TranslationKey } from "@/lib/i18n";
 
-const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard, section: "overview" },
-  { href: "/#map", label: "Interactive Map", icon: Map, section: "overview" },
-  { href: "/#water-quality", label: "Water Quality", icon: Droplets, section: "monitoring" },
-  { href: "/#stormwater", label: "Stormwater", icon: TreePine, section: "monitoring" },
-  { href: "/#analytics", label: "Analytics", icon: BarChart3, section: "monitoring" },
-  { href: "/research", label: "Research", icon: FlaskConical, section: "research" },
-  { href: "/methodology", label: "Methodology", icon: BookOpen, section: "research" },
-  { href: "/education", label: "Education", icon: GraduationCap, section: "community" },
-  { href: "/education#community", label: "Community", icon: Users, section: "community" },
-  { href: "/education#resources", label: "Open Data", icon: Globe, section: "community" },
-  { href: "/admin", label: "Data Admin", icon: DatabaseZap, section: "admin" },
+const navItems: { href: string; labelKey: TranslationKey; icon: typeof LayoutDashboard; section: string }[] = [
+  { href: "/", labelKey: "sidebar.dashboard", icon: LayoutDashboard, section: "overview" },
+  { href: "/#map", labelKey: "sidebar.interactive_map", icon: Map, section: "overview" },
+  { href: "/#water-quality", labelKey: "sidebar.water_quality", icon: Droplets, section: "monitoring" },
+  { href: "/#stormwater", labelKey: "sidebar.stormwater", icon: TreePine, section: "monitoring" },
+  { href: "/#analytics", labelKey: "sidebar.analytics", icon: BarChart3, section: "monitoring" },
+  { href: "/research", labelKey: "sidebar.research_link", icon: FlaskConical, section: "research" },
+  { href: "/methodology", labelKey: "sidebar.methodology", icon: BookOpen, section: "research" },
+  { href: "/education", labelKey: "sidebar.education", icon: GraduationCap, section: "community" },
+  { href: "/education#community", labelKey: "sidebar.community_link", icon: Users, section: "community" },
+  { href: "/education#resources", labelKey: "sidebar.open_data", icon: Globe, section: "community" },
+  { href: "/admin", labelKey: "sidebar.data_admin", icon: DatabaseZap, section: "admin" },
 ];
 
-const sections = [
-  { key: "overview", label: "OVERVIEW" },
-  { key: "monitoring", label: "MONITORING" },
-  { key: "research", label: "RESEARCH" },
-  { key: "community", label: "COMMUNITY" },
-  { key: "admin", label: "ADMIN" },
+const sections: { key: string; labelKey: TranslationKey }[] = [
+  { key: "overview", labelKey: "sidebar.overview" },
+  { key: "monitoring", labelKey: "sidebar.monitoring" },
+  { key: "research", labelKey: "sidebar.research" },
+  { key: "community", labelKey: "sidebar.community" },
+  { key: "admin", labelKey: "sidebar.admin" },
 ];
 
 export default function Sidebar() {
@@ -50,6 +52,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
   const { mobileOpen, closeMobile } = useSidebar();
+  const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
 
   // Close mobile sidebar on route change
@@ -76,14 +79,14 @@ export default function Sidebar() {
         </div>
         {!collapsed && (
           <div className="overflow-hidden flex-1 min-w-0">
-            <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-slate-900"}`}>Water Resources</h1>
-            <p className={`text-[10px] leading-tight ${isDark ? "text-slate-300" : "text-slate-500"}`}>CAUSES / WRRI Dashboard</p>
+            <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-slate-900"}`}>{t("sidebar.water_resources")}</h1>
+            <p className={`text-[10px] leading-tight ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t("sidebar.subtitle")}</p>
           </div>
         )}
         {/* Close button — mobile only */}
         <button
           onClick={closeMobile}
-          aria-label="Close navigation"
+          aria-label={t("sidebar.close_nav")}
           className={`lg:hidden p-1.5 rounded-lg transition-colors ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
           }`}
@@ -100,7 +103,7 @@ export default function Sidebar() {
             <div key={section.key} className="mb-3">
               {!collapsed && (
                 <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                  {section.label}
+                  {t(section.labelKey)}
                 </p>
               )}
               {items.map((item) => {
@@ -108,7 +111,7 @@ export default function Sidebar() {
                 const Icon = item.icon;
                 return (
                   <Link
-                    key={item.href + item.label}
+                    key={item.href + item.labelKey}
                     href={item.href}
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all mb-0.5 ${
                       isActive
@@ -119,10 +122,10 @@ export default function Sidebar() {
                           ? "text-slate-400 hover:text-white hover:bg-panel-hover"
                           : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                     } ${collapsed ? "justify-center" : ""}`}
-                    title={collapsed ? item.label : undefined}
+                    title={collapsed ? t(item.labelKey) : undefined}
                   >
                     <Icon className="w-4 h-4 flex-shrink-0" />
-                    {!collapsed && <span>{item.label}</span>}
+                    {!collapsed && <span>{t(item.labelKey)}</span>}
                   </Link>
                 );
               })}
@@ -140,18 +143,18 @@ export default function Sidebar() {
           } ${collapsed ? "justify-center" : ""}`}
         >
           <Settings className="w-4 h-4" />
-          {!collapsed && <span>Settings</span>}
+          {!collapsed && <span>{t("sidebar.settings")}</span>}
         </Link>
         {/* Collapse toggle — desktop only */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? t("sidebar.expand") : t("sidebar.collapse_sidebar")}
           className={`hidden lg:flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
           } ${collapsed ? "justify-center" : ""}`}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" aria-hidden="true" /> : <ChevronLeft className="w-4 h-4" aria-hidden="true" />}
-          {!collapsed && <span>Collapse</span>}
+          {!collapsed && <span>{t("sidebar.collapse")}</span>}
         </button>
       </div>
     </>
