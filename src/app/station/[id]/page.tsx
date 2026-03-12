@@ -315,7 +315,11 @@ export default function StationDetailPage() {
 
           {reading && (
             <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-              <span>Last updated: {reading.timestamp ? new Date(reading.timestamp).toLocaleString() : "—"}</span>
+              <span>Last updated: {reading.timestamp
+                ? dataSources.length === 1 && dataSources[0] === "seed"
+                  ? "Baseline (modeled)"
+                  : new Date(reading.timestamp).toLocaleString()
+                : "—"}</span>
               {dataSources.length > 0 && (
                 <span className="flex items-center gap-1.5">
                   <span>Sources:</span>
