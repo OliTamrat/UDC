@@ -7,8 +7,12 @@ import {
   jsonSchema,
 } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
+
+// Configurable model via env var (default: Claude Haiku 4.5)
+const CHAT_MODEL = process.env.CHAT_MODEL || "claude-haiku-4-5-20251001";
 
 const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI-powered tool built into the University of the District of Columbia's Water Resources Data Dashboard. You help researchers, students, and community members understand water quality data across the Anacostia River watershed in Washington, DC.
 
@@ -56,6 +60,51 @@ const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI
 7. **Use the tools available** to query real station data when users ask about specific readings or trends.`;
 
 export async function POST(req: Request) {
+  // --- CSRF / Origin protection ---
+  const origin = req.headers.get("origin");
+  const host = req.headers.get("host");
+  if (origin && host) {
+    try {
+      const originHost = new URL(origin).host;
+      if (originHost !== host) {
+        return Response.json(
+          { error: "Cross-origin requests are not allowed" },
+          { status: 403 },
+        );
+      }
+    } catch {
+      return Response.json(
+        { error: "Invalid origin header" },
+        { status: 403 },
+      );
+    }
+  }
+
+  // --- Rate limiting (10 requests per minute per IP) ---
+  const clientIp =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown";
+  const rateResult = checkRateLimit(`chat:${clientIp}`, {
+    limit: 10,
+    windowMs: 60_000,
+  });
+
+  if (!rateResult.allowed) {
+    return Response.json(
+      { error: "Too many requests. Please wait a moment before trying again." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(
+            Math.ceil((rateResult.resetAt - Date.now()) / 1000),
+          ),
+          "X-RateLimit-Remaining": "0",
+        },
+      },
+    );
+  }
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return Response.json(
@@ -69,8 +118,9 @@ export async function POST(req: Request) {
 
   // Derive base URL from request for tool calls (works on Vercel, Docker, and local dev)
   const forwardedProto = req.headers.get("x-forwarded-proto") || "https";
-  const host = req.headers.get("host") || new URL(req.url).host;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${forwardedProto}://${host}`;
+  const hostHeader = req.headers.get("host") || new URL(req.url).host;
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || `${forwardedProto}://${hostHeader}`;
 
   let body: { messages: UIMessage[] };
   try {
@@ -99,7 +149,7 @@ export async function POST(req: Request) {
 
   try {
     const result = streamText({
-      model: anthropic("claude-haiku-4-5-20251001"),
+      model: anthropic(CHAT_MODEL),
       system: SYSTEM_PROMPT,
       messages: modelMessages,
       tools: {
@@ -182,8 +232,20 @@ export async function POST(req: Request) {
         }),
       },
       stopWhen: stepCountIs(3),
-      maxOutputTokens: 2048,
+      maxOutputTokens: 4096,
       temperature: 0.3,
+      onError: ({ error }) => {
+        console.error("[chat] Stream error during generation:", error);
+      },
+      onFinish: ({ usage }) => {
+        if (usage) {
+          const input = usage.inputTokens ?? 0;
+          const output = usage.outputTokens ?? 0;
+          console.log(
+            `[chat] Token usage — input: ${input}, output: ${output}, total: ${input + output}`,
+          );
+        }
+      },
     });
 
     return result.toUIMessageStreamResponse();

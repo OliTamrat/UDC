@@ -20,6 +20,7 @@ import { Droplets, MapPin, TrendingUp, Shield } from "lucide-react";
 import { useState, useCallback } from "react";
 import type { MonitoringStation } from "@/data/dc-waterways";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const DCMap = dynamic(() => import("@/components/map/DCMap"), {
   ssr: false,
@@ -37,6 +38,7 @@ export default function Dashboard() {
   const [selectedStation, setSelectedStation] = useState<MonitoringStation | null>(null);
   const [monthSnapshot, setMonthSnapshot] = useState<MonthlySnapshot | null>(null);
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
   const router = useRouter();
 
@@ -69,33 +71,31 @@ export default function Dashboard() {
                   UDC
                 </div>
                 <span className="text-xs font-medium text-udc-gold uppercase tracking-wider">
-                  CAUSES / WRRI
+                  {t("hero.badge")}
                 </span>
               </div>
               <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-                DC Water Resources{" "}
-                <span className="gradient-text">Data Dashboard</span>
+                {t("hero.title")}{" "}
+                <span className="gradient-text">{t("hero.title_highlight")}</span>
               </h1>
               <p className={`text-sm max-w-2xl mb-4 ${isDark ? "text-slate-300" : "text-slate-600"}`}>
-                Monitoring, analysis, and visualization of water quality data across the
-                Anacostia River watershed. Integrating research from UDC&apos;s Water Resources
-                Research Institute with environmental data for DC communities.
+                {t("hero.description")}
               </p>
               <div className="flex flex-wrap gap-3">
                 {[
-                  { icon: Droplets, label: "12 Monitoring Stations", color: "text-blue-400" },
-                  { icon: MapPin, label: "Anacostia Watershed", color: "text-green-400" },
-                  { icon: TrendingUp, label: "USGS Data Integration", color: "text-cyan-400" },
-                  { icon: Shield, label: "EPA Standards Tracking", color: "text-amber-400" },
+                  { icon: Droplets, labelKey: "hero.stations" as const, color: "text-blue-400" },
+                  { icon: MapPin, labelKey: "hero.watershed" as const, color: "text-green-400" },
+                  { icon: TrendingUp, labelKey: "hero.usgs" as const, color: "text-cyan-400" },
+                  { icon: Shield, labelKey: "hero.epa" as const, color: "text-amber-400" },
                 ].map((item) => (
                   <div
-                    key={item.label}
+                    key={item.labelKey}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border ${
                       isDark ? "bg-white/5 border-white/10" : "bg-white/80 border-slate-200"
                     }`}
                   >
                     <item.icon className={`w-3.5 h-3.5 ${item.color}`} />
-                    <span className={isDark ? "text-slate-300" : "text-slate-600"}>{item.label}</span>
+                    <span className={isDark ? "text-slate-300" : "text-slate-600"}>{t(item.labelKey)}</span>
                   </div>
                 ))}
               </div>
@@ -110,12 +110,8 @@ export default function Dashboard() {
           }`}>
             <Shield className="w-4 h-4 mt-0.5 shrink-0" />
             <div>
-              <span className="font-semibold">Data Sources:</span>{" "}
-              Station locations derived from DC GIS and USGS monitoring sites.
-              Water quality baselines use USGS NWIS instantaneous values (sites 01651000, 01651750)
-              and modeled seasonal patterns from peer-reviewed Anacostia watershed research.
-              Geospatial boundaries from official DC government GIS datasets.
-              This dashboard is a research and educational tool developed by UDC CAUSES/WRRI.
+              <span className="font-semibold">{t("notice.title")}</span>{" "}
+              {t("notice.text")}
             </div>
           </div>
 
@@ -128,14 +124,14 @@ export default function Dashboard() {
           <section id="map">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <div>
-                <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Interactive Watershed Map</h2>
+                <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.map_title")}</h2>
                 <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                  Anacostia River, tributaries, monitoring stations — toggle layers with the control panel
+                  {t("section.map_desc")}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-blue-400" />
-                <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>USGS &amp; DOEE monitoring network</span>
+                <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t("section.map_network")}</span>
               </div>
             </div>
             <div className="h-[300px] sm:h-[400px] md:h-[550px]">
@@ -155,12 +151,9 @@ export default function Dashboard() {
           {/* Water Quality Section */}
           <section id="water-quality">
             <div className="mb-4">
-              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Water Quality Analysis</h2>
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.wq_title")}</h2>
               <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-                Historical trends and current conditions across four key monitoring parameters.
-                Dissolved oxygen and E. coli levels are compared against EPA recreational water quality
-                standards. Data is sourced from USGS NWIS sensors and the EPA Water Quality Portal for the
-                Anacostia watershed (HUC 02070010).
+                {t("section.wq_desc")}
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -174,12 +167,9 @@ export default function Dashboard() {
           {/* Multi-parameter overview */}
           <section id="analytics">
             <div className="mb-3">
-              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Multi-Parameter Overview</h2>
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.multi_title")}</h2>
               <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-                Correlate dissolved oxygen, temperature, pH, and turbidity on a unified timeline.
-                Parameter relationships reveal how seasonal changes and storm events affect overall
-                water health — for example, elevated turbidity after rainfall often coincides with
-                depressed dissolved oxygen levels.
+                {t("section.multi_desc")}
               </p>
             </div>
             <MultiParameterChart />
@@ -188,12 +178,9 @@ export default function Dashboard() {
           {/* Environmental Justice */}
           <section>
             <div className="mb-3">
-              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Environmental Justice</h2>
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.ej_title")}</h2>
               <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-                Water quality issues disproportionately affect communities in DC&apos;s eastern wards.
-                Combined sewer overflows (CSOs), impervious surface coverage, and limited green space access
-                are interconnected factors that UDC&apos;s WRRI tracks across all eight wards to support
-                equitable environmental policy and community-led restoration.
+                {t("section.ej_desc")}
               </p>
             </div>
             <EnvironmentalJustice />
@@ -202,12 +189,9 @@ export default function Dashboard() {
           {/* Station Table */}
           <section id="stormwater">
             <div className="mb-3">
-              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Monitoring Stations</h2>
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.stations_title")}</h2>
               <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-                All 12 stations across the Anacostia, Potomac, and Rock Creek watersheds. Click any row
-                to view detailed readings, historical charts, and data export options for that station.
-                Data provenance badges indicate whether readings come from USGS sensors, EPA WQP records,
-                or the seed dataset.
+                {t("section.stations_desc")}
               </p>
             </div>
             <StationTable onStationClick={handleStationNavigate} />
