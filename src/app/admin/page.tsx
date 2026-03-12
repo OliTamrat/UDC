@@ -102,25 +102,28 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>("upload");
   const [adminKey, setAdminKey] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   // Login check
   const handleLogin = useCallback(async () => {
+    setLoginError("");
     try {
       const res = await fetch("/api/admin/stations", {
         headers: authHeadersNoBody(adminKey),
       });
       if (res.ok) {
         setAuthenticated(true);
+      } else if (res.status === 503) {
+        setLoginError("Admin access requires ADMIN_API_KEY to be configured on the server.");
       } else {
-        alert("Invalid admin key");
+        setLoginError("Invalid admin key. Please check your credentials.");
       }
     } catch {
-      // No ADMIN_API_KEY set — allow access in dev
-      setAuthenticated(true);
+      setLoginError("Unable to connect to the server.");
     }
   }, [adminKey]);
 
-  // Auto-login when no key is required (dev mode)
+  // Auto-login when no key is required (dev mode only)
   useEffect(() => {
     fetch("/api/admin/stations")
       .then((r) => {
@@ -151,12 +154,20 @@ export default function AdminPage() {
             onChange={(e) => setAdminKey(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleLogin()}
             placeholder="Enter ADMIN_API_KEY..."
-            className={`w-full px-3 py-2 rounded-lg border text-sm mb-4 ${
+            className={`w-full px-3 py-2 rounded-lg border text-sm mb-3 ${
               isDark
                 ? "bg-udc-dark border-panel-border text-slate-300 placeholder:text-slate-600"
                 : "bg-slate-50 border-slate-200 text-slate-700"
             }`}
           />
+          {loginError && (
+            <div className={`flex items-start gap-2 p-3 rounded-lg text-xs mb-3 ${
+              isDark ? "bg-red-500/10 border border-red-500/30 text-red-300" : "bg-red-50 border border-red-200 text-red-700"
+            }`}>
+              <XCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <span>{loginError}</span>
+            </div>
+          )}
           <button
             onClick={handleLogin}
             className="w-full py-2.5 rounded-lg bg-gradient-to-r from-udc-gold to-udc-red text-white text-sm font-medium hover:shadow-lg transition-all"
