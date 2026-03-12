@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import SettingsModal from "@/components/SettingsModal";
 import {
   LayoutDashboard,
   Map,
@@ -49,6 +50,7 @@ const sections: { key: string; labelKey: TranslationKey }[] = [
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
   const { mobileOpen, closeMobile } = useSidebar();
@@ -136,15 +138,16 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className={`border-t p-3 ${isDark ? "border-panel-border" : "border-slate-200"}`}>
-        <Link
-          href="#settings"
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
+        <button
+          onClick={() => setSettingsOpen(true)}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
           } ${collapsed ? "justify-center" : ""}`}
+          title={collapsed ? t("sidebar.settings") : undefined}
         >
           <Settings className="w-4 h-4" />
           {!collapsed && <span>{t("sidebar.settings")}</span>}
-        </Link>
+        </button>
         {/* Collapse toggle — desktop only */}
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -194,6 +197,9 @@ export default function Sidebar() {
           </aside>
         </div>
       )}
+
+      {/* Settings Modal */}
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>
   );
 }
