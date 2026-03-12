@@ -62,6 +62,8 @@ const USGS_SITES = [
   { usgs: "01651827", stationId: "ANA-003" }, // Anacostia River nr Buzzard Point at Washington, DC
   { usgs: "01651750", stationId: "ANA-004" }, // Anacostia River at Washington, DC (near Anacostia Park)
   { usgs: "01646500", stationId: "PB-001" },  // Potomac River at Little Falls (closest WQ gauge)
+  { usgs: "01651800", stationId: "WB-001" },  // Watts Branch at Minnesota Ave Bridge
+  { usgs: "01651770", stationId: "HR-001" },  // Hickey Run at National Arboretum
 ];
 
 interface USGSTimeSeriesValue {
@@ -182,6 +184,8 @@ const EPA_STATION_MAP: Record<string, string> = {
   "USGS-01651827": "ANA-003",
   "USGS-01651750": "ANA-004",
   "USGS-01646500": "PB-001",
+  "USGS-01651800": "WB-001",
+  "USGS-01651770": "HR-001",
 };
 
 interface EPAResult {
