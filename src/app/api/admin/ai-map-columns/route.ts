@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 
 function checkAuth(request: NextRequest): NextResponse | null {
-  const authHeader = request.headers.get("authorization");
   const adminKey = process.env.ADMIN_API_KEY;
+
+  if (!adminKey && process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "ADMIN_API_KEY not configured. Admin access is disabled." },
+      { status: 503 }
+    );
+  }
+
+  const authHeader = request.headers.get("authorization");
   if (adminKey && authHeader !== `Bearer ${adminKey}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   return null;
 }
 

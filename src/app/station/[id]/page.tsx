@@ -112,23 +112,40 @@ export default function StationDetailPage() {
           const sources = [...new Set(histData.data.map((r: { source?: string }) => r.source).filter(Boolean))] as string[];
           setDataSources(sources);
 
-          // Transform API data to chart format (group by month)
+          // Transform API data to chart format (group by month, averaging multiple readings per month)
           const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-          const byMonth: Record<string, HistoricalReading> = {};
+          const monthAccum: Record<string, { count: number; do: number; temp: number; ph: number; turb: number; ecoli: number }> = {};
+
           for (const r of histData.data) {
             const date = new Date(r.timestamp);
-            const monthIdx = date.getMonth();
-            const monthName = months[monthIdx];
-            byMonth[monthName] = {
-              month: monthName,
-              dissolvedOxygen: r.dissolvedOxygen ?? 0,
-              temperature: r.temperature ?? 0,
-              pH: r.pH ?? 0,
-              turbidity: r.turbidity ?? 0,
-              eColiCount: r.eColiCount ?? 0,
-            };
+            const monthName = months[date.getMonth()];
+            if (!monthAccum[monthName]) {
+              monthAccum[monthName] = { count: 0, do: 0, temp: 0, ph: 0, turb: 0, ecoli: 0 };
+            }
+            const acc = monthAccum[monthName];
+            acc.count++;
+            if (r.dissolvedOxygen != null) acc.do += r.dissolvedOxygen;
+            if (r.temperature != null) acc.temp += r.temperature;
+            if (r.pH != null) acc.ph += r.pH;
+            if (r.turbidity != null) acc.turb += r.turbidity;
+            if (r.eColiCount != null) acc.ecoli += r.eColiCount;
           }
-          const chartData = months.filter((m) => byMonth[m]).map((m) => byMonth[m]);
+
+          const chartData = months
+            .filter((m) => monthAccum[m])
+            .map((m) => {
+              const a = monthAccum[m];
+              const n = a.count || 1;
+              return {
+                month: m,
+                dissolvedOxygen: Math.round((a.do / n) * 100) / 100,
+                temperature: Math.round((a.temp / n) * 100) / 100,
+                pH: Math.round((a.ph / n) * 100) / 100,
+                turbidity: Math.round((a.turb / n) * 100) / 100,
+                eColiCount: Math.round(a.ecoli / n),
+              };
+            });
+
           if (chartData.length > 0) {
             const staticHist = getStationHistoricalData(stationId);
             setHistorical({ description: staticHist?.description || "", data: chartData });
@@ -307,6 +324,14 @@ export default function StationDetailPage() {
                   ))}
                 </span>
               )}
+              {dataSources.length === 1 && dataSources[0] === "seed" && (
+                <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] ${
+                  isDark ? "bg-amber-500/10 text-amber-400" : "bg-amber-50 text-amber-700"
+                }`}>
+                  <AlertTriangle className="w-3 h-3" />
+                  Baseline data — no live sensor feed for this station
+                </span>
+              )}
             </div>
           )}
 
@@ -314,7 +339,10 @@ export default function StationDetailPage() {
           {historical && (
             <>
               <div>
-                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Historical Trends (2025)</h2>
+                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
+                  Historical Trends
+                  {dataSources.length === 1 && dataSources[0] === "seed" ? " (Baseline)" : ""}
+                </h2>
                 <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly averages with EPA compliance thresholds</p>
               </div>
 
