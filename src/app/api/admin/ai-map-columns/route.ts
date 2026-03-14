@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 function checkAuth(request: NextRequest): NextResponse | null {
-  const adminKey = process.env.ADMIN_API_KEY;
+  const adminKey = process.env.ADMIN_API_KEY?.trim();
 
   if (!adminKey && process.env.NODE_ENV === "production") {
     return NextResponse.json(
@@ -11,7 +11,8 @@ function checkAuth(request: NextRequest): NextResponse | null {
   }
 
   const authHeader = request.headers.get("authorization");
-  if (adminKey && authHeader !== `Bearer ${adminKey}`) {
+  const token = authHeader?.replace(/^Bearer\s+/i, "").trim();
+  if (adminKey && token !== adminKey) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
