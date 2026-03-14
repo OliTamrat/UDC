@@ -17,7 +17,28 @@
   <img src="https://img.shields.io/badge/License-Academic-blue" alt="License"/>
 </p>
 
-An interactive, production-ready dashboard for water quality monitoring, data integration, analysis, and visualization across the Anacostia River watershed and DC waterways. Built to support research at UDC's Water Resources Research Institute (WRRI) and the College of Agriculture, Urban Sustainability & Environmental Sciences (CAUSES).
+<p align="center">
+  <strong>University of the District of Columbia — CAUSES / WRRI</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js 16"/>
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4"/>
+  <img src="https://img.shields.io/badge/Leaflet-Maps-199900?logo=leaflet&logoColor=white" alt="Leaflet"/>
+  <img src="https://img.shields.io/badge/License-Academic-blue" alt="License"/>
+</p>
+
+<p align="center">
+  Interactive water quality monitoring platform for the Anacostia River watershed and DC waterways.<br/>
+  Built to support research at UDC's Water Resources Research Institute (WRRI) and CAUSES.
+</p>
+
+---
+
+> **Screenshots:** Add dashboard screenshots to a `docs/screenshots/` folder and uncomment the section below.
+>
+> <!-- <p align="center"><img src="docs/screenshots/dashboard-dark.png" alt="Dashboard" width="800"/></p> -->
 
 <!-- Uncomment when you add screenshots:
 <p align="center">
@@ -27,14 +48,14 @@ An interactive, production-ready dashboard for water quality monitoring, data in
 
 ---
 
-## What We're Building
+## Overview
 
-The UDC Water Resources Data Dashboard is a centralized platform that brings together water quality data from multiple sources — DOEE, EPA, USGS, Anacostia Riverkeeper, DC Water, and UDC's own Environmental Quality Testing Lab — into a single, accessible interface. The goal is to:
+The UDC Water Resources Data Dashboard brings together water quality data from DOEE, EPA, USGS, Anacostia Riverkeeper, DC Water, and UDC's Environmental Quality Testing Lab into a single, accessible interface.
 
-1. **Empower DC communities** with transparent, real-time water quality information for the Anacostia River and its tributaries
-2. **Support UDC research** by providing integrated data visualization and analysis tools for WRRI/CAUSES faculty, students, and partners
-3. **Advance environmental justice** by highlighting disparities in water quality, flood risk, and green space access across DC's wards — particularly in Wards 7 and 8
-4. **Track green infrastructure performance** at UDC's urban food hubs, green roofs, and rain gardens to demonstrate stormwater management effectiveness
+- **Empower DC communities** with transparent, real-time water quality information
+- **Support UDC research** with integrated data visualization and analysis tools
+- **Advance environmental justice** by highlighting disparities across DC's wards
+- **Track green infrastructure** performance at UDC's urban food hubs and green roofs
 
 ---
 
@@ -180,7 +201,7 @@ The UDC Water Resources Data Dashboard is a centralized platform that brings tog
 
 ---
 
-## Getting Started
+## Quick Start
 
 ```bash
 # Clone the repository
@@ -195,12 +216,6 @@ npm run db:seed
 
 # Start development server
 npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
@@ -264,37 +279,25 @@ public/
 └── dc-wards.geojson                # Full-resolution DC ward boundaries from DC GIS
 ```
 
----
+```env
+# AI Research Assistant (optional)
+ANTHROPIC_API_KEY=your-key-here
 
-## Data Sources
+# Admin Panel Access (optional, open in dev if unset)
+ADMIN_API_KEY=your-admin-key
 
-| Source | Data Provided |
-|--------|--------------|
-| **DC DOEE** | River monitoring, water quality assessments, CSO tracking, environmental permits |
-| **EPA Region 3** | Federal standards (STORET/WQX), NPDES permits, Clean Water Act compliance |
-| **USGS** | Stream gauges (NWIS), groundwater monitoring, flood alerts |
-| **Anacostia Riverkeeper** | Community monitoring, Swim Guide data, citizen science |
-| **DC Water** | CSO tunnel project data, treatment plant data, sewer infrastructure |
-| **UDC EQTL** | Lab analysis, field sampling, PFAS testing |
+# Production Database (optional, defaults to SQLite)
+DATABASE_URL=postgresql://user:password@host/db
+```
 
 ---
 
-## UDC Research Programs
+## Testing
 
-This dashboard supports and integrates data from:
-
-- **WRRI** — Water Resources Research Institute
-- **CAUSES** — College of Agriculture, Urban Sustainability & Environmental Sciences
-- **CURII** — Center for Urban Resilience, Innovation and Infrastructure
-- **EQTL** — Environmental Quality Testing Laboratory
-
-### Active Research Projects
-1. Green Roof Stormwater Retention Analysis (Dr. Tolessa Deksissa)
-2. Urban Food Hub Stormwater BMP Monitoring (Dr. Dwane Jones)
-3. Anacostia Watershed PFAS Assessment (Dr. Sarah Mitchell)
-4. Potomac Source Water Protection Partnership (Dr. Tolessa Deksissa)
-5. Tree Cell Stormwater Filtration Effectiveness (Dr. James Richardson)
-6. Rainwater Reuse Safety Assessment (Dr. Maria Chen)
+```bash
+npm test              # Run all tests
+npm run test:watch    # Watch mode
+```
 
 ---
 
@@ -313,14 +316,70 @@ Push to GitHub and import the repository at [vercel.com/new](https://vercel.com/
 
 ### Health Check
 
-The `/api/health` endpoint returns JSON with `status`, `timestamp`, `version`, and `uptime` — use this for load balancer or uptime monitoring probes.
+`GET /api/health` returns JSON with `status`, `timestamp`, `version`, and `uptime`.
 
-### Testing
+---
 
-```bash
-npm test          # Run all tests once
-npm run test:watch # Watch mode
+## Project Structure
+
 ```
+src/
+├── app/
+│   ├── page.tsx                    # Main dashboard
+│   ├── station/[id]/page.tsx       # Station detail pages
+│   ├── research/page.tsx           # Research portal
+│   ├── education/page.tsx          # Education & outreach
+│   ├── admin/page.tsx              # Faculty admin panel
+│   └── api/                        # REST API routes
+├── components/
+│   ├── map/                        # DCMap, LayerControls, TimeSlider
+│   ├── dashboard/                  # MetricCards, StationTable, EJ Analysis
+│   ├── charts/                     # Water quality visualizations
+│   ├── ai/                         # Research assistant chat
+│   └── layout/                     # Header, Sidebar
+├── lib/
+│   ├── db.ts                       # Database abstraction (SQLite + PostgreSQL)
+│   ├── logger.ts                   # Client-side logging
+│   └── validation.ts               # Input sanitization
+└── data/                           # Static datasets, GIS boundaries
+```
+
+---
+
+## Data Sources
+
+| Source | Data Provided |
+|--------|--------------|
+| **DC DOEE** | River monitoring, water quality assessments, CSO tracking |
+| **EPA Region 3** | Federal standards (STORET/WQX), NPDES permits |
+| **USGS** | Stream gauges (NWIS), groundwater monitoring, flood alerts |
+| **Anacostia Riverkeeper** | Community monitoring, Swim Guide, citizen science |
+| **DC Water** | CSO tunnel project data, treatment plant data |
+| **UDC EQTL** | Lab analysis, field sampling, PFAS testing |
+
+---
+
+## Research Programs
+
+This dashboard supports data from:
+
+| Program | Full Name |
+|---------|-----------|
+| **WRRI** | Water Resources Research Institute |
+| **CAUSES** | College of Agriculture, Urban Sustainability & Environmental Sciences |
+| **CURII** | Center for Urban Resilience, Innovation and Infrastructure |
+| **EQTL** | Environmental Quality Testing Laboratory |
+
+### Active Research Projects
+
+| Project | Principal Investigator |
+|---------|----------------------|
+| Green Roof Stormwater Retention Analysis | Dr. Tolessa Deksissa |
+| Urban Food Hub Stormwater BMP Monitoring | Dr. Dwane Jones |
+| Anacostia Watershed PFAS Assessment | Dr. Sarah Mitchell |
+| Potomac Source Water Protection Partnership | Dr. Tolessa Deksissa |
+| Tree Cell Stormwater Filtration Effectiveness | Dr. James Richardson |
+| Rainwater Reuse Safety Assessment | Dr. Maria Chen |
 
 ---
 
