@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDbClient } from "@/lib/db";
 
 function checkAuth(request: NextRequest): NextResponse | null {
-  const adminKey = process.env.ADMIN_API_KEY;
+  const adminKey = process.env.ADMIN_API_KEY?.trim();
 
   // In production, ADMIN_API_KEY must be configured — block all access if missing
   if (!adminKey && process.env.NODE_ENV === "production") {
@@ -14,7 +14,8 @@ function checkAuth(request: NextRequest): NextResponse | null {
 
   // If key is set, require valid Bearer token
   const authHeader = request.headers.get("authorization");
-  if (adminKey && authHeader !== `Bearer ${adminKey}`) {
+  const token = authHeader?.replace(/^Bearer\s+/i, "").trim();
+  if (adminKey && token !== adminKey) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
