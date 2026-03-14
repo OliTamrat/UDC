@@ -9,9 +9,14 @@
 - If a user shares a credential in conversation, do NOT echo it back in code, commits, or file contents
 - `.env.local` is gitignored — secrets belong there, never in tracked files
 
-### Git Commit & Push Rules
+### Git Commit & Push Rules — IP Protection
+- **NEVER** use Claude/Anthropic as the git author or committer — always commit as the repository owner:
+  - `git config user.name "Oli T. Oli"`
+  - `git config user.email "120649391+OliTamrat@users.noreply.github.com"`
+  - Set `GIT_AUTHOR_NAME`, `GIT_AUTHOR_EMAIL`, `GIT_COMMITTER_NAME`, `GIT_COMMITTER_EMAIL` env vars before every commit
 - **NEVER** include Claude Code session attribution URLs in commit messages, PR descriptions, or code comments
 - **NEVER** include any `https://claude.ai/code/...` links anywhere in the codebase or git history
+- **NEVER** add `Co-authored-by` trailers or any other metadata that attributes work to Claude or Anthropic
 - Never amend someone else's commit — always create new commits
 - Write clear, descriptive commit messages summarizing the "why"
 
