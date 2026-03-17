@@ -564,7 +564,7 @@ export const monitoringStations: MonitoringStation[] = [
   },
 ];
 
-// Historical water quality trend data (monthly averages for 2025)
+// Historical water quality trend data (monthly averages — current year)
 export const historicalData = {
   months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   dissolvedOxygen: [11.2, 10.8, 9.5, 8.2, 7.1, 5.8, 4.9, 5.2, 6.8, 8.5, 9.8, 10.9],
@@ -663,7 +663,7 @@ export const researchProjects = [
   },
 ];
 
-// Per-station historical monthly data (2025) — realistic seasonal patterns
+// Per-station historical monthly data — realistic seasonal patterns
 // Each station has unique characteristics based on its location and type
 export function getStationHistoricalData(stationId: string) {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

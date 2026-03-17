@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { ArrowRight, Play, Pause, RotateCcw, CloudRain, Droplets } from "lucide-react";
+import { ArrowRight, Play, Pause, RotateCcw, CloudRain, Droplets, X, Info } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { StoryCard, FadeIn } from "./ScrollySection";
 
@@ -14,34 +14,172 @@ interface StationNode {
   id: string;
   name: string;
   short: string;
-  /** X position as % along the SVG river path */
   x: number;
-  /** Y position in the SVG viewBox */
   y: number;
-  /** Label offset direction */
   labelSide: "top" | "bottom";
   type: "headwater" | "tributary" | "main" | "tidal";
-  turbidity: number; // baseline NTU
-  /** Position along the main flow for propagation calc (0-100) */
+  turbidity: number;
   flowPosition: number;
+  /** Plain-English explanation of what this NTU reading means */
+  explanation: string;
 }
 
 const STATIONS: StationNode[] = [
-  { id: "NEB-001", name: "NE Branch Headwaters", short: "NE Head", x: 80, y: 45, labelSide: "top", type: "headwater", turbidity: 12, flowPosition: 5 },
-  { id: "NWB-001", name: "NW Branch at Hyattsville", short: "NW Branch", x: 115, y: 115, labelSide: "bottom", type: "tributary", turbidity: 15, flowPosition: 15 },
-  { id: "NEB-002", name: "NE Branch at Colmar Manor", short: "Colmar", x: 155, y: 80, labelSide: "top", type: "tributary", turbidity: 18, flowPosition: 20 },
-  { id: "ANA-001", name: "Anacostia at Bladensburg", short: "Bladensburg", x: 250, y: 145, labelSide: "bottom", type: "main", turbidity: 25, flowPosition: 35 },
-  { id: "ANA-002", name: "Anacostia at Benning Rd", short: "Benning", x: 390, y: 120, labelSide: "top", type: "main", turbidity: 32, flowPosition: 55 },
-  { id: "ANA-003", name: "Anacostia at Navy Yard", short: "Navy Yard", x: 530, y: 155, labelSide: "bottom", type: "main", turbidity: 38, flowPosition: 75 },
-  { id: "POT-001", name: "Potomac Confluence", short: "Potomac", x: 670, y: 130, labelSide: "top", type: "tidal", turbidity: 28, flowPosition: 95 },
+  {
+    id: "NEB-001", name: "NE Branch Headwaters", short: "NE Head",
+    x: 80, y: 45, labelSide: "top", type: "headwater", turbidity: 12, flowPosition: 5,
+    explanation: "12 NTU is very clear water — typical of a healthy headwater stream with minimal upstream development. You could see the bottom clearly at this reading. Headwaters like this serve as the baseline for downstream comparison.",
+  },
+  {
+    id: "NWB-001", name: "NW Branch at Hyattsville", short: "NW Branch",
+    x: 115, y: 115, labelSide: "bottom", type: "tributary", turbidity: 15, flowPosition: 15,
+    explanation: "15 NTU is still relatively clear — slightly higher than headwaters due to suburban runoff from Hyattsville. The NW Branch drains residential neighborhoods, picking up sediment from lawns and roads.",
+  },
+  {
+    id: "NEB-002", name: "NE Branch at Colmar Manor", short: "Colmar",
+    x: 155, y: 80, labelSide: "top", type: "tributary", turbidity: 18, flowPosition: 20,
+    explanation: "18 NTU shows slight cloudiness — the NE Branch has picked up sediment as it flows through Colmar Manor. This is within normal range but already higher than the pristine headwaters upstream.",
+  },
+  {
+    id: "ANA-001", name: "Anacostia at Bladensburg", short: "Bladensburg",
+    x: 250, y: 145, labelSide: "bottom", type: "main", turbidity: 25, flowPosition: 35,
+    explanation: "25 NTU is the EPA threshold for aesthetic concern. This is where the NE and NW branches merge to form the Anacostia. The combined flow from two tributaries plus Bladensburg's urban runoff pushes turbidity to this level.",
+  },
+  {
+    id: "ANA-002", name: "Anacostia at Benning Rd", short: "Benning",
+    x: 390, y: 120, labelSide: "top", type: "main", turbidity: 32, flowPosition: 55,
+    explanation: "32 NTU means noticeably murky water. Benning Road area is heavily urbanized with impervious surfaces. Combined Sewer Overflow (CSO) outfalls in this stretch discharge during storms, adding sediment and pollutants.",
+  },
+  {
+    id: "ANA-003", name: "Anacostia at Navy Yard", short: "Navy Yard",
+    x: 530, y: 155, labelSide: "bottom", type: "main", turbidity: 38, flowPosition: 75,
+    explanation: "38 NTU reflects accumulated pollution from the entire upstream watershed. Navy Yard sits in the tidal zone where water moves slowly, allowing sediment to accumulate. Historic contamination from the former Navy Yard industrial site adds to baseline levels.",
+  },
+  {
+    id: "POT-001", name: "Potomac Confluence", short: "Potomac",
+    x: 670, y: 130, labelSide: "top", type: "tidal", turbidity: 28, flowPosition: 95,
+    explanation: "28 NTU — actually lower than Navy Yard because the Anacostia's polluted water mixes with the much larger Potomac River, diluting the turbidity. However, this still contributes to Chesapeake Bay degradation downstream.",
+  },
 ];
 
 // River path (main channel) — a natural meandering curve
 const RIVER_MAIN_PATH = "M 40,60 C 100,40 140,100 200,130 C 260,160 320,90 400,115 C 480,140 540,180 600,150 C 660,120 700,135 730,130";
-// NW Branch tributary
 const TRIB_NW_PATH = "M 60,160 C 90,140 120,130 170,120";
-// NE Branch upper tributary
 const TRIB_NE_PATH = "M 50,20 C 70,30 80,50 100,55";
+
+/** NTU Explanation Modal */
+function NTUModal({
+  station,
+  currentTurbidity,
+  isDark,
+  onClose,
+}: {
+  station: StationNode;
+  currentTurbidity: number;
+  isDark: boolean;
+  onClose: () => void;
+}) {
+  const ratio = currentTurbidity / station.turbidity;
+  const status = ratio > 5 ? "Dangerous" : ratio > 3 ? "High" : ratio > 1.5 ? "Elevated" : "Normal";
+  const statusColor = ratio > 5 ? "text-red-400" : ratio > 3 ? "text-orange-400" : ratio > 1.5 ? "text-amber-400" : "text-green-400";
+  const statusBg = ratio > 5 ? "bg-red-500/10" : ratio > 3 ? "bg-orange-500/10" : ratio > 1.5 ? "bg-amber-500/10" : "bg-green-500/10";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      <div
+        className={`relative max-w-md w-full rounded-2xl border p-5 shadow-2xl ${
+          isDark ? "bg-slate-900 border-panel-border" : "bg-white border-slate-200"
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className={`absolute top-3 right-3 p-1 rounded-lg transition-colors ${
+            isDark ? "hover:bg-white/10 text-slate-400" : "hover:bg-slate-100 text-slate-500"
+          }`}
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Header */}
+        <div className="flex items-start gap-3 mb-4">
+          <div className={`p-2 rounded-xl ${isDark ? "bg-water-blue/10" : "bg-blue-50"}`}>
+            <Info className="w-5 h-5 text-water-blue" />
+          </div>
+          <div>
+            <h3 className={`text-base font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+              {station.name}
+            </h3>
+            <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              Station {station.id} · {station.type === "headwater" ? "Headwater" : station.type === "tributary" ? "Tributary" : station.type === "tidal" ? "Tidal" : "Main Channel"}
+            </p>
+          </div>
+        </div>
+
+        {/* Current reading */}
+        <div className={`rounded-xl p-3 mb-4 border ${isDark ? "bg-panel-bg border-panel-border" : "bg-slate-50 border-slate-200"}`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <span className={`text-[10px] uppercase tracking-wide ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                Current Turbidity
+              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className={`text-2xl font-bold ${statusColor}`}>{currentTurbidity}</span>
+                <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>NTU</span>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className={`text-[10px] uppercase tracking-wide ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                Baseline
+              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className={`text-lg font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>{station.turbidity}</span>
+                <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>NTU</span>
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusBg} ${statusColor}`}>
+              {status}
+            </span>
+            {ratio > 1.1 && (
+              <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                {ratio.toFixed(1)}x baseline
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Explanation */}
+        <p className={`text-sm leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+          {station.explanation}
+        </p>
+
+        {/* NTU scale reference */}
+        <div className={`mt-4 pt-3 border-t ${isDark ? "border-panel-border" : "border-slate-200"}`}>
+          <span className={`text-[10px] font-medium uppercase tracking-wide ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+            NTU Reference Scale
+          </span>
+          <div className="flex items-center gap-1 mt-1.5">
+            {[
+              { range: "0-10", label: "Crystal clear", color: "bg-blue-400" },
+              { range: "10-25", label: "Clear", color: "bg-green-400" },
+              { range: "25-50", label: "Slightly cloudy", color: "bg-amber-400" },
+              { range: "50-150", label: "Cloudy", color: "bg-orange-400" },
+              { range: "150+", label: "Murky", color: "bg-red-400" },
+            ].map((item) => (
+              <div key={item.range} className="flex-1 text-center">
+                <div className={`h-1.5 rounded-full ${item.color} mb-1`} />
+                <span className={`text-[7px] block ${isDark ? "text-slate-500" : "text-slate-400"}`}>{item.range}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function UpstreamDownstream() {
   const { resolvedTheme } = useTheme();
@@ -49,6 +187,7 @@ export default function UpstreamDownstream() {
   const [playing, setPlaying] = useState(false);
   const [timeStep, setTimeStep] = useState(0);
   const [scenario, setScenario] = useState<"storm" | "cso" | "construction">("storm");
+  const [selectedStation, setSelectedStation] = useState<StationNode | null>(null);
   const animRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const MAX_STEPS = 60;
@@ -78,33 +217,12 @@ export default function UpstreamDownstream() {
     return Math.round(base + base * spike);
   }, [scenario]);
 
-  /** How far pollution has reached (0-100 flow position) */
   const getPollutionFront = useCallback((step: number): number => {
     const sourcePosition =
       scenario === "storm" ? 0 :
       scenario === "cso" ? 50 :
       15;
-    // Pollution moves ~2 flow-units per step
     return Math.min(100, sourcePosition + step * 2);
-  }, [scenario]);
-
-  /** Pollution intensity at a given flow position (0-1) */
-  const getPollutionIntensity = useCallback((flowPos: number, step: number): number => {
-    const sourcePosition =
-      scenario === "storm" ? 0 :
-      scenario === "cso" ? 50 :
-      15;
-    const distance = Math.abs(flowPos - sourcePosition);
-    const travelTime = distance * 0.5;
-    const elapsed = step - travelTime;
-
-    if (elapsed < 0) return 0;
-
-    const peakIntensity = scenario === "storm" ? 1 : scenario === "cso" ? 0.8 : 0.6;
-    const decay = Math.max(0, 1 - distance / 100);
-    const timeFactor = Math.exp(-((elapsed - 10) ** 2) / 200);
-
-    return Math.min(1, peakIntensity * timeFactor * decay);
   }, [scenario]);
 
   useEffect(() => {
@@ -154,17 +272,15 @@ export default function UpstreamDownstream() {
   ];
 
   const hoursElapsed = Math.round((timeStep / MAX_STEPS) * 48);
-
-  // Compute pollution color for the river gradient
   const pollutionFront = getPollutionFront(timeStep);
 
-  // Generate flow particles along the river
-  const flowParticles = useRef(
-    Array.from({ length: 30 }, (_, i) => ({
-      offset: Math.random() * 100,
-      speed: 0.8 + Math.random() * 0.6,
-      drift: (Math.random() - 0.5) * 6,
-      size: 1.5 + Math.random() * 2,
+  // Generate stable rain drops (vertical fall, not horizontal drift)
+  const rainDrops = useRef(
+    Array.from({ length: 40 }, () => ({
+      x: Math.random() * 750,
+      delay: Math.random() * 2,
+      speed: 0.4 + Math.random() * 0.4,
+      length: 6 + Math.random() * 10,
     }))
   ).current;
 
@@ -184,7 +300,7 @@ export default function UpstreamDownstream() {
           When pollution enters the Anacostia watershed, it doesn&apos;t stay put. Water carries
           it downstream — from suburban tributaries in Maryland, through DC neighborhoods, to the
           Potomac and ultimately the Chesapeake Bay. Select a scenario and press play to see how
-          pollution propagates.
+          pollution propagates. <strong>Click any station marker</strong> to learn what the reading means.
         </p>
       </FadeIn>
 
@@ -275,13 +391,10 @@ export default function UpstreamDownstream() {
               preserveAspectRatio="xMidYMid meet"
             >
               <defs>
-                {/* Clean water gradient */}
                 <linearGradient id="cleanWater" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor={isDark ? "#1e3a5f" : "#93c5fd"} />
                   <stop offset="100%" stopColor={isDark ? "#1e4d8f" : "#60a5fa"} />
                 </linearGradient>
-
-                {/* Polluted water gradient — dynamic based on scenario */}
                 <linearGradient id="pollutedWater" x1="0%" y1="0%" x2="100%" y2="0%">
                   {scenario === "storm" && (
                     <>
@@ -302,96 +415,30 @@ export default function UpstreamDownstream() {
                     </>
                   )}
                 </linearGradient>
-
-                {/* River bank texture */}
-                <linearGradient id="riverBank" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor={isDark ? "#1a2e1a" : "#86efac"} stopOpacity="0.3" />
-                  <stop offset="100%" stopColor={isDark ? "#0a1a0a" : "#4ade80"} stopOpacity="0.1" />
-                </linearGradient>
-
-                {/* Glow filter for polluted markers */}
-                <filter id="pollutionGlow">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
               </defs>
 
               {/* Background terrain */}
-              <rect width="750" height="210" fill={isDark ? "#0c1424" : "#f0fdf4"} rx="0" />
+              <rect width="750" height="210" fill={isDark ? "#0c1424" : "#f0fdf4"} />
 
-              {/* Subtle terrain texture */}
-              {isDark && (
-                <g opacity="0.15">
-                  <circle cx="100" cy="30" r="60" fill="#166534" />
-                  <circle cx="300" cy="180" r="80" fill="#166534" />
-                  <circle cx="550" cy="40" r="70" fill="#166534" />
-                  <circle cx="680" cy="170" r="50" fill="#166534" />
-                </g>
-              )}
-              {!isDark && (
-                <g opacity="0.2">
-                  <circle cx="100" cy="30" r="60" fill="#bbf7d0" />
-                  <circle cx="300" cy="180" r="80" fill="#bbf7d0" />
-                  <circle cx="550" cy="40" r="70" fill="#bbf7d0" />
-                  <circle cx="680" cy="170" r="50" fill="#bbf7d0" />
-                </g>
-              )}
+              {/* Terrain texture */}
+              <g opacity={isDark ? "0.15" : "0.2"}>
+                <circle cx="100" cy="30" r="60" fill={isDark ? "#166534" : "#bbf7d0"} />
+                <circle cx="300" cy="180" r="80" fill={isDark ? "#166534" : "#bbf7d0"} />
+                <circle cx="550" cy="40" r="70" fill={isDark ? "#166534" : "#bbf7d0"} />
+                <circle cx="680" cy="170" r="50" fill={isDark ? "#166534" : "#bbf7d0"} />
+              </g>
 
-              {/* River banks (wider stroke behind the water) */}
-              <path
-                d={RIVER_MAIN_PATH}
-                fill="none"
-                stroke={isDark ? "#1a3320" : "#86efac"}
-                strokeWidth="32"
-                strokeLinecap="round"
-                opacity="0.3"
-              />
-              <path
-                d={TRIB_NW_PATH}
-                fill="none"
-                stroke={isDark ? "#1a3320" : "#86efac"}
-                strokeWidth="18"
-                strokeLinecap="round"
-                opacity="0.25"
-              />
-              <path
-                d={TRIB_NE_PATH}
-                fill="none"
-                stroke={isDark ? "#1a3320" : "#86efac"}
-                strokeWidth="16"
-                strokeLinecap="round"
-                opacity="0.25"
-              />
+              {/* River banks */}
+              <path d={RIVER_MAIN_PATH} fill="none" stroke={isDark ? "#1a3320" : "#86efac"} strokeWidth="32" strokeLinecap="round" opacity="0.3" />
+              <path d={TRIB_NW_PATH} fill="none" stroke={isDark ? "#1a3320" : "#86efac"} strokeWidth="18" strokeLinecap="round" opacity="0.25" />
+              <path d={TRIB_NE_PATH} fill="none" stroke={isDark ? "#1a3320" : "#86efac"} strokeWidth="16" strokeLinecap="round" opacity="0.25" />
 
-              {/* Main river — clean water base */}
-              <path
-                d={RIVER_MAIN_PATH}
-                fill="none"
-                stroke="url(#cleanWater)"
-                strokeWidth="20"
-                strokeLinecap="round"
-                opacity={isDark ? "0.8" : "0.6"}
-              />
+              {/* Main river — clean water */}
+              <path d={RIVER_MAIN_PATH} fill="none" stroke="url(#cleanWater)" strokeWidth="20" strokeLinecap="round" opacity={isDark ? "0.8" : "0.6"} />
+              <path d={TRIB_NW_PATH} fill="none" stroke="url(#cleanWater)" strokeWidth="10" strokeLinecap="round" opacity={isDark ? "0.6" : "0.5"} />
+              <path d={TRIB_NE_PATH} fill="none" stroke="url(#cleanWater)" strokeWidth="8" strokeLinecap="round" opacity={isDark ? "0.6" : "0.5"} />
 
-              {/* Tributaries — clean water */}
-              <path
-                d={TRIB_NW_PATH}
-                fill="none"
-                stroke="url(#cleanWater)"
-                strokeWidth="10"
-                strokeLinecap="round"
-                opacity={isDark ? "0.6" : "0.5"}
-              />
-              <path
-                d={TRIB_NE_PATH}
-                fill="none"
-                stroke="url(#cleanWater)"
-                strokeWidth="8"
-                strokeLinecap="round"
-                opacity={isDark ? "0.6" : "0.5"}
-              />
-
-              {/* Pollution overlay on main river */}
+              {/* Pollution overlay */}
               {timeStep > 0 && (
                 <path
                   d={RIVER_MAIN_PATH}
@@ -406,98 +453,87 @@ export default function UpstreamDownstream() {
                 />
               )}
 
-              {/* Animated water flow particles */}
-              {flowParticles.map((particle, i) => {
-                const t = ((Date.now() / (1000 * particle.speed) + particle.offset) % 1);
-                const flowPos = t * 100;
-                const intensity = getPollutionIntensity(flowPos, timeStep);
-                // Map flow position to approximate SVG coordinates along the river
-                const px = 40 + (t * 690);
-                const py = 60 + Math.sin(t * Math.PI * 3) * 40 + 30 + particle.drift;
-                const color = intensity > 0.3
-                  ? (scenario === "storm" ? "#d97706" : scenario === "cso" ? "#10b981" : "#ea580c")
-                  : (isDark ? "#60a5fa" : "#3b82f6");
-
-                return (
-                  <circle
-                    key={i}
-                    cx={px}
-                    cy={py}
-                    r={particle.size}
-                    fill={color}
-                    opacity={0.3 + intensity * 0.4}
-                  >
-                    <animate
-                      attributeName="cx"
-                      from={40}
-                      to={730}
-                      dur={`${3 + particle.speed * 2}s`}
-                      begin={`${particle.offset * 3}s`}
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                );
-              })}
-
-              {/* Water shimmer effect on main river */}
-              <path
-                d={RIVER_MAIN_PATH}
-                fill="none"
-                stroke="white"
-                strokeWidth="1"
-                strokeLinecap="round"
-                opacity="0.1"
-                strokeDasharray="4 12"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  from="0"
-                  to="-16"
-                  dur="1.5s"
-                  repeatCount="indefinite"
-                />
+              {/* Water shimmer — animated dashes flowing downstream */}
+              <path d={RIVER_MAIN_PATH} fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" opacity="0.1" strokeDasharray="4 12">
+                <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="1.5s" repeatCount="indefinite" />
               </path>
-              <path
-                d={RIVER_MAIN_PATH}
-                fill="none"
-                stroke="white"
-                strokeWidth="0.5"
-                strokeLinecap="round"
-                opacity="0.08"
-                strokeDasharray="2 8"
-              >
-                <animate
-                  attributeName="stroke-dashoffset"
-                  from="0"
-                  to="-10"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
+              <path d={RIVER_MAIN_PATH} fill="none" stroke="white" strokeWidth="0.5" strokeLinecap="round" opacity="0.08" strokeDasharray="2 8">
+                <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="2s" repeatCount="indefinite" />
               </path>
 
-              {/* Flow direction arrows along river */}
+              {/* Flow direction arrows */}
               {[0.2, 0.4, 0.6, 0.8].map((t, i) => {
                 const ax = 40 + t * 690;
                 const ay = 60 + Math.sin(t * Math.PI * 3) * 40 + 30;
                 return (
-                  <g key={i} opacity={isDark ? 0.3 : 0.2}>
-                    <polygon
-                      points={`${ax},${ay - 3} ${ax + 6},${ay} ${ax},${ay + 3}`}
-                      fill={isDark ? "#94a3b8" : "#64748b"}
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values="0.3;0.6;0.3"
-                        dur="2s"
-                        begin={`${i * 0.5}s`}
-                        repeatCount="indefinite"
-                      />
-                    </polygon>
-                  </g>
+                  <polygon
+                    key={i}
+                    points={`${ax},${ay - 3} ${ax + 6},${ay} ${ax},${ay + 3}`}
+                    fill={isDark ? "#94a3b8" : "#64748b"}
+                    opacity={isDark ? 0.3 : 0.2}
+                  >
+                    <animate attributeName="opacity" values="0.15;0.4;0.15" dur="2s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                  </polygon>
                 );
               })}
 
-              {/* Station markers */}
+              {/* Rain drops — falling VERTICALLY from top to bottom */}
+              {playing && scenario === "storm" && timeStep < 30 && rainDrops.map((drop, i) => (
+                <line
+                  key={`rain-${i}`}
+                  x1={drop.x}
+                  y1={0}
+                  x2={drop.x}
+                  y2={drop.length}
+                  stroke="#60a5fa"
+                  strokeWidth="0.8"
+                  opacity="0.4"
+                  strokeLinecap="round"
+                >
+                  <animate
+                    attributeName="y1"
+                    from={-drop.length}
+                    to={210}
+                    dur={`${drop.speed}s`}
+                    begin={`${drop.delay}s`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="y2"
+                    from={0}
+                    to={210 + drop.length}
+                    dur={`${drop.speed}s`}
+                    begin={`${drop.delay}s`}
+                    repeatCount="indefinite"
+                  />
+                </line>
+              ))}
+
+              {/* Rain splash circles on water surface during storm */}
+              {playing && scenario === "storm" && timeStep < 30 && (
+                <g>
+                  {[
+                    { cx: 120, cy: 85 }, { cx: 280, cy: 140 }, { cx: 450, cy: 125 },
+                    { cx: 580, cy: 160 }, { cx: 350, cy: 110 }, { cx: 650, cy: 135 },
+                  ].map((splash, i) => (
+                    <circle
+                      key={`splash-${i}`}
+                      cx={splash.cx}
+                      cy={splash.cy}
+                      r="2"
+                      fill="none"
+                      stroke="#93c5fd"
+                      strokeWidth="0.5"
+                      opacity="0"
+                    >
+                      <animate attributeName="r" from="1" to="8" dur="1.2s" begin={`${i * 0.35}s`} repeatCount="indefinite" />
+                      <animate attributeName="opacity" from="0.5" to="0" dur="1.2s" begin={`${i * 0.35}s`} repeatCount="indefinite" />
+                    </circle>
+                  ))}
+                </g>
+              )}
+
+              {/* Station markers — clickable */}
               {STATIONS.map((station) => {
                 const turbidity = getStationTurbidity(station, timeStep);
                 const ratio = turbidity / station.turbidity;
@@ -513,78 +549,48 @@ export default function UpstreamDownstream() {
                   : station.y + markerRadius + 4;
 
                 return (
-                  <g key={station.id}>
+                  <g
+                    key={station.id}
+                    className="cursor-pointer"
+                    onClick={() => setSelectedStation(station)}
+                  >
                     {/* Pulse ring for affected stations */}
                     {isAffected && (
-                      <circle
-                        cx={station.x}
-                        cy={station.y}
-                        r={markerRadius + 4}
-                        fill="none"
-                        stroke={markerFill}
-                        strokeWidth="1.5"
-                        opacity="0.4"
-                      >
-                        <animate
-                          attributeName="r"
-                          from={markerRadius + 2}
-                          to={markerRadius + 12}
-                          dur="1.5s"
-                          repeatCount="indefinite"
-                        />
-                        <animate
-                          attributeName="opacity"
-                          from="0.5"
-                          to="0"
-                          dur="1.5s"
-                          repeatCount="indefinite"
-                        />
+                      <circle cx={station.x} cy={station.y} r={markerRadius + 4} fill="none" stroke={markerFill} strokeWidth="1.5" opacity="0.4">
+                        <animate attributeName="r" from={markerRadius + 2} to={markerRadius + 12} dur="1.5s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" from="0.5" to="0" dur="1.5s" repeatCount="indefinite" />
                       </circle>
                     )}
 
+                    {/* Clickable hit area (larger invisible circle) */}
+                    <circle cx={station.x} cy={station.y} r={markerRadius + 6} fill="transparent" />
+
                     {/* Station dot */}
                     <circle
-                      cx={station.x}
-                      cy={station.y}
-                      r={markerRadius}
+                      cx={station.x} cy={station.y} r={markerRadius}
                       fill={markerFill}
                       stroke={isDark ? "#0f172a" : "#ffffff"}
                       strokeWidth="2"
-                      style={{ transition: "r 0.5s ease, fill 0.5s ease" }}
+                      style={{ transition: "fill 0.5s ease" }}
                     />
 
-                    {/* NTU value inside marker */}
-                    <text
-                      x={station.x}
-                      y={station.y + 3.5}
-                      textAnchor="middle"
-                      fill="white"
-                      fontSize="8"
-                      fontWeight="bold"
-                    >
+                    {/* NTU value */}
+                    <text x={station.x} y={station.y + 3.5} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">
                       {turbidity}
                     </text>
 
                     {/* Station label */}
-                    <text
-                      x={station.x}
-                      y={labelY}
-                      textAnchor="middle"
-                      fill={isDark ? "#94a3b8" : "#64748b"}
-                      fontSize="8"
-                      fontWeight="500"
-                    >
+                    <text x={station.x} y={labelY} textAnchor="middle" fill={isDark ? "#94a3b8" : "#64748b"} fontSize="8" fontWeight="500">
                       {station.short}
                     </text>
-                    {/* NTU unit below/above label */}
-                    <text
-                      x={station.x}
-                      y={labelY + 10}
-                      textAnchor="middle"
-                      fill={ratio > 3 ? "#ef4444" : isDark ? "#475569" : "#94a3b8"}
-                      fontSize="7"
-                    >
+                    <text x={station.x} y={labelY + 10} textAnchor="middle" fill={ratio > 3 ? "#ef4444" : isDark ? "#475569" : "#94a3b8"} fontSize="7">
                       NTU
+                    </text>
+
+                    {/* Info icon hint */}
+                    <circle cx={station.x + markerRadius + 2} cy={station.y - markerRadius - 2} r="4" fill={isDark ? "#334155" : "#e2e8f0"} />
+                    <text x={station.x + markerRadius + 2} y={station.y - markerRadius + 1.5} textAnchor="middle" fill={isDark ? "#94a3b8" : "#64748b"} fontSize="5" fontWeight="bold">
+                      i
                     </text>
                   </g>
                 );
@@ -599,9 +605,7 @@ export default function UpstreamDownstream() {
                         <animate attributeName="r" values="5;9;5" dur="2s" repeatCount="indefinite" />
                         <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
                       </circle>
-                      <text x="55" y="20" textAnchor="middle" fill="#fbbf24" fontSize="7" fontWeight="bold">
-                        STORM
-                      </text>
+                      <text x="55" y="20" textAnchor="middle" fill="#fbbf24" fontSize="7" fontWeight="bold">STORM</text>
                     </g>
                   )}
                   {scenario === "cso" && (
@@ -610,9 +614,7 @@ export default function UpstreamDownstream() {
                         <animate attributeName="r" values="5;9;5" dur="2s" repeatCount="indefinite" />
                         <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
                       </circle>
-                      <text x="420" y="95" textAnchor="middle" fill="#ef4444" fontSize="7" fontWeight="bold">
-                        CSO
-                      </text>
+                      <text x="420" y="95" textAnchor="middle" fill="#ef4444" fontSize="7" fontWeight="bold">CSO</text>
                     </g>
                   )}
                   {scenario === "construction" && (
@@ -621,44 +623,17 @@ export default function UpstreamDownstream() {
                         <animate attributeName="r" values="5;9;5" dur="2s" repeatCount="indefinite" />
                         <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
                       </circle>
-                      <text x="130" y="90" textAnchor="middle" fill="#f97316" fontSize="7" fontWeight="bold">
-                        RUNOFF
-                      </text>
+                      <text x="130" y="90" textAnchor="middle" fill="#f97316" fontSize="7" fontWeight="bold">RUNOFF</text>
                     </g>
                   )}
                 </g>
               )}
 
-              {/* Labels */}
-              <text x="20" y="195" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="8">
-                Maryland
-              </text>
-              <text x="680" y="195" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="8" textAnchor="end">
-                Potomac River
-              </text>
-              <text x="350" y="200" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="7" textAnchor="middle">
-                Washington, DC
-              </text>
+              {/* Geographic labels */}
+              <text x="20" y="195" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="8">Maryland</text>
+              <text x="680" y="195" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="8" textAnchor="end">Potomac River</text>
+              <text x="350" y="200" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="7" textAnchor="middle">Washington, DC</text>
             </svg>
-
-            {/* Rain overlay for storm scenario */}
-            {playing && scenario === "storm" && timeStep < 30 && (
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {Array.from({ length: 25 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-0.5 bg-blue-400/30 rounded-full"
-                    style={{
-                      left: `${Math.random() * 100}%`,
-                      top: `${Math.random() * -10}%`,
-                      height: `${6 + Math.random() * 10}px`,
-                      animation: `rain-fall ${0.4 + Math.random() * 0.5}s linear infinite`,
-                      animationDelay: `${Math.random() * 1.5}s`,
-                    }}
-                  />
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Timeline scrubber */}
@@ -683,7 +658,6 @@ export default function UpstreamDownstream() {
               />
               <span className={`text-[9px] font-medium w-8 text-right ${isDark ? "text-slate-500" : "text-slate-400"}`}>48h</span>
             </div>
-            {/* Legend */}
             <div className="flex items-center justify-center gap-4 mt-2">
               {[
                 { color: "bg-green-500", label: "Normal" },
@@ -696,6 +670,9 @@ export default function UpstreamDownstream() {
                   <span className={`text-[8px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{item.label}</span>
                 </div>
               ))}
+              <span className={`text-[8px] ml-2 ${isDark ? "text-slate-600" : "text-slate-400"}`}>
+                Click markers for details
+              </span>
             </div>
           </div>
         </div>
@@ -705,16 +682,10 @@ export default function UpstreamDownstream() {
       <FadeIn delay={400}>
         <div
           className={`rounded-xl border p-4 mt-4 ${
-            isDark
-              ? "bg-cyan-950/20 border-cyan-500/20"
-              : "bg-cyan-50 border-cyan-200"
+            isDark ? "bg-cyan-950/20 border-cyan-500/20" : "bg-cyan-50 border-cyan-200"
           }`}
         >
-          <p
-            className={`text-sm leading-relaxed ${
-              isDark ? "text-cyan-300" : "text-cyan-700"
-            }`}
-          >
+          <p className={`text-sm leading-relaxed ${isDark ? "text-cyan-300" : "text-cyan-700"}`}>
             <strong>The bigger picture:</strong> The Anacostia watershed covers 176 square
             miles across DC and Maryland. Pollution that enters in suburban Hyattsville
             reaches the Potomac within 24-48 hours. This is why watershed management
@@ -723,6 +694,16 @@ export default function UpstreamDownstream() {
           </p>
         </div>
       </FadeIn>
+
+      {/* NTU Explanation Modal */}
+      {selectedStation && (
+        <NTUModal
+          station={selectedStation}
+          currentTurbidity={getStationTurbidity(selectedStation, timeStep)}
+          isDark={isDark}
+          onClose={() => setSelectedStation(null)}
+        />
+      )}
     </StoryCard>
   );
 }

@@ -5,6 +5,7 @@ import { Play, Pause, SkipBack, SkipForward } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const CURRENT_YEAR = new Date().getFullYear();
 
 // Seasonal E.coli multipliers (higher in summer, lower in winter)
 const SEASONAL_ECOLI_MULTIPLIER = [0.15, 0.18, 0.35, 0.65, 1.1, 1.8, 2.2, 2.0, 1.2, 0.55, 0.27, 0.18];
@@ -75,7 +76,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
         <div className="flex items-center justify-between mb-3">
           <div>
             <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
-              Water Quality Timeline — 2025
+              Water Quality Timeline — {CURRENT_YEAR}
             </h4>
             <p className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               Seasonal variation in water quality parameters
@@ -85,7 +86,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
             <div className={`px-3 py-1 rounded-lg text-sm font-bold ${
               isDark ? "bg-water-blue/20 text-blue-300" : "bg-blue-50 text-blue-700"
             }`}>
-              {MONTHS[monthIndex]} 2025
+              {MONTHS[monthIndex]} {CURRENT_YEAR}
             </div>
           </div>
         </div>

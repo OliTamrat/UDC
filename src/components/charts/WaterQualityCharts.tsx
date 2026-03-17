@@ -17,6 +17,8 @@ import {
 import { historicalData } from "@/data/dc-waterways";
 import { useTheme } from "@/context/ThemeContext";
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 const trendData = historicalData.months.map((month, i) => ({
   month,
   dissolvedOxygen: historicalData.dissolvedOxygen[i],
@@ -53,7 +55,7 @@ export function DOTrendChart() {
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Dissolved Oxygen Trends</h3>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (mg/L) - 2025</p>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (mg/L) - {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={trendData}>
           <defs>
@@ -79,7 +81,7 @@ export function TemperatureTrendChart() {
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Water Temperature</h3>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (°C) - 2025</p>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (°C) - {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={trendData}>
           <defs>
@@ -104,7 +106,7 @@ export function EColiChart() {
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>E. coli Levels</h3>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (CFU/100mL) - 2025</p>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (CFU/100mL) - {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={trendData}>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
@@ -124,7 +126,7 @@ export function StormwaterChart() {
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Stormwater Runoff Volume</h3>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly totals (million gallons) - 2025</p>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly totals (million gallons) - {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={trendData}>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
@@ -143,7 +145,7 @@ export function MultiParameterChart() {
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Multi-Parameter Overview</h3>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Normalized water quality trends - 2025</p>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Normalized water quality trends - {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={trendData}>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
