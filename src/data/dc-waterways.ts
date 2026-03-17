@@ -565,14 +565,17 @@ export const monitoringStations: MonitoringStation[] = [
 ];
 
 // Historical water quality trend data (monthly averages — current year)
+// E. coli is rainfall/CSO-driven (spring peak + fall secondary peak), NOT temperature-driven.
+// DO values reflect recent declines noted in the 2025 State of the Anacostia report.
+// Stormwater follows DC precipitation patterns (July wettest, Jan/Feb driest).
 export const historicalData = {
   months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-  dissolvedOxygen: [11.2, 10.8, 9.5, 8.2, 7.1, 5.8, 4.9, 5.2, 6.8, 8.5, 9.8, 10.9],
+  dissolvedOxygen: [10.5, 10.2, 9.0, 7.8, 6.5, 5.2, 4.5, 4.8, 6.2, 8.0, 9.4, 10.2],
   temperature: [3.2, 4.1, 8.5, 14.2, 19.8, 24.5, 27.2, 26.8, 22.1, 15.4, 9.2, 4.8],
   pH: [7.1, 7.0, 7.2, 7.3, 7.1, 6.9, 6.8, 6.9, 7.0, 7.1, 7.2, 7.1],
   turbidity: [12.5, 14.2, 18.8, 22.5, 25.1, 20.3, 18.5, 22.8, 19.2, 15.8, 13.5, 11.8],
-  eColiCount: [120, 145, 280, 520, 890, 1450, 1820, 1650, 980, 450, 220, 150],
-  stormwaterRunoff: [2.8, 3.2, 4.5, 5.8, 4.2, 6.5, 3.8, 5.2, 4.8, 3.5, 3.0, 2.5],
+  eColiCount: [85, 95, 310, 480, 420, 280, 195, 230, 380, 210, 125, 90],
+  stormwaterRunoff: [2.5, 2.2, 3.6, 3.4, 4.1, 3.8, 4.6, 3.3, 4.0, 3.5, 2.9, 2.7],
 };
 
 // DC ward boundaries (approximate centers for ward-level data)
@@ -665,6 +668,9 @@ export const researchProjects = [
 
 // Per-station historical monthly data — realistic seasonal patterns
 // Each station has unique characteristics based on its location and type
+// E. coli follows rainfall/CSO-driven pattern: spring peak (Mar-Apr), fall secondary peak (Sep),
+// lower summer values during dry periods. NOT a simple temperature bell curve.
+// DO values adjusted to reflect recent declining trends (2025 State of the Anacostia report).
 export function getStationHistoricalData(stationId: string) {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -674,59 +680,59 @@ export function getStationHistoricalData(stationId: string) {
     ecoliBase: number[]; description: string;
   }> = {
     "ANA-001": {
-      doBase: [11.5, 11.0, 9.8, 8.5, 7.4, 6.0, 5.1, 5.4, 7.0, 8.8, 10.1, 11.2],
+      doBase: [10.8, 10.4, 9.2, 8.0, 6.8, 5.5, 4.7, 5.0, 6.5, 8.2, 9.5, 10.5],
       tempBase: [3.0, 3.8, 8.2, 13.8, 19.5, 24.2, 26.8, 26.4, 21.8, 15.0, 8.8, 4.5],
       phBase: [7.2, 7.1, 7.2, 7.3, 7.2, 7.0, 6.9, 7.0, 7.1, 7.2, 7.2, 7.2],
       turbBase: [10.5, 12.0, 16.5, 20.0, 22.5, 18.0, 16.0, 20.5, 17.0, 13.5, 11.5, 9.8],
-      ecoliBase: [95, 120, 240, 450, 750, 1200, 1520, 1380, 820, 380, 180, 120],
+      ecoliBase: [95, 105, 340, 530, 465, 315, 220, 255, 425, 235, 140, 105],
       description: "Upstream station — generally better water quality due to lower urban influence",
     },
     "ANA-002": {
-      doBase: [11.0, 10.5, 9.2, 7.9, 6.8, 5.5, 4.7, 5.0, 6.5, 8.2, 9.5, 10.7],
+      doBase: [10.4, 10.0, 8.8, 7.5, 6.4, 5.1, 4.3, 4.6, 6.0, 7.8, 9.0, 10.1],
       tempBase: [3.2, 4.1, 8.5, 14.2, 19.8, 24.5, 27.2, 26.8, 22.1, 15.4, 9.2, 4.8],
       phBase: [7.1, 7.0, 7.2, 7.3, 7.1, 6.9, 6.8, 6.9, 7.0, 7.1, 7.2, 7.1],
       turbBase: [12.5, 14.2, 18.8, 22.5, 25.1, 20.3, 18.5, 22.8, 19.2, 15.8, 13.5, 11.8],
-      ecoliBase: [110, 140, 270, 510, 870, 1400, 1780, 1620, 960, 430, 210, 140],
+      ecoliBase: [110, 120, 395, 615, 540, 365, 250, 295, 495, 275, 165, 120],
       description: "Mid-river station at Kenilworth — influenced by Watts Branch and Hickey Run inflows",
     },
     "ANA-003": {
-      doBase: [10.2, 9.8, 8.5, 7.2, 6.1, 4.8, 4.1, 4.4, 5.8, 7.5, 8.8, 9.9],
+      doBase: [9.6, 9.2, 8.0, 6.8, 5.6, 4.4, 3.8, 4.1, 5.4, 7.0, 8.2, 9.3],
       tempBase: [3.5, 4.4, 8.8, 14.5, 20.2, 24.8, 27.5, 27.2, 22.5, 15.8, 9.5, 5.0],
       phBase: [7.0, 6.9, 7.1, 7.2, 7.0, 6.8, 6.7, 6.8, 6.9, 7.0, 7.1, 7.0],
       turbBase: [15.0, 17.5, 22.0, 26.0, 28.5, 24.0, 21.5, 26.0, 22.5, 18.5, 16.0, 14.0],
-      ecoliBase: [150, 185, 350, 650, 1100, 1800, 2200, 2000, 1200, 580, 280, 180],
+      ecoliBase: [150, 165, 540, 840, 735, 495, 345, 405, 675, 375, 225, 165],
       description: "Downstream station at Navy Yard — highest urban influence, CSO impacts",
     },
     "ANA-004": {
-      doBase: [10.8, 10.3, 9.0, 7.7, 6.5, 5.2, 4.5, 4.8, 6.2, 8.0, 9.2, 10.4],
+      doBase: [10.2, 9.8, 8.5, 7.2, 6.0, 4.8, 4.1, 4.4, 5.8, 7.5, 8.6, 9.8],
       tempBase: [3.3, 4.2, 8.4, 14.0, 19.6, 24.3, 27.0, 26.6, 21.9, 15.2, 9.0, 4.6],
       phBase: [7.1, 7.0, 7.1, 7.2, 7.1, 6.9, 6.8, 6.9, 7.0, 7.1, 7.1, 7.1],
       turbBase: [13.0, 15.0, 19.5, 23.5, 26.0, 21.5, 19.5, 23.5, 20.0, 16.5, 14.0, 12.5],
-      ecoliBase: [130, 160, 300, 560, 950, 1550, 1950, 1780, 1050, 500, 240, 155],
+      ecoliBase: [130, 145, 470, 730, 640, 430, 300, 350, 585, 325, 195, 145],
       description: "Anacostia Park station — moderate urban influence, near recreational areas",
     },
     "WB-001": {
-      doBase: [9.5, 9.0, 7.8, 6.5, 5.5, 4.2, 3.5, 3.8, 5.2, 7.0, 8.2, 9.2],
+      doBase: [8.9, 8.5, 7.3, 6.1, 5.1, 3.9, 3.2, 3.5, 4.8, 6.5, 7.7, 8.6],
       tempBase: [2.8, 3.6, 7.8, 13.5, 19.2, 23.8, 26.5, 26.2, 21.5, 14.8, 8.5, 4.2],
       phBase: [6.9, 6.8, 7.0, 7.1, 6.9, 6.7, 6.6, 6.7, 6.8, 6.9, 7.0, 6.9],
       turbBase: [18.0, 22.0, 28.0, 34.0, 38.0, 30.0, 26.0, 32.0, 27.0, 22.0, 19.0, 16.5],
-      ecoliBase: [250, 320, 580, 980, 1600, 2500, 3200, 2900, 1750, 820, 400, 260],
+      ecoliBase: [250, 275, 900, 1400, 1225, 825, 575, 675, 1125, 625, 375, 275],
       description: "Watts Branch — highly urbanized stream, significant impervious surface runoff",
     },
     "PB-001": {
-      doBase: [10.0, 9.5, 8.2, 7.0, 6.0, 4.8, 4.0, 4.3, 5.8, 7.5, 8.8, 9.8],
+      doBase: [9.4, 9.0, 7.7, 6.5, 5.5, 4.4, 3.7, 4.0, 5.4, 7.0, 8.2, 9.2],
       tempBase: [2.5, 3.4, 7.5, 13.2, 18.8, 23.5, 26.2, 25.8, 21.2, 14.5, 8.2, 4.0],
       phBase: [7.0, 6.9, 7.1, 7.2, 7.0, 6.8, 6.7, 6.8, 6.9, 7.0, 7.1, 7.0],
       turbBase: [16.0, 19.0, 24.0, 29.0, 32.0, 26.0, 23.0, 28.0, 24.0, 19.0, 16.5, 14.5],
-      ecoliBase: [180, 220, 420, 780, 1300, 2100, 2650, 2400, 1450, 680, 330, 200],
+      ecoliBase: [180, 200, 650, 1010, 880, 595, 415, 485, 810, 450, 270, 200],
       description: "Pope Branch at Fort Stanton — moderate urban stream with park buffer zones",
     },
     "HR-001": {
-      doBase: [9.0, 8.5, 7.2, 6.0, 5.0, 3.8, 3.2, 3.5, 4.8, 6.5, 7.8, 8.8],
+      doBase: [8.4, 8.0, 6.8, 5.6, 4.6, 3.5, 2.9, 3.2, 4.4, 6.0, 7.3, 8.2],
       tempBase: [3.0, 3.8, 8.0, 13.8, 19.5, 24.0, 26.8, 26.4, 21.8, 15.0, 8.8, 4.5],
       phBase: [6.8, 6.7, 6.9, 7.0, 6.8, 6.6, 6.5, 6.6, 6.7, 6.8, 6.9, 6.8],
       turbBase: [22.0, 26.0, 34.0, 40.0, 44.0, 36.0, 32.0, 38.0, 33.0, 26.0, 22.0, 20.0],
-      ecoliBase: [350, 440, 800, 1400, 2200, 3500, 4400, 4000, 2400, 1150, 550, 370],
+      ecoliBase: [350, 385, 1260, 1960, 1715, 1155, 805, 945, 1575, 875, 525, 385],
       description: "Hickey Run — industrial area runoff, National Arboretum adjacent, worst water quality",
     },
     "GI-001": {
@@ -734,7 +740,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [2.0, 2.8, 6.5, 12.0, 17.5, 22.0, 24.5, 24.2, 19.8, 13.5, 7.5, 3.2],
       phBase: [6.8, 6.7, 6.8, 6.9, 6.8, 6.7, 6.6, 6.7, 6.8, 6.8, 6.8, 6.8],
       turbBase: [5.0, 6.0, 8.5, 10.0, 12.0, 9.5, 7.5, 10.0, 8.5, 7.0, 5.5, 4.5],
-      ecoliBase: [15, 18, 35, 60, 95, 140, 175, 160, 100, 50, 25, 18],
+      ecoliBase: [15, 17, 54, 84, 74, 50, 35, 41, 68, 38, 23, 17],
       description: "UDC Van Ness Green Roof — low pollutant levels, excellent stormwater retention",
     },
     "GI-002": {
@@ -742,7 +748,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [2.2, 3.0, 6.8, 12.2, 17.8, 22.2, 24.8, 24.5, 20.0, 13.8, 7.8, 3.5],
       phBase: [7.1, 7.0, 7.1, 7.2, 7.1, 7.0, 6.9, 7.0, 7.0, 7.1, 7.1, 7.1],
       turbBase: [3.5, 4.0, 5.8, 7.0, 8.5, 6.5, 5.0, 7.0, 6.0, 4.5, 3.8, 3.2],
-      ecoliBase: [8, 10, 18, 32, 50, 75, 95, 85, 55, 28, 12, 9],
+      ecoliBase: [8, 9, 29, 45, 39, 26, 18, 22, 36, 20, 12, 9],
       description: "UDC Food Hub Rain Garden Ward 7 — excellent infiltration and pollutant removal",
     },
     "GI-003": {
@@ -750,23 +756,23 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [2.4, 3.2, 7.0, 12.5, 18.0, 22.5, 25.0, 24.8, 20.2, 14.0, 8.0, 3.8],
       phBase: [7.0, 6.9, 7.0, 7.1, 7.0, 6.9, 6.8, 6.9, 7.0, 7.0, 7.0, 7.0],
       turbBase: [4.0, 5.0, 6.5, 8.0, 9.5, 7.5, 6.0, 8.0, 7.0, 5.5, 4.5, 3.8],
-      ecoliBase: [12, 14, 25, 42, 68, 100, 125, 115, 72, 35, 18, 13],
+      ecoliBase: [12, 13, 43, 67, 59, 40, 28, 32, 54, 30, 18, 13],
       description: "UDC Food Hub Rain Garden Ward 8 — good performance, newer installation",
     },
     "SW-001": {
-      doBase: [7.0, 6.5, 5.5, 4.5, 3.8, 3.0, 2.5, 2.8, 3.8, 5.2, 6.2, 6.8],
+      doBase: [6.5, 6.1, 5.1, 4.2, 3.5, 2.8, 2.3, 2.5, 3.5, 4.8, 5.8, 6.3],
       tempBase: [3.5, 4.5, 8.8, 14.5, 20.2, 24.8, 27.5, 27.0, 22.5, 15.8, 9.5, 5.0],
       phBase: [7.2, 7.1, 7.2, 7.3, 7.2, 7.0, 6.9, 7.0, 7.1, 7.2, 7.2, 7.2],
       turbBase: [28.0, 35.0, 45.0, 55.0, 60.0, 48.0, 42.0, 52.0, 45.0, 35.0, 30.0, 25.0],
-      ecoliBase: [500, 650, 1200, 2000, 3200, 5000, 6500, 5800, 3500, 1650, 800, 520],
+      ecoliBase: [500, 550, 1800, 2800, 2450, 1650, 1150, 1350, 2250, 1250, 750, 550],
       description: "Stormwater BMP Benning Road — high pollutant loads during storm events",
     },
     "SW-002": {
-      doBase: [6.5, 6.0, 5.0, 4.0, 3.2, 2.5, 2.0, 2.3, 3.2, 4.8, 5.8, 6.3],
+      doBase: [6.0, 5.6, 4.6, 3.7, 2.9, 2.3, 1.8, 2.1, 2.9, 4.4, 5.4, 5.8],
       tempBase: [3.8, 4.8, 9.0, 14.8, 20.5, 25.0, 27.8, 27.5, 22.8, 16.0, 9.8, 5.2],
       phBase: [7.3, 7.2, 7.3, 7.4, 7.3, 7.1, 7.0, 7.1, 7.2, 7.3, 7.3, 7.3],
       turbBase: [32.0, 40.0, 52.0, 62.0, 68.0, 55.0, 48.0, 58.0, 50.0, 40.0, 34.0, 28.0],
-      ecoliBase: [620, 800, 1500, 2500, 4000, 6200, 7800, 7000, 4200, 2000, 980, 650],
+      ecoliBase: [620, 680, 2230, 3470, 3040, 2050, 1430, 1670, 2790, 1550, 930, 680],
       description: "Stormwater Outfall South Capitol — highest pollutant concentrations, CSO impacted",
     },
   };
