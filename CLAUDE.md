@@ -81,12 +81,50 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [x] **Ingestion log viewer** — Full history of all data imports
 - [x] **Sidebar link** — "Data Admin" nav item under ADMIN section
 
+### Phase 7: Expanded Parameters & Scientific Storytelling — IN PROGRESS
+#### Sprint 1: Data Foundation — DONE
+- [x] **EAV schema** — `parameters` + `measurements` tables (Entity-Attribute-Value) for flexible parameter storage
+- [x] **25 parameter definitions** — 20 core (physical, nutrients, metals, biological) + 5 emerging contaminants
+- [x] **Parameter metadata** — EPA thresholds, USGS pcodes, WQP characteristic names, plain-English descriptions
+- [x] **WQP ingestion** — `POST /api/ingest?source=wqp` for Water Quality Portal lab-analyzed data (DC FIPS US:11)
+- [x] **Dual-write ingestion** — USGS/EPA ingest writes to both legacy `readings` and new `measurements` tables
+- [x] **Measurements API** — `GET /api/measurements` with filters (params, stations, categories, sources, dates, violations)
+- [x] **Parameters API** — `GET /api/parameters` with optional category filter
+- [x] **Seed updated** — Seeds 25 parameters + 738 EAV measurements alongside legacy 144 readings
+
+#### Sprint 2: Filter System & Parameter UI — TODO
+- [ ] Parameter filter component with multi-select and category groupings
+- [ ] Dynamic MetricCards based on selected parameters
+- [ ] Configurable StationTable columns
+- [ ] Updated station detail page with all available parameters
+- [ ] Traffic light indicators (Green/Yellow/Red) for EPA thresholds
+
+#### Sprint 3: Scientific Storytelling — TODO
+- [ ] Story page `/stories` with scrollytelling framework
+- [ ] "When It Rains in DC" — rainfall vs turbidity correlation
+- [ ] "What's in the Water" — parameter explainer cards
+- [ ] "A Year in the Anacostia" — seasonal heatmap animation
+- [ ] "Upstream to Downstream" — watershed propagation animation
+
+#### Sprint 4: Animated Scenarios — TODO
+- [ ] Timeline playback component (play/pause/scrub)
+- [ ] Map animation layer with color-changing station markers
+- [ ] Synchronized multi-chart view
+- [ ] Pollution spike detection and scenario library
+
+#### Sprint 5: Polish & Integration — TODO
+- [ ] AI assistant context update for new parameters
+- [ ] Admin panel updates for new parameter format
+- [ ] Tests for new API routes and components
+- [ ] Performance optimization and accessibility
+
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)
 - **Production**: Neon PostgreSQL — set `DATABASE_URL` env var on Vercel
 - **Seed Neon**: `DATABASE_URL=postgresql://... npx tsx scripts/seed.ts`
 - **Seed local**: `npx tsx scripts/seed.ts` (or `npm run db:seed`)
 - **Schema**: Dual schemas in `src/lib/db.ts` (SQLite + PostgreSQL), auto-selected
+- **EAV tables**: `parameters` (25 definitions) + `measurements` (flexible per-reading-per-param storage)
 - **Future**: Optionally migrate to Azure PostgreSQL (same `DATABASE_URL` swap)
 
 ## Key Files
@@ -96,7 +134,9 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/app/api/stations/route.ts` — Stations list API
 - `src/app/api/stations/[id]/history/route.ts` — Station history API
 - `src/app/api/export/route.ts` — CSV/JSON data export
-- `src/app/api/ingest/route.ts` — USGS data ingestion
+- `src/app/api/ingest/route.ts` — USGS/EPA/WQP data ingestion
+- `src/app/api/measurements/route.ts` — EAV measurements query API with filters
+- `src/app/api/parameters/route.ts` — Parameter definitions API
 - `src/app/api/chat/route.ts` — AI research assistant (Claude via Vercel AI SDK)
 - `src/app/api/health/route.ts` — Health check endpoint
 - `src/app/admin/page.tsx` — Faculty admin panel (upload, CRUD, logs)
@@ -113,7 +153,8 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/components/ErrorBoundary.tsx` — React error boundary
 - `src/data/dc-waterways.ts` — 801 lines: stations, waterways, research, EJ data
 - `src/data/dc-boundaries.ts` — Ward polygons, watershed, flood zones
-- `scripts/seed.ts` — Database seed script
+- `src/data/parameters.ts` — 25 water quality parameter definitions (EAV metadata)
+- `scripts/seed.ts` — Database seed script (legacy readings + EAV measurements)
 
 ## Tech Notes
 - Leaflet map uses `dynamic()` with `ssr: false` (required for client-only rendering)

@@ -1,12 +1,14 @@
 /**
  * Seed script — populates the database with existing static data.
  * Supports both SQLite (local) and PostgreSQL (Neon).
+ * Seeds both legacy readings table and new EAV measurements table.
  *
  * Usage:
  *   Local SQLite:  npx tsx scripts/seed.ts
  *   Neon PG:       DATABASE_URL=postgresql://... npx tsx scripts/seed.ts
  */
 import { monitoringStations, getStationHistoricalData } from "../src/data/dc-waterways";
+import { ALL_PARAMETERS, LEGACY_COLUMN_TO_PARAM } from "../src/data/parameters";
 
 // ---------------------------------------------------------------------------
 // Database abstraction (mirrors src/lib/db.ts but standalone for scripts)
@@ -119,7 +121,40 @@ const SCHEMA = isPostgres
     error_message TEXT,
     started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at TIMESTAMPTZ
-  )
+  );
+
+  CREATE TABLE IF NOT EXISTS parameters (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    usgs_pcode TEXT,
+    wqp_characteristic TEXT,
+    unit TEXT NOT NULL,
+    category TEXT NOT NULL CHECK(category IN ('physical', 'nutrients', 'metals', 'biological', 'organic')),
+    epa_min DOUBLE PRECISION,
+    epa_max DOUBLE PRECISION,
+    description TEXT,
+    display_order INTEGER
+  );
+
+  CREATE TABLE IF NOT EXISTS measurements (
+    id SERIAL PRIMARY KEY,
+    station_id TEXT NOT NULL REFERENCES stations(id),
+    parameter_id TEXT NOT NULL REFERENCES parameters(id),
+    timestamp TIMESTAMPTZ NOT NULL,
+    value DOUBLE PRECISION NOT NULL,
+    qualifier TEXT,
+    source TEXT DEFAULT 'manual',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_station_param_time
+    ON measurements(station_id, parameter_id, timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_timestamp
+    ON measurements(timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_parameter
+    ON measurements(parameter_id)
 `
   : `
   CREATE TABLE IF NOT EXISTS stations (
@@ -164,7 +199,40 @@ const SCHEMA = isPostgres
     error_message TEXT,
     started_at TEXT NOT NULL DEFAULT (datetime('now')),
     completed_at TEXT
-  )
+  );
+
+  CREATE TABLE IF NOT EXISTS parameters (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    usgs_pcode TEXT,
+    wqp_characteristic TEXT,
+    unit TEXT NOT NULL,
+    category TEXT NOT NULL CHECK(category IN ('physical', 'nutrients', 'metals', 'biological', 'organic')),
+    epa_min REAL,
+    epa_max REAL,
+    description TEXT,
+    display_order INTEGER
+  );
+
+  CREATE TABLE IF NOT EXISTS measurements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    station_id TEXT NOT NULL REFERENCES stations(id),
+    parameter_id TEXT NOT NULL REFERENCES parameters(id),
+    timestamp TEXT NOT NULL,
+    value REAL NOT NULL,
+    qualifier TEXT,
+    source TEXT DEFAULT 'manual',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_station_param_time
+    ON measurements(station_id, parameter_id, timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_timestamp
+    ON measurements(timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_parameter
+    ON measurements(parameter_id)
 `;
 
 // ---------------------------------------------------------------------------
@@ -180,10 +248,40 @@ async function seed() {
 
   // Clear existing seed data
   await db.query("DELETE FROM readings WHERE source = 'seed'");
+  await db.query("DELETE FROM measurements WHERE source = 'seed'");
 
   let stationCount = 0;
   let readingCount = 0;
+  let measurementCount = 0;
 
+  // --- Seed parameter definitions ---
+  const upsertParamSQL = isPostgres
+    ? `INSERT INTO parameters (id, name, usgs_pcode, wqp_characteristic, unit, category, epa_min, epa_max, description, display_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, usgs_pcode = EXCLUDED.usgs_pcode,
+         wqp_characteristic = EXCLUDED.wqp_characteristic, unit = EXCLUDED.unit,
+         category = EXCLUDED.category, epa_min = EXCLUDED.epa_min, epa_max = EXCLUDED.epa_max,
+         description = EXCLUDED.description, display_order = EXCLUDED.display_order`
+    : `INSERT OR REPLACE INTO parameters (id, name, usgs_pcode, wqp_characteristic, unit, category, epa_min, epa_max, description, display_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  for (const param of ALL_PARAMETERS) {
+    await db.query(upsertParamSQL, [
+      param.id,
+      param.name,
+      param.usgs_pcode,
+      param.wqp_characteristic,
+      param.unit,
+      param.category,
+      param.epa_min,
+      param.epa_max,
+      param.description,
+      param.display_order,
+    ]);
+  }
+  console.log(`Seeded ${ALL_PARAMETERS.length} parameter definitions`);
+
+  // --- Seed stations and readings ---
   const upsertStationSQL = isPostgres
     ? `INSERT INTO stations (id, name, latitude, longitude, type, status, parameters)
        VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -198,6 +296,21 @@ async function seed() {
        VALUES (?, ?, ?, ?, ?, ?, ?, 'seed')`
     : `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, ecoli_count, source)
        VALUES (?, ?, ?, ?, ?, ?, ?, 'seed')`;
+
+  const insertMeasurementSQL = isPostgres
+    ? `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
+       VALUES (?, ?, ?, ?, 'seed')`
+    : `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
+       VALUES (?, ?, ?, ?, 'seed')`;
+
+  // Map from historical data keys to parameter IDs
+  const HIST_KEY_TO_PARAM: Record<string, string> = {
+    temperature: "temperature",
+    dissolvedOxygen: "dissolved_oxygen",
+    pH: "ph",
+    turbidity: "turbidity",
+    eColiCount: "ecoli",
+  };
 
   for (const station of monitoringStations) {
     await db.query(upsertStationSQL, [
@@ -217,6 +330,8 @@ async function seed() {
       for (const reading of historical.data) {
         const monthIndex = historical.months.indexOf(reading.month);
         const timestamp = `2025-${String(monthIndex + 1).padStart(2, "0")}-15T12:00:00Z`;
+
+        // Legacy readings table
         await db.query(insertReadingSQL, [
           station.id,
           timestamp,
@@ -227,11 +342,42 @@ async function seed() {
           reading.eColiCount,
         ]);
         readingCount++;
+
+        // New EAV measurements table
+        for (const [key, paramId] of Object.entries(HIST_KEY_TO_PARAM)) {
+          const value = reading[key as keyof typeof reading];
+          if (typeof value === "number") {
+            await db.query(insertMeasurementSQL, [
+              station.id,
+              paramId,
+              timestamp,
+              value,
+            ]);
+            measurementCount++;
+          }
+        }
+      }
+    }
+
+    // Also seed lastReading data into measurements (for conductivity, nitrate, phosphorus)
+    if (station.lastReading) {
+      const lr = station.lastReading;
+      const ts = lr.timestamp;
+      const extraParams: [string, number | undefined][] = [
+        ["conductivity", lr.conductivity],
+        ["nitrate_n", lr.nitrateN],
+        ["phosphorus_total", lr.phosphorus],
+      ];
+      for (const [paramId, val] of extraParams) {
+        if (val != null) {
+          await db.query(insertMeasurementSQL, [station.id, paramId, ts, val]);
+          measurementCount++;
+        }
       }
     }
   }
 
-  console.log(`Seeded ${stationCount} stations and ${readingCount} readings to ${provider}`);
+  console.log(`Seeded ${stationCount} stations, ${readingCount} readings (legacy), ${measurementCount} measurements (EAV) to ${provider}`);
   await db.close();
 }
 
