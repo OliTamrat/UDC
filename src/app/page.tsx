@@ -15,9 +15,9 @@ import {
   MultiParameterChart,
 } from "@/components/charts/WaterQualityCharts";
 import Footer from "@/components/layout/Footer";
-import ParameterFilter from "@/components/dashboard/ParameterFilter";
+import ParameterExplorer from "@/components/dashboard/ParameterExplorer";
 import TimeSlider, { type MonthlySnapshot } from "@/components/map/TimeSlider";
-import { Droplets, MapPin, TrendingUp, Shield } from "lucide-react";
+import { Droplets, MapPin, TrendingUp, Shield, SlidersHorizontal } from "lucide-react";
 import { useState, useCallback } from "react";
 import type { MonitoringStation } from "@/data/dc-waterways";
 import { useTheme } from "@/context/ThemeContext";
@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [selectedStation, setSelectedStation] = useState<MonitoringStation | null>(null);
   const [monthSnapshot, setMonthSnapshot] = useState<MonthlySnapshot | null>(null);
   const [selectedParams, setSelectedParams] = useState<string[]>([]);
+  const [explorerOpen, setExplorerOpen] = useState(false);
   const { resolvedTheme } = useTheme();
   const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
@@ -197,7 +198,24 @@ export default function Dashboard() {
                   {t("section.stations_desc")}
                 </p>
               </div>
-              <ParameterFilter selectedParams={selectedParams} onParamsChange={setSelectedParams} />
+              <button
+                onClick={() => setExplorerOpen(true)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${
+                  isDark
+                    ? "border-panel-border bg-panel-bg hover:bg-panel-hover text-slate-300 hover:border-water-blue/50"
+                    : "border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:border-blue-400"
+                } ${selectedParams.length > 0 ? (isDark ? "border-water-blue/50" : "border-blue-400") : ""}`}
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                Explore Parameters
+                {selectedParams.length > 0 && (
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                    isDark ? "bg-water-blue/20 text-blue-300" : "bg-blue-100 text-blue-700"
+                  }`}>
+                    {selectedParams.length}
+                  </span>
+                )}
+              </button>
             </div>
             <StationTable onStationClick={handleStationNavigate} selectedParams={selectedParams} />
           </section>
@@ -206,6 +224,14 @@ export default function Dashboard() {
           <Footer />
         </div>
       </main>
+
+      {/* Parameter Explorer Slide-out */}
+      <ParameterExplorer
+        open={explorerOpen}
+        onClose={() => setExplorerOpen(false)}
+        selectedParams={selectedParams}
+        onParamsChange={setSelectedParams}
+      />
     </div>
   );
 }
