@@ -170,6 +170,39 @@ const SQLITE_SCHEMA = `
     started_at TEXT NOT NULL DEFAULT (datetime('now')),
     completed_at TEXT
   );
+
+  CREATE TABLE IF NOT EXISTS parameters (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    usgs_pcode TEXT,
+    wqp_characteristic TEXT,
+    unit TEXT NOT NULL,
+    category TEXT NOT NULL CHECK(category IN ('physical', 'nutrients', 'metals', 'biological', 'organic')),
+    epa_min REAL,
+    epa_max REAL,
+    description TEXT,
+    display_order INTEGER
+  );
+
+  CREATE TABLE IF NOT EXISTS measurements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    station_id TEXT NOT NULL REFERENCES stations(id),
+    parameter_id TEXT NOT NULL REFERENCES parameters(id),
+    timestamp TEXT NOT NULL,
+    value REAL NOT NULL,
+    qualifier TEXT,
+    source TEXT DEFAULT 'manual',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_station_param_time
+    ON measurements(station_id, parameter_id, timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_timestamp
+    ON measurements(timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_parameter
+    ON measurements(parameter_id);
 `;
 
 const PG_SCHEMA = `
@@ -216,6 +249,39 @@ const PG_SCHEMA = `
     started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at TIMESTAMPTZ
   );
+
+  CREATE TABLE IF NOT EXISTS parameters (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    usgs_pcode TEXT,
+    wqp_characteristic TEXT,
+    unit TEXT NOT NULL,
+    category TEXT NOT NULL CHECK(category IN ('physical', 'nutrients', 'metals', 'biological', 'organic')),
+    epa_min DOUBLE PRECISION,
+    epa_max DOUBLE PRECISION,
+    description TEXT,
+    display_order INTEGER
+  );
+
+  CREATE TABLE IF NOT EXISTS measurements (
+    id SERIAL PRIMARY KEY,
+    station_id TEXT NOT NULL REFERENCES stations(id),
+    parameter_id TEXT NOT NULL REFERENCES parameters(id),
+    timestamp TIMESTAMPTZ NOT NULL,
+    value DOUBLE PRECISION NOT NULL,
+    qualifier TEXT,
+    source TEXT DEFAULT 'manual',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_station_param_time
+    ON measurements(station_id, parameter_id, timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_timestamp
+    ON measurements(timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_parameter
+    ON measurements(parameter_id);
 `;
 
 function useNeon(): boolean {
