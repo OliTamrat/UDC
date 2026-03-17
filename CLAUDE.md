@@ -94,16 +94,17 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 
 #### Sprint 2: Filter System & Parameter UI — DONE
 - [x] **Parameter filter** — Multi-select dropdown with category groupings, select-all per category, inline pills
+- [x] **Parameter Explorer** — Slide-out panel replacing compact dropdown; educational drill-down with "What it measures", "Why it matters in DC", EPA threshold visualizations, search, and category tabs
 - [x] **Configurable StationTable** — Columns driven by selected parameters with threshold dots
 - [x] **Updated station detail** — "All Measured Parameters" section with EAV data grouped by category
 - [x] **Traffic light indicators** — Green/Yellow/Red `ThresholdIndicator` component with 20% warning buffer
 
-#### Sprint 3: Scientific Storytelling — TODO
-- [ ] Story page `/stories` with scrollytelling framework
-- [ ] "When It Rains in DC" — rainfall vs turbidity correlation
-- [ ] "What's in the Water" — parameter explainer cards
-- [ ] "A Year in the Anacostia" — seasonal heatmap animation
-- [ ] "Upstream to Downstream" — watershed propagation animation
+#### Sprint 3: Scientific Storytelling — DONE
+- [x] Story page `/stories` with scrollytelling framework (ScrollySection, StoryCard, FadeIn)
+- [x] "When It Rains in DC" — interactive rainfall vs turbidity chart with rain animation
+- [x] "What's in the Water" — 6 featured parameter explainer cards with fun facts and DC context
+- [x] "A Year in the Anacostia" — seasonal heatmap with month-by-month narratives
+- [x] "Upstream to Downstream" — animated watershed propagation with 3 pollution scenarios (storm/CSO/construction)
 
 #### Sprint 4: Animated Scenarios — TODO
 - [ ] Timeline playback component (play/pause/scrub)
@@ -138,6 +139,7 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/app/api/parameters/route.ts` — Parameter definitions API
 - `src/app/api/chat/route.ts` — AI research assistant (Claude via Vercel AI SDK)
 - `src/app/api/health/route.ts` — Health check endpoint
+- `src/app/stories/page.tsx` — Scientific storytelling page (4 interactive stories)
 - `src/app/admin/page.tsx` — Faculty admin panel (upload, CRUD, logs)
 - `src/app/api/admin/upload/route.ts` — CSV/JSON upload with auto column mapping
 - `src/app/api/admin/stations/route.ts` — Station CRUD API
@@ -149,8 +151,14 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/components/ai/ResearchAssistant.tsx` — AI chat panel (floating widget)
 - `src/components/map/DCMap.tsx` — Interactive Leaflet map (dynamic import, SSR disabled)
 - `src/components/layout/Header.tsx` — Top bar with functional search
-- `src/components/dashboard/ParameterFilter.tsx` — Multi-select parameter filter with category groups
+- `src/components/dashboard/ParameterExplorer.tsx` — Slide-out parameter explorer with educational drill-down
+- `src/components/dashboard/ParameterFilter.tsx` — Legacy multi-select parameter filter (replaced by Explorer)
 - `src/components/dashboard/ThresholdIndicator.tsx` — Traffic light EPA threshold component
+- `src/components/stories/ScrollySection.tsx` — Scrollytelling framework (ScrollySection, StoryCard, FadeIn)
+- `src/components/stories/RainStory.tsx` — "When It Rains in DC" interactive story
+- `src/components/stories/WhatsInTheWater.tsx` — Parameter explainer story cards
+- `src/components/stories/YearInAnacostia.tsx` — Seasonal heatmap story
+- `src/components/stories/UpstreamDownstream.tsx` — Watershed propagation animation
 - `src/components/ErrorBoundary.tsx` — React error boundary
 - `src/data/dc-waterways.ts` — 801 lines: stations, waterways, research, EJ data
 - `src/data/dc-boundaries.ts` — Ward polygons, watershed, flood zones
