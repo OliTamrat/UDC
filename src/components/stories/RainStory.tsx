@@ -12,14 +12,14 @@ import { StoryCard, FadeIn } from "./ScrollySection";
 
 // Simulated rainfall event data (based on real DC storm patterns)
 const RAIN_EVENTS = [
-  { date: "Aug 2024", rainfall: 1.2, turbidity: 45, label: "Light rain" },
-  { date: "Sep 2024", rainfall: 2.8, turbidity: 120, label: "Moderate storm" },
-  { date: "Oct 2024", rainfall: 0.3, turbidity: 15, label: "Drizzle" },
-  { date: "Nov 2024", rainfall: 3.5, turbidity: 180, label: "Heavy storm" },
-  { date: "Dec 2024", rainfall: 1.8, turbidity: 65, label: "Winter rain" },
-  { date: "Jan 2025", rainfall: 0.5, turbidity: 20, label: "Light snow" },
-  { date: "Feb 2025", rainfall: 4.2, turbidity: 250, label: "Major storm" },
-  { date: "Mar 2025", rainfall: 2.1, turbidity: 95, label: "Spring rain" },
+  { date: "Aug 2025", rainfall: 1.2, turbidity: 45, label: "Light rain" },
+  { date: "Sep 2025", rainfall: 2.8, turbidity: 120, label: "Moderate storm" },
+  { date: "Oct 2025", rainfall: 0.3, turbidity: 15, label: "Drizzle" },
+  { date: "Nov 2025", rainfall: 3.5, turbidity: 180, label: "Heavy storm" },
+  { date: "Dec 2025", rainfall: 1.8, turbidity: 65, label: "Winter rain" },
+  { date: "Jan 2026", rainfall: 0.5, turbidity: 20, label: "Light snow" },
+  { date: "Feb 2026", rainfall: 4.2, turbidity: 250, label: "Major storm" },
+  { date: "Mar 2026", rainfall: 2.1, turbidity: 95, label: "Spring rain" },
 ];
 
 const MAX_TURBIDITY = 300;
@@ -291,7 +291,7 @@ export default function RainStory() {
           <p
             className={`text-sm ${isDark ? "text-slate-300" : "text-slate-600"}`}
           >
-            <strong>Key insight:</strong> The February 2025 storm dropped 4.2
+            <strong>Key insight:</strong> The February 2026 storm dropped 4.2
             inches of rain, pushing turbidity to 250 NTU — 10x the normal level.
             DC Water&apos;s Long Term Control Plan aims to reduce these overflows
             by 96% through green infrastructure and tunnel storage.
