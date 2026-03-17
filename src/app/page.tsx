@@ -15,6 +15,7 @@ import {
   MultiParameterChart,
 } from "@/components/charts/WaterQualityCharts";
 import Footer from "@/components/layout/Footer";
+import ParameterFilter from "@/components/dashboard/ParameterFilter";
 import TimeSlider, { type MonthlySnapshot } from "@/components/map/TimeSlider";
 import { Droplets, MapPin, TrendingUp, Shield } from "lucide-react";
 import { useState, useCallback } from "react";
@@ -37,6 +38,7 @@ const DCMap = dynamic(() => import("@/components/map/DCMap"), {
 export default function Dashboard() {
   const [selectedStation, setSelectedStation] = useState<MonitoringStation | null>(null);
   const [monthSnapshot, setMonthSnapshot] = useState<MonthlySnapshot | null>(null);
+  const [selectedParams, setSelectedParams] = useState<string[]>([]);
   const { resolvedTheme } = useTheme();
   const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
@@ -188,13 +190,16 @@ export default function Dashboard() {
 
           {/* Station Table */}
           <section id="stormwater">
-            <div className="mb-3">
-              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.stations_title")}</h2>
-              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-                {t("section.stations_desc")}
-              </p>
+            <div className="mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.stations_title")}</h2>
+                <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+                  {t("section.stations_desc")}
+                </p>
+              </div>
+              <ParameterFilter selectedParams={selectedParams} onParamsChange={setSelectedParams} />
             </div>
-            <StationTable onStationClick={handleStationNavigate} />
+            <StationTable onStationClick={handleStationNavigate} selectedParams={selectedParams} />
           </section>
 
           {/* Footer */}
