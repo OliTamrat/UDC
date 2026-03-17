@@ -4,7 +4,32 @@ import { useState, useEffect, useCallback } from "react";
 import { MapPin, AlertCircle, CheckCircle2, Wrench, ExternalLink } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { ThresholdDot, getThresholdLevel } from "./ThresholdIndicator";
 import type { MonitoringStation } from "@/data/dc-waterways";
+
+interface ParameterDef {
+  id: string;
+  name: string;
+  unit: string;
+  category: string;
+  epaMin: number | null;
+  epaMax: number | null;
+}
+
+// Map parameter IDs to legacy reading fields
+const PARAM_TO_READING_FIELD: Record<string, string> = {
+  temperature: "temperature",
+  dissolved_oxygen: "dissolvedOxygen",
+  ph: "pH",
+  turbidity: "turbidity",
+  conductivity: "conductivity",
+  ecoli: "eColiCount",
+  nitrate_n: "nitrateN",
+  phosphorus_total: "phosphorus",
+};
+
+// Default columns when no filter is active
+const DEFAULT_PARAMS = ["dissolved_oxygen", "ph", "turbidity", "ecoli"];
 
 function StatusBadge({ status }: { status: string }) {
   const config = {
@@ -26,6 +51,7 @@ function StatusBadge({ status }: { status: string }) {
 const SOURCE_STYLES: Record<string, { abbr: string; color: string }> = {
   usgs:   { abbr: "USGS",   color: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
   epa:    { abbr: "EPA",    color: "text-green-400 bg-green-500/10 border-green-500/30" },
+  wqp:    { abbr: "WQP",    color: "text-teal-400 bg-teal-500/10 border-teal-500/30" },
   seed:   { abbr: "Model",  color: "text-slate-400 bg-slate-500/10 border-slate-500/30" },
   manual: { abbr: "Manual", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" },
 };
@@ -39,35 +65,28 @@ function SourceBadge({ source }: { source?: string }) {
   );
 }
 
-function WaterQualityIndicator({ value, thresholds }: { value: number; thresholds: { good: number; moderate: number } }) {
-  if (value == null) return <span className="text-sm text-slate-500">—</span>;
-  let color = "bg-green-400";
-  if (value > thresholds.moderate) color = "bg-red-400";
-  else if (value > thresholds.good) color = "bg-amber-400";
-
-  return (
-    <div className="flex items-center gap-2">
-      <span className={`w-2 h-2 rounded-full ${color}`} />
-      <span className="text-sm">{value.toLocaleString()}</span>
-    </div>
-  );
+interface StationTableProps {
+  onStationClick?: (stationId: string) => void;
+  selectedParams?: string[];
 }
 
-export default function StationTable({ onStationClick }: { onStationClick?: (stationId: string) => void }) {
+export default function StationTable({ onStationClick, selectedParams }: StationTableProps) {
   const { resolvedTheme } = useTheme();
   const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
   const [stations, setStations] = useState<MonitoringStation[]>([]);
+  const [paramDefs, setParamDefs] = useState<ParameterDef[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchStations = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/stations");
-      if (res.ok) {
-        setStations(await res.json());
-      }
+      const [stationsRes, paramsRes] = await Promise.all([
+        fetch("/api/stations"),
+        fetch("/api/parameters"),
+      ]);
+      if (stationsRes.ok) setStations(await stationsRes.json());
+      if (paramsRes.ok) setParamDefs(await paramsRes.json());
     } catch {
-      // Fall back to static data if API unavailable
       const { monitoringStations } = await import("@/data/dc-waterways");
       setStations(monitoringStations);
     } finally {
@@ -75,9 +94,25 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
     }
   }, []);
 
-  useEffect(() => {
-    fetchStations();
-  }, [fetchStations]);
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  // Determine which param columns to show
+  const activeParams = selectedParams && selectedParams.length > 0 ? selectedParams : DEFAULT_PARAMS;
+
+  // Only show params that have a mapping to reading fields
+  const visibleParams = activeParams
+    .filter((id) => PARAM_TO_READING_FIELD[id])
+    .map((id) => {
+      const def = paramDefs.find((p) => p.id === id);
+      return {
+        id,
+        name: def?.name || id,
+        unit: def?.unit || "",
+        epaMin: def?.epaMin ?? null,
+        epaMax: def?.epaMax ?? null,
+        readingField: PARAM_TO_READING_FIELD[id],
+      };
+    });
 
   if (loading) {
     return (
@@ -100,10 +135,13 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.station")}</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.type")}</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.status")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.do")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.ph")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.turbidity")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.ecoli")}</th>
+              {visibleParams.map((p) => (
+                <th key={p.id} scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                  <span title={`${p.name} (${p.unit})`}>
+                    {p.name.length > 18 ? p.name.slice(0, 16) + "…" : p.name}
+                  </span>
+                </th>
+              ))}
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.updated")}</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}><span className="sr-only">{t("table.details")}</span></th>
             </tr>
@@ -140,22 +178,31 @@ export default function StationTable({ onStationClick }: { onStationClick?: (sta
                   <td className="py-2.5 px-4">
                     <StatusBadge status={station.status} />
                   </td>
-                  <td className="py-2.5 px-4 text-xs text-blue-400">
-                    {r?.dissolvedOxygen || "—"}
-                  </td>
-                  <td className="py-2.5 px-4 text-xs text-green-400">
-                    {r?.pH || "—"}
-                  </td>
-                  <td className="py-2.5 px-4 text-xs text-amber-400">
-                    {r?.turbidity || "—"}
-                  </td>
-                  <td className="py-2.5 px-4">
-                    {r?.eColiCount != null ? (
-                      <WaterQualityIndicator value={r.eColiCount} thresholds={{ good: 400, moderate: 1000 }} />
-                    ) : (
-                      <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>
-                    )}
-                  </td>
+                  {visibleParams.map((p) => {
+                    const val = r ? (r as unknown as Record<string, number | undefined>)[p.readingField] : undefined;
+                    const level = getThresholdLevel(val ?? null, p.epaMin, p.epaMax);
+                    const levelColor = {
+                      good: isDark ? "text-green-400" : "text-green-600",
+                      warning: isDark ? "text-amber-400" : "text-amber-600",
+                      violation: isDark ? "text-red-400" : "text-red-600",
+                      unknown: isDark ? "text-slate-500" : "text-slate-400",
+                    }[level];
+
+                    return (
+                      <td key={p.id} className="py-2.5 px-4">
+                        {val != null ? (
+                          <div className="flex items-center gap-1.5">
+                            <ThresholdDot value={val} epaMin={p.epaMin} epaMax={p.epaMax} />
+                            <span className={`text-xs ${levelColor}`}>
+                              {val.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>
+                        )}
+                      </td>
+                    );
+                  })}
                   <td className={`py-2.5 px-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px]">{r

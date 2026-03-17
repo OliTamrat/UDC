@@ -92,12 +92,11 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [x] **Parameters API** — `GET /api/parameters` with optional category filter
 - [x] **Seed updated** — Seeds 25 parameters + 738 EAV measurements alongside legacy 144 readings
 
-#### Sprint 2: Filter System & Parameter UI — TODO
-- [ ] Parameter filter component with multi-select and category groupings
-- [ ] Dynamic MetricCards based on selected parameters
-- [ ] Configurable StationTable columns
-- [ ] Updated station detail page with all available parameters
-- [ ] Traffic light indicators (Green/Yellow/Red) for EPA thresholds
+#### Sprint 2: Filter System & Parameter UI — DONE
+- [x] **Parameter filter** — Multi-select dropdown with category groupings, select-all per category, inline pills
+- [x] **Configurable StationTable** — Columns driven by selected parameters with threshold dots
+- [x] **Updated station detail** — "All Measured Parameters" section with EAV data grouped by category
+- [x] **Traffic light indicators** — Green/Yellow/Red `ThresholdIndicator` component with 20% warning buffer
 
 #### Sprint 3: Scientific Storytelling — TODO
 - [ ] Story page `/stories` with scrollytelling framework
@@ -150,6 +149,8 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/components/ai/ResearchAssistant.tsx` — AI chat panel (floating widget)
 - `src/components/map/DCMap.tsx` — Interactive Leaflet map (dynamic import, SSR disabled)
 - `src/components/layout/Header.tsx` — Top bar with functional search
+- `src/components/dashboard/ParameterFilter.tsx` — Multi-select parameter filter with category groups
+- `src/components/dashboard/ThresholdIndicator.tsx` — Traffic light EPA threshold component
 - `src/components/ErrorBoundary.tsx` — React error boundary
 - `src/data/dc-waterways.ts` — 801 lines: stations, waterways, research, EJ data
 - `src/data/dc-boundaries.ts` — Ward polygons, watershed, flood zones

@@ -7,6 +7,7 @@ import { monitoringStations, getStationHistoricalData } from "@/data/dc-waterway
 import type { MonitoringStation } from "@/data/dc-waterways";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
+import { ThresholdDot, getThresholdLevel } from "@/components/dashboard/ThresholdIndicator";
 import {
   LineChart, Line, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -14,6 +15,7 @@ import {
 import {
   ArrowLeft, MapPin, Activity, Droplets, Thermometer, Waves,
   AlertTriangle, CheckCircle2, Wrench, AlertCircle, Download, Share2,
+  FlaskConical,
 } from "lucide-react";
 
 function StatusBadge({ status, isDark }: { status: string; isDark: boolean }) {
@@ -45,10 +47,32 @@ interface HistoricalData {
   data: HistoricalReading[];
 }
 
-// Data provenance — maps source field to human-readable label + style
+interface ParameterDef {
+  id: string;
+  name: string;
+  unit: string;
+  category: string;
+  epaMin: number | null;
+  epaMax: number | null;
+  description: string;
+}
+
+interface MeasurementRecord {
+  parameterId: string;
+  parameterName: string;
+  value: number;
+  unit: string;
+  category: string;
+  epaMin: number | null;
+  epaMax: number | null;
+  timestamp: string;
+  source: string;
+}
+
 const SOURCE_CONFIG: Record<string, { label: string; abbr: string; color: string; bg: string }> = {
   usgs:   { label: "USGS NWIS",          abbr: "USGS",   color: "text-blue-400",   bg: "bg-blue-500/10 border-blue-500/30" },
   epa:    { label: "EPA Water Quality Exchange", abbr: "EPA",  color: "text-green-400",  bg: "bg-green-500/10 border-green-500/30" },
+  wqp:    { label: "Water Quality Portal", abbr: "WQP",   color: "text-teal-400",   bg: "bg-teal-500/10 border-teal-500/30" },
   seed:   { label: "Baseline/Modeled",    abbr: "Model",  color: "text-slate-400",  bg: "bg-slate-500/10 border-slate-500/30" },
   manual: { label: "Manual Entry",         abbr: "Manual", color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/30" },
 };
@@ -65,6 +89,23 @@ function SourceBadge({ source, isDark }: { source: string; isDark: boolean }) {
   );
 }
 
+const CATEGORY_COLORS: Record<string, string> = {
+  physical: "text-blue-400",
+  nutrients: "text-green-400",
+  metals: "text-orange-400",
+  biological: "text-red-400",
+  organic: "text-purple-400",
+};
+
+const PARAM_ICONS: Record<string, typeof Thermometer> = {
+  temperature: Thermometer,
+  dissolved_oxygen: Droplets,
+  ph: Activity,
+  turbidity: Waves,
+  conductivity: Activity,
+  ecoli: AlertTriangle,
+};
+
 export default function StationDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -75,11 +116,12 @@ export default function StationDetailPage() {
   const [station, setStation] = useState<MonitoringStation | null>(null);
   const [historical, setHistorical] = useState<HistoricalData | null>(null);
   const [dataSources, setDataSources] = useState<string[]>([]);
+  const [latestMeasurements, setLatestMeasurements] = useState<MeasurementRecord[]>([]);
+  const [allParamDefs, setAllParamDefs] = useState<ParameterDef[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   const fetchData = useCallback(async () => {
-    // Find station from static data (always available for metadata, position, etc.)
     const staticStation = monitoringStations.find((s) => s.id === stationId);
     if (!staticStation) {
       setNotFound(true);
@@ -87,72 +129,86 @@ export default function StationDetailPage() {
       return;
     }
 
-    // Try API first for latest station data
-    try {
-      const stationsRes = await fetch("/api/stations");
-      if (stationsRes.ok) {
-        const allStations: MonitoringStation[] = await stationsRes.json();
-        const apiStation = allStations.find((s) => s.id === stationId);
-        if (apiStation) setStation(apiStation);
-        else setStation(staticStation);
-      } else {
-        setStation(staticStation);
-      }
-    } catch {
+    // Fetch station data, history, EAV measurements, and parameter defs in parallel
+    const [stationsRes, histRes, measRes, paramsRes] = await Promise.allSettled([
+      fetch("/api/stations"),
+      fetch(`/api/stations/${stationId}/history`),
+      fetch(`/api/measurements?stations=${stationId}&limit=100`),
+      fetch("/api/parameters"),
+    ]);
+
+    // Station
+    if (stationsRes.status === "fulfilled" && stationsRes.value.ok) {
+      const allStations: MonitoringStation[] = await stationsRes.value.json();
+      const apiStation = allStations.find((s) => s.id === stationId);
+      setStation(apiStation || staticStation);
+    } else {
       setStation(staticStation);
     }
 
-    // Try API for history, fall back to static
-    try {
-      const histRes = await fetch(`/api/stations/${stationId}/history`);
-      if (histRes.ok) {
-        const histData = await histRes.json();
-        if (histData.data && histData.data.length > 0) {
-          // Collect unique data sources for provenance display
-          const sources = [...new Set(histData.data.map((r: { source?: string }) => r.source).filter(Boolean))] as string[];
-          setDataSources(sources);
+    // Parameter definitions
+    if (paramsRes.status === "fulfilled" && paramsRes.value.ok) {
+      setAllParamDefs(await paramsRes.value.json());
+    }
 
-          // Transform API data to chart format (group by month, averaging multiple readings per month)
-          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-          const monthAccum: Record<string, { count: number; do: number; temp: number; ph: number; turb: number; ecoli: number }> = {};
-
-          for (const r of histData.data) {
-            const date = new Date(r.timestamp);
-            const monthName = months[date.getMonth()];
-            if (!monthAccum[monthName]) {
-              monthAccum[monthName] = { count: 0, do: 0, temp: 0, ph: 0, turb: 0, ecoli: 0 };
-            }
-            const acc = monthAccum[monthName];
-            acc.count++;
-            if (r.dissolvedOxygen != null) acc.do += r.dissolvedOxygen;
-            if (r.temperature != null) acc.temp += r.temperature;
-            if (r.pH != null) acc.ph += r.pH;
-            if (r.turbidity != null) acc.turb += r.turbidity;
-            if (r.eColiCount != null) acc.ecoli += r.eColiCount;
+    // EAV measurements — get latest value per parameter
+    if (measRes.status === "fulfilled" && measRes.value.ok) {
+      const measData = await measRes.value.json();
+      if (measData.data && measData.data.length > 0) {
+        // Group by parameterId, take most recent
+        const latestByParam: Record<string, MeasurementRecord> = {};
+        for (const m of measData.data) {
+          if (!latestByParam[m.parameterId] || m.timestamp > latestByParam[m.parameterId].timestamp) {
+            latestByParam[m.parameterId] = m;
           }
+        }
+        setLatestMeasurements(Object.values(latestByParam));
+      }
+    }
 
-          const chartData = months
-            .filter((m) => monthAccum[m])
-            .map((m) => {
-              const a = monthAccum[m];
-              const n = a.count || 1;
-              return {
-                month: m,
-                dissolvedOxygen: Math.round((a.do / n) * 100) / 100,
-                temperature: Math.round((a.temp / n) * 100) / 100,
-                pH: Math.round((a.ph / n) * 100) / 100,
-                turbidity: Math.round((a.turb / n) * 100) / 100,
-                eColiCount: Math.round(a.ecoli / n),
-              };
-            });
+    // Historical data
+    if (histRes.status === "fulfilled" && histRes.value.ok) {
+      const histData = await histRes.value.json();
+      if (histData.data && histData.data.length > 0) {
+        const sources = [...new Set(histData.data.map((r: { source?: string }) => r.source).filter(Boolean))] as string[];
+        setDataSources(sources);
 
-          if (chartData.length > 0) {
-            const staticHist = getStationHistoricalData(stationId);
-            setHistorical({ description: staticHist?.description || "", data: chartData });
-          } else {
-            setHistorical(getStationHistoricalData(stationId));
-            setDataSources(["seed"]);
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthAccum: Record<string, { count: number; do: number; temp: number; ph: number; turb: number; ecoli: number }> = {};
+
+        for (const r of histData.data) {
+          const date = new Date(r.timestamp);
+          const monthName = months[date.getMonth()];
+          if (!monthAccum[monthName]) {
+            monthAccum[monthName] = { count: 0, do: 0, temp: 0, ph: 0, turb: 0, ecoli: 0 };
           }
+          const acc = monthAccum[monthName];
+          acc.count++;
+          if (r.dissolvedOxygen != null) acc.do += r.dissolvedOxygen;
+          if (r.temperature != null) acc.temp += r.temperature;
+          if (r.pH != null) acc.ph += r.pH;
+          if (r.turbidity != null) acc.turb += r.turbidity;
+          if (r.eColiCount != null) acc.ecoli += r.eColiCount;
+        }
+
+        const chartData = months
+          .filter((m) => monthAccum[m])
+          .map((m) => {
+            const a = monthAccum[m];
+            const n = a.count || 1;
+            return {
+              month: m,
+              dissolvedOxygen: Math.round((a.do / n) * 100) / 100,
+              temperature: Math.round((a.temp / n) * 100) / 100,
+              pH: Math.round((a.ph / n) * 100) / 100,
+              turbidity: Math.round((a.turb / n) * 100) / 100,
+              eColiCount: Math.round(a.ecoli / n),
+            };
+          });
+
+        if (chartData.length > 0) {
+          const staticHist = getStationHistoricalData(stationId);
+          setHistorical({ description: staticHist?.description || "", data: chartData });
         } else {
           setHistorical(getStationHistoricalData(stationId));
           setDataSources(["seed"]);
@@ -161,7 +217,7 @@ export default function StationDetailPage() {
         setHistorical(getStationHistoricalData(stationId));
         setDataSources(["seed"]);
       }
-    } catch {
+    } else {
       setHistorical(getStationHistoricalData(stationId));
       setDataSources(["seed"]);
     }
@@ -229,6 +285,16 @@ export default function StationDetailPage() {
     eColiCount: { max: 410, label: "EPA Recreational Limit (410 CFU/100mL)" },
   };
 
+  // Group EAV measurements by category for display
+  const measurementsByCategory: Record<string, MeasurementRecord[]> = {};
+  for (const m of latestMeasurements) {
+    const cat = m.category || "physical";
+    if (!measurementsByCategory[cat]) measurementsByCategory[cat] = [];
+    measurementsByCategory[cat].push(m);
+  }
+  const categoryOrder = ["physical", "nutrients", "biological", "metals", "organic"];
+  const hasEAVData = latestMeasurements.length > 0;
+
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
@@ -281,7 +347,7 @@ export default function StationDetailPage() {
             </div>
           </div>
 
-          {/* Current Readings */}
+          {/* Current Readings — legacy 6-card grid */}
           {reading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               {[
@@ -336,6 +402,81 @@ export default function StationDetailPage() {
                   Baseline data — no live sensor feed for this station
                 </span>
               )}
+            </div>
+          )}
+
+          {/* All Available Parameters (EAV) — grouped by category with threshold indicators */}
+          {hasEAVData && (
+            <div className="space-y-3">
+              <div>
+                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
+                  <FlaskConical className="w-4 h-4 inline mr-1.5" />
+                  All Measured Parameters
+                </h2>
+                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                  Latest readings from all available data sources with EPA threshold compliance
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {categoryOrder.map((cat) => {
+                  const measurements = measurementsByCategory[cat];
+                  if (!measurements || measurements.length === 0) return null;
+
+                  const catColor = CATEGORY_COLORS[cat] || "text-slate-400";
+                  const catLabel = cat.charAt(0).toUpperCase() + cat.slice(1);
+
+                  return (
+                    <div key={cat} className={`glass-panel rounded-xl overflow-hidden`}>
+                      <div className={`px-3 py-2 border-b ${isDark ? "border-panel-border bg-panel-bg/50" : "border-slate-100 bg-slate-50"}`}>
+                        <h3 className={`text-xs font-semibold uppercase tracking-wider ${catColor}`}>
+                          {catLabel}
+                        </h3>
+                      </div>
+                      <div className="divide-y divide-panel-border/30">
+                        {measurements.map((m) => {
+                          const level = getThresholdLevel(m.value, m.epaMin, m.epaMax);
+                          const Icon = PARAM_ICONS[m.parameterId] || Activity;
+                          const paramDef = allParamDefs.find((p) => p.id === m.parameterId);
+                          const levelTextColor = {
+                            good: "text-green-400",
+                            warning: "text-amber-400",
+                            violation: "text-red-400",
+                            unknown: "text-slate-400",
+                          }[level];
+
+                          return (
+                            <div key={m.parameterId} className={`px-3 py-2 flex items-center gap-3 ${
+                              isDark ? "hover:bg-panel-hover/50" : "hover:bg-slate-50"
+                            }`}>
+                              <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${catColor}`} />
+                              <div className="flex-1 min-w-0">
+                                <div className={`text-xs font-medium ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+                                  {m.parameterName}
+                                </div>
+                                {paramDef?.description && (
+                                  <div className={`text-[10px] truncate ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                                    {paramDef.description}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 flex-shrink-0">
+                                <ThresholdDot value={m.value} epaMin={m.epaMin} epaMax={m.epaMax} />
+                                <span className={`text-sm font-medium ${levelTextColor}`}>
+                                  {m.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                                </span>
+                                <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                                  {m.unit}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
