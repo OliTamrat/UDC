@@ -292,13 +292,14 @@ export default function UpstreamDownstream() {
   const hoursElapsed = Math.round((timeStep / MAX_STEPS) * 48);
   const pollutionFront = getPollutionFront(timeStep);
 
-  // Generate stable rain drops (vertical fall, not horizontal drift)
+  // Stable rain drops for HTML overlay (same approach as RainStory)
   const rainDrops = useRef(
     Array.from({ length: 40 }, () => ({
-      x: Math.random() * 750,
-      delay: Math.random() * 2,
-      speed: 0.4 + Math.random() * 0.4,
-      length: 6 + Math.random() * 10,
+      left: Math.random() * 100,
+      top: Math.random() * -20,
+      height: 6 + Math.random() * 14,
+      duration: 0.3 + Math.random() * 0.5,
+      delay: Math.random() * 1.5,
     }))
   ).current;
 
@@ -495,37 +496,7 @@ export default function UpstreamDownstream() {
                 );
               })}
 
-              {/* Rain drops — falling VERTICALLY from top to bottom */}
-              {playing && scenario === "storm" && timeStep < 30 && rainDrops.map((drop, i) => (
-                <line
-                  key={`rain-${i}`}
-                  x1={drop.x}
-                  y1={0}
-                  x2={drop.x}
-                  y2={drop.length}
-                  stroke="#93c5fd"
-                  strokeWidth="1.5"
-                  opacity="0.6"
-                  strokeLinecap="round"
-                >
-                  <animate
-                    attributeName="y1"
-                    from={-drop.length}
-                    to={210}
-                    dur={`${drop.speed}s`}
-                    begin={`${drop.delay}s`}
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="y2"
-                    from={0}
-                    to={210 + drop.length}
-                    dur={`${drop.speed}s`}
-                    begin={`${drop.delay}s`}
-                    repeatCount="indefinite"
-                  />
-                </line>
-              ))}
+              {/* Rain splash circles are rendered via SVG below; rain drops use HTML overlay */}
 
               {/* Rain splash circles on water surface during storm */}
               {playing && scenario === "storm" && timeStep < 30 && (
@@ -652,6 +623,25 @@ export default function UpstreamDownstream() {
               <text x="680" y="195" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="8" textAnchor="end">Potomac River</text>
               <text x="350" y="200" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="7" textAnchor="middle">Washington, DC</text>
             </svg>
+
+            {/* HTML rain overlay — same approach as RainStory for mobile visibility */}
+            {playing && scenario === "storm" && timeStep < 30 && (
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {rainDrops.map((drop, i) => (
+                  <div
+                    key={`rain-${i}`}
+                    className="absolute w-0.5 bg-blue-400/50 rounded-full"
+                    style={{
+                      left: `${drop.left}%`,
+                      top: `${drop.top}%`,
+                      height: `${drop.height}px`,
+                      animation: `rain-fall ${drop.duration}s linear infinite`,
+                      animationDelay: `${drop.delay}s`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Timeline scrubber */}
