@@ -85,21 +85,27 @@ function NTUModal({
   const statusBg = ratio > 5 ? "bg-red-500/10" : ratio > 3 ? "bg-orange-500/10" : ratio > 1.5 ? "bg-amber-500/10" : "bg-green-500/10";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/70" />
       <div
-        className={`relative max-w-md w-full rounded-2xl border p-5 shadow-2xl ${
+        className={`relative max-w-md w-full rounded-t-2xl sm:rounded-2xl border p-5 shadow-2xl max-h-[85vh] overflow-y-auto ${
           isDark ? "bg-slate-900 border-panel-border" : "bg-white border-slate-200"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Mobile drag handle */}
+        <div className="sm:hidden flex justify-center mb-3">
+          <div className={`w-10 h-1 rounded-full ${isDark ? "bg-slate-600" : "bg-slate-300"}`} />
+        </div>
+
         <button
           onClick={onClose}
-          className={`absolute top-3 right-3 p-1 rounded-lg transition-colors ${
-            isDark ? "hover:bg-white/10 text-slate-400" : "hover:bg-slate-100 text-slate-500"
+          aria-label="Close"
+          className={`absolute top-3 right-3 p-2 rounded-lg transition-colors ${
+            isDark ? "hover:bg-white/10 active:bg-white/20 text-slate-400" : "hover:bg-slate-100 active:bg-slate-200 text-slate-500"
           }`}
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
@@ -176,6 +182,18 @@ function NTUModal({
             ))}
           </div>
         </div>
+
+        {/* Mobile close button */}
+        <button
+          onClick={onClose}
+          className={`sm:hidden w-full mt-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+            isDark
+              ? "bg-white/10 text-slate-300 active:bg-white/20"
+              : "bg-slate-100 text-slate-600 active:bg-slate-200"
+          }`}
+        >
+          Close
+        </button>
       </div>
     </div>
   );
@@ -274,13 +292,14 @@ export default function UpstreamDownstream() {
   const hoursElapsed = Math.round((timeStep / MAX_STEPS) * 48);
   const pollutionFront = getPollutionFront(timeStep);
 
-  // Generate stable rain drops (vertical fall, not horizontal drift)
+  // Stable rain drops for HTML overlay (same approach as RainStory)
   const rainDrops = useRef(
     Array.from({ length: 40 }, () => ({
-      x: Math.random() * 750,
-      delay: Math.random() * 2,
-      speed: 0.4 + Math.random() * 0.4,
-      length: 6 + Math.random() * 10,
+      left: Math.random() * 100,
+      top: Math.random() * -20,
+      height: 6 + Math.random() * 14,
+      duration: 0.3 + Math.random() * 0.5,
+      delay: Math.random() * 1.5,
     }))
   ).current;
 
@@ -477,37 +496,7 @@ export default function UpstreamDownstream() {
                 );
               })}
 
-              {/* Rain drops — falling VERTICALLY from top to bottom */}
-              {playing && scenario === "storm" && timeStep < 30 && rainDrops.map((drop, i) => (
-                <line
-                  key={`rain-${i}`}
-                  x1={drop.x}
-                  y1={0}
-                  x2={drop.x}
-                  y2={drop.length}
-                  stroke="#60a5fa"
-                  strokeWidth="0.8"
-                  opacity="0.4"
-                  strokeLinecap="round"
-                >
-                  <animate
-                    attributeName="y1"
-                    from={-drop.length}
-                    to={210}
-                    dur={`${drop.speed}s`}
-                    begin={`${drop.delay}s`}
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="y2"
-                    from={0}
-                    to={210 + drop.length}
-                    dur={`${drop.speed}s`}
-                    begin={`${drop.delay}s`}
-                    repeatCount="indefinite"
-                  />
-                </line>
-              ))}
+              {/* Rain splash circles are rendered via SVG below; rain drops use HTML overlay */}
 
               {/* Rain splash circles on water surface during storm */}
               {playing && scenario === "storm" && timeStep < 30 && (
@@ -523,11 +512,11 @@ export default function UpstreamDownstream() {
                       r="2"
                       fill="none"
                       stroke="#93c5fd"
-                      strokeWidth="0.5"
+                      strokeWidth="1"
                       opacity="0"
                     >
-                      <animate attributeName="r" from="1" to="8" dur="1.2s" begin={`${i * 0.35}s`} repeatCount="indefinite" />
-                      <animate attributeName="opacity" from="0.5" to="0" dur="1.2s" begin={`${i * 0.35}s`} repeatCount="indefinite" />
+                      <animate attributeName="r" from="1" to="10" dur="1.2s" begin={`${i * 0.35}s`} repeatCount="indefinite" />
+                      <animate attributeName="opacity" from="0.7" to="0" dur="1.2s" begin={`${i * 0.35}s`} repeatCount="indefinite" />
                     </circle>
                   ))}
                 </g>
@@ -634,6 +623,25 @@ export default function UpstreamDownstream() {
               <text x="680" y="195" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="8" textAnchor="end">Potomac River</text>
               <text x="350" y="200" fill={isDark ? "#334155" : "#cbd5e1"} fontSize="7" textAnchor="middle">Washington, DC</text>
             </svg>
+
+            {/* HTML rain overlay — same approach as RainStory for mobile visibility */}
+            {playing && scenario === "storm" && timeStep < 30 && (
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {rainDrops.map((drop, i) => (
+                  <div
+                    key={`rain-${i}`}
+                    className="absolute w-0.5 bg-blue-400/50 rounded-full"
+                    style={{
+                      left: `${drop.left}%`,
+                      top: `${drop.top}%`,
+                      height: `${drop.height}px`,
+                      animation: `rain-fall ${drop.duration}s linear infinite`,
+                      animationDelay: `${drop.delay}s`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Timeline scrubber */}
