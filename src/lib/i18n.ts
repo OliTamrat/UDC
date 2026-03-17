@@ -150,6 +150,36 @@ export const translations = {
     "settings.theme_system": "System",
     "settings.language": "Language",
 
+    // Stories page
+    "stories.title": "Water Stories",
+    "stories.subtitle": "Science should be accessible to everyone. Explore the Anacostia watershed through interactive stories that explain what's happening in DC's waterways — no PhD required.",
+    "stories.nav_rain": "When It Rains",
+    "stories.nav_whats": "What's in the Water",
+    "stories.nav_year": "A Year in the Anacostia",
+    "stories.nav_upstream": "Upstream to Downstream",
+    "stories.cta_title": "Want to explore the data yourself?",
+    "stories.cta_text": "All data behind these stories comes from real monitoring stations in the Anacostia watershed. Visit the dashboard to explore live readings, filter by parameter, and export data for your own analysis.",
+    "stories.cta_dashboard": "Go to Dashboard",
+    "stories.cta_download": "Download Data (CSV)",
+
+    // Rain story
+    "stories.rain_title": "When It Rains in DC",
+    "stories.rain_subtitle": "How storms transform water quality in hours",
+    "stories.rain_narrative": "Washington DC has a combined sewer system — when it rains heavily, stormwater and raw sewage mix together and overflow into the Anacostia River. A single heavy storm can turn clear water muddy brown within hours, sending turbidity readings from normal (under 25 NTU) to dangerous levels.",
+    "stories.rain_river_level": "River Level & Water Clarity",
+    "stories.rain_clear": "Clear",
+    "stories.rain_murky": "Murky",
+    "stories.rain_muddy": "Muddy",
+    "stories.rain_click_bar": "Click a bar below",
+    "stories.rain_turbidity_chart": "Turbidity After Rainfall Events (NTU)",
+    "stories.rain_dangerous": "Dangerous",
+    "stories.rain_elevated": "Elevated",
+    "stories.rain_normal": "Normal",
+    "stories.rain_rainfall": "Rainfall",
+    "stories.rain_water_level": "Water Level",
+    "stories.rain_turbidity": "Turbidity",
+    "stories.rain_insight": "Key insight: The February 2026 storm dropped 4.2 inches of rain, pushing turbidity to 250 NTU — 10x the normal level. DC Water's Long Term Control Plan aims to reduce these overflows by 96% through green infrastructure and tunnel storage.",
+
     // Loading
     "loading.map": "Loading DC Map...",
   },
@@ -301,6 +331,36 @@ export const translations = {
     "settings.theme_dark": "Oscuro",
     "settings.theme_system": "Sistema",
     "settings.language": "Idioma",
+
+    // Stories page
+    "stories.title": "Historias del Agua",
+    "stories.subtitle": "La ciencia debe ser accesible para todos. Explora la cuenca del Anacostia a través de historias interactivas que explican lo que está pasando en las vías fluviales de DC — sin necesidad de un doctorado.",
+    "stories.nav_rain": "Cuando Llueve",
+    "stories.nav_whats": "Qué Hay en el Agua",
+    "stories.nav_year": "Un Año en el Anacostia",
+    "stories.nav_upstream": "Río Arriba a Río Abajo",
+    "stories.cta_title": "¿Quieres explorar los datos tú mismo?",
+    "stories.cta_text": "Todos los datos detrás de estas historias provienen de estaciones de monitoreo reales en la cuenca del Anacostia. Visita el panel para explorar lecturas en vivo, filtrar por parámetro y exportar datos para tu propio análisis.",
+    "stories.cta_dashboard": "Ir al Panel",
+    "stories.cta_download": "Descargar Datos (CSV)",
+
+    // Rain story
+    "stories.rain_title": "Cuando Llueve en DC",
+    "stories.rain_subtitle": "Cómo las tormentas transforman la calidad del agua en horas",
+    "stories.rain_narrative": "Washington DC tiene un sistema de alcantarillado combinado — cuando llueve fuerte, el agua pluvial y las aguas residuales se mezclan y desbordan hacia el río Anacostia. Una sola tormenta fuerte puede convertir el agua clara en marrón turbio en horas, elevando los niveles de turbidez de normal (menos de 25 NTU) a niveles peligrosos.",
+    "stories.rain_river_level": "Nivel del Río y Claridad del Agua",
+    "stories.rain_clear": "Claro",
+    "stories.rain_murky": "Turbio",
+    "stories.rain_muddy": "Fangoso",
+    "stories.rain_click_bar": "Haz clic en una barra",
+    "stories.rain_turbidity_chart": "Turbidez Después de Lluvias (NTU)",
+    "stories.rain_dangerous": "Peligroso",
+    "stories.rain_elevated": "Elevado",
+    "stories.rain_normal": "Normal",
+    "stories.rain_rainfall": "Precipitación",
+    "stories.rain_water_level": "Nivel del Agua",
+    "stories.rain_turbidity": "Turbidez",
+    "stories.rain_insight": "Dato clave: La tormenta de febrero de 2026 dejó 4.2 pulgadas de lluvia, elevando la turbidez a 250 NTU — 10 veces el nivel normal. El Plan de Control a Largo Plazo de DC Water busca reducir estos desbordamientos en un 96% mediante infraestructura verde y almacenamiento en túneles.",
 
     // Loading
     "loading.map": "Cargando mapa de DC...",

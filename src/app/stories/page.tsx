@@ -10,9 +10,11 @@ import YearInAnacostia from "@/components/stories/YearInAnacostia";
 import UpstreamDownstream from "@/components/stories/UpstreamDownstream";
 import { BookOpen, ChevronDown } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function StoriesPage() {
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
 
   return (
@@ -40,12 +42,10 @@ export default function StoriesPage() {
                   </div>
                 </div>
                 <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-3 ${isDark ? "text-white" : "text-slate-900"}`}>
-                  Water Stories
+                  {t("stories.title")}
                 </h1>
                 <p className={`text-sm sm:text-base leading-relaxed max-w-xl mx-auto ${isDark ? "text-slate-300" : "text-slate-600"}`}>
-                  Science should be accessible to everyone. Explore the Anacostia watershed
-                  through interactive stories that explain what&apos;s happening in DC&apos;s waterways —
-                  no PhD required.
+                  {t("stories.subtitle")}
                 </p>
               </FadeIn>
               <FadeIn delay={400}>
@@ -60,10 +60,10 @@ export default function StoriesPage() {
           <FadeIn delay={200}>
             <nav className="flex flex-wrap gap-2 justify-center">
               {[
-                { href: "#rain", label: "When It Rains", color: "text-blue-400" },
-                { href: "#whats-in-water", label: "What's in the Water", color: "text-green-400" },
-                { href: "#year", label: "A Year in the Anacostia", color: "text-amber-400" },
-                { href: "#upstream", label: "Upstream to Downstream", color: "text-cyan-400" },
+                { href: "#rain", labelKey: "stories.nav_rain" as const, color: "text-blue-400" },
+                { href: "#whats-in-water", labelKey: "stories.nav_whats" as const, color: "text-green-400" },
+                { href: "#year", labelKey: "stories.nav_year" as const, color: "text-amber-400" },
+                { href: "#upstream", labelKey: "stories.nav_upstream" as const, color: "text-cyan-400" },
               ].map((item) => (
                 <a
                   key={item.href}
@@ -75,7 +75,7 @@ export default function StoriesPage() {
                   }`}
                 >
                   <span className={item.color}>&#9679;</span>{" "}
-                  {item.label}
+                  {t(item.labelKey)}
                 </a>
               ))}
             </nav>
@@ -108,19 +108,17 @@ export default function StoriesPage() {
               }`}
             >
               <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-                Want to explore the data yourself?
+                {t("stories.cta_title")}
               </h2>
               <p className={`text-sm mb-4 max-w-lg mx-auto ${isDark ? "text-slate-300" : "text-slate-600"}`}>
-                All data behind these stories comes from real monitoring stations in the
-                Anacostia watershed. Visit the dashboard to explore live readings, filter by
-                parameter, and export data for your own analysis.
+                {t("stories.cta_text")}
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 <a
                   href="/"
                   className="px-5 py-2.5 rounded-xl bg-water-blue hover:bg-blue-600 text-white text-sm font-medium transition-colors"
                 >
-                  Go to Dashboard
+                  {t("stories.cta_dashboard")}
                 </a>
                 <a
                   href="/api/export?format=csv"
@@ -130,7 +128,7 @@ export default function StoriesPage() {
                       : "border-slate-200 text-slate-700 hover:bg-slate-50"
                   }`}
                 >
-                  Download Data (CSV)
+                  {t("stories.cta_download")}
                 </a>
               </div>
             </section>
