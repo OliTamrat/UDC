@@ -17,6 +17,7 @@ import {
   AlertTriangle, CheckCircle2, Wrench, AlertCircle, Download, Share2,
   FlaskConical,
 } from "lucide-react";
+import { RealTimeStationChart } from "@/components/charts/WaterQualityCharts";
 
 function StatusBadge({ status, isDark }: { status: string; isDark: boolean }) {
   const config: Record<string, { bg: string; text: string; icon: typeof CheckCircle2; label: string }> = {
@@ -485,6 +486,9 @@ export default function StationDetailPage() {
               </div>
             </div>
           )}
+
+          {/* Real-Time Data Chart — fetches from API */}
+          <RealTimeStationChart stationId={stationId as string} />
 
           {/* Historical Charts */}
           {historical && (

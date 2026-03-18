@@ -65,6 +65,38 @@ function SourceBadge({ source }: { source?: string }) {
   );
 }
 
+// Sparkline SVG for mini trend charts in the table
+function Sparkline({ data, color, height = 24, width = 80 }: { data: number[]; color: string; height?: number; width?: number }) {
+  if (data.length < 2) return null;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const points = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 4) - 2;
+    return `${x},${y}`;
+  }).join(" ");
+  return (
+    <svg width={width} height={height} className="inline-block" aria-hidden="true">
+      <polyline fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" points={points} />
+      <circle cx={String((data.length - 1) / (data.length - 1) * width)} cy={String(height - ((data[data.length - 1] - min) / range) * (height - 4) - 2)} r="2" fill={color} />
+    </svg>
+  );
+}
+
+interface HistoryData {
+  stationId: string;
+  data: Array<{
+    timestamp: string;
+    dissolvedOxygen: number | null;
+    pH: number | null;
+    turbidity: number | null;
+    eColiCount: number | null;
+    temperature: number | null;
+    source: string;
+  }>;
+}
+
 interface StationTableProps {
   onStationClick?: (stationId: string) => void;
   selectedParams?: string[];
@@ -76,6 +108,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
   const isDark = resolvedTheme === "dark";
   const [stations, setStations] = useState<MonitoringStation[]>([]);
   const [paramDefs, setParamDefs] = useState<ParameterDef[]>([]);
+  const [historyMap, setHistoryMap] = useState<Record<string, HistoryData>>({});
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
@@ -84,8 +117,32 @@ export default function StationTable({ onStationClick, selectedParams }: Station
         fetch("/api/stations"),
         fetch("/api/parameters"),
       ]);
-      if (stationsRes.ok) setStations(await stationsRes.json());
+      let stationList: MonitoringStation[] = [];
+      if (stationsRes.ok) {
+        stationList = await stationsRes.json();
+        setStations(stationList);
+      }
       if (paramsRes.ok) setParamDefs(await paramsRes.json());
+
+      // Fetch recent history for sparklines (last 20 readings per station)
+      if (stationList.length > 0) {
+        const historyPromises = stationList.map(async (s) => {
+          try {
+            const res = await fetch(`/api/stations/${s.id}/history?limit=20`);
+            if (res.ok) {
+              const data: HistoryData = await res.json();
+              return { stationId: s.id, data };
+            }
+          } catch { /* ignore */ }
+          return null;
+        });
+        const results = await Promise.all(historyPromises);
+        const map: Record<string, HistoryData> = {};
+        for (const r of results) {
+          if (r) map[r.stationId] = r.data as unknown as HistoryData;
+        }
+        setHistoryMap(map);
+      }
     } catch {
       const { monitoringStations } = await import("@/data/dc-waterways");
       setStations(monitoringStations);
@@ -142,6 +199,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                   </span>
                 </th>
               ))}
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Trend</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.updated")}</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}><span className="sr-only">{t("table.details")}</span></th>
             </tr>
@@ -203,12 +261,20 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                       </td>
                     );
                   })}
+                  <td className="py-2.5 px-4">
+                    {(() => {
+                      const hist = historyMap[station.id] as unknown as { data?: Array<Record<string, number | null>> } | undefined;
+                      const histData = hist?.data;
+                      if (!histData || histData.length < 2) return <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>;
+                      const doValues = histData.map((d) => d.dissolvedOxygen).filter((v): v is number => v != null);
+                      if (doValues.length < 2) return <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>;
+                      return <Sparkline data={doValues} color="#60A5FA" />;
+                    })()}
+                  </td>
                   <td className={`py-2.5 px-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px]">{r
-                        ? (r as unknown as Record<string, unknown>).source === "seed"
-                          ? "Baseline"
-                          : new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                        ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
                         : "—"}</span>
                       {r && <SourceBadge source={(r as unknown as Record<string, unknown>).source as string | undefined} />}
                     </div>
