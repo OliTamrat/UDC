@@ -73,7 +73,7 @@ const SOURCE_CONFIG: Record<string, { label: string; abbr: string; color: string
   usgs:   { label: "USGS NWIS",          abbr: "USGS",   color: "text-blue-400",   bg: "bg-blue-500/10 border-blue-500/30" },
   epa:    { label: "EPA Water Quality Exchange", abbr: "EPA",  color: "text-green-400",  bg: "bg-green-500/10 border-green-500/30" },
   wqp:    { label: "Water Quality Portal", abbr: "WQP",   color: "text-teal-400",   bg: "bg-teal-500/10 border-teal-500/30" },
-  seed:   { label: "Baseline/Modeled",    abbr: "Model",  color: "text-slate-400",  bg: "bg-slate-500/10 border-slate-500/30" },
+  seed:   { label: "Initial Seed Data",    abbr: "Seed",   color: "text-slate-400",  bg: "bg-slate-500/10 border-slate-500/30" },
   manual: { label: "Manual Entry",         abbr: "Manual", color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/30" },
 };
 
@@ -382,9 +382,7 @@ export default function StationDetailPage() {
           {reading && (
             <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               <span>Last updated: {reading.timestamp
-                ? dataSources.length === 1 && dataSources[0] === "seed"
-                  ? "Baseline (modeled)"
-                  : new Date(reading.timestamp).toLocaleString()
+                ? new Date(reading.timestamp).toLocaleString()
                 : "—"}</span>
               {dataSources.length > 0 && (
                 <span className="flex items-center gap-1.5">
@@ -396,10 +394,10 @@ export default function StationDetailPage() {
               )}
               {dataSources.length === 1 && dataSources[0] === "seed" && (
                 <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] ${
-                  isDark ? "bg-amber-500/10 text-amber-400" : "bg-amber-50 text-amber-700"
+                  isDark ? "bg-slate-500/10 text-slate-400" : "bg-slate-50 text-slate-600"
                 }`}>
                   <AlertTriangle className="w-3 h-3" />
-                  Baseline data — modeled from published watershed averages, not live sensor readings
+                  Initial seed data — will be replaced as live ingestion runs accumulate measured values
                 </span>
               )}
               {isGI && (
@@ -494,7 +492,7 @@ export default function StationDetailPage() {
               <div>
                 <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
                   Historical Trends
-                  {dataSources.length === 1 && dataSources[0] === "seed" ? " (Baseline)" : ""}
+                  {dataSources.length === 1 && dataSources[0] === "seed" ? " (Seed Data)" : ""}
                 </h2>
                 <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly averages with EPA compliance thresholds</p>
               </div>

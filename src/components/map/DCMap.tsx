@@ -332,18 +332,21 @@ export default function DCMap({
             </div>
             <div style="margin-top:6px;display:flex;align-items:center;justify-content:space-between;">
               <span style="font-size:10px;color:${popupMuted};">Last updated: ${reading.timestamp
-              ? ((reading as unknown as Record<string, unknown>).source === "seed" ? "Baseline (modeled)" : new Date(reading.timestamp).toLocaleString())
+              ? new Date(reading.timestamp).toLocaleString()
               : "—"}</span>
               <span style="font-size:9px;padding:1px 6px;border-radius:9px;font-weight:500;${
                 (reading as unknown as Record<string, unknown>).source === "usgs"
                   ? "background:rgba(59,130,246,0.15);color:#60A5FA;border:1px solid rgba(59,130,246,0.3);"
                   : (reading as unknown as Record<string, unknown>).source === "wqp"
                     ? "background:rgba(20,184,166,0.15);color:#2DD4BF;border:1px solid rgba(20,184,166,0.3);"
+                  : (reading as unknown as Record<string, unknown>).source === "epa"
+                    ? "background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);"
                     : "background:rgba(100,116,139,0.15);color:#94A3B8;border:1px solid rgba(100,116,139,0.3);"
               }">${
                 (reading as unknown as Record<string, unknown>).source === "usgs" ? "USGS"
                   : (reading as unknown as Record<string, unknown>).source === "wqp" ? "EPA WQP"
-                    : "Modeled"
+                  : (reading as unknown as Record<string, unknown>).source === "epa" ? "EPA"
+                    : "Seed"
               }</span>
             </div>`;
         }
