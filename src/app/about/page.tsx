@@ -16,10 +16,12 @@ import {
   ExternalLink,
   Mail,
 } from "lucide-react";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 export default function AboutPage() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const sidebarClass = useSidebarClass();
 
   const cardClass = `rounded-xl border p-6 ${
     isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white border-slate-200 shadow-sm"
@@ -32,7 +34,7 @@ export default function AboutPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-dashboard-bg" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-4 lg:p-6 max-w-4xl mx-auto space-y-6">
 
