@@ -1,7 +1,39 @@
 // Sprint 4: Animated Scenarios — Scenario definitions, spike detection, and simulation engine
 // Provides pre-built pollution scenarios and generates time-series data for each station
+// Baselines can be overridden with real ingested data via setRealBaselines()
 
 import { monitoringStations, getStationHistoricalData } from "./dc-waterways";
+
+// ─── Real Baseline Data (injected at runtime from API) ───────────────────────
+
+export interface BaselineValues {
+  dissolvedOxygen: number;
+  temperature: number;
+  pH: number;
+  turbidity: number;
+  eColiCount: number;
+  readingCount: number;
+}
+
+// Module-level store for real baselines: { [stationId]: { [month]: values } }
+let realBaselines: Record<string, Record<number, BaselineValues>> | null = null;
+let baselineSource: "hardcoded" | "real" | "seed" = "hardcoded";
+
+export function setRealBaselines(
+  baselines: Record<string, Record<number, BaselineValues>>,
+  source: "real" | "seed"
+) {
+  realBaselines = baselines;
+  baselineSource = source;
+}
+
+export function getBaselineSource(): string {
+  return baselineSource;
+}
+
+export function hasRealBaselines(): boolean {
+  return realBaselines !== null && Object.keys(realBaselines).length > 0;
+}
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -162,6 +194,20 @@ function gaussianPulse(t: number, peak: number, width: number): number {
 }
 
 function getBaselineValues(stationId: string, monthIndex: number = 6) {
+  // 1) Try real ingested data first (month is 1-indexed in the API, monthIndex is 0-indexed)
+  const monthNum = monthIndex + 1;
+  if (realBaselines && realBaselines[stationId] && realBaselines[stationId][monthNum]) {
+    const rb = realBaselines[stationId][monthNum];
+    return {
+      dissolvedOxygen: rb.dissolvedOxygen,
+      temperature: rb.temperature,
+      pH: rb.pH,
+      turbidity: rb.turbidity,
+      eColiCount: rb.eColiCount,
+    };
+  }
+
+  // 2) Fall back to hardcoded seasonal profiles
   const hist = getStationHistoricalData(stationId);
   if (!hist) {
     return { dissolvedOxygen: 7, temperature: 20, pH: 7.0, turbidity: 20, eColiCount: 300 };
