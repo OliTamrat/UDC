@@ -12,10 +12,14 @@ import {
   scenarios,
   generateScenarioFrames,
   getSpikeSummary,
+  setRealBaselines,
+  hasRealBaselines,
+  getBaselineSource,
 } from "@/data/scenarios";
-import type { ScenarioFrame, StationSnapshot, SpikeSummary } from "@/data/scenarios";
+import type { ScenarioFrame, StationSnapshot, SpikeSummary, BaselineValues } from "@/data/scenarios";
 import {
   AlertCircle,
+  Database,
   Info,
   X,
 } from "lucide-react";
@@ -37,16 +41,46 @@ export default function ScenariosPage() {
     "WB-001",
   ]);
   const [detailStation, setDetailStation] = useState<StationSnapshot | null>(null);
+  const [baselinesLoaded, setBaselinesLoaded] = useState(false);
+  const [baselineInfo, setBaselineInfo] = useState<{ source: string; stationCount: number; totalReadings: number } | null>(null);
 
   const selectedScenario = scenarios.find((s) => s.id === selectedScenarioId);
 
-  // Generate frames when scenario changes
+  // Fetch real baselines from API on mount
   useEffect(() => {
+    async function loadBaselines() {
+      try {
+        const res = await fetch("/api/baselines");
+        if (!res.ok) throw new Error("API error");
+        const data = await res.json();
+        if (data.baselines && Object.keys(data.baselines).length > 0) {
+          setRealBaselines(
+            data.baselines as Record<string, Record<number, BaselineValues>>,
+            data.source === "real" ? "real" : "seed"
+          );
+          setBaselineInfo({
+            source: data.source,
+            stationCount: data.stationCount,
+            totalReadings: data.totalReadings,
+          });
+        }
+      } catch {
+        // Silently fall back to hardcoded baselines
+      } finally {
+        setBaselinesLoaded(true);
+      }
+    }
+    loadBaselines();
+  }, []);
+
+  // Generate frames when scenario changes or baselines finish loading
+  useEffect(() => {
+    if (!baselinesLoaded) return;
     const newFrames = generateScenarioFrames(selectedScenarioId);
     setFrames(newFrames);
     setCurrentStep(0);
     setPlaying(false);
-  }, [selectedScenarioId]);
+  }, [selectedScenarioId, baselinesLoaded]);
 
   // Playback loop
   useEffect(() => {
@@ -379,7 +413,7 @@ export default function ScenariosPage() {
               isDark ? "bg-panel-bg/60 border-panel-border" : "bg-slate-50 border-slate-200"
             }`}
           >
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 mb-3">
               <Info className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
               <p className={`text-[11px] leading-relaxed ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                 These scenarios are simulated using baseline data from UDC WRRI monitoring stations
@@ -389,6 +423,22 @@ export default function ScenariosPage() {
                 infrastructure conditions, and tidal influences.
               </p>
             </div>
+            {baselineInfo && (
+              <div className={`flex items-center gap-2 pt-3 border-t ${isDark ? "border-panel-border" : "border-slate-200"}`}>
+                <Database className={`w-3.5 h-3.5 ${baselineInfo.source === "real" ? "text-green-400" : "text-amber-400"}`} />
+                <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                  {baselineInfo.source === "real" ? (
+                    <>
+                      Baselines grounded in <strong className={isDark ? "text-green-300" : "text-green-600"}>{baselineInfo.totalReadings.toLocaleString()} real sensor readings</strong> from {baselineInfo.stationCount} stations (USGS/EPA/WQP ingested data)
+                    </>
+                  ) : (
+                    <>
+                      Using seed baseline data from {baselineInfo.stationCount} stations ({baselineInfo.totalReadings} readings) — run ingestion for real sensor baselines
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </main>
