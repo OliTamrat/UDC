@@ -16,7 +16,7 @@ interface ParameterDef {
   epaMax: number | null;
 }
 
-// Map parameter IDs to legacy reading fields
+// Map parameter IDs to legacy reading fields (for the /api/stations lastReading data)
 const PARAM_TO_READING_FIELD: Record<string, string> = {
   temperature: "temperature",
   dissolved_oxygen: "dissolvedOxygen",
@@ -97,6 +97,15 @@ interface HistoryData {
   }>;
 }
 
+// Latest EAV measurement value per station per parameter
+interface MeasurementLatest {
+  stationId: string;
+  parameterId: string;
+  value: number;
+  source: string;
+  timestamp: string;
+}
+
 interface StationTableProps {
   onStationClick?: (stationId: string) => void;
   selectedParams?: string[];
@@ -109,6 +118,8 @@ export default function StationTable({ onStationClick, selectedParams }: Station
   const [stations, setStations] = useState<MonitoringStation[]>([]);
   const [paramDefs, setParamDefs] = useState<ParameterDef[]>([]);
   const [historyMap, setHistoryMap] = useState<Record<string, HistoryData>>({});
+  // EAV measurements: stationId -> parameterId -> { value, source, timestamp }
+  const [eavData, setEavData] = useState<Record<string, Record<string, MeasurementLatest>>>({});
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
@@ -156,20 +167,55 @@ export default function StationTable({ onStationClick, selectedParams }: Station
   // Determine which param columns to show
   const activeParams = selectedParams && selectedParams.length > 0 ? selectedParams : DEFAULT_PARAMS;
 
-  // Only show params that have a mapping to reading fields
-  const visibleParams = activeParams
-    .filter((id) => PARAM_TO_READING_FIELD[id])
-    .map((id) => {
-      const def = paramDefs.find((p) => p.id === id);
-      return {
-        id,
-        name: def?.name || id,
-        unit: def?.unit || "",
-        epaMin: def?.epaMin ?? null,
-        epaMax: def?.epaMax ?? null,
-        readingField: PARAM_TO_READING_FIELD[id],
-      };
-    });
+  // Identify which params need EAV data (not in legacy reading fields)
+  const eavParamIds = activeParams.filter((id) => !PARAM_TO_READING_FIELD[id]);
+
+  // Fetch EAV measurement data for non-legacy parameters
+  useEffect(() => {
+    if (eavParamIds.length === 0 || stations.length === 0) {
+      if (eavParamIds.length === 0) setEavData({});
+      return;
+    }
+
+    const fetchEav = async () => {
+      try {
+        const params = new URLSearchParams({
+          params: eavParamIds.join(","),
+          limit: "5000",
+        });
+        const res = await fetch(`/api/measurements?${params}`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const data: MeasurementLatest[] = json.data || [];
+
+        // Group by station + param, keeping only the latest measurement per combo
+        const grouped: Record<string, Record<string, MeasurementLatest>> = {};
+        for (const m of data) {
+          if (!grouped[m.stationId]) grouped[m.stationId] = {};
+          const existing = grouped[m.stationId][m.parameterId];
+          if (!existing || m.timestamp > existing.timestamp) {
+            grouped[m.stationId][m.parameterId] = m;
+          }
+        }
+        setEavData(grouped);
+      } catch { /* ignore */ }
+    };
+    fetchEav();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eavParamIds.join(","), stations.length]);
+
+  // Build visible params with metadata — now supports ALL 25 parameters
+  const visibleParams = activeParams.map((id) => {
+    const def = paramDefs.find((p) => p.id === id);
+    return {
+      id,
+      name: def?.name || id,
+      unit: def?.unit || "",
+      epaMin: def?.epaMin ?? null,
+      epaMax: def?.epaMax ?? null,
+      readingField: PARAM_TO_READING_FIELD[id] || null, // null = use EAV data
+    };
+  });
 
   if (loading) {
     return (
@@ -207,6 +253,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
           <tbody>
             {stations.map((station) => {
               const r = station.lastReading;
+              const stationEav = eavData[station.id] || {};
               return (
                 <tr
                   key={station.id}
@@ -237,7 +284,15 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                     <StatusBadge status={station.status} />
                   </td>
                   {visibleParams.map((p) => {
-                    const val = r ? (r as unknown as Record<string, number | undefined>)[p.readingField] : undefined;
+                    // Try legacy reading field first, then EAV measurement data
+                    let val: number | undefined;
+                    if (p.readingField && r) {
+                      val = (r as unknown as Record<string, number | undefined>)[p.readingField];
+                    }
+                    if (val == null && stationEav[p.id]) {
+                      val = stationEav[p.id].value;
+                    }
+
                     const level = getThresholdLevel(val ?? null, p.epaMin, p.epaMax);
                     const levelColor = {
                       good: isDark ? "text-green-400" : "text-green-600",

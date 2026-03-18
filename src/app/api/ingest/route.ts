@@ -119,6 +119,9 @@ const USGS_PARAMS: Record<string, string> = {
   "00400": "ph",               // pH
   "63680": "turbidity",        // Turbidity (NTU)
   "00095": "conductivity",     // Specific conductance (µS/cm)
+  "31648": "ecoli_count",      // E. coli (CFU/100mL)
+  "00631": "nitrate_n",        // Nitrate+Nitrite as N (mg/L)
+  "00665": "phosphorus",       // Phosphorus, total (mg/L)
 };
 
 // USGS pcode → EAV parameter ID (for direct measurements insertion)
@@ -128,6 +131,9 @@ const USGS_PCODE_TO_PARAM: Record<string, string> = {
   "00400": "ph",
   "63680": "turbidity",
   "00095": "conductivity",
+  "31648": "ecoli",
+  "00631": "nitrate_n",
+  "00665": "phosphorus_total",
 };
 
 // Active USGS sites with water-quality sensors in the DC/Anacostia watershed
@@ -136,9 +142,14 @@ const USGS_SITES = [
   { usgs: "01649500", stationId: "ANA-002" }, // NE Branch Anacostia at Riverdale, MD (active WQ)
   { usgs: "01651827", stationId: "ANA-003" }, // Anacostia River nr Buzzard Point at Washington, DC
   { usgs: "01651750", stationId: "ANA-004" }, // Anacostia River at Washington, DC (near Anacostia Park)
-  { usgs: "01646500", stationId: "PB-001" },  // Potomac River at Little Falls (closest WQ gauge)
-  { usgs: "01651800", stationId: "WB-001" },  // Watts Branch at Minnesota Ave Bridge
   { usgs: "01651770", stationId: "HR-001" },  // Hickey Run at National Arboretum
+  { usgs: "01651800", stationId: "WB-001" },  // Watts Branch at Minnesota Ave Bridge
+  { usgs: "01651760", stationId: "PB-001" },  // Anacostia at Kenilworth — closest active WQ gauge to Pope Branch
+  { usgs: "01651730", stationId: "SW-001" },  // NW Branch Anacostia trib near Hyattsville — nearest to Benning Road
+  { usgs: "01651830", stationId: "SW-002" },  // Blue Plains WWTP outfall at Washington, DC — nearest to South Capitol
+  { usgs: "01646500", stationId: "GI-001" },  // Potomac at Little Falls — nearest gauge to UDC Van Ness campus
+  { usgs: "01651760", stationId: "GI-002" },  // Anacostia at Kenilworth — nearest to East Capitol Urban Farm (Ward 7)
+  { usgs: "01651827", stationId: "GI-003" },  // Anacostia nr Buzzard Point — nearest to PR Harris Food Hub (Ward 8)
 ];
 
 interface USGSTimeSeriesValue {
@@ -218,8 +229,8 @@ async function ingestUSGS(): Promise<{ count: number; measurementCount: number; 
 
         // Legacy readings table
         await db.query(
-          `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, source)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 'usgs')`,
+          `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli_count, nitrate_n, phosphorus, source)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'usgs')`,
           [
             site.stationId,
             timestamp,
@@ -228,6 +239,9 @@ async function ingestUSGS(): Promise<{ count: number; measurementCount: number; 
             valid.ph ?? null,
             valid.turbidity ?? null,
             valid.conductivity ?? null,
+            valid.ecoli_count ?? null,
+            valid.nitrate_n ?? null,
+            valid.phosphorus ?? null,
           ]
         );
         count++;
@@ -280,9 +294,19 @@ const EPA_STATION_MAP: Record<string, string> = {
   "USGS-01649500": "ANA-002",
   "USGS-01651827": "ANA-003",
   "USGS-01651750": "ANA-004",
-  "USGS-01646500": "PB-001",
-  "USGS-01651800": "WB-001",
   "USGS-01651770": "HR-001",
+  "USGS-01651800": "WB-001",
+  "USGS-01651760": "PB-001",  // Anacostia at Kenilworth — closest active gauge to Pope Branch
+  "USGS-01651730": "SW-001",  // NW Branch trib — nearest to Benning Road stormwater BMP
+  "USGS-01651830": "SW-002",  // Blue Plains outfall — nearest to South Capitol stormwater
+  // DC DOEE monitoring locations (Water Quality Portal)
+  "21DCDOEE-ANA01":  "ANA-001",
+  "21DCDOEE-ANA02":  "ANA-002",
+  "21DCDOEE-ANA03":  "ANA-003",
+  "21DCDOEE-ANA04":  "ANA-004",
+  "21DCDOEE-WB01":   "WB-001",
+  "21DCDOEE-POPE01": "PB-001",
+  "21DCDOEE-HR01":   "HR-001",
 };
 
 interface EPAResult {
