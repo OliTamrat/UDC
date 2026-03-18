@@ -56,11 +56,10 @@ const sections: { key: string; labelKey: TranslationKey }[] = [
 ];
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
-  const { mobileOpen, closeMobile } = useSidebar();
+  const { mobileOpen, closeMobile, collapsed, toggleCollapsed } = useSidebar();
   const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
 
@@ -157,7 +156,7 @@ export default function Sidebar() {
         </button>
         {/* Collapse toggle — desktop only */}
         <button
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={toggleCollapsed}
           aria-label={collapsed ? t("sidebar.expand") : t("sidebar.collapse_sidebar")}
           className={`hidden lg:flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"

@@ -23,10 +23,12 @@ import {
   Info,
   X,
 } from "lucide-react";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 export default function ScenariosPage() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const sidebarClass = useSidebarClass();
 
   // Scenario state
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>("summer-storm");
@@ -147,7 +149,7 @@ export default function ScenariosPage() {
   return (
     <div className={`flex min-h-screen ${isDark ? "bg-dashboard-bg text-white" : "bg-slate-50 text-slate-900"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-4 lg:p-6 max-w-[1600px] mx-auto">
           {/* Hero */}

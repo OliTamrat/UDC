@@ -18,6 +18,7 @@ import {
   FlaskConical,
 } from "lucide-react";
 import { RealTimeStationChart } from "@/components/charts/WaterQualityCharts";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 function StatusBadge({ status, isDark }: { status: string; isDark: boolean }) {
   const config: Record<string, { bg: string; text: string; icon: typeof CheckCircle2; label: string }> = {
@@ -112,6 +113,7 @@ export default function StationDetailPage() {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const sidebarClass = useSidebarClass();
 
   const stationId = params.id as string;
   const [station, setStation] = useState<MonitoringStation | null>(null);
@@ -238,7 +240,7 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+        <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
@@ -252,7 +254,7 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+        <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="text-center">
@@ -299,7 +301,7 @@ export default function StationDetailPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-3 sm:p-4 md:p-6 space-y-6">
           {/* Back + Title */}
