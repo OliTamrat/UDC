@@ -168,7 +168,7 @@ export default function Header() {
             }`}
           />
           {showResults && searchQuery && (
-            <div className={`absolute left-0 top-full mt-1 w-full sm:w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
+            <div role="listbox" aria-label="Search results" className={`absolute left-0 top-full mt-1 w-full sm:w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
               isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
             }`}>
               {searchResults.length === 0 ? (

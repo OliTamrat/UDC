@@ -123,21 +123,23 @@ export default function TimelinePlayback({
               className={`p-1.5 rounded-lg transition-colors ${
                 isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-600"
               }`}
-              title="Reset"
+              aria-label="Reset timeline"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
             <button
               onClick={stepBack}
               disabled={currentStep === 0}
+              aria-label="Step back"
               className={`p-1.5 rounded-lg transition-colors disabled:opacity-30 ${
                 isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-600"
               }`}
             >
-              <SkipBack className="w-3.5 h-3.5" />
+              <SkipBack className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
             <button
               onClick={onPlayPause}
+              aria-label={playing ? "Pause" : "Play"}
               className={`p-2 rounded-lg transition-colors ${
                 playing
                   ? "bg-water-blue text-white"
@@ -146,25 +148,36 @@ export default function TimelinePlayback({
                     : "bg-blue-50 text-blue-600 hover:bg-blue-100"
               }`}
             >
-              {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              {playing ? <Pause className="w-4 h-4" aria-hidden="true" /> : <Play className="w-4 h-4" aria-hidden="true" />}
             </button>
             <button
               onClick={stepForward}
               disabled={currentStep >= totalSteps}
+              aria-label="Step forward"
               className={`p-1.5 rounded-lg transition-colors disabled:opacity-30 ${
                 isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-600"
               }`}
             >
-              <SkipForward className="w-3.5 h-3.5" />
+              <SkipForward className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </div>
 
           {/* Timeline track */}
           <div
             ref={trackRef}
+            role="slider"
+            aria-label="Timeline position"
+            aria-valuemin={0}
+            aria-valuemax={totalSteps}
+            aria-valuenow={currentStep}
+            tabIndex={0}
             className="flex-1 relative h-3 cursor-pointer group"
             onClick={handleTrackClick}
             onMouseDown={() => setDragging(true)}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowRight") { e.preventDefault(); stepForward(); }
+              if (e.key === "ArrowLeft") { e.preventDefault(); stepBack(); }
+            }}
           >
             {/* Background track */}
             <div
@@ -214,7 +227,7 @@ export default function TimelinePlayback({
             className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors ${
               isDark ? "bg-slate-700 text-slate-300 hover:bg-slate-600" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
-            title="Change playback speed"
+            aria-label={`Playback speed: ${speed}x. Click to change.`}
           >
             <Gauge className="w-3 h-3" />
             {speed}x

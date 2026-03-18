@@ -247,6 +247,7 @@ export default function ParameterExplorer({
     <>
       {/* Backdrop */}
       <div
+        aria-hidden="true"
         className={`fixed inset-0 z-[90] transition-opacity duration-300 ${
           isDark ? "bg-black/60" : "bg-black/30"
         } backdrop-blur-sm`}
@@ -452,6 +453,9 @@ export default function ParameterExplorer({
                     </div>
                     <button
                       onClick={() => selectCategory(group.category)}
+                      role="checkbox"
+                      aria-checked={allSelected ? "true" : someSelected ? "mixed" : "false"}
+                      aria-label={`Select all ${group.category} parameters`}
                       className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${
                         allSelected
                           ? isDark
@@ -522,6 +526,8 @@ export default function ParameterExplorer({
                                   ? "border-slate-600 hover:border-slate-400"
                                   : "border-slate-300 hover:border-slate-400"
                             }`}
+                            role="checkbox"
+                            aria-checked={isSelected}
                             aria-label={`${isSelected ? "Deselect" : "Select"} ${param.name}`}
                           >
                             {isSelected && (
