@@ -121,6 +121,12 @@ export default function StoriesPage() {
                   {t("stories.cta_dashboard")}
                 </a>
                 <a
+                  href="/scenarios"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white text-sm font-medium transition-colors"
+                >
+                  Pollution Simulator
+                </a>
+                <a
                   href="/api/export?format=csv"
                   className={`px-5 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
                     isDark
