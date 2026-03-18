@@ -13,6 +13,7 @@ import {
   GraduationCap,
   FlaskConical,
   Database,
+  Info,
 } from "lucide-react";
 
 export default function Footer() {
@@ -108,6 +109,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2 text-xs">
               {[
+                { href: "/about", label: "About & Disclaimer", icon: Info },
                 { href: "/research", label: t("footer.research_portal"), icon: FlaskConical },
                 { href: "/education", label: t("footer.education_outreach"), icon: GraduationCap },
                 { href: "/methodology", label: t("footer.methodology_sources"), icon: BookOpen },
