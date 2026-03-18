@@ -60,7 +60,7 @@ export const translations = {
 
     // Data source notice
     "notice.title": "Data Sources:",
-    "notice.text": "Station locations derived from DC GIS and USGS monitoring sites. Baseline water quality values are modeled from published seasonal averages and peer-reviewed Anacostia watershed research — not live sensor feeds. When USGS NWIS or EPA WQP data is ingested, readings are tagged with their source. Green infrastructure sites (GI-001 through GI-003) are Best Management Practice (BMP) installations that measure stormwater retention, not ambient water quality. Geospatial boundaries from official DC government GIS datasets. EPA thresholds follow the 2012 Recreational Water Quality Criteria. This dashboard is a research and educational tool developed by UDC CAUSES/WRRI.",
+    "notice.text": "Water quality readings are ingested from USGS NWIS real-time sensors (sites 01651000, 01649500, 01651827, 01651750, 01651800, 01651770) and EPA Water Quality Portal lab results (HUC 02070010). USGS data refreshes every 6 hours; EPA WQP daily; broad WQP parameters weekly. Initial seed values are modeled baselines progressively replaced by measured data — each reading is tagged with its source (USGS, EPA WQP, or Modeled). Green infrastructure sites (GI-001 through GI-003) are BMP installations measuring stormwater retention performance. Station locations from DC GIS. EPA thresholds follow the 2012 Recreational Water Quality Criteria (E. coli: 410 CFU/100mL single-sample). This is a research and educational tool developed by UDC CAUSES/WRRI.",
 
     // Section headings
     "section.map_title": "Interactive Watershed Map",
@@ -243,7 +243,7 @@ export const translations = {
 
     // Data source notice
     "notice.title": "Fuentes de Datos:",
-    "notice.text": "Ubicaciones de estaciones derivadas de DC GIS y sitios de monitoreo USGS. Los valores base de calidad del agua son modelados a partir de promedios estacionales publicados e investigación revisada por pares — no son lecturas de sensores en vivo. Cuando se ingieren datos de USGS NWIS o EPA WQP, las lecturas se etiquetan con su fuente. Los sitios de infraestructura verde (GI-001 a GI-003) son instalaciones de Mejores Prácticas de Gestión (BMP) que miden retención de aguas pluviales, no calidad del agua ambiental. Límites geoespaciales de conjuntos de datos GIS oficiales del gobierno de DC. Los umbrales EPA siguen los Criterios de Calidad del Agua Recreativa de 2012. Este panel es una herramienta de investigación y educación desarrollada por UDC CAUSES/WRRI.",
+    "notice.text": "Las lecturas de calidad del agua se ingieren de sensores USGS NWIS en tiempo real (sitios 01651000, 01649500, 01651827, 01651750, 01651800, 01651770) y resultados de laboratorio del Portal de Calidad del Agua de la EPA (HUC 02070010). Datos USGS se actualizan cada 6 horas; EPA WQP diariamente; parámetros ampliados WQP semanalmente. Los valores iniciales son líneas base modeladas que se reemplazan progresivamente con datos medidos — cada lectura se etiqueta con su fuente (USGS, EPA WQP o Modelado). Los sitios de infraestructura verde (GI-001 a GI-003) son instalaciones BMP que miden el rendimiento de retención de aguas pluviales. Ubicaciones de DC GIS. Umbrales EPA según los Criterios de Calidad del Agua Recreativa de 2012 (E. coli: 410 CFU/100mL muestra única). Herramienta de investigación y educación de UDC CAUSES/WRRI.",
 
     // Section headings
     "section.map_title": "Mapa Interactivo de la Cuenca",

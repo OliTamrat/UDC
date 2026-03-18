@@ -1174,7 +1174,14 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
         headers,
       });
       const data = await res.json();
-      alert(`Ingestion complete: ${data.records_ingested || 0} records. ${data.errors?.length ? `Errors: ${data.errors.join(", ")}` : "No errors."}`);
+      const msg = [
+        `Ingestion complete (${triggerSource.toUpperCase()}):`,
+        `${data.records_ingested || 0} legacy readings`,
+        `${data.measurements_ingested || 0} EAV measurements`,
+        data.validation_warnings?.length ? `${data.validation_warnings.length} validation warnings` : null,
+        data.errors?.length ? `Errors: ${data.errors.join(", ")}` : "No errors.",
+      ].filter(Boolean).join("\n");
+      alert(msg);
       fetchLogs();
     } catch (err) {
       alert(`Ingestion failed: ${err instanceof Error ? err.message : String(err)}`);
@@ -1196,8 +1203,9 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
             onChange={(e) => setTriggerSource(e.target.value)}
             className={`px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-slate-300" : "bg-white border-slate-200"}`}
           >
-            <option value="usgs">USGS NWIS</option>
-            <option value="epa">EPA WQP</option>
+            <option value="usgs">USGS NWIS (Real-time IV)</option>
+            <option value="epa">EPA WQP (Legacy)</option>
+            <option value="wqp">WQP (Broad Parameters)</option>
           </select>
           <button
             onClick={triggerIngest}
