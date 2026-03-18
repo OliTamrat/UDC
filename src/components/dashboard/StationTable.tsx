@@ -52,7 +52,7 @@ const SOURCE_STYLES: Record<string, { abbr: string; color: string }> = {
   usgs:   { abbr: "USGS",   color: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
   epa:    { abbr: "EPA",    color: "text-green-400 bg-green-500/10 border-green-500/30" },
   wqp:    { abbr: "WQP",    color: "text-teal-400 bg-teal-500/10 border-teal-500/30" },
-  seed:   { abbr: "Model",  color: "text-slate-400 bg-slate-500/10 border-slate-500/30" },
+  seed:   { abbr: "Seed",   color: "text-slate-400 bg-slate-500/10 border-slate-500/30" },
   manual: { abbr: "Manual", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" },
 };
 

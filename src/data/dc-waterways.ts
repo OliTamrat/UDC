@@ -479,7 +479,7 @@ export const monitoringStations: MonitoringStation[] = [
   },
   {
     id: "GI-001",
-    name: "UDC Van Ness Green Roof",
+    name: "UDC Van Ness Green Roof (BMP)",
     position: [38.9436, -77.0631], // UDC campus at 4200 Connecticut Ave NW
     type: "green-infrastructure",
     status: "active",
@@ -496,7 +496,7 @@ export const monitoringStations: MonitoringStation[] = [
   },
   {
     id: "GI-002",
-    name: "UDC Food Hub Rain Garden - Ward 7",
+    name: "UDC Food Hub Rain Garden - Ward 7 (BMP)",
     position: [38.8893, -76.9149], // East Capitol Urban Farm, 5901 E Capitol St SE
     type: "green-infrastructure",
     status: "active",
@@ -513,7 +513,7 @@ export const monitoringStations: MonitoringStation[] = [
   },
   {
     id: "GI-003",
-    name: "UDC Food Hub Rain Garden - Ward 8",
+    name: "UDC Food Hub Rain Garden - Ward 8 (BMP)",
     position: [38.8271, -76.9944], // PR Harris Food Hub, 4600 Livingston Rd SE
     type: "green-infrastructure",
     status: "active",
@@ -741,7 +741,7 @@ export function getStationHistoricalData(stationId: string) {
       phBase: [6.8, 6.7, 6.8, 6.9, 6.8, 6.7, 6.6, 6.7, 6.8, 6.8, 6.8, 6.8],
       turbBase: [5.0, 6.0, 8.5, 10.0, 12.0, 9.5, 7.5, 10.0, 8.5, 7.0, 5.5, 4.5],
       ecoliBase: [15, 17, 54, 84, 74, 50, 35, 41, 68, 38, 23, 17],
-      description: "UDC Van Ness Green Roof — low pollutant levels, excellent stormwater retention",
+      description: "UDC Van Ness Green Roof (BMP) — measures stormwater retention performance, not ambient water quality",
     },
     "GI-002": {
       doBase: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -749,7 +749,7 @@ export function getStationHistoricalData(stationId: string) {
       phBase: [7.1, 7.0, 7.1, 7.2, 7.1, 7.0, 6.9, 7.0, 7.0, 7.1, 7.1, 7.1],
       turbBase: [3.5, 4.0, 5.8, 7.0, 8.5, 6.5, 5.0, 7.0, 6.0, 4.5, 3.8, 3.2],
       ecoliBase: [8, 9, 29, 45, 39, 26, 18, 22, 36, 20, 12, 9],
-      description: "UDC Food Hub Rain Garden Ward 7 — excellent infiltration and pollutant removal",
+      description: "UDC Food Hub Rain Garden Ward 7 (BMP) — measures infiltration performance, not ambient water quality",
     },
     "GI-003": {
       doBase: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -757,7 +757,7 @@ export function getStationHistoricalData(stationId: string) {
       phBase: [7.0, 6.9, 7.0, 7.1, 7.0, 6.9, 6.8, 6.9, 7.0, 7.0, 7.0, 7.0],
       turbBase: [4.0, 5.0, 6.5, 8.0, 9.5, 7.5, 6.0, 8.0, 7.0, 5.5, 4.5, 3.8],
       ecoliBase: [12, 13, 43, 67, 59, 40, 28, 32, 54, 30, 18, 13],
-      description: "UDC Food Hub Rain Garden Ward 8 — good performance, newer installation",
+      description: "UDC Food Hub Rain Garden Ward 8 (BMP) — measures infiltration performance, not ambient water quality",
     },
     "SW-001": {
       doBase: [6.5, 6.1, 5.1, 4.2, 3.5, 2.8, 2.3, 2.5, 3.5, 4.8, 5.8, 6.3],
