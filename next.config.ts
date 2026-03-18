@@ -5,8 +5,6 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: ".",
   },
-  // Exclude native modules from serverless bundling (SQLite is local-dev only)
-  serverExternalPackages: ["better-sqlite3"],
   // output: "standalone" is for Docker only; Vercel uses its own serverless build
   async headers() {
     return [

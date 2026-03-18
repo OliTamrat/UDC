@@ -5,8 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "postinstall": "test -z \"$VERCEL\" && tsx scripts/seed.ts || true",
+    "build": "tsx scripts/seed.ts && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
