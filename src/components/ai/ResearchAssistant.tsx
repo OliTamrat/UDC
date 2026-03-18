@@ -19,10 +19,10 @@ import {
 const SUGGESTED_QUESTIONS = [
   "What's the current water quality at Anacostia Park?",
   "Which stations have the highest E. coli levels?",
-  "Explain the seasonal DO trends in the Anacostia River",
+  "Are there any EPA threshold violations right now?",
+  "What emerging contaminants are being tracked in the Anacostia?",
   "How do CSOs affect Wards 7 and 8 water quality?",
-  "What green infrastructure projects is UDC researching?",
-  "Compare water quality across all monitoring stations",
+  "Show me lead and nutrient levels across all stations",
 ];
 
 export default function ResearchAssistant() {

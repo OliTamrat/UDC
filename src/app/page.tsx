@@ -137,7 +137,7 @@ export default function Dashboard() {
                 <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t("section.map_network")}</span>
               </div>
             </div>
-            <div className="h-[300px] sm:h-[400px] md:h-[550px]">
+            <div className="h-[300px] sm:h-[400px] md:h-[550px]" aria-label="Interactive watershed map">
               <DCMap
                 onStationSelect={setSelectedStation}
                 selectedStation={selectedStation}
