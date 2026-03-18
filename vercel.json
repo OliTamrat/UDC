@@ -1,12 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "git": {
-    "deploymentEnabled": {
-      "main": true,
-      "claude/*": false
-    }
-  },
   "functions": {
     "src/app/api/**/*.ts": {
       "includeFiles": "data/**",
