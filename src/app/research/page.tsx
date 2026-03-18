@@ -21,6 +21,7 @@ import {
 import { useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import Link from "next/link";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 const tagColors: Record<string, string> = {
   "green-infrastructure": "bg-green-500/10 text-green-400 border-green-500/20",
@@ -46,6 +47,7 @@ export default function ResearchPage() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const sidebarClass = useSidebarClass();
 
   const filteredProjects = researchProjects.filter((project) => {
     const matchesSearch =
@@ -60,7 +62,7 @@ export default function ResearchPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-3 sm:p-4 md:p-6 space-y-6">
           {/* Page Header */}
