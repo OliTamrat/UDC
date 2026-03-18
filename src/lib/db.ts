@@ -309,18 +309,22 @@ export async function getDbClient(): Promise<DbClient> {
 // ---------------------------------------------------------------------------
 // Legacy synchronous API (for gradual migration — local SQLite only)
 // ---------------------------------------------------------------------------
-import Database from "better-sqlite3";
-import path from "path";
-import fs from "fs";
 
-let legacyDb: Database.Database | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let legacyDb: any | null = null;
 
 /** @deprecated Use getDbClient() instead */
-export function getDb(): Database.Database {
+export function getDb() {
   if (useNeon()) {
     throw new Error("getDb() is not supported with PostgreSQL. Use getDbClient() instead.");
   }
   if (!legacyDb) {
+    // Dynamic require to avoid crashing on Vercel where better-sqlite3 native module is unavailable
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const Database = require("better-sqlite3") as typeof import("better-sqlite3");
+    const path = require("path") as typeof import("path");
+    const fs = require("fs") as typeof import("fs");
+
     const dbPath = process.env.DB_PATH || path.join(process.cwd(), "data", "udc-water.db");
     const dir = path.dirname(dbPath);
     if (!fs.existsSync(dir)) {
