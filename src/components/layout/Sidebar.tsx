@@ -22,6 +22,7 @@ import {
   DatabaseZap,
   BookHeart,
   Clapperboard,
+  Info,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
@@ -42,6 +43,7 @@ const navItems: { href: string; labelKey: TranslationKey; icon: typeof LayoutDas
   { href: "/education#community", labelKey: "sidebar.community_link", icon: Users, section: "community" },
   { href: "/education#resources", labelKey: "sidebar.open_data", icon: Globe, section: "community" },
   { href: "/admin", labelKey: "sidebar.data_admin", icon: DatabaseZap, section: "admin" },
+  { href: "/about", labelKey: "sidebar.about", icon: Info, section: "about" },
 ];
 
 const sections: { key: string; labelKey: TranslationKey }[] = [
@@ -50,6 +52,7 @@ const sections: { key: string; labelKey: TranslationKey }[] = [
   { key: "research", labelKey: "sidebar.research" },
   { key: "community", labelKey: "sidebar.community" },
   { key: "admin", labelKey: "sidebar.admin" },
+  { key: "about", labelKey: "sidebar.about_section" },
 ];
 
 export default function Sidebar() {
