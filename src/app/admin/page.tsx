@@ -1352,11 +1352,21 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
 // ---------------------------------------------------------------------------
 // Ingestion Logs Tab
 // ---------------------------------------------------------------------------
+interface IngestResult {
+  status: "success" | "error";
+  source: string;
+  records_ingested: number;
+  measurements_ingested: number;
+  errors: string[];
+  validation_warnings: string[];
+}
+
 function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
   const [logs, setLogs] = useState<IngestionLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [triggerSource, setTriggerSource] = useState("usgs");
   const [triggering, setTriggering] = useState(false);
+  const [ingestResult, setIngestResult] = useState<IngestResult | null>(null);
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
@@ -1370,6 +1380,7 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
 
   const triggerIngest = async () => {
     setTriggering(true);
+    setIngestResult(null);
     try {
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       const ingestKey = adminKey || "";
@@ -1380,17 +1391,24 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
         headers,
       });
       const data = await res.json();
-      const msg = [
-        `Ingestion complete (${triggerSource.toUpperCase()}):`,
-        `${data.records_ingested || 0} legacy readings`,
-        `${data.measurements_ingested || 0} EAV measurements`,
-        data.validation_warnings?.length ? `${data.validation_warnings.length} validation warnings` : null,
-        data.errors?.length ? `Errors: ${data.errors.join(", ")}` : "No errors.",
-      ].filter(Boolean).join("\n");
-      alert(msg);
+      setIngestResult({
+        status: data.errors?.length ? "error" : "success",
+        source: triggerSource,
+        records_ingested: data.records_ingested || 0,
+        measurements_ingested: data.measurements_ingested || 0,
+        errors: data.errors || [],
+        validation_warnings: data.validation_warnings || [],
+      });
       fetchLogs();
     } catch (err) {
-      alert(`Ingestion failed: ${err instanceof Error ? err.message : String(err)}`);
+      setIngestResult({
+        status: "error",
+        source: triggerSource,
+        records_ingested: 0,
+        measurements_ingested: 0,
+        errors: [err instanceof Error ? err.message : String(err)],
+        validation_warnings: [],
+      });
     } finally {
       setTriggering(false);
     }
@@ -1423,6 +1441,81 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
           </button>
         </div>
       </div>
+
+      {/* Ingestion Result Banner */}
+      {ingestResult && (
+        <div className={`rounded-xl border p-4 ${
+          ingestResult.status === "error"
+            ? isDark ? "border-red-500/30 bg-red-950/20" : "border-red-200 bg-red-50"
+            : isDark ? "border-green-500/30 bg-green-950/20" : "border-green-200 bg-green-50"
+        }`}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3">
+              {ingestResult.status === "error" ? (
+                <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+              ) : (
+                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+              )}
+              <div>
+                <p className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+                  Ingestion Complete — {ingestResult.source.toUpperCase()}
+                </p>
+                <div className={`mt-2 grid grid-cols-2 gap-x-6 gap-y-1 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                  <div className="flex items-center gap-1.5">
+                    <Database className="w-3 h-3 text-blue-400" />
+                    <span><strong>{ingestResult.records_ingested}</strong> legacy readings</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Activity className="w-3 h-3 text-purple-400" />
+                    <span><strong>{ingestResult.measurements_ingested}</strong> EAV measurements</span>
+                  </div>
+                </div>
+                {ingestResult.records_ingested === 0 && ingestResult.measurements_ingested === 0 && ingestResult.errors.length === 0 && (
+                  <p className={`mt-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    No new data was returned. This can happen if the USGS sites lack real-time water quality sensors, or data for the current period was already ingested.
+                  </p>
+                )}
+                {ingestResult.validation_warnings.length > 0 && (
+                  <div className="mt-2">
+                    <p className={`text-xs font-medium ${isDark ? "text-amber-300" : "text-amber-700"}`}>
+                      {ingestResult.validation_warnings.length} validation warning{ingestResult.validation_warnings.length > 1 ? "s" : ""}
+                    </p>
+                    <ul className={`mt-1 text-[11px] space-y-0.5 ${isDark ? "text-amber-300/80" : "text-amber-600"}`}>
+                      {ingestResult.validation_warnings.slice(0, 5).map((w, i) => (
+                        <li key={i}>&bull; {w}</li>
+                      ))}
+                      {ingestResult.validation_warnings.length > 5 && (
+                        <li>... and {ingestResult.validation_warnings.length - 5} more</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+                {ingestResult.errors.length > 0 && (
+                  <div className="mt-2">
+                    <p className={`text-xs font-medium ${isDark ? "text-red-300" : "text-red-700"}`}>Errors:</p>
+                    <ul className={`mt-1 text-[11px] space-y-0.5 ${isDark ? "text-red-300/80" : "text-red-600"}`}>
+                      {ingestResult.errors.slice(0, 5).map((e, i) => (
+                        <li key={i}>&bull; {e}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {ingestResult.errors.length === 0 && (ingestResult.records_ingested > 0 || ingestResult.measurements_ingested > 0) && (
+                  <p className={`mt-2 text-xs ${isDark ? "text-green-300/80" : "text-green-600"}`}>
+                    No errors. Data is now available in the dashboard.
+                  </p>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={() => setIngestResult(null)}
+              className={`p-1 rounded ${isDark ? "text-slate-400 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
