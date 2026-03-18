@@ -21,6 +21,7 @@ import {
   X,
   DatabaseZap,
   BookHeart,
+  Clapperboard,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
@@ -36,6 +37,7 @@ const navItems: { href: string; labelKey: TranslationKey; icon: typeof LayoutDas
   { href: "/research", labelKey: "sidebar.research_link", icon: FlaskConical, section: "research" },
   { href: "/methodology", labelKey: "sidebar.methodology", icon: BookOpen, section: "research" },
   { href: "/stories", labelKey: "sidebar.stories", icon: BookHeart, section: "community" },
+  { href: "/scenarios", labelKey: "sidebar.scenarios", icon: Clapperboard, section: "monitoring" },
   { href: "/education", labelKey: "sidebar.education", icon: GraduationCap, section: "community" },
   { href: "/education#community", labelKey: "sidebar.community_link", icon: Users, section: "community" },
   { href: "/education#resources", labelKey: "sidebar.open_data", icon: Globe, section: "community" },
