@@ -277,8 +277,8 @@ export default function StationDetailPage() {
     color: isDark ? "#F8FAFC" : "#1E293B",
   };
 
-  const typeLabel = station.type.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase());
   const isGI = station.type === "green-infrastructure";
+  const typeLabel = isGI ? "Green Infrastructure BMP" : station.type.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   const epaLimits = {
     dissolvedOxygen: { min: 5, label: "EPA Minimum (5 mg/L)" },
@@ -399,7 +399,15 @@ export default function StationDetailPage() {
                   isDark ? "bg-amber-500/10 text-amber-400" : "bg-amber-50 text-amber-700"
                 }`}>
                   <AlertTriangle className="w-3 h-3" />
-                  Baseline data — no live sensor feed for this station
+                  Baseline data — modeled from published watershed averages, not live sensor readings
+                </span>
+              )}
+              {isGI && (
+                <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] ${
+                  isDark ? "bg-green-500/10 text-green-400" : "bg-green-50 text-green-700"
+                }`}>
+                  <AlertTriangle className="w-3 h-3" />
+                  BMP site — measures stormwater retention and infiltration performance, not ambient water quality
                 </span>
               )}
             </div>

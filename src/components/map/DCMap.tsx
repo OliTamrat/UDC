@@ -318,7 +318,7 @@ export default function DCMap({
               <h3 style="font-weight:600;font-size:13px;color:${popupText};margin:0;">${station.name}</h3>
               <span style="font-size:11px;font-weight:500;color:${statusColor};text-transform:capitalize;">${station.status}</span>
             </div>
-            <div style="font-size:11px;color:${popupSecondary};margin-bottom:8px;">ID: ${station.id} | Type: ${station.type.replace("-", " ")}</div>`;
+            <div style="font-size:11px;color:${popupSecondary};margin-bottom:8px;">ID: ${station.id} | Type: ${station.type === "green-infrastructure" ? "Green Infrastructure BMP" : station.type.replace("-", " ")}</div>`;
 
         if (reading) {
           const ecoliColor = (reading.eColiCount ?? 0) > 400 ? "#F87171" : "#4ADE80";
@@ -330,9 +330,22 @@ export default function DCMap({
               <div style="background:${popupDataBg};border-radius:6px;padding:6px;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">Turbidity</div><div style="font-size:13px;font-weight:600;color:#FBBF24;">${reading.turbidity ?? "—"} NTU</div></div>
               <div style="background:${popupDataBg};border-radius:6px;padding:6px;grid-column:span 2;"><div style="font-size:9px;color:${popupDataLabel};text-transform:uppercase;">E. coli</div><div style="font-size:13px;font-weight:600;color:${ecoliColor};">${reading.eColiCount != null ? reading.eColiCount.toLocaleString() : "—"} CFU/100mL</div></div>
             </div>
-            <div style="margin-top:6px;font-size:10px;color:${popupMuted};">Last updated: ${reading.timestamp
+            <div style="margin-top:6px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:10px;color:${popupMuted};">Last updated: ${reading.timestamp
               ? ((reading as unknown as Record<string, unknown>).source === "seed" ? "Baseline (modeled)" : new Date(reading.timestamp).toLocaleString())
-              : "—"}</div>`;
+              : "—"}</span>
+              <span style="font-size:9px;padding:1px 6px;border-radius:9px;font-weight:500;${
+                (reading as unknown as Record<string, unknown>).source === "usgs"
+                  ? "background:rgba(59,130,246,0.15);color:#60A5FA;border:1px solid rgba(59,130,246,0.3);"
+                  : (reading as unknown as Record<string, unknown>).source === "wqp"
+                    ? "background:rgba(20,184,166,0.15);color:#2DD4BF;border:1px solid rgba(20,184,166,0.3);"
+                    : "background:rgba(100,116,139,0.15);color:#94A3B8;border:1px solid rgba(100,116,139,0.3);"
+              }">${
+                (reading as unknown as Record<string, unknown>).source === "usgs" ? "USGS"
+                  : (reading as unknown as Record<string, unknown>).source === "wqp" ? "EPA WQP"
+                    : "Modeled"
+              }</span>
+            </div>`;
         }
 
         popupHtml += viewDetailBtn + `</div>`;

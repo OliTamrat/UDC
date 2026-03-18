@@ -7,8 +7,11 @@ import { useTheme } from "@/context/ThemeContext";
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const CURRENT_YEAR = new Date().getFullYear();
 
-// Seasonal E.coli multipliers (higher in summer, lower in winter)
-const SEASONAL_ECOLI_MULTIPLIER = [0.15, 0.18, 0.35, 0.65, 1.1, 1.8, 2.2, 2.0, 1.2, 0.55, 0.27, 0.18];
+// Seasonal E.coli multipliers — rainfall/CSO-driven pattern
+// Peaks in spring (Mar-May) from CSO activations and first-flush runoff,
+// secondary peak in fall (Sep) from fall storms. NOT temperature-driven.
+// Source: DC DOEE CSO monitoring data, Anacostia Riverkeeper reports
+const SEASONAL_ECOLI_MULTIPLIER = [0.15, 0.18, 1.6, 2.2, 1.9, 1.1, 0.75, 0.85, 1.5, 0.80, 0.30, 0.18];
 // DO inversely correlated with temperature
 const SEASONAL_DO_MULTIPLIER = [1.35, 1.3, 1.15, 1.0, 0.85, 0.7, 0.6, 0.63, 0.82, 1.02, 1.18, 1.32];
 

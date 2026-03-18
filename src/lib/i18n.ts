@@ -60,7 +60,7 @@ export const translations = {
 
     // Data source notice
     "notice.title": "Data Sources:",
-    "notice.text": "Station locations derived from DC GIS and USGS monitoring sites. Water quality baselines use USGS NWIS instantaneous values (sites 01651000, 01651750) and modeled seasonal patterns from peer-reviewed Anacostia watershed research. Geospatial boundaries from official DC government GIS datasets. This dashboard is a research and educational tool developed by UDC CAUSES/WRRI.",
+    "notice.text": "Station locations derived from DC GIS and USGS monitoring sites. Baseline water quality values are modeled from published seasonal averages and peer-reviewed Anacostia watershed research — not live sensor feeds. When USGS NWIS or EPA WQP data is ingested, readings are tagged with their source. Green infrastructure sites (GI-001 through GI-003) are Best Management Practice (BMP) installations that measure stormwater retention, not ambient water quality. Geospatial boundaries from official DC government GIS datasets. EPA thresholds follow the 2012 Recreational Water Quality Criteria. This dashboard is a research and educational tool developed by UDC CAUSES/WRRI.",
 
     // Section headings
     "section.map_title": "Interactive Watershed Map",
@@ -243,7 +243,7 @@ export const translations = {
 
     // Data source notice
     "notice.title": "Fuentes de Datos:",
-    "notice.text": "Ubicaciones de estaciones derivadas de DC GIS y sitios de monitoreo USGS. Las líneas base de calidad del agua utilizan valores instantáneos de USGS NWIS (sitios 01651000, 01651750) y patrones estacionales modelados de investigación revisada por pares de la cuenca del Anacostia. Límites geoespaciales de conjuntos de datos GIS oficiales del gobierno de DC. Este panel es una herramienta de investigación y educación desarrollada por UDC CAUSES/WRRI.",
+    "notice.text": "Ubicaciones de estaciones derivadas de DC GIS y sitios de monitoreo USGS. Los valores base de calidad del agua son modelados a partir de promedios estacionales publicados e investigación revisada por pares — no son lecturas de sensores en vivo. Cuando se ingieren datos de USGS NWIS o EPA WQP, las lecturas se etiquetan con su fuente. Los sitios de infraestructura verde (GI-001 a GI-003) son instalaciones de Mejores Prácticas de Gestión (BMP) que miden retención de aguas pluviales, no calidad del agua ambiental. Límites geoespaciales de conjuntos de datos GIS oficiales del gobierno de DC. Los umbrales EPA siguen los Criterios de Calidad del Agua Recreativa de 2012. Este panel es una herramienta de investigación y educación desarrollada por UDC CAUSES/WRRI.",
 
     // Section headings
     "section.map_title": "Mapa Interactivo de la Cuenca",
