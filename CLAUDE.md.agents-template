@@ -1,0 +1,112 @@
+# CLAUDE.md — WQIS (Water Quality Intelligence System)
+
+## Project
+Anacostia River Water Quality Intelligence System (WQIS)
+Institution: University of the District of Columbia (UDC)
+Grant-funded academic research project
+Technical Lead/Developer: Oli Tamrat (Olink Technologies PLC | oli.oli@udc.edu)
+PI: Dr. Tolessa Deksissa | Co-PI: Nigussie Gemechu
+
+## Architecture
+- **FastAPI backend** (Python): ADK agent orchestration, sensor data API, Gemini integration
+- **Database**: Neon PostgreSQL (serverless) — connection pooling required for FastAPI
+- **Deployment target**: Google Cloud Run (FastAPI backend)
+- **Frontend**: Next.js dashboard at `udc-one.vercel.app` (React + Recharts)
+- **AI**: Google ADK agents + Gemini API for water quality analysis
+
+## Monitoring Scope
+6 Anacostia River Basin stations:
+1. Upper Anacostia
+2. Northeast Branch
+3. Northwest Branch
+4. Middle Anacostia
+5. Lower Anacostia
+6. Tidal Basin / Confluence
+
+Parameters: pH, dissolved oxygen, turbidity, temperature, conductivity, nitrate, phosphorus
+
+## Known Resolved Issues — Verify Stay Fixed
+- **Decimal serialization**: Neon returns `Decimal` type — must convert to `float` before JSON
+- **Gemini model deprecation**: model string must be pinned to current non-deprecated version
+- **API quota**: Gemini quota exceeded → graceful 429 response, not 500 crash
+- **ADK runtime**: confirmed working against Neon DB
+
+## Deployment Package — Ready, Not Yet Executed
+- `Dockerfile` (multi-stage, non-root user, port 8080, /health endpoint)
+- PowerShell deploy script (gcloud CLI)
+- Next.js integration hook (`useWQISData` / `NEXT_PUBLIC_WQIS_API_URL`)
+
+## Environment Variables
+Backend (Cloud Run):
+- `DATABASE_URL` — Neon pooling connection string
+- `GEMINI_API_KEY` — Google AI
+- `ALLOWED_ORIGINS` — `https://udc-one.vercel.app`
+
+Frontend (Vercel):
+- `NEXT_PUBLIC_WQIS_API_URL` — Cloud Run service URL
+
+## API Conventions
+- All numeric sensor values must serialize to `float` in JSON (not `Decimal`)
+- Timestamps must be ISO 8601, timezone-aware (`TIMESTAMPTZ`)
+- CORS: allow `https://udc-one.vercel.app` and `http://localhost:3000`
+- Health check: `GET /health` → `{"status": "ok"}` with HTTP 200
+
+## Data Validation Rules
+Parameter plausibility bounds:
+- pH: 5.0–10.0 | Alert: < 6.5 or > 8.5
+- Dissolved Oxygen: 0–20 mg/L | Alert: < 5.0
+- Turbidity: 0–1000 NTU | Alert: > 50
+- Temperature: 0–35°C | Alert: > 30
+- Conductivity: 0–5000 µS/cm | Alert: > 1500
+
+## Sub-Agent Routing Rules
+
+**Spawn security-officer when:**
+- Reviewing new API endpoints or ADK agent tool permissions
+- Auditing Cloud Run IAM / service account config
+- Checking for secrets in code before any commit
+- Pre-deployment security review
+
+**Spawn senior-engineer when:**
+- Code review of FastAPI routes, ADK agent logic, or Next.js components
+- Prisma/SQLAlchemy query optimization
+- Dockerfile review or Cloud Run config
+- Any Python `Decimal` / type serialization issues
+- Pre-deployment readiness check
+
+**Spawn ui-ux-designer when:**
+- Building new dashboard pages or Recharts visualizations
+- Reviewing station cards, drill-down modals, or teaching notes
+- Accessibility audit
+- Responsive design check
+
+**Spawn ip-business-advisor when:**
+- Reviewing grant IP obligations before any commercialization discussion
+- Checking Python/npm dependency licenses
+- Documenting novel ADK agent methods for potential patent disclosure
+
+**Spawn data-validator when:**
+- After any schema change or migration
+- After Gemini model update
+- Before Cloud Run deployment (data integrity check)
+- When sensor readings look suspicious
+- After any API route change affecting data serialization
+
+**Spawn cloud-run-deployer when:**
+- Ready to execute the Cloud Run deployment
+- Troubleshooting deployment failures
+- Integrating Cloud Run URL into Next.js dashboard
+- Setting up environment variables in Cloud Run or Vercel
+
+## Git Commit Rules
+- Author: `OliTamrat <oli.oli@udc.edu>`
+- NO AI attribution in commits or comments
+- Format: `feat:`, `fix:`, `refactor:`, `chore:`, `perf:`
+- Subject line under 72 characters
+- Include grant acknowledgment in README, not in commits
+
+## Code Standards
+- Python: type hints on all functions, black formatting, no bare `except:`
+- TypeScript: strict mode, no `any`, explicit return types
+- No `print()` in production Python — use structured logging for Cloud Run
+- No hardcoded secrets anywhere

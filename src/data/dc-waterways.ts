@@ -479,7 +479,7 @@ export const monitoringStations: MonitoringStation[] = [
   },
   {
     id: "GI-001",
-    name: "UDC Van Ness Green Roof",
+    name: "UDC Van Ness Green Roof (BMP)",
     position: [38.9436, -77.0631], // UDC campus at 4200 Connecticut Ave NW
     type: "green-infrastructure",
     status: "active",
@@ -496,7 +496,7 @@ export const monitoringStations: MonitoringStation[] = [
   },
   {
     id: "GI-002",
-    name: "UDC Food Hub Rain Garden - Ward 7",
+    name: "UDC Food Hub Rain Garden - Ward 7 (BMP)",
     position: [38.8893, -76.9149], // East Capitol Urban Farm, 5901 E Capitol St SE
     type: "green-infrastructure",
     status: "active",
@@ -513,7 +513,7 @@ export const monitoringStations: MonitoringStation[] = [
   },
   {
     id: "GI-003",
-    name: "UDC Food Hub Rain Garden - Ward 8",
+    name: "UDC Food Hub Rain Garden - Ward 8 (BMP)",
     position: [38.8271, -76.9944], // PR Harris Food Hub, 4600 Livingston Rd SE
     type: "green-infrastructure",
     status: "active",
@@ -574,8 +574,10 @@ export const historicalData = {
   temperature: [3.2, 4.1, 8.5, 14.2, 19.8, 24.5, 27.2, 26.8, 22.1, 15.4, 9.2, 4.8],
   pH: [7.1, 7.0, 7.2, 7.3, 7.1, 6.9, 6.8, 6.9, 7.0, 7.1, 7.2, 7.1],
   turbidity: [12.5, 14.2, 18.8, 22.5, 25.1, 20.3, 18.5, 22.8, 19.2, 15.8, 13.5, 11.8],
-  eColiCount: [85, 95, 310, 480, 420, 280, 195, 230, 380, 210, 125, 90],
-  stormwaterRunoff: [2.5, 2.2, 3.6, 3.4, 4.1, 3.8, 4.6, 3.3, 4.0, 3.5, 2.9, 2.7],
+  // E. coli peaks in warm months (Jun-Aug) when bacteria thrive, elevated in spring rain/CSO season
+  eColiCount: [65, 55, 180, 220, 260, 480, 520, 445, 350, 190, 110, 75],
+  // Stormwater peaks in spring (Mar-May) and fall (Sep-Oct) rainy seasons, lower in summer/winter
+  stormwaterRunoff: [2.1, 2.0, 3.8, 4.2, 4.5, 3.2, 2.4, 2.6, 3.9, 3.7, 2.8, 2.3],
 };
 
 // DC ward boundaries (approximate centers for ward-level data)
@@ -684,7 +686,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [3.0, 3.8, 8.2, 13.8, 19.5, 24.2, 26.8, 26.4, 21.8, 15.0, 8.8, 4.5],
       phBase: [7.2, 7.1, 7.2, 7.3, 7.2, 7.0, 6.9, 7.0, 7.1, 7.2, 7.2, 7.2],
       turbBase: [10.5, 12.0, 16.5, 20.0, 22.5, 18.0, 16.0, 20.5, 17.0, 13.5, 11.5, 9.8],
-      ecoliBase: [95, 105, 340, 530, 465, 315, 220, 255, 425, 235, 140, 105],
+      ecoliBase: [65, 60, 145, 195, 290, 530, 555, 470, 320, 175, 95, 70],
       description: "Upstream station — generally better water quality due to lower urban influence",
     },
     "ANA-002": {
@@ -692,7 +694,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [3.2, 4.1, 8.5, 14.2, 19.8, 24.5, 27.2, 26.8, 22.1, 15.4, 9.2, 4.8],
       phBase: [7.1, 7.0, 7.2, 7.3, 7.1, 6.9, 6.8, 6.9, 7.0, 7.1, 7.2, 7.1],
       turbBase: [12.5, 14.2, 18.8, 22.5, 25.1, 20.3, 18.5, 22.8, 19.2, 15.8, 13.5, 11.8],
-      ecoliBase: [110, 120, 395, 615, 540, 365, 250, 295, 495, 275, 165, 120],
+      ecoliBase: [75, 70, 170, 225, 340, 615, 645, 545, 375, 200, 110, 80],
       description: "Mid-river station at Kenilworth — influenced by Watts Branch and Hickey Run inflows",
     },
     "ANA-003": {
@@ -700,7 +702,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [3.5, 4.4, 8.8, 14.5, 20.2, 24.8, 27.5, 27.2, 22.5, 15.8, 9.5, 5.0],
       phBase: [7.0, 6.9, 7.1, 7.2, 7.0, 6.8, 6.7, 6.8, 6.9, 7.0, 7.1, 7.0],
       turbBase: [15.0, 17.5, 22.0, 26.0, 28.5, 24.0, 21.5, 26.0, 22.5, 18.5, 16.0, 14.0],
-      ecoliBase: [150, 165, 540, 840, 735, 495, 345, 405, 675, 375, 225, 165],
+      ecoliBase: [100, 95, 230, 310, 460, 840, 880, 745, 510, 275, 150, 110],
       description: "Downstream station at Navy Yard — highest urban influence, CSO impacts",
     },
     "ANA-004": {
@@ -708,7 +710,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [3.3, 4.2, 8.4, 14.0, 19.6, 24.3, 27.0, 26.6, 21.9, 15.2, 9.0, 4.6],
       phBase: [7.1, 7.0, 7.1, 7.2, 7.1, 6.9, 6.8, 6.9, 7.0, 7.1, 7.1, 7.1],
       turbBase: [13.0, 15.0, 19.5, 23.5, 26.0, 21.5, 19.5, 23.5, 20.0, 16.5, 14.0, 12.5],
-      ecoliBase: [130, 145, 470, 730, 640, 430, 300, 350, 585, 325, 195, 145],
+      ecoliBase: [90, 85, 200, 270, 400, 730, 765, 650, 445, 240, 130, 95],
       description: "Anacostia Park station — moderate urban influence, near recreational areas",
     },
     "WB-001": {
@@ -716,7 +718,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [2.8, 3.6, 7.8, 13.5, 19.2, 23.8, 26.5, 26.2, 21.5, 14.8, 8.5, 4.2],
       phBase: [6.9, 6.8, 7.0, 7.1, 6.9, 6.7, 6.6, 6.7, 6.8, 6.9, 7.0, 6.9],
       turbBase: [18.0, 22.0, 28.0, 34.0, 38.0, 30.0, 26.0, 32.0, 27.0, 22.0, 19.0, 16.5],
-      ecoliBase: [250, 275, 900, 1400, 1225, 825, 575, 675, 1125, 625, 375, 275],
+      ecoliBase: [170, 160, 385, 515, 770, 1400, 1470, 1240, 850, 460, 250, 185],
       description: "Watts Branch — highly urbanized stream, significant impervious surface runoff",
     },
     "PB-001": {
@@ -724,7 +726,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [2.5, 3.4, 7.5, 13.2, 18.8, 23.5, 26.2, 25.8, 21.2, 14.5, 8.2, 4.0],
       phBase: [7.0, 6.9, 7.1, 7.2, 7.0, 6.8, 6.7, 6.8, 6.9, 7.0, 7.1, 7.0],
       turbBase: [16.0, 19.0, 24.0, 29.0, 32.0, 26.0, 23.0, 28.0, 24.0, 19.0, 16.5, 14.5],
-      ecoliBase: [180, 200, 650, 1010, 880, 595, 415, 485, 810, 450, 270, 200],
+      ecoliBase: [125, 115, 280, 375, 555, 1010, 1060, 895, 615, 330, 180, 130],
       description: "Pope Branch at Fort Stanton — moderate urban stream with park buffer zones",
     },
     "HR-001": {
@@ -732,7 +734,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [3.0, 3.8, 8.0, 13.8, 19.5, 24.0, 26.8, 26.4, 21.8, 15.0, 8.8, 4.5],
       phBase: [6.8, 6.7, 6.9, 7.0, 6.8, 6.6, 6.5, 6.6, 6.7, 6.8, 6.9, 6.8],
       turbBase: [22.0, 26.0, 34.0, 40.0, 44.0, 36.0, 32.0, 38.0, 33.0, 26.0, 22.0, 20.0],
-      ecoliBase: [350, 385, 1260, 1960, 1715, 1155, 805, 945, 1575, 875, 525, 385],
+      ecoliBase: [240, 225, 540, 720, 1080, 1960, 2060, 1740, 1190, 645, 350, 260],
       description: "Hickey Run — industrial area runoff, National Arboretum adjacent, worst water quality",
     },
     "GI-001": {
@@ -740,31 +742,31 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [2.0, 2.8, 6.5, 12.0, 17.5, 22.0, 24.5, 24.2, 19.8, 13.5, 7.5, 3.2],
       phBase: [6.8, 6.7, 6.8, 6.9, 6.8, 6.7, 6.6, 6.7, 6.8, 6.8, 6.8, 6.8],
       turbBase: [5.0, 6.0, 8.5, 10.0, 12.0, 9.5, 7.5, 10.0, 8.5, 7.0, 5.5, 4.5],
-      ecoliBase: [15, 17, 54, 84, 74, 50, 35, 41, 68, 38, 23, 17],
-      description: "UDC Van Ness Green Roof — low pollutant levels, excellent stormwater retention",
+      ecoliBase: [10, 10, 23, 31, 47, 84, 88, 75, 51, 28, 15, 11],
+      description: "UDC Van Ness Green Roof (BMP) — measures stormwater retention performance, not ambient water quality",
     },
     "GI-002": {
       doBase: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       tempBase: [2.2, 3.0, 6.8, 12.2, 17.8, 22.2, 24.8, 24.5, 20.0, 13.8, 7.8, 3.5],
       phBase: [7.1, 7.0, 7.1, 7.2, 7.1, 7.0, 6.9, 7.0, 7.0, 7.1, 7.1, 7.1],
       turbBase: [3.5, 4.0, 5.8, 7.0, 8.5, 6.5, 5.0, 7.0, 6.0, 4.5, 3.8, 3.2],
-      ecoliBase: [8, 9, 29, 45, 39, 26, 18, 22, 36, 20, 12, 9],
-      description: "UDC Food Hub Rain Garden Ward 7 — excellent infiltration and pollutant removal",
+      ecoliBase: [5, 5, 12, 17, 25, 45, 47, 40, 27, 15, 8, 6],
+      description: "UDC Food Hub Rain Garden Ward 7 (BMP) — measures infiltration performance, not ambient water quality",
     },
     "GI-003": {
       doBase: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       tempBase: [2.4, 3.2, 7.0, 12.5, 18.0, 22.5, 25.0, 24.8, 20.2, 14.0, 8.0, 3.8],
       phBase: [7.0, 6.9, 7.0, 7.1, 7.0, 6.9, 6.8, 6.9, 7.0, 7.0, 7.0, 7.0],
       turbBase: [4.0, 5.0, 6.5, 8.0, 9.5, 7.5, 6.0, 8.0, 7.0, 5.5, 4.5, 3.8],
-      ecoliBase: [12, 13, 43, 67, 59, 40, 28, 32, 54, 30, 18, 13],
-      description: "UDC Food Hub Rain Garden Ward 8 — good performance, newer installation",
+      ecoliBase: [8, 8, 18, 25, 37, 67, 70, 59, 41, 22, 12, 9],
+      description: "UDC Food Hub Rain Garden Ward 8 (BMP) — measures infiltration performance, not ambient water quality",
     },
     "SW-001": {
       doBase: [6.5, 6.1, 5.1, 4.2, 3.5, 2.8, 2.3, 2.5, 3.5, 4.8, 5.8, 6.3],
       tempBase: [3.5, 4.5, 8.8, 14.5, 20.2, 24.8, 27.5, 27.0, 22.5, 15.8, 9.5, 5.0],
       phBase: [7.2, 7.1, 7.2, 7.3, 7.2, 7.0, 6.9, 7.0, 7.1, 7.2, 7.2, 7.2],
       turbBase: [28.0, 35.0, 45.0, 55.0, 60.0, 48.0, 42.0, 52.0, 45.0, 35.0, 30.0, 25.0],
-      ecoliBase: [500, 550, 1800, 2800, 2450, 1650, 1150, 1350, 2250, 1250, 750, 550],
+      ecoliBase: [345, 320, 770, 1030, 1540, 2800, 2940, 2490, 1700, 920, 500, 370],
       description: "Stormwater BMP Benning Road — high pollutant loads during storm events",
     },
     "SW-002": {
@@ -772,7 +774,7 @@ export function getStationHistoricalData(stationId: string) {
       tempBase: [3.8, 4.8, 9.0, 14.8, 20.5, 25.0, 27.8, 27.5, 22.8, 16.0, 9.8, 5.2],
       phBase: [7.3, 7.2, 7.3, 7.4, 7.3, 7.1, 7.0, 7.1, 7.2, 7.3, 7.3, 7.3],
       turbBase: [32.0, 40.0, 52.0, 62.0, 68.0, 55.0, 48.0, 58.0, 50.0, 40.0, 34.0, 28.0],
-      ecoliBase: [620, 680, 2230, 3470, 3040, 2050, 1430, 1670, 2790, 1550, 930, 680],
+      ecoliBase: [425, 395, 955, 1280, 1905, 3470, 3645, 3080, 2110, 1140, 620, 460],
       description: "Stormwater Outfall South Capitol — highest pollutant concentrations, CSO impacted",
     },
   };

@@ -21,6 +21,8 @@ import {
   X,
   DatabaseZap,
   BookHeart,
+  Clapperboard,
+  Info,
 } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
@@ -36,10 +38,12 @@ const navItems: { href: string; labelKey: TranslationKey; icon: typeof LayoutDas
   { href: "/research", labelKey: "sidebar.research_link", icon: FlaskConical, section: "research" },
   { href: "/methodology", labelKey: "sidebar.methodology", icon: BookOpen, section: "research" },
   { href: "/stories", labelKey: "sidebar.stories", icon: BookHeart, section: "community" },
+  { href: "/scenarios", labelKey: "sidebar.scenarios", icon: Clapperboard, section: "monitoring" },
   { href: "/education", labelKey: "sidebar.education", icon: GraduationCap, section: "community" },
   { href: "/education#community", labelKey: "sidebar.community_link", icon: Users, section: "community" },
   { href: "/education#resources", labelKey: "sidebar.open_data", icon: Globe, section: "community" },
   { href: "/admin", labelKey: "sidebar.data_admin", icon: DatabaseZap, section: "admin" },
+  { href: "/about", labelKey: "sidebar.about", icon: Info, section: "about" },
 ];
 
 const sections: { key: string; labelKey: TranslationKey }[] = [
@@ -48,14 +52,14 @@ const sections: { key: string; labelKey: TranslationKey }[] = [
   { key: "research", labelKey: "sidebar.research" },
   { key: "community", labelKey: "sidebar.community" },
   { key: "admin", labelKey: "sidebar.admin" },
+  { key: "about", labelKey: "sidebar.about_section" },
 ];
 
 export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const pathname = usePathname();
   const { resolvedTheme } = useTheme();
-  const { mobileOpen, closeMobile } = useSidebar();
+  const { mobileOpen, closeMobile, collapsed, toggleCollapsed } = useSidebar();
   const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
 
@@ -152,7 +156,7 @@ export default function Sidebar() {
         </button>
         {/* Collapse toggle — desktop only */}
         <button
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={toggleCollapsed}
           aria-label={collapsed ? t("sidebar.expand") : t("sidebar.collapse_sidebar")}
           className={`hidden lg:flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
             isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"

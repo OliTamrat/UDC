@@ -16,6 +16,7 @@ import {
   Beaker,
   Scale,
 } from "lucide-react";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 // ---------------------------------------------------------------------------
 // Data Dictionary — every parameter we collect
@@ -119,6 +120,7 @@ interface IngestionLogEntry {
 export default function MethodologyPage() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const sidebarClass = useSidebarClass();
   const [logs, setLogs] = useState<IngestionLogEntry[]>([]);
   const [logsLoading, setLogsLoading] = useState(true);
 
@@ -143,7 +145,7 @@ export default function MethodologyPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-3 sm:p-4 md:p-6 space-y-8">
           {/* Page Header */}

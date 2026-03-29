@@ -22,7 +22,19 @@ const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI
 - 12 stations across the Anacostia watershed: 4 river stations (ANA-001 to ANA-004), 3 tributary stations (WB-001 Watts Branch, PB-001 Pope Branch, HR-001 Hickey Run), 3 green infrastructure sites (GI-001 UDC Van Ness Green Roof, GI-002 East Capitol Urban Farm, GI-003 PR Harris Food Hub), and 2 stormwater outfalls (SW-001 Benning Road, SW-002 South Capitol)
 - Data sourced from USGS NWIS, EPA Water Quality Portal, DC DOEE, and UDC field measurements
 
-**EPA Water Quality Standards (DC recreational waters):**
+**Monitored Parameters (25 total across 5 categories):**
+
+*Physical (10):* Temperature (°C), Dissolved Oxygen (min 5.0 mg/L), pH (6.5–9.0), Turbidity (NTU), Conductivity (µS/cm, typical 150–500, >1000 = pollution), Hardness (mg/L CaCO3), Suspended Sediment Concentration (mg/L), Total Dissolved Solids (max 500 mg/L), Air Temperature (°C), Suspended Sediment Discharge (tons/day)
+
+*Nutrients (6):* Nitrate-N (max 10 mg/L), Total Phosphorus (max 0.1 mg/L), Nitrate+Nitrite (max 10 mg/L), Total Nitrogen (mg/L), Kjeldahl Nitrogen (mg/L), Orthophosphate (mg/L)
+
+*Biological (2):* E. coli (max 410 CFU/100mL, geometric mean 126), Total Coliform (CFU/100mL)
+
+*Metals (1):* Lead, total (max 15 µg/L — EPA action level)
+
+*Emerging Contaminants / Organic (5):* Methylene chloride (max 5 µg/L), Vinyl chloride (max 2 µg/L), Tributyl phosphate (µg/L), Triphenyl phosphate (µg/L), TCEP / Tris(2-chloroethyl) phosphate (µg/L) — flame retardants and plasticizers detected in Anacostia sediment
+
+**EPA Water Quality Standards Summary (DC recreational waters):**
 - Dissolved Oxygen (DO): minimum 5.0 mg/L (below = aquatic stress)
 - pH: 6.5–9.0
 - E. coli: max 410 CFU/100mL (geometric mean 126 CFU/100mL)
@@ -31,20 +43,8 @@ const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI
 - Conductivity: typical freshwater 150–500 µS/cm; >1000 µS/cm indicates pollution
 - Nitrate-N: <10 mg/L (drinking water standard)
 - Total Phosphorus: <0.1 mg/L to prevent eutrophication
-
-**Expanded Parameters (25 total via EAV measurement system):**
-- Physical (6): Temperature, Dissolved Oxygen, pH, Turbidity (field), Conductivity, Air Temperature
-- Nutrients (5): Nitrate-N, Nitrate+Nitrite, Total Nitrogen, Kjeldahl Nitrogen, Total Phosphorus, Orthophosphate
-- Metals (2): Lead (total), Hardness (Ca/Mg)
-- Biological (2): E. coli, Total Coliform
-- Organic/Sediment (3): Suspended Sediment Concentration, Total Dissolved Solids, Suspended Sediment Discharge
-- Emerging (5): PFAS (PFOA, PFOS), Microplastics, Pharmaceutical compounds, 1,4-Dioxane
-
-**Data Sources & Freshness:**
-- USGS NWIS Instantaneous Values: Real-time (15-min intervals), auto-ingested daily at 06:00 UTC via Vercel Cron
-- Water Quality Portal (WQP): Lab-analyzed data from USGS, EPA, and DC DOEE, auto-ingested daily at 07:00 UTC
-- Active USGS sensors (as of March 2026): ANA-002 (Riverdale: temp, cond, DO, pH), ANA-003 (Buzzard Pt: temp, cond, turbidity), WB-001 (Watts Branch: temp, cond), HR-001 (Hickey Run: temp, cond)
-- Inactive sensors: ANA-001 (NW Branch), ANA-004 (Anacostia at DC), PB-001 (Potomac at Little Falls)
+- Lead: <15 µg/L (EPA action level for drinking water)
+- Total Dissolved Solids: <500 mg/L
 
 **Seasonal Patterns (Anacostia watershed):**
 - Winter (Dec–Feb): Low temps (3–6°C), high DO (10–12 mg/L), low E. coli (<200 CFU)
@@ -71,7 +71,8 @@ const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI
 4. **Suggest next steps.** Point users to the dashboard's station detail pages, export tools, or research portal when relevant.
 5. **Be accessible.** Explain technical concepts clearly for students and community members, not just experts.
 6. **Stay grounded.** If you don't have specific data, say so. Recommend checking the station detail page or exporting data for analysis.
-7. **Use the tools available** to query real station data when users ask about specific readings or trends.`;
+7. **Use the tools available** to query real station data when users ask about specific readings or trends. Use getMeasurements for detailed parameter queries (nutrients, metals, emerging contaminants, violations).
+8. **Highlight emerging contaminants.** When users ask about pollution or PFAS, mention the 5 emerging organic contaminants being tracked (methylene chloride, vinyl chloride, tributyl/triphenyl phosphate, TCEP).`;
 
 export async function POST(req: Request) {
   // --- CSRF / Origin protection ---
@@ -246,14 +247,14 @@ export async function POST(req: Request) {
         }),
         getMeasurements: tool({
           description:
-            "Query the expanded EAV measurements database. Supports filtering by parameters (e.g. 'lead_total,pfoa'), stations, category (physical/nutrients/metals/biological/organic), date range, and violations only. Use this for detailed parameter queries beyond the legacy 8 readings.",
+            "Query the measurements database for any of the 25 monitored parameters. Supports filtering by parameter IDs, station IDs, category, source, date range, and EPA threshold violations. Use this for detailed parameter data, emerging contaminants, nutrients, metals, and cross-station comparisons.",
           inputSchema: jsonSchema<{
             params?: string;
             stations?: string;
             category?: string;
+            violations?: boolean;
             from?: string;
             to?: string;
-            violations?: boolean;
             limit?: number;
           }>({
             type: "object",
@@ -261,45 +262,57 @@ export async function POST(req: Request) {
               params: {
                 type: "string",
                 description:
-                  "Comma-separated parameter IDs: temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli, nitrate_n, nitrate_nitrite, nitrogen_total, kjeldahl_nitrogen, phosphorus_total, orthophosphate, total_coliform, lead_total, hardness, ssc, tds, pfoa, pfos, microplastics",
+                  "Comma-separated parameter IDs: temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli, nitrate_n, phosphorus_total, nitrate_nitrite, nitrogen_total, kjeldahl_nitrogen, orthophosphate, total_coliform, lead_total, hardness, ssc, tds, temperature_air, turbidity_field, ssd, methylene_chloride, vinyl_chloride, tributyl_phosphate, triphenyl_phosphate, tcep",
               },
               stations: {
                 type: "string",
-                description: "Comma-separated station IDs (e.g. ANA-001,WB-001)",
+                description:
+                  "Comma-separated station IDs (e.g. ANA-001,WB-001)",
               },
               category: {
                 type: "string",
-                description: "Filter by category: physical, nutrients, metals, biological, organic",
-              },
-              from: {
-                type: "string",
-                description: "Start date (ISO 8601, e.g. 2025-01-01)",
-              },
-              to: {
-                type: "string",
-                description: "End date (ISO 8601)",
+                description:
+                  "Filter by category: physical, nutrients, metals, biological, organic",
               },
               violations: {
                 type: "boolean",
-                description: "Set true to show only EPA threshold exceedances",
+                description:
+                  "If true, only return readings that exceed EPA thresholds",
+              },
+              from: {
+                type: "string",
+                description: "Start date (ISO 8601, e.g. 2026-01-01)",
+              },
+              to: {
+                type: "string",
+                description: "End date (ISO 8601, e.g. 2026-03-18)",
               },
               limit: {
                 type: "number",
-                description: "Max results (default 100)",
+                description: "Max results (default 100, max 500)",
               },
             },
           }),
-          execute: async ({ params, stations, category, from, to, violations, limit }) => {
+          execute: async ({
+            params,
+            stations,
+            category,
+            violations,
+            from,
+            to,
+            limit,
+          }) => {
             try {
-              const sp = new URLSearchParams();
-              if (params) sp.set("params", params);
-              if (stations) sp.set("stations", stations);
-              if (category) sp.set("category", category);
-              if (from) sp.set("from", from);
-              if (to) sp.set("to", to);
-              if (violations) sp.set("violations", "true");
-              sp.set("limit", String(limit || 100));
-              const res = await fetch(`${baseUrl}/api/measurements?${sp}`);
+              const searchParams = new URLSearchParams();
+              if (params) searchParams.set("params", params);
+              if (stations) searchParams.set("stations", stations);
+              if (category) searchParams.set("category", category);
+              if (violations) searchParams.set("violations", "true");
+              if (from) searchParams.set("from", from);
+              if (to) searchParams.set("to", to);
+              searchParams.set("limit", String(Math.min(limit || 100, 500)));
+              const url = `${baseUrl}/api/measurements?${searchParams}`;
+              const res = await fetch(url);
               if (!res.ok) return { error: "Failed to fetch measurements" };
               return await res.json();
             } catch {

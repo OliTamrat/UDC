@@ -31,6 +31,7 @@ import {
   Thermometer,
   Activity,
 } from "lucide-react";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 // ---------------------------------------------------------------------------
 // Educational modules — enriched with learning outcomes and key takeaways
@@ -301,6 +302,7 @@ const openDatasets = [
 export default function EducationPage() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const sidebarClass = useSidebarClass();
   const [levelFilter, setLevelFilter] = useState("All");
   const [activeModule, setActiveModule] = useState<(typeof educationalModules)[0] | null>(null);
   const [revealedExercises, setRevealedExercises] = useState<Set<number>>(new Set());
@@ -321,7 +323,7 @@ export default function EducationPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-3 sm:p-4 md:p-6 space-y-6">
           {/* Page Header */}

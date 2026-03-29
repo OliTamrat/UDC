@@ -13,6 +13,7 @@ import {
   EColiChart,
   StormwaterChart,
   MultiParameterChart,
+  TempUnitProvider,
 } from "@/components/charts/WaterQualityCharts";
 import Footer from "@/components/layout/Footer";
 import ParameterExplorer from "@/components/dashboard/ParameterExplorer";
@@ -22,6 +23,7 @@ import { useState, useCallback } from "react";
 import type { MonitoringStation } from "@/data/dc-waterways";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 const DCMap = dynamic(() => import("@/components/map/DCMap"), {
   ssr: false,
@@ -44,6 +46,7 @@ export default function Dashboard() {
   const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
   const router = useRouter();
+  const sidebarClass = useSidebarClass();
 
   const handleStationNavigate = useCallback((stationId: string) => {
     router.push(`/station/${stationId}`);
@@ -56,7 +59,7 @@ export default function Dashboard() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
           {/* Hero Section */}
@@ -137,7 +140,7 @@ export default function Dashboard() {
                 <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t("section.map_network")}</span>
               </div>
             </div>
-            <div className="h-[300px] sm:h-[400px] md:h-[550px]">
+            <div className="h-[300px] sm:h-[400px] md:h-[550px]" aria-label="Interactive watershed map">
               <DCMap
                 onStationSelect={setSelectedStation}
                 selectedStation={selectedStation}
@@ -152,6 +155,7 @@ export default function Dashboard() {
           </section>
 
           {/* Water Quality Section */}
+          <TempUnitProvider>
           <section id="water-quality">
             <div className="mb-4">
               <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.wq_title")}</h2>
@@ -177,6 +181,7 @@ export default function Dashboard() {
             </div>
             <MultiParameterChart />
           </section>
+          </TempUnitProvider>
 
           {/* Environmental Justice */}
           <section>

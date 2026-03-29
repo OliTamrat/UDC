@@ -19,6 +19,7 @@ export const translations = {
     "sidebar.water_quality": "Water Quality",
     "sidebar.stormwater": "Stormwater",
     "sidebar.analytics": "Analytics",
+    "sidebar.scenarios": "Scenarios",
     "sidebar.research_link": "Research",
     "sidebar.methodology": "Methodology",
     "sidebar.stories": "Water Stories",
@@ -26,6 +27,8 @@ export const translations = {
     "sidebar.community_link": "Community",
     "sidebar.open_data": "Open Data",
     "sidebar.data_admin": "Data Admin",
+    "sidebar.about": "About & Disclaimer",
+    "sidebar.about_section": "ABOUT",
     "sidebar.settings": "Settings",
     "sidebar.collapse": "Collapse",
     "sidebar.expand": "Expand sidebar",
@@ -59,7 +62,7 @@ export const translations = {
 
     // Data source notice
     "notice.title": "Data Sources:",
-    "notice.text": "Station locations derived from DC GIS and USGS monitoring sites. Water quality baselines use USGS NWIS instantaneous values (sites 01651000, 01651750) and modeled seasonal patterns from peer-reviewed Anacostia watershed research. Geospatial boundaries from official DC government GIS datasets. This dashboard is a research and educational tool developed by UDC CAUSES/WRRI.",
+    "notice.text": "Water quality readings are ingested from USGS NWIS real-time sensors (sites 01651000, 01649500, 01651827, 01651750, 01651800, 01651770) and EPA Water Quality Portal lab results (HUC 02070010). USGS data refreshes every 6 hours; EPA WQP daily; broad WQP parameters weekly. Initial seed values are progressively replaced by measured data as ingestion runs accumulate — each reading is tagged with its source (USGS, EPA WQP, or Seed). Green infrastructure sites (GI-001 through GI-003) are BMP installations measuring stormwater retention performance. Station locations from DC GIS. EPA thresholds follow the 2012 Recreational Water Quality Criteria (E. coli: 410 CFU/100mL single-sample). This is a research and educational tool developed by UDC CAUSES/WRRI.",
 
     // Section headings
     "section.map_title": "Interactive Watershed Map",
@@ -202,6 +205,7 @@ export const translations = {
     "sidebar.water_quality": "Calidad del Agua",
     "sidebar.stormwater": "Aguas Pluviales",
     "sidebar.analytics": "Análisis",
+    "sidebar.scenarios": "Escenarios",
     "sidebar.research_link": "Investigación",
     "sidebar.methodology": "Metodología",
     "sidebar.stories": "Historias del Agua",
@@ -209,6 +213,8 @@ export const translations = {
     "sidebar.community_link": "Comunidad",
     "sidebar.open_data": "Datos Abiertos",
     "sidebar.data_admin": "Admin de Datos",
+    "sidebar.about": "Acerca de & Aviso Legal",
+    "sidebar.about_section": "ACERCA DE",
     "sidebar.settings": "Configuración",
     "sidebar.collapse": "Colapsar",
     "sidebar.expand": "Expandir barra lateral",
@@ -242,7 +248,7 @@ export const translations = {
 
     // Data source notice
     "notice.title": "Fuentes de Datos:",
-    "notice.text": "Ubicaciones de estaciones derivadas de DC GIS y sitios de monitoreo USGS. Las líneas base de calidad del agua utilizan valores instantáneos de USGS NWIS (sitios 01651000, 01651750) y patrones estacionales modelados de investigación revisada por pares de la cuenca del Anacostia. Límites geoespaciales de conjuntos de datos GIS oficiales del gobierno de DC. Este panel es una herramienta de investigación y educación desarrollada por UDC CAUSES/WRRI.",
+    "notice.text": "Las lecturas de calidad del agua se ingieren de sensores USGS NWIS en tiempo real (sitios 01651000, 01649500, 01651827, 01651750, 01651800, 01651770) y resultados de laboratorio del Portal de Calidad del Agua de la EPA (HUC 02070010). Datos USGS se actualizan cada 6 horas; EPA WQP diariamente; parámetros ampliados WQP semanalmente. Los valores iniciales se reemplazan progresivamente con datos medidos a medida que se acumulan las ingestiones — cada lectura se etiqueta con su fuente (USGS, EPA WQP o Semilla). Los sitios de infraestructura verde (GI-001 a GI-003) son instalaciones BMP que miden el rendimiento de retención de aguas pluviales. Ubicaciones de DC GIS. Umbrales EPA según los Criterios de Calidad del Agua Recreativa de 2012 (E. coli: 410 CFU/100mL muestra única). Herramienta de investigación y educación de UDC CAUSES/WRRI.",
 
     // Section headings
     "section.map_title": "Mapa Interactivo de la Cuenca",

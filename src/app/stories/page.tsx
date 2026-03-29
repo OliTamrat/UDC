@@ -15,16 +15,18 @@ const UpstreamDownstream = dynamic(() => import("@/components/stories/UpstreamDo
 const AnimatedScenarios = dynamic(() => import("@/components/stories/AnimatedScenarios"), { ssr: false });
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 export default function StoriesPage() {
   const { resolvedTheme } = useTheme();
   const { t } = useLanguage();
   const isDark = resolvedTheme === "dark";
+  const sidebarClass = useSidebarClass();
 
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-3 sm:p-4 md:p-6 space-y-6 sm:space-y-8">
           {/* Hero */}
@@ -128,6 +130,12 @@ export default function StoriesPage() {
                   className="px-5 py-2.5 rounded-xl bg-water-blue hover:bg-blue-600 text-white text-sm font-medium transition-colors"
                 >
                   {t("stories.cta_dashboard")}
+                </a>
+                <a
+                  href="/scenarios"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white text-sm font-medium transition-colors"
+                >
+                  Pollution Simulator
                 </a>
                 <a
                   href="/api/export?format=csv"

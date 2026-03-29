@@ -7,6 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { monitoringStations, researchProjects } from "@/data/dc-waterways";
+import { ALL_PARAMETERS } from "@/data/parameters";
 import { sanitizeSearchInput, isInputSafe } from "@/lib/validation";
 import type { Locale } from "@/lib/i18n";
 
@@ -24,15 +25,37 @@ const languageOptions: { value: Locale; label: string; flag: string }[] = [
 interface SearchResult {
   id: string;
   name: string;
-  type: "station" | "research" | "page";
+  type: "station" | "research" | "page" | "parameter";
   href: string;
 }
 
 const pageResults: SearchResult[] = [
+  { id: "page-dashboard", name: "Dashboard — Water Quality Overview", type: "page", href: "/" },
+  { id: "page-stories", name: "Stories — Scientific Storytelling", type: "page", href: "/stories" },
+  { id: "page-scenarios", name: "Scenarios — Pollution Simulator", type: "page", href: "/scenarios" },
+  { id: "page-admin", name: "Admin — Data Management Panel", type: "page", href: "/admin" },
   { id: "page-research", name: "Research Portal", type: "page", href: "/research" },
   { id: "page-education", name: "Education & Outreach", type: "page", href: "/education" },
   { id: "page-methodology", name: "Methodology & Data Sources", type: "page", href: "/methodology" },
-  { id: "page-dashboard", name: "Dashboard — Water Quality Overview", type: "page", href: "/" },
+];
+
+// Extra keyword entries that map common search terms to relevant pages
+const keywordEntries: { keywords: string; result: SearchResult }[] = [
+  { keywords: "rain rainfall stormwater runoff cso combined sewer overflow flooding", result: { id: "kw-rain", name: "When It Rains in DC (Story)", type: "page", href: "/stories" } },
+  { keywords: "pollution contaminants chemicals toxic pfas emerging", result: { id: "kw-contaminants", name: "Emerging Contaminants Tracking", type: "page", href: "/stories" } },
+  { keywords: "seasonal heatmap winter summer spring fall temperature trends year annual", result: { id: "kw-seasonal", name: "A Year in the Anacostia (Story)", type: "page", href: "/stories" } },
+  { keywords: "upstream downstream watershed propagation", result: { id: "kw-upstream", name: "Upstream to Downstream (Story)", type: "page", href: "/stories" } },
+  { keywords: "simulate simulation timeline playback animation spike", result: { id: "kw-sim", name: "Pollution Scenario Simulator", type: "page", href: "/scenarios" } },
+  { keywords: "export csv json download data", result: { id: "kw-export", name: "Export Data (CSV/JSON)", type: "page", href: "/" } },
+  { keywords: "upload import ingest ingestion", result: { id: "kw-upload", name: "Upload Data (Admin)", type: "page", href: "/admin" } },
+  { keywords: "map leaflet watershed geospatial location", result: { id: "kw-map", name: "Interactive Watershed Map", type: "page", href: "/" } },
+  { keywords: "epa threshold violation standard limit", result: { id: "kw-epa", name: "EPA Threshold Violations", type: "page", href: "/" } },
+  { keywords: "environmental justice equity ward wards community", result: { id: "kw-ej", name: "Environmental Justice Data", type: "page", href: "/" } },
+  { keywords: "green roof infrastructure bmp bioretention rain garden", result: { id: "kw-gi", name: "Green Infrastructure Stations", type: "page", href: "/" } },
+  { keywords: "anacostia river potomac creek branch tributary", result: { id: "kw-river", name: "Anacostia Watershed Stations", type: "page", href: "/" } },
+  { keywords: "usgs nwis sensor gauge real-time", result: { id: "kw-usgs", name: "USGS Real-Time Sensor Data", type: "page", href: "/admin" } },
+  { keywords: "ai assistant chat ask question help", result: { id: "kw-ai", name: "AI Research Assistant", type: "page", href: "/" } },
+  { keywords: "udc wrri causes university district columbia deksissa", result: { id: "kw-udc", name: "UDC WRRI Research", type: "page", href: "/research" } },
 ];
 
 export default function Header() {
@@ -91,14 +114,42 @@ export default function Header() {
       }
     }
 
+    // Search water quality parameters (25 total)
+    for (const param of ALL_PARAMETERS) {
+      if (
+        param.name.toLowerCase().includes(q) ||
+        param.id.toLowerCase().includes(q) ||
+        param.category.toLowerCase().includes(q) ||
+        param.description.toLowerCase().includes(q) ||
+        param.unit.toLowerCase().includes(q)
+      ) {
+        results.push({
+          id: `param-${param.id}`,
+          name: `${param.name} (${param.unit})`,
+          type: "parameter" as SearchResult["type"],
+          href: "/",
+        });
+      }
+    }
+
+    // Search app pages
     for (const page of pageResults) {
-      const keywords = page.name.toLowerCase();
-      if (keywords.includes(q) || page.href.toLowerCase().includes(q)) {
+      if (page.name.toLowerCase().includes(q) || page.href.toLowerCase().includes(q)) {
         results.push(page);
       }
     }
 
-    return results.slice(0, 8);
+    // Search keyword entries (common terms like "rain", "pollution", "export", etc.)
+    const addedIds = new Set(results.map((r) => r.id));
+    for (const entry of keywordEntries) {
+      if (addedIds.has(entry.result.id)) continue;
+      if (entry.keywords.split(" ").some((kw) => kw.includes(q) || q.includes(kw))) {
+        results.push(entry.result);
+        addedIds.add(entry.result.id);
+      }
+    }
+
+    return results.slice(0, 10);
   }, [searchQuery]);
 
   useEffect(() => {
@@ -168,7 +219,7 @@ export default function Header() {
             }`}
           />
           {showResults && searchQuery && (
-            <div className={`absolute left-0 top-full mt-1 w-full sm:w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
+            <div role="listbox" aria-label="Search results" className={`absolute left-0 top-full mt-1 w-full sm:w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
               isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
             }`}>
               {searchResults.length === 0 ? (
@@ -185,12 +236,12 @@ export default function Header() {
                     }`}
                   >
                     <MapPin className={`w-3.5 h-3.5 shrink-0 ${
-                      result.type === "station" ? "text-blue-400" : result.type === "research" ? "text-green-400" : "text-amber-400"
+                      result.type === "station" ? "text-blue-400" : result.type === "research" ? "text-green-400" : result.type === "parameter" ? "text-purple-400" : "text-amber-400"
                     }`} />
                     <div className="min-w-0">
                       <span className="block truncate">{result.name}</span>
                       <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-                        {t(`search.${result.type}` as "search.station" | "search.research" | "search.page")}
+                        {result.type === "parameter" ? "parameter" : t(`search.${result.type}` as "search.station" | "search.research" | "search.page")}
                       </span>
                     </div>
                   </button>

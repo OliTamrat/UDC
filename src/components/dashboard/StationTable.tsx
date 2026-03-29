@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { MapPin, AlertCircle, CheckCircle2, Wrench, ExternalLink, Clock } from "lucide-react";
+import { MapPin, AlertCircle, CheckCircle2, Wrench, ExternalLink } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { ThresholdDot, getThresholdLevel } from "./ThresholdIndicator";
@@ -16,7 +16,7 @@ interface ParameterDef {
   epaMax: number | null;
 }
 
-// Map parameter IDs to legacy reading fields
+// Map parameter IDs to legacy reading fields (for the /api/stations lastReading data)
 const PARAM_TO_READING_FIELD: Record<string, string> = {
   temperature: "temperature",
   dissolved_oxygen: "dissolvedOxygen",
@@ -52,7 +52,7 @@ const SOURCE_STYLES: Record<string, { abbr: string; color: string }> = {
   usgs:   { abbr: "USGS",   color: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
   epa:    { abbr: "EPA",    color: "text-green-400 bg-green-500/10 border-green-500/30" },
   wqp:    { abbr: "WQP",    color: "text-teal-400 bg-teal-500/10 border-teal-500/30" },
-  seed:   { abbr: "Model",  color: "text-slate-400 bg-slate-500/10 border-slate-500/30" },
+  seed:   { abbr: "Seed",   color: "text-slate-400 bg-slate-500/10 border-slate-500/30" },
   manual: { abbr: "Manual", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" },
 };
 
@@ -65,29 +65,45 @@ function SourceBadge({ source }: { source?: string }) {
   );
 }
 
-/** Returns a human-readable "time ago" string and staleness level */
-function getDataFreshness(timestamp: string | undefined, source: string | undefined): {
-  label: string;
-  stale: "fresh" | "warning" | "stale" | "baseline";
-} {
-  if (!timestamp) return { label: "No data", stale: "stale" };
-  if (source === "seed") return { label: "Baseline", stale: "baseline" };
+// Sparkline SVG for mini trend charts in the table
+function Sparkline({ data, color, height = 24, width = 80 }: { data: number[]; color: string; height?: number; width?: number }) {
+  if (data.length < 2) return null;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const points = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 4) - 2;
+    return `${x},${y}`;
+  }).join(" ");
+  return (
+    <svg width={width} height={height} className="inline-block" aria-hidden="true">
+      <polyline fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" points={points} />
+      <circle cx={String((data.length - 1) / (data.length - 1) * width)} cy={String(height - ((data[data.length - 1] - min) / range) * (height - 4) - 2)} r="2" fill={color} />
+    </svg>
+  );
+}
 
-  const now = Date.now();
-  const then = new Date(timestamp).getTime();
-  const diffMs = now - then;
-  const diffMin = Math.floor(diffMs / 60000);
-  const diffHrs = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
+interface HistoryData {
+  stationId: string;
+  data: Array<{
+    timestamp: string;
+    dissolvedOxygen: number | null;
+    pH: number | null;
+    turbidity: number | null;
+    eColiCount: number | null;
+    temperature: number | null;
+    source: string;
+  }>;
+}
 
-  let label: string;
-  if (diffMin < 60) label = `${diffMin}m ago`;
-  else if (diffHrs < 24) label = `${diffHrs}h ago`;
-  else if (diffDays < 7) label = `${diffDays}d ago`;
-  else label = new Date(timestamp).toLocaleDateString();
-
-  const stale = diffHrs < 2 ? "fresh" : diffHrs < 24 ? "warning" : "stale";
-  return { label, stale };
+// Latest EAV measurement value per station per parameter
+interface MeasurementLatest {
+  stationId: string;
+  parameterId: string;
+  value: number;
+  source: string;
+  timestamp: string;
 }
 
 interface StationTableProps {
@@ -101,6 +117,9 @@ export default function StationTable({ onStationClick, selectedParams }: Station
   const isDark = resolvedTheme === "dark";
   const [stations, setStations] = useState<MonitoringStation[]>([]);
   const [paramDefs, setParamDefs] = useState<ParameterDef[]>([]);
+  const [historyMap, setHistoryMap] = useState<Record<string, HistoryData>>({});
+  // EAV measurements: stationId -> parameterId -> { value, source, timestamp }
+  const [eavData, setEavData] = useState<Record<string, Record<string, MeasurementLatest>>>({});
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
@@ -109,8 +128,32 @@ export default function StationTable({ onStationClick, selectedParams }: Station
         fetch("/api/stations"),
         fetch("/api/parameters"),
       ]);
-      if (stationsRes.ok) setStations(await stationsRes.json());
+      let stationList: MonitoringStation[] = [];
+      if (stationsRes.ok) {
+        stationList = await stationsRes.json();
+        setStations(stationList);
+      }
       if (paramsRes.ok) setParamDefs(await paramsRes.json());
+
+      // Fetch recent history for sparklines (last 20 readings per station)
+      if (stationList.length > 0) {
+        const historyPromises = stationList.map(async (s) => {
+          try {
+            const res = await fetch(`/api/stations/${s.id}/history?limit=20`);
+            if (res.ok) {
+              const data: HistoryData = await res.json();
+              return { stationId: s.id, data };
+            }
+          } catch { /* ignore */ }
+          return null;
+        });
+        const results = await Promise.all(historyPromises);
+        const map: Record<string, HistoryData> = {};
+        for (const r of results) {
+          if (r) map[r.stationId] = r.data as unknown as HistoryData;
+        }
+        setHistoryMap(map);
+      }
     } catch {
       const { monitoringStations } = await import("@/data/dc-waterways");
       setStations(monitoringStations);
@@ -124,20 +167,55 @@ export default function StationTable({ onStationClick, selectedParams }: Station
   // Determine which param columns to show
   const activeParams = selectedParams && selectedParams.length > 0 ? selectedParams : DEFAULT_PARAMS;
 
-  // Only show params that have a mapping to reading fields
-  const visibleParams = activeParams
-    .filter((id) => PARAM_TO_READING_FIELD[id])
-    .map((id) => {
-      const def = paramDefs.find((p) => p.id === id);
-      return {
-        id,
-        name: def?.name || id,
-        unit: def?.unit || "",
-        epaMin: def?.epaMin ?? null,
-        epaMax: def?.epaMax ?? null,
-        readingField: PARAM_TO_READING_FIELD[id],
-      };
-    });
+  // Identify which params need EAV data (not in legacy reading fields)
+  const eavParamIds = activeParams.filter((id) => !PARAM_TO_READING_FIELD[id]);
+
+  // Fetch EAV measurement data for non-legacy parameters
+  useEffect(() => {
+    if (eavParamIds.length === 0 || stations.length === 0) {
+      if (eavParamIds.length === 0) setEavData({});
+      return;
+    }
+
+    const fetchEav = async () => {
+      try {
+        const params = new URLSearchParams({
+          params: eavParamIds.join(","),
+          limit: "5000",
+        });
+        const res = await fetch(`/api/measurements?${params}`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const data: MeasurementLatest[] = json.data || [];
+
+        // Group by station + param, keeping only the latest measurement per combo
+        const grouped: Record<string, Record<string, MeasurementLatest>> = {};
+        for (const m of data) {
+          if (!grouped[m.stationId]) grouped[m.stationId] = {};
+          const existing = grouped[m.stationId][m.parameterId];
+          if (!existing || m.timestamp > existing.timestamp) {
+            grouped[m.stationId][m.parameterId] = m;
+          }
+        }
+        setEavData(grouped);
+      } catch { /* ignore */ }
+    };
+    fetchEav();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eavParamIds.join(","), stations.length]);
+
+  // Build visible params with metadata — now supports ALL 25 parameters
+  const visibleParams = activeParams.map((id) => {
+    const def = paramDefs.find((p) => p.id === id);
+    return {
+      id,
+      name: def?.name || id,
+      unit: def?.unit || "",
+      epaMin: def?.epaMin ?? null,
+      epaMax: def?.epaMax ?? null,
+      readingField: PARAM_TO_READING_FIELD[id] || null, // null = use EAV data
+    };
+  });
 
   if (loading) {
     return (
@@ -167,6 +245,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                   </span>
                 </th>
               ))}
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Trend</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.updated")}</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}><span className="sr-only">{t("table.details")}</span></th>
             </tr>
@@ -174,6 +253,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
           <tbody>
             {stations.map((station) => {
               const r = station.lastReading;
+              const stationEav = eavData[station.id] || {};
               return (
                 <tr
                   key={station.id}
@@ -204,7 +284,15 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                     <StatusBadge status={station.status} />
                   </td>
                   {visibleParams.map((p) => {
-                    const val = r ? (r as unknown as Record<string, number | undefined>)[p.readingField] : undefined;
+                    // Try legacy reading field first, then EAV measurement data
+                    let val: number | undefined;
+                    if (p.readingField && r) {
+                      val = (r as unknown as Record<string, number | undefined>)[p.readingField];
+                    }
+                    if (val == null && stationEav[p.id]) {
+                      val = stationEav[p.id].value;
+                    }
+
                     const level = getThresholdLevel(val ?? null, p.epaMin, p.epaMax);
                     const levelColor = {
                       good: isDark ? "text-green-400" : "text-green-600",
@@ -230,24 +318,21 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                   })}
                   <td className="py-2.5 px-4">
                     {(() => {
-                      const source = r ? (r as unknown as Record<string, unknown>).source as string | undefined : undefined;
-                      const freshness = getDataFreshness(r?.timestamp, source);
-                      const freshnessColor = {
-                        fresh: isDark ? "text-green-400" : "text-green-600",
-                        warning: isDark ? "text-amber-400" : "text-amber-600",
-                        stale: isDark ? "text-red-400" : "text-red-600",
-                        baseline: isDark ? "text-slate-500" : "text-slate-400",
-                      }[freshness.stale];
-                      return (
-                        <div className="flex items-center gap-1.5">
-                          <Clock className={`w-3 h-3 ${freshnessColor}`} />
-                          <span className={`text-[10px] font-medium ${freshnessColor}`}>
-                            {freshness.label}
-                          </span>
-                          {r && <SourceBadge source={source} />}
-                        </div>
-                      );
+                      const hist = historyMap[station.id] as unknown as { data?: Array<Record<string, number | null>> } | undefined;
+                      const histData = hist?.data;
+                      if (!histData || histData.length < 2) return <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>;
+                      const doValues = histData.map((d) => d.dissolvedOxygen).filter((v): v is number => v != null);
+                      if (doValues.length < 2) return <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>;
+                      return <Sparkline data={doValues} color="#60A5FA" />;
                     })()}
+                  </td>
+                  <td className={`py-2.5 px-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px]">{r
+                        ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                        : "—"}</span>
+                      {r && <SourceBadge source={(r as unknown as Record<string, unknown>).source as string | undefined} />}
+                    </div>
                   </td>
                   <td className="py-2.5 px-4">
                     <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-600 hover:text-blue-400" : "text-slate-300 hover:text-blue-500"} transition-colors`} />

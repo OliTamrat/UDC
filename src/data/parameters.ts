@@ -102,8 +102,8 @@ export const CORE_PARAMETERS: ParameterDefinition[] = [
     unit: "CFU/100mL",
     category: "biological",
     epa_min: null,
-    epa_max: 235,
-    description: "E. coli bacteria indicate fecal contamination from sewage overflows, animal waste, or failing septic systems. Above 235 CFU/100mL, water is unsafe for swimming.",
+    epa_max: 410,
+    description: "E. coli bacteria indicate fecal contamination from sewage overflows, animal waste, or failing septic systems. Above 410 CFU/100mL (EPA 2012 single-sample recreational standard), water is unsafe for swimming.",
     display_order: 6,
   },
   {

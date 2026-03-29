@@ -23,6 +23,7 @@ import {
   Clock,
   Download,
   Sparkles,
+  FlaskConical,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -64,6 +65,23 @@ interface IngestionLog {
   error_message: string | null;
   started_at: string;
   completed_at: string | null;
+}
+
+interface Measurement {
+  id: number;
+  stationId: string;
+  stationName: string;
+  parameterId: string;
+  parameterName: string;
+  timestamp: string;
+  value: number;
+  unit: string;
+  qualifier: string | null;
+  source: string;
+  category: string;
+  epaMin: number | null;
+  epaMax: number | null;
+  exceedsThreshold: boolean;
 }
 
 interface UploadResult {
@@ -240,7 +258,7 @@ export default function AdminPage() {
             { id: "upload" as Tab, label: "Upload Data", icon: Upload },
             { id: "stations" as Tab, label: "Stations", icon: MapPin },
             { id: "readings" as Tab, label: "Readings", icon: Activity },
-            { id: "measurements" as Tab, label: "Measurements (EAV)", icon: Database },
+            { id: "measurements" as Tab, label: "Measurements", icon: FlaskConical },
             { id: "logs" as Tab, label: "Ingestion Log", icon: Clock },
           ]).map((tab) => (
             <button
@@ -268,7 +286,7 @@ export default function AdminPage() {
         {activeTab === "upload" && <UploadTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "stations" && <StationsTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "readings" && <ReadingsTab isDark={isDark} adminKey={adminKey} />}
-        {activeTab === "measurements" && <MeasurementsTab isDark={isDark} />}
+        {activeTab === "measurements" && <MeasurementsTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "logs" && <LogsTab isDark={isDark} adminKey={adminKey} />}
       </div>
     </div>
@@ -1146,26 +1164,17 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
 }
 
 // ---------------------------------------------------------------------------
-// Measurements (EAV) Tab — view expanded parameter measurements
+// Measurements Tab (EAV data — all 25 parameters)
 // ---------------------------------------------------------------------------
+const CATEGORY_COLORS: Record<string, string> = {
+  physical: "bg-blue-500/10 text-blue-400",
+  nutrients: "bg-green-500/10 text-green-400",
+  metals: "bg-orange-500/10 text-orange-400",
+  biological: "bg-pink-500/10 text-pink-400",
+  organic: "bg-purple-500/10 text-purple-400",
+};
 
-interface Measurement {
-  id: number;
-  stationId: string;
-  stationName: string;
-  parameterId: string;
-  parameterName: string;
-  timestamp: string;
-  value: number;
-  unit: string;
-  source: string;
-  category: string;
-  epaMin: number | null;
-  epaMax: number | null;
-  exceedsThreshold: boolean;
-}
-
-function MeasurementsTab({ isDark }: { isDark: boolean }) {
+function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -1182,21 +1191,27 @@ function MeasurementsTab({ isDark }: { isDark: boolean }) {
     if (categoryFilter) params.set("category", categoryFilter);
     if (violationsOnly) params.set("violations", "true");
 
-    const res = await fetch(`/api/measurements?${params}`);
+    const res = await fetch(`/api/measurements?${params}`, {
+      headers: authHeadersNoBody(adminKey),
+    });
     const data = await res.json();
     setMeasurements(data.data || []);
     setTotal(data.total || 0);
     setLoading(false);
-  }, [offset, stationFilter, categoryFilter, violationsOnly]);
+  }, [adminKey, offset, stationFilter, categoryFilter, violationsOnly]);
 
   useEffect(() => { fetchMeasurements(); }, [fetchMeasurements]);
+
+  const isViolation = (m: Measurement) =>
+    (m.epaMax != null && m.value > m.epaMax) ||
+    (m.epaMin != null && m.value < m.epaMin);
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>EAV Measurements</h2>
-          <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>{total} total measurements across 25 parameters</p>
+          <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>{total} total measurements (25 parameters across 5 categories)</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <input
@@ -1210,19 +1225,19 @@ function MeasurementsTab({ isDark }: { isDark: boolean }) {
             onChange={(e) => { setCategoryFilter(e.target.value); setOffset(0); }}
             className={`px-3 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-slate-300" : "bg-white border-slate-200"}`}
           >
-            <option value="">All categories</option>
+            <option value="">All Categories</option>
             <option value="physical">Physical</option>
             <option value="nutrients">Nutrients</option>
             <option value="metals">Metals</option>
             <option value="biological">Biological</option>
-            <option value="organic">Organic</option>
+            <option value="organic">Organic / Emerging</option>
           </select>
           <label className={`flex items-center gap-1.5 text-xs cursor-pointer ${isDark ? "text-slate-400" : "text-slate-500"}`}>
             <input
               type="checkbox"
               checked={violationsOnly}
               onChange={(e) => { setViolationsOnly(e.target.checked); setOffset(0); }}
-              className="rounded border-slate-300"
+              className="rounded border-slate-400"
             />
             Violations only
           </label>
@@ -1248,54 +1263,60 @@ function MeasurementsTab({ isDark }: { isDark: boolean }) {
                   <th className="text-left px-3 py-2.5 font-medium">Timestamp</th>
                   <th className="text-right px-3 py-2.5 font-medium">Value</th>
                   <th className="text-left px-3 py-2.5 font-medium">Unit</th>
+                  <th className="text-left px-3 py-2.5 font-medium">EPA Threshold</th>
                   <th className="text-left px-3 py-2.5 font-medium">Source</th>
-                  <th className="text-center px-3 py-2.5 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody className={isDark ? "divide-y divide-panel-border" : "divide-y divide-slate-100"}>
-                {measurements.map((m) => (
-                  <tr key={m.id} className={isDark ? "hover:bg-panel-hover" : "hover:bg-slate-50"}>
-                    <td className={`px-3 py-2 font-mono ${isDark ? "text-udc-gold" : "text-blue-600"}`}>{m.stationId}</td>
-                    <td className={`px-3 py-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{m.parameterName}</td>
-                    <td className="px-3 py-2">
-                      <span className={`px-1.5 py-0.5 rounded text-[10px] ${
-                        m.category === "physical" ? "bg-blue-500/10 text-blue-400" :
-                        m.category === "nutrients" ? "bg-green-500/10 text-green-400" :
-                        m.category === "metals" ? "bg-orange-500/10 text-orange-400" :
-                        m.category === "biological" ? "bg-purple-500/10 text-purple-400" :
-                        "bg-amber-500/10 text-amber-400"
-                      }`}>
-                        {m.category}
-                      </span>
-                    </td>
-                    <td className={`px-3 py-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
-                      {new Date(m.timestamp).toLocaleString()}
-                    </td>
-                    <td className={`text-right px-3 py-2 font-mono ${
-                      m.exceedsThreshold ? "text-red-400 font-semibold" : isDark ? "text-slate-400" : "text-slate-500"
-                    }`}>
-                      {m.value.toFixed(2)}
-                    </td>
-                    <td className={`px-3 py-2 ${isDark ? "text-slate-500" : "text-slate-400"}`}>{m.unit}</td>
-                    <td className="px-3 py-2">
-                      <span className={`px-1.5 py-0.5 rounded text-[10px] ${
-                        m.source === "usgs" ? "bg-blue-500/10 text-blue-400" :
-                        m.source === "wqp" ? "bg-teal-500/10 text-teal-400" :
-                        m.source === "epa" ? "bg-green-500/10 text-green-400" :
-                        isDark ? "bg-white/5 text-slate-400" : "bg-slate-100 text-slate-500"
-                      }`}>
-                        {m.source}
-                      </span>
-                    </td>
-                    <td className="text-center px-3 py-2">
-                      {m.exceedsThreshold ? (
-                        <AlertTriangle className="w-3.5 h-3.5 text-red-400 mx-auto" />
-                      ) : (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-green-400 mx-auto" />
-                      )}
+                {measurements.map((m) => {
+                  const violation = isViolation(m);
+                  return (
+                    <tr key={m.id} className={`${isDark ? "hover:bg-panel-hover" : "hover:bg-slate-50"} ${violation ? (isDark ? "bg-red-500/5" : "bg-red-50/50") : ""}`}>
+                      <td className={`px-3 py-2 font-mono ${isDark ? "text-udc-gold" : "text-blue-600"}`}>{m.stationId}</td>
+                      <td className={`px-3 py-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                        <span className="font-medium">{m.parameterName}</span>
+                      </td>
+                      <td className="px-3 py-2">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] ${CATEGORY_COLORS[m.category] || (isDark ? "bg-white/5 text-slate-400" : "bg-slate-100 text-slate-500")}`}>
+                          {m.category}
+                        </span>
+                      </td>
+                      <td className={`px-3 py-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                        {new Date(m.timestamp).toLocaleString()}
+                      </td>
+                      <td className={`text-right px-3 py-2 font-mono ${violation ? "text-red-400 font-semibold" : isDark ? "text-slate-400" : "text-slate-500"}`}>
+                        {m.value.toFixed(3)}
+                      </td>
+                      <td className={`px-3 py-2 ${isDark ? "text-slate-500" : "text-slate-400"}`}>{m.unit}</td>
+                      <td className={`px-3 py-2 text-[11px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                        {m.epaMin != null && m.epaMax != null
+                          ? `${m.epaMin}–${m.epaMax}`
+                          : m.epaMin != null
+                            ? `min ${m.epaMin}`
+                            : m.epaMax != null
+                              ? `max ${m.epaMax}`
+                              : "—"}
+                      </td>
+                      <td className="px-3 py-2">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] ${
+                          m.source === "usgs" ? "bg-blue-500/10 text-blue-400" :
+                          m.source === "epa" ? "bg-green-500/10 text-green-400" :
+                          m.source === "wqp" ? "bg-teal-500/10 text-teal-400" :
+                          isDark ? "bg-white/5 text-slate-400" : "bg-slate-100 text-slate-500"
+                        }`}>
+                          {m.source}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {measurements.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className={`px-3 py-8 text-center text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                      No measurements found matching filters.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -1303,7 +1324,7 @@ function MeasurementsTab({ isDark }: { isDark: boolean }) {
           {/* Pagination */}
           <div className={`flex items-center justify-between px-4 py-3 border-t ${isDark ? "border-panel-border" : "border-slate-100"}`}>
             <p className={`text-[11px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-              Showing {offset + 1}–{Math.min(offset + limit, total)} of {total}
+              Showing {total > 0 ? offset + 1 : 0}–{Math.min(offset + limit, total)} of {total}
             </p>
             <div className="flex gap-1">
               <button
@@ -1331,11 +1352,21 @@ function MeasurementsTab({ isDark }: { isDark: boolean }) {
 // ---------------------------------------------------------------------------
 // Ingestion Logs Tab
 // ---------------------------------------------------------------------------
+interface IngestResult {
+  status: "success" | "error";
+  source: string;
+  records_ingested: number;
+  measurements_ingested: number;
+  errors: string[];
+  validation_warnings: string[];
+}
+
 function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
   const [logs, setLogs] = useState<IngestionLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [triggerSource, setTriggerSource] = useState("usgs");
   const [triggering, setTriggering] = useState(false);
+  const [ingestResult, setIngestResult] = useState<IngestResult | null>(null);
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
@@ -1349,6 +1380,7 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
 
   const triggerIngest = async () => {
     setTriggering(true);
+    setIngestResult(null);
     try {
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       const ingestKey = adminKey || "";
@@ -1359,10 +1391,24 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
         headers,
       });
       const data = await res.json();
-      alert(`Ingestion complete: ${data.records_ingested || 0} records. ${data.errors?.length ? `Errors: ${data.errors.join(", ")}` : "No errors."}`);
+      setIngestResult({
+        status: data.errors?.length ? "error" : "success",
+        source: triggerSource,
+        records_ingested: data.records_ingested || 0,
+        measurements_ingested: data.measurements_ingested || 0,
+        errors: data.errors || [],
+        validation_warnings: data.validation_warnings || [],
+      });
       fetchLogs();
     } catch (err) {
-      alert(`Ingestion failed: ${err instanceof Error ? err.message : String(err)}`);
+      setIngestResult({
+        status: "error",
+        source: triggerSource,
+        records_ingested: 0,
+        measurements_ingested: 0,
+        errors: [err instanceof Error ? err.message : String(err)],
+        validation_warnings: [],
+      });
     } finally {
       setTriggering(false);
     }
@@ -1381,8 +1427,9 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
             onChange={(e) => setTriggerSource(e.target.value)}
             className={`px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-slate-300" : "bg-white border-slate-200"}`}
           >
-            <option value="usgs">USGS NWIS</option>
-            <option value="epa">EPA WQP</option>
+            <option value="usgs">USGS NWIS (Real-time IV)</option>
+            <option value="epa">EPA WQP (Legacy)</option>
+            <option value="wqp">WQP (Broad Parameters)</option>
           </select>
           <button
             onClick={triggerIngest}
@@ -1394,6 +1441,81 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
           </button>
         </div>
       </div>
+
+      {/* Ingestion Result Banner */}
+      {ingestResult && (
+        <div className={`rounded-xl border p-4 ${
+          ingestResult.status === "error"
+            ? isDark ? "border-red-500/30 bg-red-950/20" : "border-red-200 bg-red-50"
+            : isDark ? "border-green-500/30 bg-green-950/20" : "border-green-200 bg-green-50"
+        }`}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3">
+              {ingestResult.status === "error" ? (
+                <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+              ) : (
+                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+              )}
+              <div>
+                <p className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+                  Ingestion Complete — {ingestResult.source.toUpperCase()}
+                </p>
+                <div className={`mt-2 grid grid-cols-2 gap-x-6 gap-y-1 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                  <div className="flex items-center gap-1.5">
+                    <Database className="w-3 h-3 text-blue-400" />
+                    <span><strong>{ingestResult.records_ingested}</strong> legacy readings</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Activity className="w-3 h-3 text-purple-400" />
+                    <span><strong>{ingestResult.measurements_ingested}</strong> EAV measurements</span>
+                  </div>
+                </div>
+                {ingestResult.records_ingested === 0 && ingestResult.measurements_ingested === 0 && ingestResult.errors.length === 0 && (
+                  <p className={`mt-2 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    No new data was returned. This can happen if the USGS sites lack real-time water quality sensors, or data for the current period was already ingested.
+                  </p>
+                )}
+                {ingestResult.validation_warnings.length > 0 && (
+                  <div className="mt-2">
+                    <p className={`text-xs font-medium ${isDark ? "text-amber-300" : "text-amber-700"}`}>
+                      {ingestResult.validation_warnings.length} validation warning{ingestResult.validation_warnings.length > 1 ? "s" : ""}
+                    </p>
+                    <ul className={`mt-1 text-[11px] space-y-0.5 ${isDark ? "text-amber-300/80" : "text-amber-600"}`}>
+                      {ingestResult.validation_warnings.slice(0, 5).map((w, i) => (
+                        <li key={i}>&bull; {w}</li>
+                      ))}
+                      {ingestResult.validation_warnings.length > 5 && (
+                        <li>... and {ingestResult.validation_warnings.length - 5} more</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
+                {ingestResult.errors.length > 0 && (
+                  <div className="mt-2">
+                    <p className={`text-xs font-medium ${isDark ? "text-red-300" : "text-red-700"}`}>Errors:</p>
+                    <ul className={`mt-1 text-[11px] space-y-0.5 ${isDark ? "text-red-300/80" : "text-red-600"}`}>
+                      {ingestResult.errors.slice(0, 5).map((e, i) => (
+                        <li key={i}>&bull; {e}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {ingestResult.errors.length === 0 && (ingestResult.records_ingested > 0 || ingestResult.measurements_ingested > 0) && (
+                  <p className={`mt-2 text-xs ${isDark ? "text-green-300/80" : "text-green-600"}`}>
+                    No errors. Data is now available in the dashboard.
+                  </p>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={() => setIngestResult(null)}
+              className={`p-1 rounded ${isDark ? "text-slate-400 hover:text-white" : "text-slate-400 hover:text-slate-700"}`}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-12">

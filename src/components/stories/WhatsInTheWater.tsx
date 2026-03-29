@@ -57,8 +57,8 @@ const FEATURED_PARAMS: ParamCard[] = [
     unit: "CFU/100mL",
     simple: "Bacteria from sewage that tells us if the water is safe for swimming.",
     detail:
-      "E. coli itself isn't always dangerous, but its presence indicates fecal contamination — which means harmful pathogens may also be present. Above 235 CFU/100mL, the EPA says don't swim.",
-    epaMax: 235,
+      "E. coli itself isn't always dangerous, but its presence indicates fecal contamination — which means harmful pathogens may also be present. Above 410 CFU/100mL (EPA 2012 single-sample recreational standard), swimming is unsafe.",
+    epaMax: 410,
     funFact:
       "After just 0.5 inches of rain, DC's combined sewers can overflow, releasing a cocktail of sewage, chemicals, and trash directly into the Anacostia.",
     dcContext:

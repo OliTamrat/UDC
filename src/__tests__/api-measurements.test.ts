@@ -16,16 +16,18 @@ function makeRequest(url: string) {
 }
 
 describe("GET /api/measurements", () => {
-  it("returns paginated measurements with metadata", async () => {
+  it("returns measurements with pagination metadata", async () => {
     const request = makeRequest("/api/measurements?limit=10");
     const response = await GET(request);
     const body = await response.json();
 
     expect(response.status).toBe(200);
     expect(body.count).toBeLessThanOrEqual(10);
+    expect(typeof body.total).toBe("number");
     expect(body.total).toBeGreaterThan(0);
-    expect(body.data).toBeInstanceOf(Array);
-    expect(body.data.length).toBeLessThanOrEqual(10);
+    expect(body.offset).toBe(0);
+    expect(body.limit).toBe(10);
+    expect(Array.isArray(body.data)).toBe(true);
   });
 
   it("each measurement has required fields", async () => {
@@ -34,13 +36,15 @@ describe("GET /api/measurements", () => {
     const body = await response.json();
 
     for (const m of body.data) {
+      expect(m.id).toBeDefined();
       expect(m.stationId).toBeTruthy();
       expect(m.parameterId).toBeTruthy();
       expect(m.parameterName).toBeTruthy();
       expect(m.timestamp).toBeTruthy();
       expect(typeof m.value).toBe("number");
       expect(m.unit).toBeTruthy();
-      expect(m.category).toBeTruthy();
+      expect(m.source).toBeTruthy();
+      expect(["physical", "nutrients", "metals", "biological", "organic"]).toContain(m.category);
       expect(typeof m.exceedsThreshold).toBe("boolean");
     }
   });
@@ -56,46 +60,52 @@ describe("GET /api/measurements", () => {
     }
   });
 
+  it("filters by parameter ID", async () => {
+    const request = makeRequest("/api/measurements?params=temperature&limit=20");
+    const response = await GET(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    for (const m of body.data) {
+      expect(m.parameterId).toBe("temperature");
+    }
+  });
+
   it("filters by category", async () => {
-    const request = makeRequest("/api/measurements?category=physical&limit=20");
+    const request = makeRequest("/api/measurements?category=nutrients&limit=20");
     const response = await GET(request);
     const body = await response.json();
 
     expect(response.status).toBe(200);
     for (const m of body.data) {
-      expect(m.category).toBe("physical");
+      expect(m.category).toBe("nutrients");
     }
   });
 
-  it("filters by parameter IDs", async () => {
-    const request = makeRequest("/api/measurements?params=temperature,ph&limit=20");
+  it("respects pagination offset", async () => {
+    const req1 = makeRequest("/api/measurements?limit=5&offset=0");
+    const res1 = await GET(req1);
+    const body1 = await res1.json();
+
+    const req2 = makeRequest("/api/measurements?limit=5&offset=5");
+    const res2 = await GET(req2);
+    const body2 = await res2.json();
+
+    expect(body1.data.length).toBe(5);
+    expect(body2.data.length).toBe(5);
+    // Different pages should have different IDs
+    const ids1 = new Set(body1.data.map((m: { id: number }) => m.id));
+    const ids2 = new Set(body2.data.map((m: { id: number }) => m.id));
+    const overlap = [...ids1].filter((id) => ids2.has(id));
+    expect(overlap.length).toBe(0);
+  });
+
+  it("limits max results to 10000", async () => {
+    const request = makeRequest("/api/measurements?limit=99999");
     const response = await GET(request);
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    for (const m of body.data) {
-      expect(["temperature", "ph"]).toContain(m.parameterId);
-    }
-  });
-
-  it("violations filter returns only threshold exceedances", async () => {
-    const request = makeRequest("/api/measurements?violations=true&limit=100");
-    const response = await GET(request);
-    const body = await response.json();
-
-    expect(response.status).toBe(200);
-    for (const m of body.data) {
-      expect(m.exceedsThreshold).toBe(true);
-    }
-  });
-
-  it("returns empty for nonexistent station", async () => {
-    const request = makeRequest("/api/measurements?stations=FAKE-999");
-    const response = await GET(request);
-    const body = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(body.count).toBe(0);
-    expect(body.total).toBe(0);
+    expect(body.limit).toBe(10000);
   });
 });

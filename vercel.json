@@ -1,12 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "git": {
-    "deploymentEnabled": {
-      "main": true,
-      "claude/*": false
-    }
-  },
   "functions": {
     "src/app/api/**/*.ts": {
       "includeFiles": "data/**",
@@ -19,8 +13,12 @@
       "schedule": "0 6 * * *"
     },
     {
-      "path": "/api/ingest?source=wqp",
+      "path": "/api/ingest?source=epa",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/ingest?source=wqp",
+      "schedule": "0 8 * * 1"
     }
   ]
 }

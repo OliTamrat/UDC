@@ -17,6 +17,8 @@ import {
   AlertTriangle, CheckCircle2, Wrench, AlertCircle, Download, Share2,
   FlaskConical, Clock,
 } from "lucide-react";
+import { RealTimeStationChart } from "@/components/charts/WaterQualityCharts";
+import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
 function StatusBadge({ status, isDark }: { status: string; isDark: boolean }) {
   const config: Record<string, { bg: string; text: string; icon: typeof CheckCircle2; label: string }> = {
@@ -73,7 +75,7 @@ const SOURCE_CONFIG: Record<string, { label: string; abbr: string; color: string
   usgs:   { label: "USGS NWIS",          abbr: "USGS",   color: "text-blue-400",   bg: "bg-blue-500/10 border-blue-500/30" },
   epa:    { label: "EPA Water Quality Exchange", abbr: "EPA",  color: "text-green-400",  bg: "bg-green-500/10 border-green-500/30" },
   wqp:    { label: "Water Quality Portal", abbr: "WQP",   color: "text-teal-400",   bg: "bg-teal-500/10 border-teal-500/30" },
-  seed:   { label: "Baseline/Modeled",    abbr: "Model",  color: "text-slate-400",  bg: "bg-slate-500/10 border-slate-500/30" },
+  seed:   { label: "Initial Seed Data",    abbr: "Seed",   color: "text-slate-400",  bg: "bg-slate-500/10 border-slate-500/30" },
   manual: { label: "Manual Entry",         abbr: "Manual", color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/30" },
 };
 
@@ -111,6 +113,7 @@ export default function StationDetailPage() {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const sidebarClass = useSidebarClass();
 
   const stationId = params.id as string;
   const [station, setStation] = useState<MonitoringStation | null>(null);
@@ -237,7 +240,7 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+        <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
@@ -251,7 +254,7 @@ export default function StationDetailPage() {
     return (
       <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
         <Sidebar />
-        <main id="main-content" className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+        <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="text-center">
@@ -277,8 +280,8 @@ export default function StationDetailPage() {
     color: isDark ? "#F8FAFC" : "#1E293B",
   };
 
-  const typeLabel = station.type.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase());
   const isGI = station.type === "green-infrastructure";
+  const typeLabel = isGI ? "Green Infrastructure BMP" : station.type.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   const epaLimits = {
     dissolvedOxygen: { min: 5, label: "EPA Minimum (5 mg/L)" },
@@ -298,7 +301,7 @@ export default function StationDetailPage() {
   return (
     <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
       <Sidebar />
-      <main className="flex-1 lg:ml-[240px] min-w-0 overflow-x-hidden">
+      <main className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
         <div className="p-3 sm:p-4 md:p-6 space-y-6">
           {/* Back + Title */}
@@ -419,9 +422,7 @@ export default function StationDetailPage() {
           {reading && (
             <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               <span>Last updated: {reading.timestamp
-                ? dataSources.length === 1 && dataSources[0] === "seed"
-                  ? "Baseline (modeled)"
-                  : new Date(reading.timestamp).toLocaleString()
+                ? new Date(reading.timestamp).toLocaleString()
                 : "—"}</span>
               {dataSources.length > 0 && (
                 <span className="flex items-center gap-1.5">
@@ -433,10 +434,18 @@ export default function StationDetailPage() {
               )}
               {dataSources.length === 1 && dataSources[0] === "seed" && (
                 <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] ${
-                  isDark ? "bg-amber-500/10 text-amber-400" : "bg-amber-50 text-amber-700"
+                  isDark ? "bg-slate-500/10 text-slate-400" : "bg-slate-50 text-slate-600"
                 }`}>
                   <AlertTriangle className="w-3 h-3" />
-                  Baseline data — no live sensor feed for this station
+                  Initial seed data — will be replaced as live ingestion runs accumulate measured values
+                </span>
+              )}
+              {isGI && (
+                <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] ${
+                  isDark ? "bg-green-500/10 text-green-400" : "bg-green-50 text-green-700"
+                }`}>
+                  <AlertTriangle className="w-3 h-3" />
+                  BMP site — measures stormwater retention and infiltration performance, not ambient water quality
                 </span>
               )}
             </div>
@@ -517,13 +526,16 @@ export default function StationDetailPage() {
             </div>
           )}
 
+          {/* Real-Time Data Chart — fetches from API */}
+          <RealTimeStationChart stationId={stationId as string} />
+
           {/* Historical Charts */}
           {historical && (
             <>
               <div>
                 <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
                   Historical Trends
-                  {dataSources.length === 1 && dataSources[0] === "seed" ? " (Baseline)" : ""}
+                  {dataSources.length === 1 && dataSources[0] === "seed" ? " (Seed Data)" : ""}
                 </h2>
                 <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly averages with EPA compliance thresholds</p>
               </div>

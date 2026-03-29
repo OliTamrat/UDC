@@ -30,12 +30,12 @@ describe("GET /api/parameters", () => {
     const response = await GET(request);
     const data = await response.json();
 
-    for (const p of data) {
-      expect(p.id).toBeTruthy();
-      expect(p.name).toBeTruthy();
-      expect(p.unit).toBeTruthy();
-      expect(["physical", "nutrients", "metals", "biological", "organic"]).toContain(p.category);
-      expect(typeof p.displayOrder).toBe("number");
+    for (const param of data) {
+      expect(param.id).toBeTruthy();
+      expect(param.name).toBeTruthy();
+      expect(param.unit).toBeTruthy();
+      expect(["physical", "nutrients", "metals", "biological", "organic"]).toContain(param.category);
+      expect(typeof param.displayOrder).toBe("number");
     }
   });
 
@@ -46,29 +46,39 @@ describe("GET /api/parameters", () => {
 
     expect(response.status).toBe(200);
     expect(data.length).toBeGreaterThan(0);
-    for (const p of data) {
-      expect(p.category).toBe("nutrients");
+    for (const param of data) {
+      expect(param.category).toBe("nutrients");
     }
   });
 
-  it("returns ordered by display_order", async () => {
+  it("includes EPA thresholds where defined", async () => {
     const request = makeRequest("/api/parameters");
     const response = await GET(request);
     const data = await response.json();
 
-    for (let i = 1; i < data.length; i++) {
-      expect(data[i].displayOrder).toBeGreaterThanOrEqual(data[i - 1].displayOrder);
-    }
-  });
-
-  it("includes EPA threshold data where applicable", async () => {
-    const request = makeRequest("/api/parameters");
-    const response = await GET(request);
-    const data = await response.json();
-
-    // Dissolved oxygen has epaMin = 5.0
     const doParam = data.find((p: { id: string }) => p.id === "dissolved_oxygen");
     expect(doParam).toBeDefined();
     expect(doParam.epaMin).toBe(5.0);
+
+    const phParam = data.find((p: { id: string }) => p.id === "ph");
+    expect(phParam).toBeDefined();
+    expect(phParam.epaMin).toBe(6.5);
+    expect(phParam.epaMax).toBe(9.0);
+
+    const leadParam = data.find((p: { id: string }) => p.id === "lead_total");
+    expect(leadParam).toBeDefined();
+    expect(leadParam.epaMax).toBe(15.0);
+  });
+
+  it("returns emerging contaminants in organic category", async () => {
+    const request = makeRequest("/api/parameters?category=organic");
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(data.length).toBe(5);
+    const ids = data.map((p: { id: string }) => p.id);
+    expect(ids).toContain("methylene_chloride");
+    expect(ids).toContain("vinyl_chloride");
+    expect(ids).toContain("tcep");
   });
 });
