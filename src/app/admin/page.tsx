@@ -76,7 +76,7 @@ interface UploadResult {
   errors: string[];
 }
 
-type Tab = "stations" | "readings" | "upload" | "logs";
+type Tab = "stations" | "readings" | "measurements" | "upload" | "logs";
 
 // ---------------------------------------------------------------------------
 // Helper: Auth headers
@@ -240,6 +240,7 @@ export default function AdminPage() {
             { id: "upload" as Tab, label: "Upload Data", icon: Upload },
             { id: "stations" as Tab, label: "Stations", icon: MapPin },
             { id: "readings" as Tab, label: "Readings", icon: Activity },
+            { id: "measurements" as Tab, label: "Measurements (EAV)", icon: Database },
             { id: "logs" as Tab, label: "Ingestion Log", icon: Clock },
           ]).map((tab) => (
             <button
@@ -267,6 +268,7 @@ export default function AdminPage() {
         {activeTab === "upload" && <UploadTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "stations" && <StationsTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "readings" && <ReadingsTab isDark={isDark} adminKey={adminKey} />}
+        {activeTab === "measurements" && <MeasurementsTab isDark={isDark} />}
         {activeTab === "logs" && <LogsTab isDark={isDark} adminKey={adminKey} />}
       </div>
     </div>
@@ -1108,6 +1110,189 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className={`flex items-center justify-between px-4 py-3 border-t ${isDark ? "border-panel-border" : "border-slate-100"}`}>
+            <p className={`text-[11px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+              Showing {offset + 1}–{Math.min(offset + limit, total)} of {total}
+            </p>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setOffset(Math.max(0, offset - limit))}
+                disabled={offset === 0}
+                className={`p-1.5 rounded ${isDark ? "text-slate-400 hover:bg-panel-hover disabled:opacity-30" : "text-slate-500 hover:bg-slate-50 disabled:opacity-30"}`}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setOffset(offset + limit)}
+                disabled={offset + limit >= total}
+                className={`p-1.5 rounded ${isDark ? "text-slate-400 hover:bg-panel-hover disabled:opacity-30" : "text-slate-500 hover:bg-slate-50 disabled:opacity-30"}`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Measurements (EAV) Tab — view expanded parameter measurements
+// ---------------------------------------------------------------------------
+
+interface Measurement {
+  id: number;
+  stationId: string;
+  stationName: string;
+  parameterId: string;
+  parameterName: string;
+  timestamp: string;
+  value: number;
+  unit: string;
+  source: string;
+  category: string;
+  epaMin: number | null;
+  epaMax: number | null;
+  exceedsThreshold: boolean;
+}
+
+function MeasurementsTab({ isDark }: { isDark: boolean }) {
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [stationFilter, setStationFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [violationsOnly, setViolationsOnly] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const limit = 50;
+
+  const fetchMeasurements = useCallback(async () => {
+    setLoading(true);
+    const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+    if (stationFilter) params.set("stations", stationFilter);
+    if (categoryFilter) params.set("category", categoryFilter);
+    if (violationsOnly) params.set("violations", "true");
+
+    const res = await fetch(`/api/measurements?${params}`);
+    const data = await res.json();
+    setMeasurements(data.data || []);
+    setTotal(data.total || 0);
+    setLoading(false);
+  }, [offset, stationFilter, categoryFilter, violationsOnly]);
+
+  useEffect(() => { fetchMeasurements(); }, [fetchMeasurements]);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>EAV Measurements</h2>
+          <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>{total} total measurements across 25 parameters</p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <input
+            value={stationFilter}
+            onChange={(e) => { setStationFilter(e.target.value); setOffset(0); }}
+            placeholder="Station ID..."
+            className={`px-3 py-1.5 rounded-lg border text-xs w-32 ${isDark ? "bg-udc-dark border-panel-border text-slate-300 placeholder:text-slate-600" : "bg-white border-slate-200"}`}
+          />
+          <select
+            value={categoryFilter}
+            onChange={(e) => { setCategoryFilter(e.target.value); setOffset(0); }}
+            className={`px-3 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-slate-300" : "bg-white border-slate-200"}`}
+          >
+            <option value="">All categories</option>
+            <option value="physical">Physical</option>
+            <option value="nutrients">Nutrients</option>
+            <option value="metals">Metals</option>
+            <option value="biological">Biological</option>
+            <option value="organic">Organic</option>
+          </select>
+          <label className={`flex items-center gap-1.5 text-xs cursor-pointer ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <input
+              type="checkbox"
+              checked={violationsOnly}
+              onChange={(e) => { setViolationsOnly(e.target.checked); setOffset(0); }}
+              className="rounded border-slate-300"
+            />
+            Violations only
+          </label>
+          <button onClick={fetchMeasurements} className={`p-2 rounded-lg border text-xs ${isDark ? "border-panel-border text-slate-400" : "border-slate-200 text-slate-500"}`}>
+            <RefreshCw className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+        </div>
+      ) : (
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-panel-border" : "border-slate-200"}`}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className={isDark ? "bg-panel-bg text-slate-400" : "bg-slate-50 text-slate-500"}>
+                  <th className="text-left px-3 py-2.5 font-medium">Station</th>
+                  <th className="text-left px-3 py-2.5 font-medium">Parameter</th>
+                  <th className="text-left px-3 py-2.5 font-medium">Category</th>
+                  <th className="text-left px-3 py-2.5 font-medium">Timestamp</th>
+                  <th className="text-right px-3 py-2.5 font-medium">Value</th>
+                  <th className="text-left px-3 py-2.5 font-medium">Unit</th>
+                  <th className="text-left px-3 py-2.5 font-medium">Source</th>
+                  <th className="text-center px-3 py-2.5 font-medium">Status</th>
+                </tr>
+              </thead>
+              <tbody className={isDark ? "divide-y divide-panel-border" : "divide-y divide-slate-100"}>
+                {measurements.map((m) => (
+                  <tr key={m.id} className={isDark ? "hover:bg-panel-hover" : "hover:bg-slate-50"}>
+                    <td className={`px-3 py-2 font-mono ${isDark ? "text-udc-gold" : "text-blue-600"}`}>{m.stationId}</td>
+                    <td className={`px-3 py-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{m.parameterName}</td>
+                    <td className="px-3 py-2">
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] ${
+                        m.category === "physical" ? "bg-blue-500/10 text-blue-400" :
+                        m.category === "nutrients" ? "bg-green-500/10 text-green-400" :
+                        m.category === "metals" ? "bg-orange-500/10 text-orange-400" :
+                        m.category === "biological" ? "bg-purple-500/10 text-purple-400" :
+                        "bg-amber-500/10 text-amber-400"
+                      }`}>
+                        {m.category}
+                      </span>
+                    </td>
+                    <td className={`px-3 py-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                      {new Date(m.timestamp).toLocaleString()}
+                    </td>
+                    <td className={`text-right px-3 py-2 font-mono ${
+                      m.exceedsThreshold ? "text-red-400 font-semibold" : isDark ? "text-slate-400" : "text-slate-500"
+                    }`}>
+                      {m.value.toFixed(2)}
+                    </td>
+                    <td className={`px-3 py-2 ${isDark ? "text-slate-500" : "text-slate-400"}`}>{m.unit}</td>
+                    <td className="px-3 py-2">
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] ${
+                        m.source === "usgs" ? "bg-blue-500/10 text-blue-400" :
+                        m.source === "wqp" ? "bg-teal-500/10 text-teal-400" :
+                        m.source === "epa" ? "bg-green-500/10 text-green-400" :
+                        isDark ? "bg-white/5 text-slate-400" : "bg-slate-100 text-slate-500"
+                      }`}>
+                        {m.source}
+                      </span>
+                    </td>
+                    <td className="text-center px-3 py-2">
+                      {m.exceedsThreshold ? (
+                        <AlertTriangle className="w-3.5 h-3.5 text-red-400 mx-auto" />
+                      ) : (
+                        <CheckCircle2 className="w-3.5 h-3.5 text-green-400 mx-auto" />
+                      )}
                     </td>
                   </tr>
                 ))}

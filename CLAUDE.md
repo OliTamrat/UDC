@@ -53,7 +53,7 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [x] **USGS ingestion** — `POST /api/ingest?source=usgs` fetches real USGS NWIS instantaneous values
 - [x] **Ingestion logging** — `ingestion_log` table tracks all ingest runs with status and error messages
 - [x] **Neon PostgreSQL** — `@neondatabase/serverless` + `ws`; `DATABASE_URL` env var switches from SQLite
-- [ ] **Cron scheduling** — Set up Azure Functions Timer or Vercel Cron for automated ingestion
+- [x] **Cron scheduling** — Vercel Cron: USGS daily at 06:00 UTC, WQP daily at 07:00 UTC (`vercel.json`)
 - [x] **Frontend migration** — StationTable, MetricCards, station detail page fetch from API with static fallback
 
 ### Phase 5: AI Research Assistant — DONE
@@ -106,17 +106,18 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - [x] "A Year in the Anacostia" — seasonal heatmap with month-by-month narratives
 - [x] "Upstream to Downstream" — animated watershed propagation with 3 pollution scenarios (storm/CSO/construction)
 
-#### Sprint 4: Animated Scenarios — TODO
-- [ ] Timeline playback component (play/pause/scrub)
-- [ ] Map animation layer with color-changing station markers
-- [ ] Synchronized multi-chart view
-- [ ] Pollution spike detection and scenario library
+#### Sprint 4: Animated Scenarios — DONE
+- [x] Timeline playback component (play/pause/scrub) — `AnimatedScenarios.tsx`
+- [x] Map animation layer with color-changing station markers (SVG river map with pulsing dots)
+- [x] Synchronized multi-chart view (turbidity, DO, pH with playhead sync)
+- [x] Pollution spike detection and alert panel (auto-detects threshold exceedances)
 
-#### Sprint 5: Polish & Integration — TODO
-- [ ] AI assistant context update for new parameters
-- [ ] Admin panel updates for new parameter format
-- [ ] Tests for new API routes and components
-- [ ] Performance optimization and accessibility
+#### Sprint 5: Polish & Integration — DONE
+- [x] **AI assistant context update** — System prompt expanded with 25 EAV parameters, data sources, sensor status; new `getMeasurements` tool for querying EAV data
+- [x] **Admin panel updates** — New "Measurements (EAV)" tab with category/station/violations filters and pagination
+- [x] **Tests** — 3 new test suites: `api-measurements` (7 tests), `api-parameters` (5 tests), `deduplication` (4 tests); total 45 tests across 10 suites
+- [x] **Performance** — Lazy-loaded story components with `dynamic()`, preconnect hints for Google Fonts/Leaflet CDN
+- [x] **Accessibility** — `aria-label` on sidebar nav, `aria-live` region in animated scenarios, `role="status"` for dynamic updates, semantic `<nav>`/`<aside>` already in place
 
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)
@@ -159,6 +160,7 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 - `src/components/stories/WhatsInTheWater.tsx` — Parameter explainer story cards
 - `src/components/stories/YearInAnacostia.tsx` — Seasonal heatmap story
 - `src/components/stories/UpstreamDownstream.tsx` — Watershed propagation animation
+- `src/components/stories/AnimatedScenarios.tsx` — 24-hour timeline playback with storm/CSO scenario
 - `src/components/ErrorBoundary.tsx` — React error boundary
 - `src/data/dc-waterways.ts` — 801 lines: stations, waterways, research, EJ data
 - `src/data/dc-boundaries.ts` — Ward polygons, watershed, flood zones

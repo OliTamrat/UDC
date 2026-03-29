@@ -100,7 +100,7 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-3 px-2">
+      <nav className="flex-1 overflow-y-auto py-3 px-2" aria-label="Main navigation">
         {sections.map((section) => {
           const items = navItems.filter((item) => item.section === section.key);
           return (

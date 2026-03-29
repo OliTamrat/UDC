@@ -17,6 +17,10 @@
     {
       "path": "/api/ingest?source=usgs",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/ingest?source=wqp",
+      "schedule": "0 7 * * *"
     }
   ]
 }

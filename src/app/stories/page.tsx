@@ -1,14 +1,18 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { ScrollySection, FadeIn } from "@/components/stories/ScrollySection";
-import RainStory from "@/components/stories/RainStory";
-import WhatsInTheWater from "@/components/stories/WhatsInTheWater";
-import YearInAnacostia from "@/components/stories/YearInAnacostia";
-import UpstreamDownstream from "@/components/stories/UpstreamDownstream";
 import { BookOpen, ChevronDown } from "lucide-react";
+
+// Lazy-load heavy story components for faster initial page load
+const RainStory = dynamic(() => import("@/components/stories/RainStory"), { ssr: false });
+const WhatsInTheWater = dynamic(() => import("@/components/stories/WhatsInTheWater"), { ssr: false });
+const YearInAnacostia = dynamic(() => import("@/components/stories/YearInAnacostia"), { ssr: false });
+const UpstreamDownstream = dynamic(() => import("@/components/stories/UpstreamDownstream"), { ssr: false });
+const AnimatedScenarios = dynamic(() => import("@/components/stories/AnimatedScenarios"), { ssr: false });
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -64,6 +68,7 @@ export default function StoriesPage() {
                 { href: "#whats-in-water", labelKey: "stories.nav_whats" as const, color: "text-green-400" },
                 { href: "#year", labelKey: "stories.nav_year" as const, color: "text-amber-400" },
                 { href: "#upstream", labelKey: "stories.nav_upstream" as const, color: "text-cyan-400" },
+                { href: "#scenarios", labelKey: "stories.nav_scenarios" as const, color: "text-rose-400" },
               ].map((item) => (
                 <a
                   key={item.href}
@@ -96,6 +101,10 @@ export default function StoriesPage() {
 
           <ScrollySection id="upstream">
             <UpstreamDownstream />
+          </ScrollySection>
+
+          <ScrollySection id="scenarios">
+            <AnimatedScenarios />
           </ScrollySection>
 
           {/* Call to Action */}

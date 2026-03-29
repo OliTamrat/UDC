@@ -357,7 +357,7 @@ export const monitoringStations: MonitoringStation[] = [
     name: "Anacostia at Bladensburg",
     position: [38.9368, -76.9387], // On the river at Bladensburg Waterfront Park
     type: "river",
-    status: "active",
+    status: "offline", // USGS 01651000 sensors not reporting as of March 2026
     parameters: ["DO", "pH", "Temp", "Turbidity", "E. coli", "Nutrients"],
     lastReading: {
       timestamp: "2026-03-10T08:00:00Z",
@@ -412,9 +412,9 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "ANA-004",
     name: "Anacostia at Anacostia Park",
-    position: [38.8799, -76.9708], // USGS 01651812 Anacostia Park Boat Ramp
+    position: [38.8799, -76.9708], // USGS 01651750 — sensors not registered for WQ params
     type: "river",
-    status: "active",
+    status: "offline",
     parameters: ["DO", "pH", "Temp", "Turbidity"],
     lastReading: {
       timestamp: "2026-03-10T08:45:00Z",
@@ -446,9 +446,9 @@ export const monitoringStations: MonitoringStation[] = [
   {
     id: "PB-001",
     name: "Pope Branch at Fort Stanton",
-    position: [38.8680, -76.9760], // On Pope Branch near Fort Stanton Park
+    position: [38.8680, -76.9760], // On Pope Branch near Fort Stanton Park — no USGS gauge
     type: "stream",
-    status: "active",
+    status: "offline", // No USGS sensor; previous mapping to 01646500 (Potomac) was incorrect
     parameters: ["DO", "pH", "Temp", "Turbidity"],
     lastReading: {
       timestamp: "2026-03-10T09:15:00Z",
@@ -465,7 +465,7 @@ export const monitoringStations: MonitoringStation[] = [
     name: "Hickey Run at National Arboretum",
     position: [38.9161, -76.9689], // USGS 01651770 at National Arboretum
     type: "stream",
-    status: "maintenance",
+    status: "active", // USGS 01651770 actively reporting temp + conductivity
     parameters: ["DO", "pH", "Temp", "Turbidity", "E. coli"],
     lastReading: {
       timestamp: "2026-03-09T14:00:00Z",

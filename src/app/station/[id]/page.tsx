@@ -15,7 +15,7 @@ import {
 import {
   ArrowLeft, MapPin, Activity, Droplets, Thermometer, Waves,
   AlertTriangle, CheckCircle2, Wrench, AlertCircle, Download, Share2,
-  FlaskConical,
+  FlaskConical, Clock,
 } from "lucide-react";
 
 function StatusBadge({ status, isDark }: { status: string; isDark: boolean }) {
@@ -346,6 +346,43 @@ export default function StationDetailPage() {
               </button>
             </div>
           </div>
+
+          {/* Data Freshness Banner */}
+          {reading && (() => {
+            const source = (reading as unknown as Record<string, unknown>).source as string | undefined;
+            const isSeed = source === "seed";
+            const readingTime = new Date(reading.timestamp).getTime();
+            const hoursAgo = Math.floor((Date.now() - readingTime) / 3600000);
+            const isStale = !isSeed && hoursAgo > 24;
+            const isFresh = !isSeed && hoursAgo < 2;
+
+            const bannerColor = isSeed
+              ? isDark ? "border-slate-600/30 bg-slate-800/30 text-slate-400" : "border-slate-200 bg-slate-50 text-slate-500"
+              : isStale
+              ? isDark ? "border-red-500/30 bg-red-950/20 text-red-300" : "border-red-200 bg-red-50 text-red-700"
+              : isFresh
+              ? isDark ? "border-green-500/30 bg-green-950/20 text-green-300" : "border-green-200 bg-green-50 text-green-700"
+              : isDark ? "border-amber-500/30 bg-amber-950/20 text-amber-300" : "border-amber-200 bg-amber-50 text-amber-700";
+
+            const timeLabel = isSeed
+              ? "Baseline/modeled data — no live sensor readings available"
+              : hoursAgo < 1
+              ? `Live data — updated ${Math.floor((Date.now() - readingTime) / 60000)} minutes ago`
+              : hoursAgo < 24
+              ? `Last reading ${hoursAgo} hours ago`
+              : `Last reading ${Math.floor(hoursAgo / 24)} days ago — sensor may be offline`;
+
+            const sourceLabel = SOURCE_CONFIG[source || "seed"]?.label || source || "Unknown";
+
+            return (
+              <div className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-xs ${bannerColor}`}>
+                <Clock className="w-4 h-4 flex-shrink-0" />
+                <span className="font-medium">{timeLabel}</span>
+                <span className="opacity-60">·</span>
+                <span className="opacity-80">Source: {sourceLabel}</span>
+              </div>
+            );
+          })()}
 
           {/* Current Readings — legacy 6-card grid */}
           {reading && (

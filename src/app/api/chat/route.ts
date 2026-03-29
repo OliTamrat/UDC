@@ -32,6 +32,20 @@ const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI
 - Nitrate-N: <10 mg/L (drinking water standard)
 - Total Phosphorus: <0.1 mg/L to prevent eutrophication
 
+**Expanded Parameters (25 total via EAV measurement system):**
+- Physical (6): Temperature, Dissolved Oxygen, pH, Turbidity (field), Conductivity, Air Temperature
+- Nutrients (5): Nitrate-N, Nitrate+Nitrite, Total Nitrogen, Kjeldahl Nitrogen, Total Phosphorus, Orthophosphate
+- Metals (2): Lead (total), Hardness (Ca/Mg)
+- Biological (2): E. coli, Total Coliform
+- Organic/Sediment (3): Suspended Sediment Concentration, Total Dissolved Solids, Suspended Sediment Discharge
+- Emerging (5): PFAS (PFOA, PFOS), Microplastics, Pharmaceutical compounds, 1,4-Dioxane
+
+**Data Sources & Freshness:**
+- USGS NWIS Instantaneous Values: Real-time (15-min intervals), auto-ingested daily at 06:00 UTC via Vercel Cron
+- Water Quality Portal (WQP): Lab-analyzed data from USGS, EPA, and DC DOEE, auto-ingested daily at 07:00 UTC
+- Active USGS sensors (as of March 2026): ANA-002 (Riverdale: temp, cond, DO, pH), ANA-003 (Buzzard Pt: temp, cond, turbidity), WB-001 (Watts Branch: temp, cond), HR-001 (Hickey Run: temp, cond)
+- Inactive sensors: ANA-001 (NW Branch), ANA-004 (Anacostia at DC), PB-001 (Potomac at Little Falls)
+
 **Seasonal Patterns (Anacostia watershed):**
 - Winter (Dec–Feb): Low temps (3–6°C), high DO (10–12 mg/L), low E. coli (<200 CFU)
 - Spring (Mar–May): Rising temps (8–15°C), moderate DO (8–10 mg/L), increasing E. coli from runoff
@@ -227,6 +241,69 @@ export async function POST(req: Request) {
               return await res.json();
             } catch {
               return { error: "Could not reach stations API" };
+            }
+          },
+        }),
+        getMeasurements: tool({
+          description:
+            "Query the expanded EAV measurements database. Supports filtering by parameters (e.g. 'lead_total,pfoa'), stations, category (physical/nutrients/metals/biological/organic), date range, and violations only. Use this for detailed parameter queries beyond the legacy 8 readings.",
+          inputSchema: jsonSchema<{
+            params?: string;
+            stations?: string;
+            category?: string;
+            from?: string;
+            to?: string;
+            violations?: boolean;
+            limit?: number;
+          }>({
+            type: "object",
+            properties: {
+              params: {
+                type: "string",
+                description:
+                  "Comma-separated parameter IDs: temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli, nitrate_n, nitrate_nitrite, nitrogen_total, kjeldahl_nitrogen, phosphorus_total, orthophosphate, total_coliform, lead_total, hardness, ssc, tds, pfoa, pfos, microplastics",
+              },
+              stations: {
+                type: "string",
+                description: "Comma-separated station IDs (e.g. ANA-001,WB-001)",
+              },
+              category: {
+                type: "string",
+                description: "Filter by category: physical, nutrients, metals, biological, organic",
+              },
+              from: {
+                type: "string",
+                description: "Start date (ISO 8601, e.g. 2025-01-01)",
+              },
+              to: {
+                type: "string",
+                description: "End date (ISO 8601)",
+              },
+              violations: {
+                type: "boolean",
+                description: "Set true to show only EPA threshold exceedances",
+              },
+              limit: {
+                type: "number",
+                description: "Max results (default 100)",
+              },
+            },
+          }),
+          execute: async ({ params, stations, category, from, to, violations, limit }) => {
+            try {
+              const sp = new URLSearchParams();
+              if (params) sp.set("params", params);
+              if (stations) sp.set("stations", stations);
+              if (category) sp.set("category", category);
+              if (from) sp.set("from", from);
+              if (to) sp.set("to", to);
+              if (violations) sp.set("violations", "true");
+              sp.set("limit", String(limit || 100));
+              const res = await fetch(`${baseUrl}/api/measurements?${sp}`);
+              if (!res.ok) return { error: "Failed to fetch measurements" };
+              return await res.json();
+            } catch {
+              return { error: "Could not reach measurements API" };
             }
           },
         }),

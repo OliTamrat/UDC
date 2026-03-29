@@ -88,6 +88,8 @@ const LEGACY_TO_EAV: Record<string, string> = {
   phosphorus: "phosphorus_total",
 };
 
+const isPostgres = (): boolean => !!process.env.DATABASE_URL;
+
 async function insertMeasurements(
   db: DbClient,
   stationId: string,
@@ -100,11 +102,14 @@ async function insertMeasurements(
   for (const [field, paramId] of Object.entries(LEGACY_TO_EAV)) {
     const val = values[field];
     if (val == null) continue;
-    await db.query(
-      `INSERT INTO measurements (station_id, parameter_id, timestamp, value, qualifier, source)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [stationId, paramId, timestamp, val, qualifier ?? null, source]
-    );
+    const sql = isPostgres()
+      ? `INSERT INTO measurements (station_id, parameter_id, timestamp, value, qualifier, source)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = EXCLUDED.value, qualifier = EXCLUDED.qualifier`
+      : `INSERT INTO measurements (station_id, parameter_id, timestamp, value, qualifier, source)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = excluded.value, qualifier = excluded.qualifier`;
+    await db.query(sql, [stationId, paramId, timestamp, val, qualifier ?? null, source]);
     count++;
   }
   return count;
@@ -130,15 +135,16 @@ const USGS_PCODE_TO_PARAM: Record<string, string> = {
   "00095": "conductivity",
 };
 
-// Active USGS sites with water-quality sensors in the DC/Anacostia watershed
+// USGS sites in the DC/Anacostia watershed
+// Status verified 2026-03-29: 4 active, 3 inactive/seasonal
 const USGS_SITES = [
-  { usgs: "01651000", stationId: "ANA-001" }, // NW Branch Anacostia nr Hyattsville, MD
-  { usgs: "01649500", stationId: "ANA-002" }, // NE Branch Anacostia at Riverdale, MD (active WQ)
-  { usgs: "01651827", stationId: "ANA-003" }, // Anacostia River nr Buzzard Point at Washington, DC
-  { usgs: "01651750", stationId: "ANA-004" }, // Anacostia River at Washington, DC (near Anacostia Park)
-  { usgs: "01646500", stationId: "PB-001" },  // Potomac River at Little Falls (closest WQ gauge)
-  { usgs: "01651800", stationId: "WB-001" },  // Watts Branch at Minnesota Ave Bridge
-  { usgs: "01651770", stationId: "HR-001" },  // Hickey Run at National Arboretum
+  { usgs: "01651000", stationId: "ANA-001", active: false }, // NW Branch Anacostia nr Hyattsville — sensors offline as of 2026-03
+  { usgs: "01649500", stationId: "ANA-002", active: true },  // NE Branch Anacostia at Riverdale — ACTIVE (temp, cond, DO, pH)
+  { usgs: "01651827", stationId: "ANA-003", active: true },  // Anacostia River nr Buzzard Point — ACTIVE (temp, cond, turbidity)
+  { usgs: "01651750", stationId: "ANA-004", active: false }, // Anacostia River at Washington — no WQ sensors reporting
+  // PB-001 (Pope Branch) has no USGS gauge — previous mapping to 01646500 (Potomac at Little Falls) was incorrect
+  { usgs: "01651800", stationId: "WB-001", active: true },   // Watts Branch at Minnesota Ave — ACTIVE (temp, cond)
+  { usgs: "01651770", stationId: "HR-001", active: true },   // Hickey Run at National Arboretum — ACTIVE (temp, cond)
 ];
 
 interface USGSTimeSeriesValue {
@@ -216,11 +222,19 @@ async function ingestUSGS(): Promise<{ count: number; measurementCount: number; 
           validationWarnings.push(...warnings.map((w) => `USGS ${site.usgs} @ ${timestamp}: ${w}`));
         }
 
-        // Legacy readings table
-        await db.query(
-          `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, source)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 'usgs')`,
-          [
+        // Legacy readings table (upsert to avoid duplicates)
+        const usgsReadingSql = isPostgres()
+          ? `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, source)
+             VALUES (?, ?, ?, ?, ?, ?, ?, 'usgs')
+             ON CONFLICT (station_id, timestamp, source) DO UPDATE SET
+               temperature = EXCLUDED.temperature, dissolved_oxygen = EXCLUDED.dissolved_oxygen,
+               ph = EXCLUDED.ph, turbidity = EXCLUDED.turbidity, conductivity = EXCLUDED.conductivity`
+          : `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, source)
+             VALUES (?, ?, ?, ?, ?, ?, ?, 'usgs')
+             ON CONFLICT (station_id, timestamp, source) DO UPDATE SET
+               temperature = excluded.temperature, dissolved_oxygen = excluded.dissolved_oxygen,
+               ph = excluded.ph, turbidity = excluded.turbidity, conductivity = excluded.conductivity`;
+        await db.query(usgsReadingSql, [
             site.stationId,
             timestamp,
             valid.temperature ?? null,
@@ -232,15 +246,18 @@ async function ingestUSGS(): Promise<{ count: number; measurementCount: number; 
         );
         count++;
 
-        // EAV measurements table
+        // EAV measurements table (upsert to avoid duplicates)
         const eavEntries = eavByTime[timestamp] || [];
         for (const entry of eavEntries) {
           if (validateMeasurement(entry.paramId, entry.value)) {
-            await db.query(
-              `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
-               VALUES (?, ?, ?, ?, 'usgs')`,
-              [site.stationId, entry.paramId, timestamp, entry.value]
-            );
+            const eavSql = isPostgres()
+              ? `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
+                 VALUES (?, ?, ?, ?, 'usgs')
+                 ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = EXCLUDED.value`
+              : `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
+                 VALUES (?, ?, ?, ?, 'usgs')
+                 ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = excluded.value`;
+            await db.query(eavSql, [site.stationId, entry.paramId, timestamp, entry.value]);
             totalMeasurements++;
           }
         }
@@ -280,7 +297,7 @@ const EPA_STATION_MAP: Record<string, string> = {
   "USGS-01649500": "ANA-002",
   "USGS-01651827": "ANA-003",
   "USGS-01651750": "ANA-004",
-  "USGS-01646500": "PB-001",
+  // PB-001 removed — Pope Branch has no USGS gauge (01646500 is the Potomac)
   "USGS-01651800": "WB-001",
   "USGS-01651770": "HR-001",
 };
@@ -360,11 +377,21 @@ async function ingestEPA(): Promise<{ count: number; measurementCount: number; e
           validationWarnings.push(...warnings.map((w) => `EPA ${reading.stationId} @ ${timestamp}: ${w}`));
         }
 
-        // Legacy readings table
-        await db.query(
-          `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli_count, nitrate_n, phosphorus, source)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'epa')`,
-          [
+        // Legacy readings table (upsert to avoid duplicates)
+        const epaReadingSql = isPostgres()
+          ? `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli_count, nitrate_n, phosphorus, source)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'epa')
+             ON CONFLICT (station_id, timestamp, source) DO UPDATE SET
+               temperature = EXCLUDED.temperature, dissolved_oxygen = EXCLUDED.dissolved_oxygen,
+               ph = EXCLUDED.ph, turbidity = EXCLUDED.turbidity, conductivity = EXCLUDED.conductivity,
+               ecoli_count = EXCLUDED.ecoli_count, nitrate_n = EXCLUDED.nitrate_n, phosphorus = EXCLUDED.phosphorus`
+          : `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli_count, nitrate_n, phosphorus, source)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'epa')
+             ON CONFLICT (station_id, timestamp, source) DO UPDATE SET
+               temperature = excluded.temperature, dissolved_oxygen = excluded.dissolved_oxygen,
+               ph = excluded.ph, turbidity = excluded.turbidity, conductivity = excluded.conductivity,
+               ecoli_count = excluded.ecoli_count, nitrate_n = excluded.nitrate_n, phosphorus = excluded.phosphorus`;
+        await db.query(epaReadingSql, [
             reading.stationId,
             timestamp,
             valid.temperature ?? null,
@@ -473,12 +500,15 @@ async function ingestWQP(): Promise<{ count: number; measurementCount: number; e
         continue;
       }
 
-      // Insert directly into EAV measurements table
-      await db.query(
-        `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
-         VALUES (?, ?, ?, ?, 'wqp')`,
-        [stationId, paramId, timestamp, value]
-      );
+      // Insert into EAV measurements table (upsert to avoid duplicates)
+      const wqpSql = isPostgres()
+        ? `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
+           VALUES (?, ?, ?, ?, 'wqp')
+           ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = EXCLUDED.value`
+        : `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
+           VALUES (?, ?, ?, ?, 'wqp')
+           ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = excluded.value`;
+      await db.query(wqpSql, [stationId, paramId, timestamp, value]);
       totalMeasurements++;
     }
 

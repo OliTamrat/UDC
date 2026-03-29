@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { MapPin, AlertCircle, CheckCircle2, Wrench, ExternalLink } from "lucide-react";
+import { MapPin, AlertCircle, CheckCircle2, Wrench, ExternalLink, Clock } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { ThresholdDot, getThresholdLevel } from "./ThresholdIndicator";
@@ -63,6 +63,31 @@ function SourceBadge({ source }: { source?: string }) {
       {cfg.abbr}
     </span>
   );
+}
+
+/** Returns a human-readable "time ago" string and staleness level */
+function getDataFreshness(timestamp: string | undefined, source: string | undefined): {
+  label: string;
+  stale: "fresh" | "warning" | "stale" | "baseline";
+} {
+  if (!timestamp) return { label: "No data", stale: "stale" };
+  if (source === "seed") return { label: "Baseline", stale: "baseline" };
+
+  const now = Date.now();
+  const then = new Date(timestamp).getTime();
+  const diffMs = now - then;
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHrs = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  let label: string;
+  if (diffMin < 60) label = `${diffMin}m ago`;
+  else if (diffHrs < 24) label = `${diffHrs}h ago`;
+  else if (diffDays < 7) label = `${diffDays}d ago`;
+  else label = new Date(timestamp).toLocaleDateString();
+
+  const stale = diffHrs < 2 ? "fresh" : diffHrs < 24 ? "warning" : "stale";
+  return { label, stale };
 }
 
 interface StationTableProps {
@@ -203,15 +228,26 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                       </td>
                     );
                   })}
-                  <td className={`py-2.5 px-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px]">{r
-                        ? (r as unknown as Record<string, unknown>).source === "seed"
-                          ? "Baseline"
-                          : new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-                        : "—"}</span>
-                      {r && <SourceBadge source={(r as unknown as Record<string, unknown>).source as string | undefined} />}
-                    </div>
+                  <td className="py-2.5 px-4">
+                    {(() => {
+                      const source = r ? (r as unknown as Record<string, unknown>).source as string | undefined : undefined;
+                      const freshness = getDataFreshness(r?.timestamp, source);
+                      const freshnessColor = {
+                        fresh: isDark ? "text-green-400" : "text-green-600",
+                        warning: isDark ? "text-amber-400" : "text-amber-600",
+                        stale: isDark ? "text-red-400" : "text-red-600",
+                        baseline: isDark ? "text-slate-500" : "text-slate-400",
+                      }[freshness.stale];
+                      return (
+                        <div className="flex items-center gap-1.5">
+                          <Clock className={`w-3 h-3 ${freshnessColor}`} />
+                          <span className={`text-[10px] font-medium ${freshnessColor}`}>
+                            {freshness.label}
+                          </span>
+                          {r && <SourceBadge source={source} />}
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td className="py-2.5 px-4">
                     <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-600 hover:text-blue-400" : "text-slate-300 hover:text-blue-500"} transition-colors`} />

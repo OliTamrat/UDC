@@ -155,8 +155,8 @@ const SQLITE_SCHEMA = `
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
-  CREATE INDEX IF NOT EXISTS idx_readings_station_time
-    ON readings(station_id, timestamp DESC);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_readings_station_time_source
+    ON readings(station_id, timestamp, source);
 
   CREATE INDEX IF NOT EXISTS idx_readings_timestamp
     ON readings(timestamp DESC);
@@ -195,8 +195,8 @@ const SQLITE_SCHEMA = `
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
-  CREATE INDEX IF NOT EXISTS idx_measurements_station_param_time
-    ON measurements(station_id, parameter_id, timestamp DESC);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_measurements_station_param_time_source
+    ON measurements(station_id, parameter_id, timestamp, source);
 
   CREATE INDEX IF NOT EXISTS idx_measurements_timestamp
     ON measurements(timestamp DESC);
@@ -234,8 +234,8 @@ const PG_SCHEMA = `
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 
-  CREATE INDEX IF NOT EXISTS idx_readings_station_time
-    ON readings(station_id, timestamp DESC);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_readings_station_time_source
+    ON readings(station_id, timestamp, source);
 
   CREATE INDEX IF NOT EXISTS idx_readings_timestamp
     ON readings(timestamp DESC);
@@ -274,8 +274,8 @@ const PG_SCHEMA = `
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 
-  CREATE INDEX IF NOT EXISTS idx_measurements_station_param_time
-    ON measurements(station_id, parameter_id, timestamp DESC);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_measurements_station_param_time_source
+    ON measurements(station_id, parameter_id, timestamp, source);
 
   CREATE INDEX IF NOT EXISTS idx_measurements_timestamp
     ON measurements(timestamp DESC);
