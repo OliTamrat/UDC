@@ -234,6 +234,10 @@ const PG_SCHEMA = `
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 
+  DELETE FROM readings WHERE id NOT IN (
+    SELECT MIN(id) FROM readings GROUP BY station_id, timestamp, source
+  );
+
   CREATE UNIQUE INDEX IF NOT EXISTS idx_readings_station_time_source
     ON readings(station_id, timestamp, source);
 
@@ -272,6 +276,10 @@ const PG_SCHEMA = `
     qualifier TEXT,
     source TEXT DEFAULT 'manual',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+  DELETE FROM measurements WHERE id NOT IN (
+    SELECT MIN(id) FROM measurements GROUP BY station_id, parameter_id, timestamp, source
   );
 
   CREATE UNIQUE INDEX IF NOT EXISTS idx_measurements_station_param_time_source
