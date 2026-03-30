@@ -1,223 +1,238 @@
 @import "tailwindcss";
 
+/* ============================================================
+   UDC WQIS Design System v2 — March 2026 Redesign
+
+   Principles:
+   - Warm, modern dark theme (inspired by Linear/Vercel)
+   - Clean, bright light theme
+   - Consistent card depth via shadows, not just borders
+   - Clear typography hierarchy
+   - UDC brand identity preserved (#FDB927 gold, #CE1141 red)
+   ============================================================ */
+
 @theme {
+  /* ── Brand Colors ── */
   --color-udc-gold: #FDB927;
   --color-udc-red: #CE1141;
   --color-udc-navy: #002B5C;
-  --color-udc-dark: #0A1628;
+
+  /* ── Dark Theme Palette (warm charcoal, not cold navy) ── */
+  --color-udc-dark: #0C0F17;
   --color-udc-blue: #1E4D8C;
+  --color-panel-bg: #13161F;
+  --color-panel-border: #23262F;
+  --color-panel-hover: #1A1D27;
+  --color-dashboard-bg: #0C0F17;
+
+  /* ── Light Theme Palette ── */
+  --color-panel-bg-light: #FFFFFF;
+  --color-panel-border-light: #E5E7EB;
+  --color-panel-hover-light: #F3F4F6;
+  --color-surface-light: #F9FAFB;
+
+  /* ── Water Quality Status ── */
   --color-water-clean: #22C55E;
   --color-water-moderate: #F59E0B;
   --color-water-poor: #EF4444;
   --color-water-blue: #3B82F6;
-  --color-panel-bg: #0F1D32;
-  --color-panel-border: #1E3A5F;
-  --color-panel-hover: #162D4A;
 
-  /* Light theme panel colors */
-  --color-panel-bg-light: #FFFFFF;
-  --color-panel-border-light: #E2E8F0;
-  --color-panel-hover-light: #F1F5F9;
-  --color-surface-light: #F8FAFC;
+  /* ── Accent for data/teal ── */
+  --color-accent-teal: #2DD4BF;
 }
 
+/* ── Base Typography ── */
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
-/* ============================================
-   DARK THEME (default)
-   ============================================ */
+/* ============================================================
+   DARK THEME
+   ============================================================ */
 html.dark body {
-  background-color: #0A1628;
-  color: #F1F5F9;
+  background-color: var(--color-udc-dark);
+  color: #E5E7EB;
 }
 
-/* Custom scrollbar - dark */
-html.dark ::-webkit-scrollbar {
-  width: 6px;
-}
-html.dark ::-webkit-scrollbar-track {
-  background: var(--color-udc-dark);
-}
-html.dark ::-webkit-scrollbar-thumb {
-  background: var(--color-panel-border);
-  border-radius: 3px;
-}
-html.dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-udc-blue);
-}
+/* Scrollbar */
+html.dark ::-webkit-scrollbar { width: 6px; }
+html.dark ::-webkit-scrollbar-track { background: var(--color-udc-dark); }
+html.dark ::-webkit-scrollbar-thumb { background: #2A2D37; border-radius: 3px; }
+html.dark ::-webkit-scrollbar-thumb:hover { background: #3A3D47; }
 
-/* Leaflet dark theme overrides */
-html.dark .leaflet-container {
-  background: #0A1628 !important;
-}
+/* Leaflet Map */
+html.dark .leaflet-container { background: var(--color-udc-dark) !important; }
 html.dark .leaflet-control-zoom a {
-  background-color: #0F1D32 !important;
-  color: #F8FAFC !important;
-  border-color: #1E3A5F !important;
+  background-color: var(--color-panel-bg) !important;
+  color: #E5E7EB !important;
+  border-color: var(--color-panel-border) !important;
 }
-html.dark .leaflet-control-zoom a:hover {
-  background-color: #162D4A !important;
-}
+html.dark .leaflet-control-zoom a:hover { background-color: var(--color-panel-hover) !important; }
 html.dark .leaflet-popup-content-wrapper {
-  background: #0F1D32 !important;
-  color: #F8FAFC !important;
-  border: 1px solid #1E3A5F;
+  background: var(--color-panel-bg) !important;
+  color: #E5E7EB !important;
+  border: 1px solid var(--color-panel-border);
   border-radius: 12px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4) !important;
 }
-html.dark .leaflet-popup-tip {
-  background: #0F1D32 !important;
-}
-html.dark .leaflet-popup-close-button {
-  color: #94A3B8 !important;
-}
+html.dark .leaflet-popup-tip { background: var(--color-panel-bg) !important; }
+html.dark .leaflet-popup-close-button { color: #9CA3AF !important; }
 html.dark .leaflet-control-attribution {
-  background: rgba(15, 29, 50, 0.8) !important;
-  color: #64748B !important;
+  background: rgba(19, 22, 31, 0.85) !important;
+  color: #6B7280 !important;
   font-size: 10px !important;
 }
-html.dark .leaflet-control-attribution a {
-  color: #3B82F6 !important;
-}
+html.dark .leaflet-control-attribution a { color: var(--color-water-blue) !important; }
 
-/* ============================================
+/* ============================================================
    LIGHT THEME
-   ============================================ */
+   ============================================================ */
 html.light body {
-  background-color: #F8FAFC;
-  color: #1E293B;
+  background-color: #F9FAFB;
+  color: #111827;
 }
 
-/* Custom scrollbar - light */
-html.light ::-webkit-scrollbar {
-  width: 6px;
-}
-html.light ::-webkit-scrollbar-track {
-  background: #F1F5F9;
-}
-html.light ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 3px;
-}
-html.light ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
-}
+html.light ::-webkit-scrollbar { width: 6px; }
+html.light ::-webkit-scrollbar-track { background: #F3F4F6; }
+html.light ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
+html.light ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
-/* Leaflet light theme overrides */
-html.light .leaflet-container {
-  background: #F0F4F8 !important;
-}
+html.light .leaflet-container { background: #F3F4F6 !important; }
 html.light .leaflet-control-zoom a {
   background-color: #FFFFFF !important;
-  color: #1E293B !important;
-  border-color: #E2E8F0 !important;
+  color: #111827 !important;
+  border-color: #E5E7EB !important;
 }
-html.light .leaflet-control-zoom a:hover {
-  background-color: #F1F5F9 !important;
-}
+html.light .leaflet-control-zoom a:hover { background-color: #F3F4F6 !important; }
 html.light .leaflet-popup-content-wrapper {
   background: #FFFFFF !important;
-  color: #1E293B !important;
-  border: 1px solid #E2E8F0;
+  color: #111827 !important;
+  border: 1px solid #E5E7EB;
   border-radius: 12px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.08) !important;
 }
-html.light .leaflet-popup-tip {
-  background: #FFFFFF !important;
-}
-html.light .leaflet-popup-close-button {
-  color: #64748B !important;
-}
+html.light .leaflet-popup-tip { background: #FFFFFF !important; }
+html.light .leaflet-popup-close-button { color: #6B7280 !important; }
 html.light .leaflet-control-attribution {
   background: rgba(255, 255, 255, 0.9) !important;
-  color: #64748B !important;
+  color: #6B7280 !important;
   font-size: 10px !important;
 }
-html.light .leaflet-control-attribution a {
-  color: #2563EB !important;
-}
+html.light .leaflet-control-attribution a { color: #2563EB !important; }
 
-/* ============================================
-   THEME-AWARE COMPONENT CLASSES
-   ============================================ */
-
-/* Glass panels */
+/* ============================================================
+   CARD SYSTEM — glass-panel
+   Consistent depth via shadow + subtle border + translucent bg
+   ============================================================ */
 html.dark .glass-panel {
-  background: rgba(15, 29, 50, 0.7);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(30, 58, 95, 0.5);
+  background: rgba(19, 22, 31, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.02);
+  backdrop-filter: blur(12px);
 }
-html.light .glass-panel {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(16px);
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+html.dark .glass-panel:hover {
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Theme-aware panels (sidebar, header, cards) */
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  backdrop-filter: blur(12px);
+}
+html.light .glass-panel:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* ── Theme-aware panels ── */
 html.dark .theme-panel {
-  background-color: #0F1D32;
-  border-color: #1E3A5F;
+  background-color: var(--color-panel-bg);
+  border-color: var(--color-panel-border);
 }
 html.light .theme-panel {
   background-color: #FFFFFF;
-  border-color: #E2E8F0;
+  border-color: #E5E7EB;
 }
 
-html.dark .theme-panel-hover:hover {
-  background-color: #162D4A;
-}
-html.light .theme-panel-hover:hover {
-  background-color: #F1F5F9;
-}
+html.dark .theme-panel-hover:hover { background-color: var(--color-panel-hover); }
+html.light .theme-panel-hover:hover { background-color: #F3F4F6; }
 
-/* Theme-aware text */
-html.dark .theme-text-primary { color: #F8FAFC; }
-html.light .theme-text-primary { color: #0F172A; }
+/* ── Theme-aware text ── */
+html.dark .theme-text-primary { color: #F3F4F6; }
+html.light .theme-text-primary { color: #111827; }
 
-html.dark .theme-text-secondary { color: #94A3B8; }
-html.light .theme-text-secondary { color: #64748B; }
+html.dark .theme-text-secondary { color: #9CA3AF; }
+html.light .theme-text-secondary { color: #6B7280; }
 
-html.dark .theme-text-muted { color: #64748B; }
-html.light .theme-text-muted { color: #94A3B8; }
+html.dark .theme-text-muted { color: #6B7280; }
+html.light .theme-text-muted { color: #9CA3AF; }
 
-/* Theme-aware backgrounds */
-html.dark .theme-bg { background-color: #0A1628; }
-html.light .theme-bg { background-color: #F8FAFC; }
+/* ── Theme-aware backgrounds ── */
+html.dark .theme-bg { background-color: var(--color-udc-dark); }
+html.light .theme-bg { background-color: #F9FAFB; }
 
-html.dark .theme-bg-elevated { background-color: #0F1D32; }
+html.dark .theme-bg-elevated { background-color: var(--color-panel-bg); }
 html.light .theme-bg-elevated { background-color: #FFFFFF; }
 
-html.dark .theme-bg-subtle { background-color: rgba(10, 22, 40, 0.5); }
-html.light .theme-bg-subtle { background-color: #F1F5F9; }
+html.dark .theme-bg-subtle { background-color: rgba(12, 15, 23, 0.5); }
+html.light .theme-bg-subtle { background-color: #F3F4F6; }
 
-html.dark .theme-border { border-color: #1E3A5F; }
-html.light .theme-border { border-color: #E2E8F0; }
+html.dark .theme-border { border-color: var(--color-panel-border); }
+html.light .theme-border { border-color: #E5E7EB; }
 
-/* Theme-aware inputs */
+/* ── Theme-aware inputs ── */
 html.dark .theme-input {
-  background-color: rgba(10, 22, 40, 0.5);
-  border-color: #1E3A5F;
-  color: #E2E8F0;
+  background-color: rgba(12, 15, 23, 0.6);
+  border-color: var(--color-panel-border);
+  color: #E5E7EB;
+}
+html.dark .theme-input:focus {
+  border-color: var(--color-water-blue);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
 }
 html.light .theme-input {
-  background-color: #F1F5F9;
-  border-color: #E2E8F0;
-  color: #1E293B;
+  background-color: #F9FAFB;
+  border-color: #E5E7EB;
+  color: #111827;
+}
+html.light .theme-input:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
-/* ============================================
+/* ============================================================
    SHARED STYLES
-   ============================================ */
+   ============================================================ */
 
-/* Pulse animation for active stations */
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #3B82F6, #2DD4BF, #22C55E);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Metric card hover — subtle lift with accent glow */
+.metric-card {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+html.dark .metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08);
+}
+html.light .metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* Station marker pulse */
 @keyframes pulse-ring {
   0% { transform: scale(0.8); opacity: 1; }
   80%, 100% { transform: scale(2.2); opacity: 0; }
 }
-
 .station-marker-active::before {
   content: '';
   position: absolute;
@@ -227,49 +242,24 @@ html.light .theme-input {
   animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #3B82F6, #22D3EE, #10B981);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Metric card animations */
-.metric-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-html.dark .metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
-  border-color: rgba(59, 130, 246, 0.3);
-}
-html.light .metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.25);
-}
-
-/* Water shimmer animation for river polylines */
+/* Water flow animation */
 @keyframes water-flow {
   0% { stroke-dashoffset: 0; }
   100% { stroke-dashoffset: -30; }
 }
 
-/* Ward label tooltip styling */
+/* Ward labels */
 html.dark .ward-label {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  color: #FDB927 !important;
+  color: var(--color-udc-gold) !important;
   font-weight: 700 !important;
   font-size: 11px !important;
   font-family: Inter, system-ui, sans-serif !important;
   text-shadow: 0 0 8px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,0.6) !important;
 }
-html.dark .ward-label::before {
-  display: none !important;
-}
+html.dark .ward-label::before { display: none !important; }
 html.light .ward-label {
   background: transparent !important;
   border: none !important;
@@ -280,29 +270,21 @@ html.light .ward-label {
   font-family: Inter, system-ui, sans-serif !important;
   text-shadow: 0 0 6px rgba(255,255,255,0.8) !important;
 }
-html.light .ward-label::before {
-  display: none !important;
-}
+html.light .ward-label::before { display: none !important; }
 
-/* Mobile sidebar slide-in animation */
+/* ── Animations ── */
 @keyframes slide-in-left {
   from { transform: translateX(-100%); }
   to   { transform: translateX(0); }
 }
-.animate-slide-in-left {
-  animation: slide-in-left 0.25s ease-out;
-}
+.animate-slide-in-left { animation: slide-in-left 0.25s ease-out; }
 
-/* Parameter Explorer slide-in from right */
 @keyframes slide-in-right {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }
 }
-.animate-slide-in-right {
-  animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
+.animate-slide-in-right { animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
-/* Rain animation for stories */
 @keyframes rain-fall {
   0% { transform: translateY(-20px); opacity: 0; }
   10% { opacity: 1; }
@@ -310,13 +292,11 @@ html.light .ward-label::before {
   100% { transform: translateY(200px); opacity: 0; }
 }
 
-/* Water surface wave animation */
 @keyframes water-surface-move {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
-/* Sediment drift in turbid water */
 @keyframes sediment-drift {
   0%, 100% { transform: translate(0, 0); }
   25% { transform: translate(4px, -2px); }
@@ -324,12 +304,6 @@ html.light .ward-label::before {
   75% { transform: translate(3px, 1px); }
 }
 
-
-/* Hide scrollbar utility */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+/* Hide scrollbar */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
