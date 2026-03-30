@@ -362,10 +362,10 @@ export function DOTrendChart() {
           <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} domain={[0, 14]} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          {/* Baseline: always visible as dashed reference */}
-          <Area type="monotone" dataKey="baselineDO" stroke="#3B82F6" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#doGradient)" fillOpacity={0.15} name="Baseline DO" connectNulls />
-          {/* Measured: solid overlay when available */}
-          {hasMeasured && <Area type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" fill="url(#doGradient)" strokeWidth={2.5} name="Measured DO" connectNulls={false} />}
+          {/* Baseline: dashed reference line */}
+          <Area type="monotone" dataKey="baselineDO" stroke="#3B82F6" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#doGradient)" fillOpacity={0.15} name="Baseline DO" connectNulls dot={false} />
+          {/* Measured: solid bright line with visible dots */}
+          {hasMeasured && <Area type="monotone" dataKey="dissolvedOxygen" stroke="#22C55E" fill="none" strokeWidth={2.5} name="Measured DO" connectNulls dot={{ r: 4, fill: "#22C55E", stroke: "#fff", strokeWidth: 1.5 }} />}
           <ReferenceLine y={5} stroke="#EF4444" strokeWidth={1} strokeDasharray="5 5" label={{ value: "EPA Min (5 mg/L)", fill: "#EF4444", fontSize: 10, position: "right" }} />
         </AreaChart>
       </ResponsiveContainer>
@@ -409,8 +409,8 @@ export function TemperatureTrendChart() {
           <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          <Area type="monotone" dataKey="baselineTemp" stroke="#22D3EE" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#tempGradient)" fillOpacity={0.15} name={`Baseline (${unitLabel})`} connectNulls />
-          {hasMeasured && <Area type="monotone" dataKey="temperature" stroke="#22D3EE" fill="url(#tempGradient)" strokeWidth={2.5} name={`Measured (${unitLabel})`} connectNulls={false} />}
+          <Area type="monotone" dataKey="baselineTemp" stroke="#22D3EE" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#tempGradient)" fillOpacity={0.15} name={`Baseline (${unitLabel})`} connectNulls dot={false} />
+          {hasMeasured && <Area type="monotone" dataKey="temperature" stroke="#F97316" fill="none" strokeWidth={2.5} name={`Measured (${unitLabel})`} connectNulls dot={{ r: 4, fill: "#F97316", stroke: "#fff", strokeWidth: 1.5 }} />}
         </AreaChart>
       </ResponsiveContainer>
       <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>{BASELINE_NOTE}</p>
@@ -504,10 +504,10 @@ export function MultiParameterChart() {
           <Line type="monotone" dataKey="baselineDO" stroke="#3B82F6" strokeWidth={1} strokeDasharray="4 3" name="DO baseline" dot={false} connectNulls />
           <Line type="monotone" dataKey="baselineTemp" stroke="#22D3EE" strokeWidth={1} strokeDasharray="4 3" name={`Temp baseline`} dot={false} connectNulls />
           <Line type="monotone" dataKey="baselineTurb" stroke="#F59E0B" strokeWidth={1} strokeDasharray="4 3" name="Turb baseline" dot={false} connectNulls />
-          {/* Measured — solid */}
-          {hasMeasuredDO && <Line type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" strokeWidth={2.5} name="DO measured" dot={{ r: 3 }} connectNulls />}
-          {hasMeasuredTemp && <Line type="monotone" dataKey="temperature" stroke="#22D3EE" strokeWidth={2.5} name={`Temp measured`} dot={{ r: 3 }} connectNulls />}
-          {hasMeasuredTurb && <Line type="monotone" dataKey="turbidity" stroke="#F59E0B" strokeWidth={2.5} name="Turb measured" dot={{ r: 3 }} connectNulls />}
+          {/* Measured — solid with distinct colors and large dots */}
+          {hasMeasuredDO && <Line type="monotone" dataKey="dissolvedOxygen" stroke="#22C55E" strokeWidth={2.5} name="DO measured" dot={{ r: 4, fill: "#22C55E", stroke: "#fff", strokeWidth: 1.5 }} connectNulls />}
+          {hasMeasuredTemp && <Line type="monotone" dataKey="temperature" stroke="#F97316" strokeWidth={2.5} name={`Temp measured`} dot={{ r: 4, fill: "#F97316", stroke: "#fff", strokeWidth: 1.5 }} connectNulls />}
+          {hasMeasuredTurb && <Line type="monotone" dataKey="turbidity" stroke="#EF4444" strokeWidth={2.5} name="Turb measured" dot={{ r: 4, fill: "#EF4444", stroke: "#fff", strokeWidth: 1.5 }} connectNulls />}
         </LineChart>
       </ResponsiveContainer>
       <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>{BASELINE_NOTE}</p>
