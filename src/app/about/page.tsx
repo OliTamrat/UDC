@@ -24,15 +24,15 @@ export default function AboutPage() {
   const sidebarClass = useSidebarClass();
 
   const cardClass = `rounded-xl border p-6 ${
-    isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white border-slate-200 shadow-sm"
+    isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white border-[#E5E7EB] shadow-sm"
   }`;
 
-  const headingClass = `text-lg font-bold mb-3 ${isDark ? "text-white" : "text-slate-900"}`;
+  const headingClass = `text-lg font-bold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`;
 
-  const textClass = `text-sm leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`;
+  const textClass = `text-sm leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`;
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-dashboard-bg" : "bg-slate-50"}`}>
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
@@ -42,8 +42,8 @@ export default function AboutPage() {
           <section
             className={`relative overflow-hidden rounded-2xl border p-8 md:p-10 ${
               isDark
-                ? "border-panel-border bg-gradient-to-br from-udc-navy via-panel-bg to-udc-dark"
-                : "border-slate-200 bg-gradient-to-br from-white via-blue-50/30 to-slate-50 shadow-sm"
+                ? "border-panel-border bg-gradient-to-br from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
+                : "border-[#E5E7EB] bg-gradient-to-br from-white via-blue-50/30 to-[#F9FAFB] shadow-sm"
             }`}
           >
             <div className="flex items-center gap-3 mb-4">
@@ -51,10 +51,10 @@ export default function AboutPage() {
                 UDC
               </div>
               <div>
-                <h1 className={`text-2xl lg:text-3xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+                <h1 className={`text-2xl lg:text-3xl font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>
                   About This Dashboard
                 </h1>
-                <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-sm ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   Project attribution, purpose &amp; disclaimer
                 </p>
               </div>
@@ -74,7 +74,7 @@ export default function AboutPage() {
               created to support teaching, learning, research, and public service within the
               University of the District of Columbia (UDC). It is designed to benefit:
             </p>
-            <ul className={`mt-4 space-y-3 ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+            <ul className={`mt-4 space-y-3 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
               {[
                 { icon: GraduationCap, text: "UDC CAUSES / WRRI faculty, staff, and students" },
                 { icon: Users, text: "Researchers and environmental professionals" },
@@ -100,15 +100,15 @@ export default function AboutPage() {
             <div className="space-y-3">
               <p className={textClass}>
                 This project was proposed and academically guided by{" "}
-                <strong className={isDark ? "text-white" : "text-slate-800"}>Dr. Tolessa Deksissa</strong>,
+                <strong className={isDark ? "text-white" : "text-[#111827]"}>Dr. Tolessa Deksissa</strong>,
                 Faculty Head of the Water Resources Research Institute (WRRI) at the University of the
                 District of Columbia.
               </p>
               <div className={`flex items-start gap-3 p-4 rounded-lg ${isDark ? "bg-udc-gold/5 border border-udc-gold/20" : "bg-amber-50 border border-amber-100"}`}>
                 <Landmark className={`w-5 h-5 mt-0.5 flex-shrink-0 ${isDark ? "text-udc-gold" : "text-amber-600"}`} />
-                <p className={`text-sm ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                <p className={`text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                   This initiative is funded by the{" "}
-                  <strong className={isDark ? "text-white" : "text-slate-800"}>District of Columbia Government</strong>{" "}
+                  <strong className={isDark ? "text-white" : "text-[#111827]"}>District of Columbia Government</strong>{" "}
                   as part of its commitment to environmental data accessibility and water-resource resilience.
                 </p>
               </div>
@@ -129,27 +129,27 @@ export default function AboutPage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               {/* Olink Technologies */}
-              <div className={`rounded-xl border p-5 ${isDark ? "bg-slate-800/50 border-panel-border" : "bg-slate-50 border-slate-200"}`}>
+              <div className={`rounded-xl border p-5 ${isDark ? "bg-slate-800/50 border-panel-border" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
                 <div className="flex items-center gap-3 mb-2">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isDark ? "bg-blue-500/15" : "bg-blue-50"}`}>
                     <Building2 className="w-4.5 h-4.5 text-blue-400" />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Olink Technologies LLC</p>
-                    <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>Software Engineering &amp; Architecture</p>
+                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>Olink Technologies LLC</p>
+                    <p className={`text-[11px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>Software Engineering &amp; Architecture</p>
                   </div>
                 </div>
               </div>
 
               {/* DAPS Analytics */}
-              <div className={`rounded-xl border p-5 ${isDark ? "bg-slate-800/50 border-panel-border" : "bg-slate-50 border-slate-200"}`}>
+              <div className={`rounded-xl border p-5 ${isDark ? "bg-slate-800/50 border-panel-border" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
                 <div className="flex items-center gap-3 mb-2">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isDark ? "bg-emerald-500/15" : "bg-emerald-50"}`}>
                     <BarChart3 className="w-4.5 h-4.5 text-emerald-400" />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-slate-900"}`}>DAPS Analytics</p>
-                    <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>Data Analytics &amp; Visualization</p>
+                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>DAPS Analytics</p>
+                    <p className={`text-[11px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>Data Analytics &amp; Visualization</p>
                   </div>
                 </div>
               </div>
@@ -172,15 +172,15 @@ export default function AboutPage() {
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? "bg-red-500/15" : "bg-red-100"}`}>
                 <ShieldCheck className="w-4 h-4 text-red-400" />
               </div>
-              <h2 className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Disclaimer</h2>
+              <h2 className={`text-lg font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>Disclaimer</h2>
             </div>
-            <div className={`space-y-3 text-sm leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+            <div className={`space-y-3 text-sm leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
               <p>
                 This dashboard is a collaborative project. While UDC WRRI provides scientific guidance
                 and project direction, the software, architecture, and technical development are the
                 intellectual work of{" "}
-                <strong className={isDark ? "text-white" : "text-slate-800"}>Olink Technologies LLC</strong> and{" "}
-                <strong className={isDark ? "text-white" : "text-slate-800"}>DAPS Analytics</strong>.
+                <strong className={isDark ? "text-white" : "text-[#111827]"}>Olink Technologies LLC</strong> and{" "}
+                <strong className={isDark ? "text-white" : "text-[#111827]"}>DAPS Analytics</strong>.
               </p>
               <p>
                 The platform is provided for educational, research, and public informational purposes.
@@ -207,14 +207,14 @@ export default function AboutPage() {
               For questions about this project, the data, or partnership inquiries:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800/50" : "bg-slate-50"}`}>
-                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800/50" : "bg-[#F9FAFB]"}`}>
+                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   Academic &amp; Research
                 </p>
-                <p className={`text-sm font-medium ${isDark ? "text-white" : "text-slate-900"}`}>
+                <p className={`text-sm font-medium ${isDark ? "text-white" : "text-[#111827]"}`}>
                   Dr. Tolessa Deksissa
                 </p>
-                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   WRRI Director, UDC CAUSES
                 </p>
                 <a
@@ -224,14 +224,14 @@ export default function AboutPage() {
                   <Mail className="w-3 h-3" /> wrri@udc.edu
                 </a>
               </div>
-              <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800/50" : "bg-slate-50"}`}>
-                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800/50" : "bg-[#F9FAFB]"}`}>
+                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   Technical &amp; Development
                 </p>
-                <p className={`text-sm font-medium ${isDark ? "text-white" : "text-slate-900"}`}>
+                <p className={`text-sm font-medium ${isDark ? "text-white" : "text-[#111827]"}`}>
                   Olink Technologies LLC
                 </p>
-                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   Platform Design &amp; Engineering
                 </p>
                 <a

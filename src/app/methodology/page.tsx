@@ -143,7 +143,7 @@ export default function MethodologyPage() {
   }, [fetchLogs]);
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
@@ -152,8 +152,8 @@ export default function MethodologyPage() {
           <section
             className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
               isDark
-                ? "border-panel-border bg-gradient-to-br from-blue-900/20 via-panel-bg to-udc-dark"
-                : "border-slate-200 bg-gradient-to-br from-blue-50 via-white to-slate-50"
+                ? "border-panel-border bg-gradient-to-br from-blue-900/10 via-[#0C0F17] to-[#0C0F17]"
+                : "border-[#E5E7EB] bg-gradient-to-br from-white via-blue-50/30 to-[#F9FAFB]"
             }`}
           >
             <div className="relative z-10">
@@ -163,10 +163,10 @@ export default function MethodologyPage() {
                   Methodology & Data Documentation
                 </span>
               </div>
-              <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+              <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
                 Data Methodology & Quality Assurance
               </h1>
-              <p className={`text-sm max-w-2xl ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+              <p className={`text-sm max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                 Complete documentation of sampling protocols, quality assurance procedures, parameter
                 definitions, and data provenance. This page enables researchers to verify, cite, and
                 reproduce analyses using UDC WRRI water quality data.
@@ -186,21 +186,21 @@ export default function MethodologyPage() {
                 key={nav.label}
                 href={nav.href}
                 className={`glass-panel rounded-xl p-4 flex items-center gap-3 transition-all hover:scale-[1.02] ${
-                  isDark ? "hover:border-slate-600" : "hover:border-slate-300"
+                  isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB]"
                 }`}
               >
                 <div className={`p-2 rounded-lg ${nav.bg}`}>
                   <nav.icon className={`w-4 h-4 ${nav.color}`} />
                 </div>
-                <span className={`text-sm font-medium ${isDark ? "text-white" : "text-slate-900"}`}>{nav.label}</span>
+                <span className={`text-sm font-medium ${isDark ? "text-white" : "text-[#111827]"}`}>{nav.label}</span>
               </a>
             ))}
           </div>
 
           {/* Data Sources */}
           <section>
-            <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Data Sources & Provenance</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Data Sources & Provenance</h2>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Every reading in the database is tagged with its source for full traceability
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -228,7 +228,7 @@ export default function MethodologyPage() {
                 {
                   source: "Baseline / Modeled",
                   badge: "seed",
-                  color: "text-slate-400",
+                  color: "text-[#9CA3AF]",
                   bg: "bg-slate-500/10 border-slate-500/20",
                   description: "Initial dataset derived from published averages and modeled values for station commissioning. Being progressively replaced by measured data.",
                   sites: "All 12 stations",
@@ -251,10 +251,10 @@ export default function MethodologyPage() {
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${src.bg} ${src.color}`}>
                       {src.badge.toUpperCase()}
                     </span>
-                    <span className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{src.source}</span>
+                    <span className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{src.source}</span>
                   </div>
-                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>{src.description}</p>
-                  <div className={`space-y-1 text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{src.description}</p>
+                  <div className={`space-y-1 text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
                     <div><span className="font-medium">Sites:</span> {src.sites}</div>
                     <div><span className="font-medium">Frequency:</span> {src.frequency}</div>
                     {src.url && (
@@ -273,9 +273,9 @@ export default function MethodologyPage() {
           <section id="data-dictionary">
             <div className="flex items-center gap-2 mb-1">
               <Database className="w-5 h-5 text-blue-400" />
-              <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Data Dictionary</h2>
+              <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Data Dictionary</h2>
             </div>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Complete definitions for every parameter collected, including measurement methods, valid ranges, and regulatory standards
             </p>
             <div className="space-y-4">
@@ -283,14 +283,14 @@ export default function MethodologyPage() {
                 <div key={param.field} className="glass-panel rounded-xl p-3 sm:p-5">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{param.parameter}</h3>
-                      <code className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>field: {param.field}</code>
+                      <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{param.parameter}</h3>
+                      <code className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>field: {param.field}</code>
                     </div>
                     <span className={`text-xs px-2 py-0.5 rounded-full border ${isDark ? "bg-blue-500/10 border-blue-500/20 text-blue-400" : "bg-blue-50 border-blue-200 text-blue-600"}`}>
                       {param.unit}
                     </span>
                   </div>
-                  <p className={`text-xs leading-relaxed mb-3 ${isDark ? "text-slate-300" : "text-slate-600"}`}>{param.description}</p>
+                  <p className={`text-xs leading-relaxed mb-3 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{param.description}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     {[
                       { label: "Method", value: param.method },
@@ -299,8 +299,8 @@ export default function MethodologyPage() {
                       { label: "EPA Standard", value: param.epaStandard },
                     ].map((detail) => (
                       <div key={detail.label}>
-                        <div className={`text-[10px] font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{detail.label}</div>
-                        <div className={`text-xs mt-0.5 ${isDark ? "text-slate-300" : "text-slate-700"}`}>{detail.value}</div>
+                        <div className={`text-[10px] font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{detail.label}</div>
+                        <div className={`text-xs mt-0.5 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{detail.value}</div>
                       </div>
                     ))}
                   </div>
@@ -313,9 +313,9 @@ export default function MethodologyPage() {
           <section id="sampling">
             <div className="flex items-center gap-2 mb-1">
               <Beaker className="w-5 h-5 text-green-400" />
-              <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Sampling Protocols</h2>
+              <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Sampling Protocols</h2>
             </div>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Standard operating procedures for field data collection
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -372,11 +372,11 @@ export default function MethodologyPage() {
                 <div key={protocol.title} className="glass-panel rounded-xl p-3 sm:p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <protocol.icon className={`w-4 h-4 ${isDark ? "text-green-400" : "text-green-600"}`} />
-                    <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{protocol.title}</h3>
+                    <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{protocol.title}</h3>
                   </div>
                   <ul className="space-y-2">
                     {protocol.items.map((item, i) => (
-                      <li key={i} className={`flex items-start gap-2 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                      <li key={i} className={`flex items-start gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 mt-1.5 flex-shrink-0" />
                         {item}
                       </li>
@@ -391,15 +391,15 @@ export default function MethodologyPage() {
           <section id="qaqc">
             <div className="flex items-center gap-2 mb-1">
               <Shield className="w-5 h-5 text-purple-400" />
-              <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Quality Assurance / Quality Control</h2>
+              <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Quality Assurance / Quality Control</h2>
             </div>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Procedures ensuring data reliability and fitness for research use
             </p>
             <div className="glass-panel rounded-xl p-3 sm:p-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-slate-900"}`}>Automated Validation (Ingest Pipeline)</h3>
+                  <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>Automated Validation (Ingest Pipeline)</h3>
                   <ul className="space-y-2">
                     {[
                       "Physical range checks reject impossible values (e.g., pH > 14, negative DO)",
@@ -408,7 +408,7 @@ export default function MethodologyPage() {
                       "Validation warnings logged and returned in API response",
                       "All rejected values recorded with reason for audit trail",
                     ].map((item, i) => (
-                      <li key={i} className={`flex items-start gap-2 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                      <li key={i} className={`flex items-start gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                         <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 mt-0.5 flex-shrink-0" />
                         {item}
                       </li>
@@ -416,7 +416,7 @@ export default function MethodologyPage() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-slate-900"}`}>Manual Review Procedures</h3>
+                  <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>Manual Review Procedures</h3>
                   <ul className="space-y-2">
                     {[
                       "Monthly data review by WRRI research staff",
@@ -425,7 +425,7 @@ export default function MethodologyPage() {
                       "Lab duplicate RPD must be ≤25% for acceptance",
                       "Flagged values annotated but retained for transparency (not deleted)",
                     ].map((item, i) => (
-                      <li key={i} className={`flex items-start gap-2 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                      <li key={i} className={`flex items-start gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                         <FileText className="w-3.5 h-3.5 text-purple-400 mt-0.5 flex-shrink-0" />
                         {item}
                       </li>
@@ -438,13 +438,13 @@ export default function MethodologyPage() {
 
           {/* Validation Ranges Quick Reference */}
           <section>
-            <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-slate-900"}`}>Validation Ranges (Automated Rejection Thresholds)</h3>
+            <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>Validation Ranges (Automated Rejection Thresholds)</h3>
             <div className="glass-panel rounded-xl overflow-x-auto">
               <table className="w-full text-sm min-w-[500px]">
                 <thead>
-                  <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
+                  <tr className={`border-b ${isDark ? "border-panel-border bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
                     {["Parameter", "Min", "Max", "Unit", "Action if Out-of-Range"].map((h) => (
-                      <th key={h} className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{h}</th>
+                      <th key={h} className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -452,11 +452,11 @@ export default function MethodologyPage() {
                   {DATA_DICTIONARY.map((p) => {
                     const [min, max] = p.range.replace(/,/g, "").split(" to ");
                     return (
-                      <tr key={p.field} className={`border-b ${isDark ? "border-panel-border/50" : "border-slate-100"}`}>
-                        <td className={`py-2 px-4 text-xs ${isDark ? "text-white" : "text-slate-900"}`}>{p.parameter}</td>
-                        <td className={`py-2 px-4 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>{min}</td>
-                        <td className={`py-2 px-4 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>{max}</td>
-                        <td className={`py-2 px-4 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>{p.unit}</td>
+                      <tr key={p.field} className={`border-b ${isDark ? "border-panel-border/50" : "border-[#F3F4F6]"}`}>
+                        <td className={`py-2 px-4 text-xs ${isDark ? "text-white" : "text-[#111827]"}`}>{p.parameter}</td>
+                        <td className={`py-2 px-4 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{min}</td>
+                        <td className={`py-2 px-4 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{max}</td>
+                        <td className={`py-2 px-4 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{p.unit}</td>
                         <td className={`py-2 px-4 text-xs text-red-400`}>Value set to NULL + warning logged</td>
                       </tr>
                     );
@@ -470,9 +470,9 @@ export default function MethodologyPage() {
           <section id="history">
             <div className="flex items-center gap-2 mb-1">
               <Clock className="w-5 h-5 text-amber-400" />
-              <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>Ingestion History</h2>
+              <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Ingestion History</h2>
             </div>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Log of all data ingestion events — when data was fetched, how many records were added, and any errors encountered
             </p>
             <div className="glass-panel rounded-xl overflow-x-auto">
@@ -481,22 +481,22 @@ export default function MethodologyPage() {
                   <div className="w-6 h-6 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : logs.length === 0 ? (
-                <div className={`p-8 text-center text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                  No ingestion events recorded yet. Run <code className="px-1 py-0.5 rounded bg-slate-800 text-slate-300">POST /api/ingest?source=usgs</code> to trigger the first data ingestion.
+                <div className={`p-8 text-center text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                  No ingestion events recorded yet. Run <code className="px-1 py-0.5 rounded bg-slate-800 text-[#E5E7EB]">POST /api/ingest?source=usgs</code> to trigger the first data ingestion.
                 </div>
               ) : (
                 <table className="w-full text-sm min-w-[500px]">
                   <thead>
-                    <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
+                    <tr className={`border-b ${isDark ? "border-panel-border bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
                       {["Date", "Source", "Status", "Records", "Errors"].map((h) => (
-                        <th key={h} className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{h}</th>
+                        <th key={h} className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {logs.map((log) => (
-                      <tr key={log.id} className={`border-b ${isDark ? "border-panel-border/50" : "border-slate-100"}`}>
-                        <td className={`py-2 px-4 text-xs ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+                      <tr key={log.id} className={`border-b ${isDark ? "border-panel-border/50" : "border-[#F3F4F6]"}`}>
+                        <td className={`py-2 px-4 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
                           {log.completed_at ? new Date(log.completed_at).toLocaleString() : new Date(log.started_at).toLocaleString()}
                         </td>
                         <td className="py-2 px-4">
@@ -505,7 +505,7 @@ export default function MethodologyPage() {
                               ? "text-blue-400 bg-blue-500/10 border-blue-500/30"
                               : log.source === "epa"
                               ? "text-green-400 bg-green-500/10 border-green-500/30"
-                              : "text-slate-400 bg-slate-500/10 border-slate-500/30"
+                              : "text-[#9CA3AF] bg-slate-500/10 border-slate-500/30"
                           }`}>
                             {log.source.toUpperCase()}
                           </span>
@@ -518,10 +518,10 @@ export default function MethodologyPage() {
                             {log.status}
                           </span>
                         </td>
-                        <td className={`py-2 px-4 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                        <td className={`py-2 px-4 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                           {log.records_count.toLocaleString()}
                         </td>
-                        <td className={`py-2 px-4 text-xs max-w-xs truncate ${log.error_message ? "text-red-400" : isDark ? "text-slate-500" : "text-slate-400"}`}>
+                        <td className={`py-2 px-4 text-xs max-w-xs truncate ${log.error_message ? "text-red-400" : isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                           {log.error_message || "—"}
                         </td>
                       </tr>
@@ -534,23 +534,23 @@ export default function MethodologyPage() {
 
           {/* Citation Guide */}
           <section>
-            <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>How to Cite This Data</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>How to Cite This Data</h2>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Recommended citations for academic publications and reports
             </p>
             <div className="glass-panel rounded-xl p-3 sm:p-5 space-y-4">
               <div>
-                <h3 className={`text-xs font-semibold mb-1 ${isDark ? "text-slate-300" : "text-slate-700"}`}>Dataset Citation (APA 7th)</h3>
+                <h3 className={`text-xs font-semibold mb-1 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>Dataset Citation (APA 7th)</h3>
                 <div className={`text-xs p-3 rounded-lg border font-mono leading-relaxed ${
-                  isDark ? "bg-udc-dark/50 border-panel-border text-slate-400" : "bg-slate-50 border-slate-200 text-slate-600"
+                  isDark ? "bg-[#0C0F17]/50 border-panel-border text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563]"
                 }`}>
                   UDC Water Resources Research Institute. (2026). <em>Anacostia Watershed Water Quality Monitoring Data</em> [Dataset]. University of the District of Columbia, College of Agriculture, Urban Sustainability and Environmental Sciences (CAUSES). Retrieved from https://udc-water.vercel.app/api/export
                 </div>
               </div>
               <div>
-                <h3 className={`text-xs font-semibold mb-1 ${isDark ? "text-slate-300" : "text-slate-700"}`}>API Endpoint for Programmatic Access</h3>
+                <h3 className={`text-xs font-semibold mb-1 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>API Endpoint for Programmatic Access</h3>
                 <div className={`text-xs p-3 rounded-lg border font-mono ${
-                  isDark ? "bg-udc-dark/50 border-panel-border text-slate-400" : "bg-slate-50 border-slate-200 text-slate-600"
+                  isDark ? "bg-[#0C0F17]/50 border-panel-border text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563]"
                 }`}>
                   <div>GET /api/stations — List all monitoring stations with latest readings</div>
                   <div>GET /api/stations/:id/history — Historical readings for a station</div>
@@ -558,8 +558,8 @@ export default function MethodologyPage() {
                   <div>GET /api/ingestion-log — View data ingestion history</div>
                 </div>
               </div>
-              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                CSV and JSON exports include machine-readable citation metadata. All exports include the <code className="px-1 py-0.5 rounded bg-slate-800 text-slate-300">source</code> field for each reading.
+              <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                CSV and JSON exports include machine-readable citation metadata. All exports include the <code className="px-1 py-0.5 rounded bg-slate-800 text-[#E5E7EB]">source</code> field for each reading.
               </p>
             </div>
           </section>

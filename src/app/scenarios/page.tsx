@@ -147,7 +147,7 @@ export default function ScenariosPage() {
   const availableStations = currentFrame?.stations || [];
 
   return (
-    <div className={`flex min-h-screen ${isDark ? "bg-dashboard-bg text-white" : "bg-slate-50 text-slate-900"}`}>
+    <div className={`flex min-h-screen ${isDark ? "bg-udc-dark text-white" : "bg-[#F9FAFB] text-[#111827]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
@@ -163,13 +163,13 @@ export default function ScenariosPage() {
                 Sprint 4 — Animated Scenarios
               </span>
             </div>
-            <h1 className={`text-2xl lg:text-3xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+            <h1 className={`text-2xl lg:text-3xl font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>
               Pollution Scenario{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                 Simulator
               </span>
             </h1>
-            <p className={`text-sm mt-1 max-w-2xl ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <p className={`text-sm mt-1 max-w-2xl ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Watch how pollution events propagate through the Anacostia watershed in real time.
               Select a scenario, press play, and observe station readings change as contamination
               travels downstream.
@@ -221,12 +221,12 @@ export default function ScenariosPage() {
             <div>
               <div
                 className={`rounded-xl border p-4 h-full ${
-                  isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-slate-200 shadow-sm"
+                  isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-[#E5E7EB] shadow-sm"
                 }`}
               >
                 <h4
                   className={`text-xs font-semibold mb-3 flex items-center gap-2 ${
-                    isDark ? "text-white" : "text-slate-900"
+                    isDark ? "text-white" : "text-[#111827]"
                   }`}
                 >
                   <AlertCircle className="w-3.5 h-3.5 text-red-400" />
@@ -234,7 +234,7 @@ export default function ScenariosPage() {
                 </h4>
                 <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
                   {currentFrame?.spikes.length === 0 && (
-                    <p className={`text-[11px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                    <p className={`text-[11px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                       No EPA threshold violations at this time step.
                     </p>
                   )}
@@ -259,11 +259,11 @@ export default function ScenariosPage() {
                         >
                           {spike.severity === "critical" ? "CRITICAL" : "WARNING"}
                         </span>
-                        <span className={`text-[9px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                        <span className={`text-[9px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                           {spike.stationId}
                         </span>
                       </div>
-                      <p className={isDark ? "text-slate-300" : "text-slate-700"}>
+                      <p className={isDark ? "text-[#E5E7EB]" : "text-[#374151]"}>
                         {spike.description}
                       </p>
                     </div>
@@ -276,13 +276,13 @@ export default function ScenariosPage() {
           {/* Station Selector */}
           <div
             className={`rounded-xl border p-4 mb-4 ${
-              isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-slate-200 shadow-sm"
+              isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-[#E5E7EB] shadow-sm"
             }`}
           >
-            <h4 className={`text-xs font-semibold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+            <h4 className={`text-xs font-semibold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
               Chart Stations
             </h4>
-            <p className={`text-[10px] mb-3 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <p className={`text-[10px] mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
               Select stations to compare in the synchronized charts below
             </p>
             <div className="flex flex-wrap gap-2">
@@ -298,12 +298,12 @@ export default function ScenariosPage() {
                           ? "bg-water-blue/20 border-water-blue/40 text-blue-300"
                           : "bg-blue-50 border-blue-300 text-blue-700"
                         : isDark
-                          ? "bg-transparent border-panel-border text-slate-400 hover:border-slate-500"
-                          : "bg-transparent border-slate-200 text-slate-500 hover:border-slate-300"
+                          ? "bg-transparent border-panel-border text-[#D1D5DB] hover:border-slate-500"
+                          : "bg-transparent border-[#E5E7EB] text-[#6B7280] hover:border-slate-300"
                     }`}
                   >
                     {station.stationId}
-                    <span className={`ml-1 text-[9px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                    <span className={`ml-1 text-[9px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                       {station.type}
                     </span>
                   </button>
@@ -329,22 +329,22 @@ export default function ScenariosPage() {
               />
               <div
                 className={`relative z-10 w-full max-w-md rounded-2xl border p-6 ${
-                  isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200 shadow-xl"
+                  isDark ? "bg-panel-bg border-panel-border" : "bg-white border-[#E5E7EB] shadow-xl"
                 }`}
               >
                 <button
                   onClick={() => setDetailStation(null)}
                   className={`absolute top-3 right-3 p-1.5 rounded-lg ${
-                    isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
+                    isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#6B7280]"
                   }`}
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <h3 className={`text-lg font-bold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
+                <h3 className={`text-lg font-bold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>
                   {detailStation.stationName}
                 </h3>
-                <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   {detailStation.stationId} · {detailStation.type}
                 </p>
 
@@ -378,18 +378,18 @@ export default function ScenariosPage() {
                     return items.map((item) => (
                       <div
                         key={item.label}
-                        className={`p-3 rounded-lg ${isDark ? "bg-slate-800" : "bg-slate-50"}`}
+                        className={`p-3 rounded-lg ${isDark ? "bg-slate-800" : "bg-[#F9FAFB]"}`}
                       >
-                        <p className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                        <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                           {item.label}
                         </p>
-                        <p className={`text-sm font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+                        <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>
                           {item.value}
                         </p>
                         {item.change !== null && (
                           <p
                             className={`text-[10px] mt-0.5 ${
-                              item.change > 0 ? "text-red-400" : item.change < 0 ? "text-blue-400" : "text-slate-400"
+                              item.change > 0 ? "text-red-400" : item.change < 0 ? "text-blue-400" : "text-[#9CA3AF]"
                             }`}
                           >
                             {item.change > 0 ? "+" : ""}
@@ -397,7 +397,7 @@ export default function ScenariosPage() {
                           </p>
                         )}
                         {item.epa && (
-                          <p className={`text-[9px] mt-0.5 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                          <p className={`text-[9px] mt-0.5 ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                             EPA: {item.epa}
                           </p>
                         )}
@@ -412,12 +412,12 @@ export default function ScenariosPage() {
           {/* Footer */}
           <div
             className={`rounded-xl border p-4 ${
-              isDark ? "bg-panel-bg/60 border-panel-border" : "bg-slate-50 border-slate-200"
+              isDark ? "bg-panel-bg/60 border-panel-border" : "bg-[#F9FAFB] border-[#E5E7EB]"
             }`}
           >
             <div className="flex items-start gap-2 mb-3">
-              <Info className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
-              <p className={`text-[11px] leading-relaxed ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              <Info className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
+              <p className={`text-[11px] leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                 These scenarios are simulated using baseline data from UDC WRRI monitoring stations
                 and modeled pollution propagation dynamics. The simulation engine uses Gaussian pulse
                 models with flow-delay propagation to approximate how contaminants travel through the
@@ -426,9 +426,9 @@ export default function ScenariosPage() {
               </p>
             </div>
             {baselineInfo && (
-              <div className={`flex items-center gap-2 pt-3 border-t ${isDark ? "border-panel-border" : "border-slate-200"}`}>
+              <div className={`flex items-center gap-2 pt-3 border-t ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
                 <Database className={`w-3.5 h-3.5 ${baselineInfo.source === "real" ? "text-green-400" : "text-amber-400"}`} />
-                <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                <p className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                   {baselineInfo.source === "real" ? (
                     <>
                       Baselines grounded in <strong className={isDark ? "text-green-300" : "text-green-600"}>{baselineInfo.totalReadings.toLocaleString()} real sensor readings</strong> from {baselineInfo.stationCount} stations (USGS/EPA/WQP ingested data)

@@ -22,13 +22,13 @@ export default function Footer() {
   const isDark = resolvedTheme === "dark";
 
   const linkClass = `transition-colors ${
-    isDark ? "text-slate-400 hover:text-udc-gold" : "text-slate-600 hover:text-udc-red"
+    isDark ? "text-[#D1D5DB] hover:text-udc-gold" : "text-[#4B5563] hover:text-udc-red"
   }`;
 
   return (
     <footer
       className={`border-t mt-8 ${
-        isDark ? "border-panel-border bg-udc-dark/50" : "border-slate-200 bg-slate-50/80"
+        isDark ? "border-white/[0.06] bg-[#0C0F17]/50" : "border-[#E5E7EB] bg-[#F9FAFB]/80"
       }`}
     >
       {/* Main footer grid */}
@@ -48,12 +48,12 @@ export default function Footer() {
                 >
                   {t("footer.udc_full")}
                 </p>
-                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   {t("footer.causes_full")}
                 </p>
               </div>
             </div>
-            <p className={`text-xs leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <p className={`text-xs leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               {t("footer.mission")}
             </p>
           </div>
@@ -62,23 +62,23 @@ export default function Footer() {
           <div>
             <h3
               className={`text-xs font-semibold uppercase tracking-wider mb-3 ${
-                isDark ? "text-slate-300" : "text-slate-800"
+                isDark ? "text-[#E5E7EB]" : "text-slate-800"
               }`}
             >
               {t("footer.institute")}
             </h3>
             <ul className="space-y-2 text-xs">
-              <li className={isDark ? "text-slate-400" : "text-slate-600"}>
+              <li className={isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}>
                 <span className="font-medium">{t("footer.wrri")}</span> (WRRI)
               </li>
-              <li className={isDark ? "text-slate-400" : "text-slate-600"}>
+              <li className={isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}>
                 Center for Urban Resilience, Innovation &amp; Infrastructure (CURII)
               </li>
-              <li className={isDark ? "text-slate-400" : "text-slate-600"}>
+              <li className={isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}>
                 Environmental Quality Testing Laboratory (EQTL)
               </li>
               <li className="pt-1">
-                <div className={`flex items-start gap-2 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <div className={`flex items-start gap-2 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
                   <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0 text-udc-gold" />
                   <span>4200 Connecticut Ave NW<br />Washington, DC 20008</span>
                 </div>
@@ -102,7 +102,7 @@ export default function Footer() {
           <div>
             <h3
               className={`text-xs font-semibold uppercase tracking-wider mb-3 ${
-                isDark ? "text-slate-300" : "text-slate-800"
+                isDark ? "text-[#E5E7EB]" : "text-slate-800"
               }`}
             >
               {t("footer.quick_links")}
@@ -130,7 +130,7 @@ export default function Footer() {
           <div>
             <h3
               className={`text-xs font-semibold uppercase tracking-wider mb-3 ${
-                isDark ? "text-slate-300" : "text-slate-800"
+                isDark ? "text-[#E5E7EB]" : "text-slate-800"
               }`}
             >
               {t("footer.data_sources")}
@@ -179,26 +179,26 @@ export default function Footer() {
       {/* Attribution bar */}
       <div
         className={`border-t px-4 sm:px-6 py-4 ${
-          isDark ? "border-panel-border/50 bg-udc-dark/80" : "border-slate-200/80 bg-slate-100/60"
+          isDark ? "border-white/[0.06] bg-udc-dark/80" : "border-[#E5E7EB]/80 bg-slate-100/60"
         }`}
       >
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className={`text-[11px] text-center sm:text-left leading-relaxed ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+          <p className={`text-[11px] text-center sm:text-left leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
             {t("footer.built_by")}{" "}
-            <span className={`font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-slate-700"}`}>
               Olink Technologies Inc
             </span>{" "}
             {t("footer.and")}{" "}
-            <span className={`font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-slate-700"}`}>
               DAPS Analytics
             </span>{" "}
             {t("footer.in_collaboration")}{" "}
-            <span className={`font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-slate-700"}`}>
               Dr. Tolessa Deksissa
             </span>
             {t("footer.director_title")}
           </p>
-          <div className={`flex items-center gap-1.5 shrink-0 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+          <div className={`flex items-center gap-1.5 shrink-0 ${isDark ? "text-[#9CA3AF]" : "text-slate-400"}`}>
             <Droplets className="w-3.5 h-3.5" />
             <span className="text-[10px]">
               &copy; {new Date().getFullYear()} UDC CAUSES / WRRI
@@ -210,10 +210,10 @@ export default function Footer() {
       {/* Funding line */}
       <div
         className={`border-t text-center px-4 py-2 ${
-          isDark ? "border-panel-border/30" : "border-slate-200/50"
+          isDark ? "border-white/[0.06]" : "border-[#E5E7EB]/50"
         }`}
       >
-        <p className={`text-[10px] ${isDark ? "text-slate-600" : "text-slate-400"}`}>
+        <p className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-slate-400"}`}>
           {t("footer.funded")}
         </p>
       </div>

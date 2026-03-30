@@ -36,13 +36,13 @@ function useDemo() {
     cardHover: dark
       ? "hover:border-white/[0.12] hover:shadow-xl hover:shadow-black/30"
       : "hover:shadow-md hover:border-[#D1D5DB]",
-    // Text
+    // Text — bright enough to read on dark backgrounds
     h1: dark ? "text-white" : "text-[#111827]",
     h2: dark ? "text-white" : "text-[#1F2937]",
     h3: dark ? "text-[#F3F4F6]" : "text-[#1F2937]",
-    body: dark ? "text-[#D1D5DB]" : "text-[#4B5563]",
-    muted: dark ? "text-[#6B7280]" : "text-[#9CA3AF]",
-    label: dark ? "text-[#9CA3AF]" : "text-[#6B7280]",
+    body: dark ? "text-[#E5E7EB]" : "text-[#4B5563]",
+    muted: dark ? "text-[#9CA3AF]" : "text-[#9CA3AF]",
+    label: dark ? "text-[#D1D5DB]" : "text-[#6B7280]",
     // Borders & dividers
     border: dark ? "border-white/[0.06]" : "border-[#E5E7EB]",
     divider: dark ? "divide-white/[0.06]" : "divide-[#F3F4F6]",

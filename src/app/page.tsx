@@ -31,7 +31,7 @@ const DCMap = dynamic(() => import("@/components/map/DCMap"), {
     <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-xl glass-panel flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
-        <span className="text-sm text-slate-400">Loading DC Map...</span>
+        <span className="text-sm text-[#D1D5DB]">Loading DC Map...</span>
       </div>
     </div>
   ),
@@ -57,7 +57,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
@@ -65,8 +65,8 @@ export default function Dashboard() {
           {/* Hero Section */}
           <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
-              ? "border-panel-border bg-gradient-to-br from-udc-navy via-panel-bg to-udc-dark"
-              : "border-slate-200 bg-gradient-to-br from-blue-50 via-white to-slate-50"
+              ? "border-panel-border bg-gradient-to-br from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
+              : "border-[#E5E7EB] bg-gradient-to-br from-white via-blue-50/30 to-[#F9FAFB]"
           }`}>
             <div className={`absolute inset-0 ${
               isDark ? "bg-gradient-to-r from-blue-600/5 via-transparent to-cyan-600/5" : "bg-gradient-to-r from-blue-100/30 via-transparent to-cyan-100/30"
@@ -80,11 +80,11 @@ export default function Dashboard() {
                   {t("hero.badge")}
                 </span>
               </div>
-              <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+              <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
                 {t("hero.title")}{" "}
                 <span className="gradient-text">{t("hero.title_highlight")}</span>
               </h1>
-              <p className={`text-sm max-w-2xl mb-4 ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+              <p className={`text-sm max-w-2xl mb-4 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                 {t("hero.description")}
               </p>
               <div className="flex flex-wrap gap-3">
@@ -97,11 +97,11 @@ export default function Dashboard() {
                   <div
                     key={item.labelKey}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border ${
-                      isDark ? "bg-white/5 border-white/10" : "bg-white/80 border-slate-200"
+                      isDark ? "bg-white/[0.03] border-white/[0.06]" : "bg-white border-[#E5E7EB]"
                     }`}
                   >
                     <item.icon className={`w-3.5 h-3.5 ${item.color}`} />
-                    <span className={isDark ? "text-slate-300" : "text-slate-600"}>{t(item.labelKey)}</span>
+                    <span className={isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}>{t(item.labelKey)}</span>
                   </div>
                 ))}
               </div>
@@ -111,7 +111,7 @@ export default function Dashboard() {
           {/* Data Source Notice */}
           <div className={`flex items-start gap-3 rounded-lg border px-4 py-3 text-xs ${
             isDark
-              ? "border-blue-500/30 bg-blue-950/30 text-blue-300"
+              ? "border-blue-500/20 bg-blue-950/20 text-blue-300"
               : "border-blue-200 bg-blue-50 text-blue-800"
           }`}>
             <Shield className="w-4 h-4 mt-0.5 shrink-0" />
@@ -130,14 +130,14 @@ export default function Dashboard() {
           <section id="map">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <div>
-                <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.map_title")}</h2>
-                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{t("section.map_title")}</h2>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
                   {t("section.map_desc")}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-blue-400" />
-                <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t("section.map_network")}</span>
+                <span className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>{t("section.map_network")}</span>
               </div>
             </div>
             <div className="h-[300px] sm:h-[400px] md:h-[550px]" aria-label="Interactive watershed map">
@@ -158,8 +158,8 @@ export default function Dashboard() {
           <TempUnitProvider>
           <section id="water-quality">
             <div className="mb-4">
-              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.wq_title")}</h2>
-              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{t("section.wq_title")}</h2>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
                 {t("section.wq_desc")}
               </p>
             </div>
@@ -174,8 +174,8 @@ export default function Dashboard() {
           {/* Multi-parameter overview */}
           <section id="analytics">
             <div className="mb-3">
-              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.multi_title")}</h2>
-              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{t("section.multi_title")}</h2>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
                 {t("section.multi_desc")}
               </p>
             </div>
@@ -186,8 +186,8 @@ export default function Dashboard() {
           {/* Environmental Justice */}
           <section>
             <div className="mb-3">
-              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.ej_title")}</h2>
-              <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{t("section.ej_title")}</h2>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
                 {t("section.ej_desc")}
               </p>
             </div>
@@ -198,8 +198,8 @@ export default function Dashboard() {
           <section id="stormwater">
             <div className="mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("section.stations_title")}</h2>
-                <p className={`text-xs max-w-3xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{t("section.stations_title")}</h2>
+                <p className={`text-xs max-w-3xl ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
                   {t("section.stations_desc")}
                 </p>
               </div>
@@ -207,8 +207,8 @@ export default function Dashboard() {
                 onClick={() => setExplorerOpen(true)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${
                   isDark
-                    ? "border-panel-border bg-panel-bg hover:bg-panel-hover text-slate-300 hover:border-water-blue/50"
-                    : "border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:border-blue-400"
+                    ? "border-panel-border bg-panel-bg hover:bg-white/[0.04] text-[#E5E7EB] hover:border-water-blue/50"
+                    : "border-[#E5E7EB] bg-white hover:bg-[#F3F4F6] text-[#111827] hover:border-blue-400"
                 } ${selectedParams.length > 0 ? (isDark ? "border-water-blue/50" : "border-blue-400") : ""}`}
               >
                 <SlidersHorizontal className="w-4 h-4" />

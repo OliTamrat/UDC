@@ -99,8 +99,8 @@ export default function ResearchAssistant() {
         className={`fixed bottom-5 right-5 z-[10000] flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all duration-300 group ${
           isOpen
             ? isDark
-              ? "bg-panel-bg border border-panel-border text-slate-300"
-              : "bg-white border border-slate-200 text-slate-600"
+              ? "bg-panel-bg border border-panel-border text-[#E5E7EB]"
+              : "bg-white border border-[#E5E7EB] text-[#4B5563]"
             : "bg-gradient-to-r from-udc-gold to-udc-red text-white hover:shadow-xl hover:scale-105"
         }`}
         aria-label={isOpen ? "Close AI assistant" : "Open AI research assistant"}
@@ -130,13 +130,13 @@ export default function ResearchAssistant() {
           className={`w-full sm:w-[420px] h-[560px] sm:h-[600px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden ${
             isDark
               ? "bg-panel-bg border-panel-border"
-              : "bg-white border-slate-200"
+              : "bg-white border-[#E5E7EB]"
           }`}
         >
           {/* Header */}
           <div
             className={`flex items-center justify-between px-4 py-3 border-b shrink-0 ${
-              isDark ? "border-panel-border" : "border-slate-100"
+              isDark ? "border-panel-border" : "border-[#F3F4F6]"
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -146,12 +146,12 @@ export default function ResearchAssistant() {
               <div>
                 <h3
                   className={`text-sm font-semibold leading-tight ${
-                    isDark ? "text-white" : "text-slate-900"
+                    isDark ? "text-white" : "text-[#111827]"
                   }`}
                 >
                   Research Assistant
                 </h3>
-                <p className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   Powered by Claude AI
                 </p>
               </div>
@@ -161,7 +161,7 @@ export default function ResearchAssistant() {
                 <button
                   onClick={() => setMessages([])}
                   className={`p-1.5 rounded-lg transition-colors ${
-                    isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
+                    isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#6B7280]"
                   }`}
                   title="Clear conversation"
                   aria-label="Clear conversation"
@@ -172,7 +172,7 @@ export default function ResearchAssistant() {
               <button
                 onClick={() => setIsOpen(false)}
                 className={`p-1.5 rounded-lg transition-colors ${
-                  isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
+                  isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#6B7280]"
                 }`}
                 aria-label="Close panel"
               >
@@ -212,7 +212,7 @@ export default function ResearchAssistant() {
                   </div>
                   <div
                     className={`text-sm leading-relaxed ${
-                      isDark ? "text-slate-300" : "text-slate-700"
+                      isDark ? "text-[#E5E7EB]" : "text-[#374151]"
                     }`}
                   >
                     <p className="mb-2">
@@ -236,8 +236,8 @@ export default function ResearchAssistant() {
                       onClick={() => handleSend(q)}
                       className={`text-[11px] px-2.5 py-1.5 rounded-full border transition-colors text-left ${
                         isDark
-                          ? "border-panel-border text-slate-400 hover:bg-panel-hover hover:text-slate-200"
-                          : "border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                          ? "border-panel-border text-[#D1D5DB] hover:bg-white/[0.04] hover:text-[#E5E7EB]"
+                          : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
                       }`}
                     >
                       {q}
@@ -280,8 +280,8 @@ export default function ResearchAssistant() {
                         ? "bg-blue-600/20 text-blue-100"
                         : "bg-blue-600 text-white"
                       : isDark
-                        ? "bg-panel-hover text-slate-300"
-                        : "bg-slate-100 text-slate-700"
+                        ? "bg-white/[0.04] text-[#E5E7EB]"
+                        : "bg-[#F3F4F6] text-[#374151]"
                   }`}
                 >
                   {message.parts?.map((part, i) => {
@@ -303,7 +303,7 @@ export default function ResearchAssistant() {
                         <div
                           key={i}
                           className={`flex items-center gap-1.5 text-[10px] my-1 py-1 px-2 rounded-md ${
-                            isDark ? "bg-white/5 text-slate-500" : "bg-white/50 text-slate-400"
+                            isDark ? "bg-white/5 text-[#9CA3AF]" : "bg-white/50 text-[#9CA3AF]"
                           }`}
                         >
                           <Loader2 className={`w-3 h-3 ${isResult ? "" : "animate-spin"}`} />
@@ -325,7 +325,7 @@ export default function ResearchAssistant() {
                 </div>
                 <div
                   className={`rounded-xl px-3.5 py-2.5 ${
-                    isDark ? "bg-panel-hover" : "bg-slate-100"
+                    isDark ? "bg-white/[0.04]" : "bg-[#F3F4F6]"
                   }`}
                 >
                   <div className="flex items-center gap-1.5">
@@ -360,7 +360,7 @@ export default function ResearchAssistant() {
           {/* Input Area */}
           <div
             className={`border-t px-3 py-3 shrink-0 ${
-              isDark ? "border-panel-border" : "border-slate-100"
+              isDark ? "border-panel-border" : "border-[#F3F4F6]"
             }`}
           >
             <div className="flex items-end gap-2">
@@ -378,8 +378,8 @@ export default function ResearchAssistant() {
                 rows={1}
                 className={`flex-1 resize-none rounded-xl px-3.5 py-2.5 text-sm border focus:outline-none transition-colors min-h-[40px] max-h-[100px] ${
                   isDark
-                    ? "bg-udc-dark/50 border-panel-border text-slate-300 placeholder:text-slate-600 focus:border-udc-blue/50"
-                    : "bg-slate-50 border-slate-200 text-slate-700 placeholder:text-slate-400 focus:border-blue-400"
+                    ? "bg-[#0C0F17]/50 border-panel-border text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-udc-blue/50"
+                    : "bg-[#F9FAFB] border-[#E5E7EB] text-[#374151] placeholder:text-[#9CA3AF] focus:border-blue-400"
                 } disabled:opacity-50`}
               />
               <button
@@ -389,8 +389,8 @@ export default function ResearchAssistant() {
                   input.trim() && !isLoading
                     ? "bg-gradient-to-r from-udc-gold to-udc-red text-white hover:shadow-lg"
                     : isDark
-                      ? "bg-panel-hover text-slate-600"
-                      : "bg-slate-100 text-slate-400"
+                      ? "bg-white/[0.04] text-[#9CA3AF]"
+                      : "bg-[#F3F4F6] text-[#9CA3AF]"
                 } disabled:cursor-not-allowed`}
                 aria-label="Send message"
               >
@@ -403,7 +403,7 @@ export default function ResearchAssistant() {
             </div>
             <p
               className={`text-[9px] mt-1.5 text-center ${
-                isDark ? "text-slate-600" : "text-slate-400"
+                isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"
               }`}
             >
               AI responses may contain errors. Verify with official data sources.

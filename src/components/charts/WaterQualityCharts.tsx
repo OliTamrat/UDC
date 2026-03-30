@@ -56,8 +56,8 @@ export function TempUnitToggle() {
       onClick={toggle}
       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border transition-colors ${
         isDark
-          ? "border-panel-border text-slate-300 hover:border-blue-500/40 hover:text-blue-300"
-          : "border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600"
+          ? "border-panel-border text-[#E5E7EB] hover:border-blue-500/40 hover:text-blue-300"
+          : "border-[#E5E7EB] text-[#4B5563] hover:border-blue-300 hover:text-blue-600"
       }`}
       title="Toggle temperature unit"
     >
@@ -141,19 +141,19 @@ function useChartTheme() {
   const isDark = resolvedTheme === "dark";
   return {
     isDark,
-    gridColor: isDark ? "#1E3A5F" : "#E2E8F0",
-    tickColor: isDark ? "#64748B" : "#94A3B8",
+    gridColor: isDark ? "#23262F" : "#E2E8F0",
+    tickColor: isDark ? "#9CA3AF" : "#94A3B8",
     tooltipStyle: {
-      backgroundColor: isDark ? "rgba(15, 29, 50, 0.95)" : "rgba(255, 255, 255, 0.98)",
-      border: isDark ? "1px solid rgba(30, 58, 95, 0.5)" : "1px solid #E2E8F0",
+      backgroundColor: isDark ? "rgba(19, 22, 31, 0.95)" : "rgba(255, 255, 255, 0.98)",
+      border: isDark ? "1px solid rgba(255, 255, 255, 0.06)" : "1px solid #E2E8F0",
       borderRadius: "8px",
       padding: "10px",
       fontSize: "12px",
-      color: isDark ? "#F8FAFC" : "#1E293B",
+      color: isDark ? "#F3F4F6" : "#111827",
       boxShadow: isDark ? "0 4px 12px rgba(0,0,0,0.3)" : "0 4px 12px rgba(0,0,0,0.08)",
     },
-    titleColor: isDark ? "text-white" : "text-slate-900",
-    subtitleColor: isDark ? "text-slate-400" : "text-slate-600",
+    titleColor: isDark ? "text-white" : "text-[#111827]",
+    subtitleColor: isDark ? "text-[#D1D5DB]" : "text-[#4B5563]",
   };
 }
 
@@ -287,7 +287,7 @@ export function DOTrendChart() {
           <ReferenceLine y={5} stroke="#EF4444" strokeWidth={1} strokeDasharray="5 5" label={{ value: "EPA Min (5 mg/L)", fill: "#EF4444", fontSize: 10, position: "right" }} />
         </AreaChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>
+      <p className={`text-[9px] mt-1 ${t.isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
         {measuredCount > 0 ? "Values updated with USGS sensor readings where available. Baseline shown for months without data." : "Research baseline (USGS/EPA/DOEE). Real sensor data will overlay as ingestion runs."}
       </p>
     </div>
@@ -329,7 +329,7 @@ export function TemperatureTrendChart() {
           <Area type="monotone" dataKey="temperature" stroke="#22D3EE" fill="url(#tempGradient)" strokeWidth={2} name={`Temperature (${unitLabel})`} />
         </AreaChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>
+      <p className={`text-[9px] mt-1 ${t.isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
         {measuredCount > 0 ? "Values updated with USGS sensor readings where available." : "Research baseline."}
       </p>
     </div>
@@ -373,7 +373,7 @@ export function StormwaterChart() {
           <Bar dataKey="stormwaterRunoff" name="Runoff (M gal)" radius={[4, 4, 0, 0]} fill="#8B5CF6" fillOpacity={0.7} />
         </BarChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>Estimates based on NOAA precipitation normals and DC DOEE MS4 reports.</p>
+      <p className={`text-[9px] mt-1 ${t.isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>Estimates based on NOAA precipitation normals and DC DOEE MS4 reports.</p>
     </div>
   );
 }
@@ -401,13 +401,13 @@ export function MultiParameterChart() {
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          <Legend wrapperStyle={{ fontSize: 11, color: t.isDark ? "#94A3B8" : "#64748B" }} />
+          <Legend wrapperStyle={{ fontSize: 11, color: t.isDark ? "#9CA3AF" : "#64748B" }} />
           <Line type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" strokeWidth={2} name="DO (mg/L)" dot={{ r: 2 }} />
           <Line type="monotone" dataKey="temperature" stroke="#22D3EE" strokeWidth={2} name={`Temp (${unitLabel})`} dot={{ r: 2 }} />
           <Line type="monotone" dataKey="turbidity" stroke="#F59E0B" strokeWidth={2} name="Turbidity (NTU)" dot={{ r: 2 }} />
         </LineChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>
+      <p className={`text-[9px] mt-1 ${t.isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
         {measuredCount > 0 ? "USGS sensor data replaces baseline for months with readings." : "Research baseline — real data overlays as ingestion accumulates."}
       </p>
     </div>
@@ -445,7 +445,7 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
 
   if (data.length < 2) {
     return (
-      <div className={`glass-panel rounded-xl p-4 flex items-center justify-center h-[300px] text-sm ${t.isDark ? "text-slate-400" : "text-slate-500"}`}>
+      <div className={`glass-panel rounded-xl p-4 flex items-center justify-center h-[300px] text-sm ${t.isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
         Insufficient data for chart — awaiting more readings from ingestion
       </div>
     );
@@ -481,7 +481,7 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
           <XAxis dataKey="time" tick={{ fontSize: 10, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          <Legend wrapperStyle={{ fontSize: 11, color: t.isDark ? "#94A3B8" : "#64748B" }} />
+          <Legend wrapperStyle={{ fontSize: 11, color: t.isDark ? "#9CA3AF" : "#64748B" }} />
           <Line type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" strokeWidth={2} name="DO (mg/L)" dot={{ r: 1.5 }} connectNulls />
           <Line type="monotone" dataKey="temperature" stroke="#22D3EE" strokeWidth={2} name={`Temp (${unitLabel})`} dot={{ r: 1.5 }} connectNulls />
           <Line type="monotone" dataKey="turbidity" stroke="#F59E0B" strokeWidth={2} name="Turbidity (NTU)" dot={{ r: 1.5 }} connectNulls />

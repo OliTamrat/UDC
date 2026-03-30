@@ -31,21 +31,21 @@ export default function EnvironmentalJustice() {
   const isDark = resolvedTheme === "dark";
 
   const tooltipStyle = {
-    backgroundColor: isDark ? "rgba(15, 29, 50, 0.95)" : "rgba(255, 255, 255, 0.98)",
-    border: isDark ? "1px solid rgba(30, 58, 95, 0.5)" : "1px solid #E2E8F0",
+    backgroundColor: isDark ? "rgba(19, 22, 31, 0.95)" : "rgba(255, 255, 255, 0.98)",
+    border: isDark ? "1px solid rgba(255, 255, 255, 0.06)" : "1px solid #E2E8F0",
     borderRadius: "8px",
     padding: "10px",
     fontSize: "12px",
-    color: isDark ? "#F8FAFC" : "#1E293B",
+    color: isDark ? "#F3F4F6" : "#111827",
   };
 
-  const gridColor = isDark ? "#1E3A5F" : "#E2E8F0";
-  const tickColor = isDark ? "#64748B" : "#94A3B8";
+  const gridColor = isDark ? "#23262F" : "#E2E8F0";
+  const tickColor = isDark ? "#9CA3AF" : "#94A3B8";
 
   return (
     <div className="glass-panel rounded-xl p-4">
-      <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>{t("ej.chart_title")}</h3>
-      <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+      <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{t("ej.chart_title")}</h3>
+      <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
         {t("ej.chart_desc")}
       </p>
 
@@ -55,17 +55,17 @@ export default function EnvironmentalJustice() {
           <div
             key={ward.ward}
             className={`rounded-lg border p-2 text-center ${
-              isDark ? "border-panel-border" : "border-slate-200 bg-white"
+              isDark ? "border-panel-border" : "border-[#E5E7EB] bg-white"
             }`}
           >
-            <div className={`text-[10px] uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Ward {ward.ward}</div>
+            <div className={`text-[10px] uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Ward {ward.ward}</div>
             <div
               className="text-xs font-semibold mt-1"
               style={{ color: riskColors[ward.floodRisk] }}
             >
               {ward.floodRisk}
             </div>
-            <div className={`text-[10px] mt-0.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{ward.csoEvents} CSOs</div>
+            <div className={`text-[10px] mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{ward.csoEvents} CSOs</div>
           </div>
         ))}
       </div>
@@ -73,7 +73,7 @@ export default function EnvironmentalJustice() {
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>{t("ej.cso_chart")}</h4>
+          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{t("ej.cso_chart")}</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={wardData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -89,7 +89,7 @@ export default function EnvironmentalJustice() {
           </ResponsiveContainer>
         </div>
         <div>
-          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-slate-300" : "text-slate-600"}`}>{t("ej.green_chart")}</h4>
+          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{t("ej.green_chart")}</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={wardData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />

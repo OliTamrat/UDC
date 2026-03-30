@@ -81,14 +81,14 @@ export default function Sidebar() {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-panel-border" : "border-slate-200"}`}>
-        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0">
+      <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-panel-border" : "border-gray-200"}`}>
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0 shadow-lg shadow-udc-gold/20">
           UDC
         </div>
         {!collapsed && (
           <div className="overflow-hidden flex-1 min-w-0">
-            <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-slate-900"}`}>{t("sidebar.water_resources")}</h1>
-            <p className={`text-[10px] leading-tight ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t("sidebar.subtitle")}</p>
+            <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-[#111827]"}`}>{t("sidebar.water_resources")}</h1>
+            <p className={`text-[10px] leading-tight ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`}>{t("sidebar.subtitle")}</p>
           </div>
         )}
         {/* Close button — mobile only */}
@@ -96,7 +96,7 @@ export default function Sidebar() {
           onClick={closeMobile}
           aria-label={t("sidebar.close_nav")}
           className={`lg:hidden p-1.5 rounded-lg transition-colors ${
-            isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#4B5563] hover:text-[#111827] hover:bg-gray-100"
           }`}
         >
           <X className="w-4 h-4" />
@@ -110,7 +110,7 @@ export default function Sidebar() {
           return (
             <div key={section.key} className="mb-3">
               {!collapsed && (
-                <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`}>
                   {t(section.labelKey)}
                 </p>
               )}
@@ -124,11 +124,11 @@ export default function Sidebar() {
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all mb-0.5 ${
                       isActive
                         ? isDark
-                          ? "bg-udc-blue/20 text-water-blue font-medium border border-udc-blue/30"
-                          : "bg-blue-50 text-blue-600 font-medium border border-blue-200"
+                          ? "bg-water-blue/10 text-water-blue font-medium"
+                          : "bg-blue-50 text-blue-700 font-medium"
                         : isDark
-                          ? "text-slate-400 hover:text-white hover:bg-panel-hover"
-                          : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                          ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]"
+                          : "text-[#4B5563] hover:text-[#111827] hover:bg-gray-100"
                     } ${collapsed ? "justify-center" : ""}`}
                     title={collapsed ? t(item.labelKey) : undefined}
                   >
@@ -143,23 +143,22 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className={`border-t p-3 ${isDark ? "border-panel-border" : "border-slate-200"}`}>
+      <div className={`border-t p-3 ${isDark ? "border-panel-border" : "border-gray-200"}`}>
         <button
           onClick={() => setSettingsOpen(true)}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
-            isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#4B5563] hover:text-[#111827] hover:bg-gray-100"
           } ${collapsed ? "justify-center" : ""}`}
           title={collapsed ? t("sidebar.settings") : undefined}
         >
           <Settings className="w-4 h-4" />
           {!collapsed && <span>{t("sidebar.settings")}</span>}
         </button>
-        {/* Collapse toggle — desktop only */}
         <button
           onClick={toggleCollapsed}
           aria-label={collapsed ? t("sidebar.expand") : t("sidebar.collapse_sidebar")}
           className={`hidden lg:flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
-            isDark ? "text-slate-400 hover:text-white hover:bg-panel-hover" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#4B5563] hover:text-[#111827] hover:bg-gray-100"
           } ${collapsed ? "justify-center" : ""}`}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" aria-hidden="true" /> : <ChevronLeft className="w-4 h-4" aria-hidden="true" />}
@@ -177,7 +176,7 @@ export default function Sidebar() {
         className={`hidden lg:flex fixed left-0 top-0 h-screen border-r z-50 flex-col transition-all duration-300 ${
           collapsed ? "w-[68px]" : "w-[240px]"
         } ${
-          isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
+          isDark ? "bg-panel-bg border-panel-border" : "bg-white border-gray-200"
         }`}
       >
         {sidebarContent}
@@ -186,17 +185,15 @@ export default function Sidebar() {
       {/* Mobile sidebar — overlay drawer */}
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-[60]">
-          {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={closeMobile}
             aria-hidden="true"
           />
-          {/* Drawer */}
           <aside
             aria-label="Main navigation"
             className={`absolute left-0 top-0 h-full w-[280px] flex flex-col shadow-2xl animate-slide-in-left ${
-              isDark ? "bg-panel-bg border-r border-panel-border" : "bg-white border-r border-slate-200"
+              isDark ? "bg-panel-bg border-r border-panel-border" : "bg-white border-r border-gray-200"
             }`}
           >
             {sidebarContent}

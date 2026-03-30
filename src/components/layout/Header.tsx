@@ -176,7 +176,7 @@ export default function Header() {
 
   return (
     <header className={`h-14 border-b flex items-center justify-between px-2 sm:px-4 md:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
-      isDark ? "border-panel-border bg-panel-bg/80" : "border-slate-200 bg-white/80"
+      isDark ? "border-panel-border bg-panel-bg/80" : "border-gray-200 bg-white/80"
     }`}>
       {/* Left side: hamburger + logo + search */}
       <div className="flex items-center gap-1.5 sm:gap-3 flex-1 min-w-0">
@@ -185,7 +185,7 @@ export default function Header() {
           onClick={openMobile}
           aria-label={t("header.open_nav")}
           className={`lg:hidden p-1.5 sm:p-2 rounded-lg transition-colors flex-shrink-0 ${
-            isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
+            isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
           }`}
         >
           <Menu className="w-5 h-5" />
@@ -198,7 +198,7 @@ export default function Header() {
 
         {/* Search */}
         <div className="relative flex-1 min-w-0 lg:flex-none lg:w-72" ref={searchRef} role="search">
-          <Search className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-slate-400" : "text-slate-600"}`} aria-hidden="true" />
+          <Search className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`} aria-hidden="true" />
           <input
             type="search"
             aria-label={t("header.search_label")}
@@ -214,16 +214,16 @@ export default function Header() {
             onFocus={() => { if (searchQuery) setShowResults(true); }}
             className={`w-full border rounded-lg pl-8 sm:pl-10 pr-3 py-1.5 text-sm focus:outline-none transition-colors ${
               isDark
-                ? "bg-udc-dark/50 border-panel-border text-slate-300 placeholder:text-slate-600 focus:border-udc-blue/50"
-                : "bg-slate-100 border-slate-200 text-slate-700 placeholder:text-slate-400 focus:border-blue-400"
+                ? "bg-udc-dark/50 border-panel-border text-gray-200 placeholder:text-gray-500 focus:border-water-blue/50"
+                : "bg-gray-100 border-gray-200 text-gray-700 placeholder:text-gray-400 focus:border-blue-500"
             }`}
           />
           {showResults && searchQuery && (
             <div role="listbox" aria-label="Search results" className={`absolute left-0 top-full mt-1 w-full sm:w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
-              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
+              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-gray-200"
             }`}>
               {searchResults.length === 0 ? (
-                <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-[#9CA3AF]" : "text-[#4B5563]"}`}>
                   {t("header.no_results")}
                 </div>
               ) : (
@@ -232,7 +232,7 @@ export default function Header() {
                     key={result.id}
                     onClick={() => handleResultClick(result)}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors text-left ${
-                      isDark ? "text-slate-300 hover:bg-panel-hover" : "text-slate-700 hover:bg-slate-50"
+                      isDark ? "text-[#E5E7EB] hover:bg-white/[0.04]" : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     <MapPin className={`w-3.5 h-3.5 shrink-0 ${
@@ -240,7 +240,7 @@ export default function Header() {
                     }`} />
                     <div className="min-w-0">
                       <span className="block truncate">{result.name}</span>
-                      <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                      <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`}>
                         {result.type === "parameter" ? "parameter" : t(`search.${result.type}` as "search.station" | "search.research" | "search.page")}
                       </span>
                     </div>
@@ -255,7 +255,7 @@ export default function Header() {
       {/* Right side: date, live, language, theme, bell, stakeholder */}
       <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-3 flex-shrink-0 ml-2">
         {/* Date — hidden below md */}
-        <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+        <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#4B5563]"}`}>
           <Calendar className="w-3.5 h-3.5" />
           <span className="hidden lg:inline">{dateStr}</span>
           <span className="lg:hidden">{now.toLocaleDateString(locale === "es" ? "es-US" : "en-US", { month: "short", day: "numeric" })}</span>
@@ -264,7 +264,7 @@ export default function Header() {
         {/* Live indicator — hidden below sm */}
         <div className="hidden sm:flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-water-clean animate-pulse" />
-          <span className={`text-xs ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t("header.live")}</span>
+          <span className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{t("header.live")}</span>
         </div>
 
         {/* Language Switcher */}
@@ -272,7 +272,7 @@ export default function Header() {
           <button
             onClick={() => setShowLangMenu(!showLangMenu)}
             className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
-              isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
+              isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
             }`}
             title={t("header.language")}
             aria-label={t("header.language")}
@@ -283,10 +283,10 @@ export default function Header() {
           </button>
           {showLangMenu && (
             <div className={`absolute right-0 top-full mt-1 rounded-lg border shadow-lg py-1 min-w-[140px] z-50 ${
-              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
+              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-gray-200"
             }`}>
               <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
-                isDark ? "text-slate-400" : "text-slate-600"
+                isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"
               }`}>
                 {t("header.language")}
               </div>
@@ -302,8 +302,8 @@ export default function Header() {
                           ? "bg-udc-blue/20 text-blue-400"
                           : "bg-blue-50 text-blue-600"
                         : isDark
-                          ? "text-slate-300 hover:bg-panel-hover"
-                          : "text-slate-700 hover:bg-slate-50"
+                          ? "text-[#E5E7EB] hover:bg-white/[0.04]"
+                          : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     <span>{opt.flag}</span>
@@ -321,7 +321,7 @@ export default function Header() {
           <button
             onClick={() => setShowThemeMenu(!showThemeMenu)}
             className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
-              isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-500"
+              isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
             }`}
             title={t("header.change_appearance")}
             aria-label={t("header.change_appearance")}
@@ -332,10 +332,10 @@ export default function Header() {
           </button>
           {showThemeMenu && (
             <div className={`absolute right-0 top-full mt-1 rounded-lg border shadow-lg py-1 min-w-[140px] z-50 ${
-              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"
+              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-gray-200"
             }`}>
               <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
-                isDark ? "text-slate-400" : "text-slate-600"
+                isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"
               }`}>
                 {t("header.appearance")}
               </div>
@@ -352,8 +352,8 @@ export default function Header() {
                           ? "bg-udc-blue/20 text-blue-400"
                           : "bg-blue-50 text-blue-600"
                         : isDark
-                          ? "text-slate-300 hover:bg-panel-hover"
-                          : "text-slate-700 hover:bg-slate-50"
+                          ? "text-[#E5E7EB] hover:bg-white/[0.04]"
+                          : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -369,26 +369,26 @@ export default function Header() {
         {/* Notifications — hidden on very small screens */}
         <button
           className={`hidden sm:block relative p-1.5 sm:p-2 rounded-lg transition-colors ${
-            isDark ? "hover:bg-panel-hover" : "hover:bg-slate-100"
+            isDark ? "hover:bg-white/[0.04]" : "hover:bg-gray-100"
           }`}
           title={t("header.notifications")}
           aria-label={t("header.notifications")}
         >
-          <Bell className={`w-4 h-4 ${isDark ? "text-slate-300" : "text-slate-500"}`} aria-hidden="true" />
+          <Bell className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`} aria-hidden="true" />
         </button>
 
         {/* Stakeholder button — hidden on mobile, icon-only on tablet */}
         <button
           className={`hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg transition-colors border ${
             isDark
-              ? "hover:bg-panel-hover border-panel-border"
-              : "hover:bg-slate-50 border-slate-200"
+              ? "hover:bg-white/[0.04] border-panel-border"
+              : "hover:bg-[#F3F4F6] border-[#E5E7EB]"
           }`}
           title={t("header.stakeholder_soon")}
           aria-label={t("header.stakeholder_soon")}
         >
-          <User className={`w-4 h-4 ${isDark ? "text-slate-300" : "text-slate-500"}`} aria-hidden="true" />
-          <span className={`hidden md:inline text-sm ${isDark ? "text-slate-300" : "text-slate-700"}`}>{t("header.stakeholder")}</span>
+          <User className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`} aria-hidden="true" />
+          <span className={`hidden md:inline text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{t("header.stakeholder")}</span>
         </button>
       </div>
     </header>

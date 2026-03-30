@@ -151,12 +151,12 @@ export default function DCMap({
           })
           .bindPopup(`
             <div style="font-family:Inter,system-ui,sans-serif;min-width:180px;">
-              <h3 style="font-weight:700;font-size:14px;color:${isDark ? "#F8FAFC" : "#1E293B"};margin:0 0 6px;">Ward ${ward.ward}</h3>
-              <div style="display:grid;gap:4px;font-size:11px;color:${isDark ? "#94A3B8" : "#64748B"};">
-                <div>Population: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.population != null ? ward.population.toLocaleString() : "N/A"}</strong></div>
-                <div>Council: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.councilMember}</strong></div>
+              <h3 style="font-weight:700;font-size:14px;color:${isDark ? "#F3F4F6" : "#111827"};margin:0 0 6px;">Ward ${ward.ward}</h3>
+              <div style="display:grid;gap:4px;font-size:11px;color:${isDark ? "#9CA3AF" : "#64748B"};">
+                <div>Population: <strong style="color:${isDark ? "#E5E7EB" : "#334155"}">${ward.population != null ? ward.population.toLocaleString() : "N/A"}</strong></div>
+                <div>Council: <strong style="color:${isDark ? "#E5E7EB" : "#334155"}">${ward.councilMember}</strong></div>
                 <div>Flood Risk: <strong style="color:${riskColors[ward.floodRisk]}">${ward.floodRisk}</strong></div>
-                <div>Impervious: <strong style="color:${isDark ? "#E2E8F0" : "#334155"}">${ward.impervious}%</strong></div>
+                <div>Impervious: <strong style="color:${isDark ? "#E5E7EB" : "#334155"}">${ward.impervious}%</strong></div>
               </div>
             </div>
           `, { maxWidth: 250, className: "station-popup" })
@@ -275,12 +275,12 @@ export default function DCMap({
     // MONITORING STATIONS
     // =============================================
     if (layers.monitoringStations) {
-      const popupBg = isDark ? "rgba(15, 29, 50, 0.95)" : "rgba(255, 255, 255, 0.98)";
-      const popupText = isDark ? "#F8FAFC" : "#1E293B";
-      const popupSecondary = isDark ? "#94A3B8" : "#64748B";
-      const popupMuted = isDark ? "#64748B" : "#94A3B8";
+      const popupBg = isDark ? "rgba(19, 22, 31, 0.95)" : "rgba(255, 255, 255, 0.98)";
+      const popupText = isDark ? "#F3F4F6" : "#111827";
+      const popupSecondary = isDark ? "#9CA3AF" : "#64748B";
+      const popupMuted = isDark ? "#9CA3AF" : "#94A3B8";
       const popupDataBg = isDark ? "rgba(10,22,40,0.5)" : "#F1F5F9";
-      const popupDataLabel = isDark ? "#64748B" : "#94A3B8";
+      const popupDataLabel = isDark ? "#9CA3AF" : "#94A3B8";
 
       monitoringStations.forEach((station) => {
         const ecoliMult = monthSnapshot?.ecoliMultiplier;
@@ -366,10 +366,10 @@ export default function DCMap({
       iconSize: [22, 22],
       iconAnchor: [11, 11],
     });
-    const popupText = isDark ? "#F8FAFC" : "#1E293B";
-    const popupSecondary = isDark ? "#94A3B8" : "#64748B";
+    const popupText = isDark ? "#F3F4F6" : "#111827";
+    const popupSecondary = isDark ? "#9CA3AF" : "#64748B";
     leaflet.marker([38.9436, -77.0631], { icon: udcIcon })
-      .bindPopup(`<div style="font-family:Inter,system-ui,sans-serif;"><h3 style="font-weight:700;font-size:14px;color:${popupText};margin:0 0 4px;">University of the District of Columbia</h3><p style="font-size:11px;color:${popupSecondary};margin:0 0 6px;">CAUSES / WRRI Research Hub</p><p style="font-size:11px;color:${isDark ? "#CBD5E1" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p></div>`)
+      .bindPopup(`<div style="font-family:Inter,system-ui,sans-serif;"><h3 style="font-weight:700;font-size:14px;color:${popupText};margin:0 0 4px;">University of the District of Columbia</h3><p style="font-size:11px;color:${popupSecondary};margin:0 0 6px;">CAUSES / WRRI Research Hub</p><p style="font-size:11px;color:${isDark ? "#D1D5DB" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p></div>`)
       .addTo(map);
 
     // DC Boundary — accurate outline from US Districts GeoJSON (119 points)
@@ -432,10 +432,10 @@ export default function DCMap({
     // =============================================
     // LEGEND
     // =============================================
-    const legendBg = isDark ? "rgba(15, 29, 50, 0.9)" : "rgba(255, 255, 255, 0.95)";
-    const legendBorder = isDark ? "rgba(30, 58, 95, 0.5)" : "rgba(226, 232, 240, 0.8)";
-    const legendText = isDark ? "#F8FAFC" : "#1E293B";
-    const legendMuted = isDark ? "#94A3B8" : "#64748B";
+    const legendBg = isDark ? "rgba(19, 22, 31, 0.9)" : "rgba(255, 255, 255, 0.95)";
+    const legendBorder = isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(226, 232, 240, 0.8)";
+    const legendText = isDark ? "#F3F4F6" : "#111827";
+    const legendMuted = isDark ? "#9CA3AF" : "#64748B";
 
     const isMobile = window.innerWidth < 640;
     const legend = new leaflet.Control({ position: "bottomright" });
@@ -498,15 +498,15 @@ export default function DCMap({
 
   return (
     <div className={`relative w-full h-full rounded-xl overflow-hidden border transition-colors duration-300 ${
-      isDark ? "border-panel-border" : "border-slate-200"
+      isDark ? "border-panel-border" : "border-[#E5E7EB]"
     }`}>
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
       <div id="dc-map" className="w-full h-full min-h-[500px]" />
       {!mapReady && (
-        <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
+        <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
-            <span className={`text-sm ${isDark ? "text-slate-300" : "text-slate-500"}`}>Loading DC Map...</span>
+            <span className={`text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>Loading DC Map...</span>
           </div>
         </div>
       )}

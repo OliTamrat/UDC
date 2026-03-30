@@ -52,7 +52,7 @@ const SOURCE_STYLES: Record<string, { abbr: string; color: string }> = {
   usgs:   { abbr: "USGS",   color: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
   epa:    { abbr: "EPA",    color: "text-green-400 bg-green-500/10 border-green-500/30" },
   wqp:    { abbr: "WQP",    color: "text-teal-400 bg-teal-500/10 border-teal-500/30" },
-  seed:   { abbr: "Seed",   color: "text-slate-400 bg-slate-500/10 border-slate-500/30" },
+  seed:   { abbr: "Seed",   color: "text-[#D1D5DB] bg-slate-500/10 border-slate-500/30" },
   manual: { abbr: "Manual", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" },
 };
 
@@ -227,27 +227,27 @@ export default function StationTable({ onStationClick, selectedParams }: Station
 
   return (
     <div className="glass-panel rounded-xl overflow-hidden">
-      <div className={`p-4 border-b ${isDark ? "border-panel-border" : "border-slate-200"}`}>
-        <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>{t("table.title")}</h3>
-        <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.subtitle")}</p>
+      <div className={`p-4 border-b ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
+        <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{t("table.title")}</h3>
+        <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.subtitle")}</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
-            <tr className={`border-b ${isDark ? "border-panel-border bg-udc-dark/30" : "border-slate-200 bg-slate-50"}`}>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.station")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.type")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.status")}</th>
+            <tr className={`border-b ${isDark ? "border-panel-border bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.station")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.type")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.status")}</th>
               {visibleParams.map((p) => (
-                <th key={p.id} scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <th key={p.id} scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
                   <span title={`${p.name} (${p.unit})`}>
                     {p.name.length > 18 ? p.name.slice(0, 16) + "…" : p.name}
                   </span>
                 </th>
               ))}
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>Trend</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}>{t("table.updated")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-slate-600"}`}><span className="sr-only">{t("table.details")}</span></th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Trend</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.updated")}</th>
+              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}><span className="sr-only">{t("table.details")}</span></th>
             </tr>
           </thead>
           <tbody>
@@ -264,21 +264,21 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                   aria-label={`View details for ${station.name}`}
                   className={`border-b transition-colors cursor-pointer ${
                     isDark
-                      ? "border-panel-border/50 hover:bg-panel-hover focus:bg-panel-hover focus:outline-none focus:ring-1 focus:ring-water-blue"
-                      : "border-slate-100 hover:bg-slate-50 focus:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                      ? "border-white/[0.04] hover:bg-white/[0.04] focus:bg-white/[0.04] focus:outline-none focus:ring-1 focus:ring-water-blue"
+                      : "border-[#F3F4F6] hover:bg-[#F3F4F6] focus:bg-[#F3F4F6] focus:outline-none focus:ring-1 focus:ring-blue-400"
                   }`}
                 >
                   <td className="py-2.5 px-4">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-water-blue flex-shrink-0" />
                       <div>
-                        <div className={`text-xs font-medium ${isDark ? "text-white" : "text-slate-900"}`}>{station.name}</div>
-                        <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>{station.id}</div>
+                        <div className={`text-xs font-medium ${isDark ? "text-white" : "text-[#111827]"}`}>{station.name}</div>
+                        <div className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{station.id}</div>
                       </div>
                     </div>
                   </td>
                   <td className="py-2.5 px-4">
-                    <span className={`text-xs capitalize ${isDark ? "text-slate-300" : "text-slate-600"}`}>{station.type.replace("-", " ")}</span>
+                    <span className={`text-xs capitalize ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{station.type.replace("-", " ")}</span>
                   </td>
                   <td className="py-2.5 px-4">
                     <StatusBadge status={station.status} />
@@ -298,7 +298,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                       good: isDark ? "text-green-400" : "text-green-600",
                       warning: isDark ? "text-amber-400" : "text-amber-600",
                       violation: isDark ? "text-red-400" : "text-red-600",
-                      unknown: isDark ? "text-slate-500" : "text-slate-400",
+                      unknown: isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]",
                     }[level];
 
                     return (
@@ -311,7 +311,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                             </span>
                           </div>
                         ) : (
-                          <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>
+                          <span className={`text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>—</span>
                         )}
                       </td>
                     );
@@ -320,13 +320,13 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                     {(() => {
                       const hist = historyMap[station.id] as unknown as { data?: Array<Record<string, number | null>> } | undefined;
                       const histData = hist?.data;
-                      if (!histData || histData.length < 2) return <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>;
+                      if (!histData || histData.length < 2) return <span className={`text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>—</span>;
                       const doValues = histData.map((d) => d.dissolvedOxygen).filter((v): v is number => v != null);
-                      if (doValues.length < 2) return <span className={`text-xs ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>;
+                      if (doValues.length < 2) return <span className={`text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>—</span>;
                       return <Sparkline data={doValues} color="#60A5FA" />;
                     })()}
                   </td>
-                  <td className={`py-2.5 px-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                  <td className={`py-2.5 px-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px]">{r
                         ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
@@ -335,7 +335,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                     </div>
                   </td>
                   <td className="py-2.5 px-4">
-                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-slate-600 hover:text-blue-400" : "text-slate-300 hover:text-blue-500"} transition-colors`} />
+                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-[#9CA3AF] hover:text-blue-400" : "text-[#9CA3AF] hover:text-blue-500"} transition-colors`} />
                   </td>
                 </tr>
               );

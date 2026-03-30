@@ -75,7 +75,7 @@ const SOURCE_CONFIG: Record<string, { label: string; abbr: string; color: string
   usgs:   { label: "USGS NWIS",          abbr: "USGS",   color: "text-blue-400",   bg: "bg-blue-500/10 border-blue-500/30" },
   epa:    { label: "EPA Water Quality Exchange", abbr: "EPA",  color: "text-green-400",  bg: "bg-green-500/10 border-green-500/30" },
   wqp:    { label: "Water Quality Portal", abbr: "WQP",   color: "text-teal-400",   bg: "bg-teal-500/10 border-teal-500/30" },
-  seed:   { label: "Initial Seed Data",    abbr: "Seed",   color: "text-slate-400",  bg: "bg-slate-500/10 border-slate-500/30" },
+  seed:   { label: "Initial Seed Data",    abbr: "Seed",   color: "text-[#9CA3AF]",  bg: "bg-slate-500/10 border-slate-500/30" },
   manual: { label: "Manual Entry",         abbr: "Manual", color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/30" },
 };
 
@@ -238,7 +238,7 @@ export default function StationDetailPage() {
 
   if (loading) {
     return (
-      <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
+      <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
         <Sidebar />
         <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
           <Header />
@@ -252,14 +252,14 @@ export default function StationDetailPage() {
 
   if (notFound || !station) {
     return (
-      <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
+      <div className={`flex min-h-screen ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
         <Sidebar />
         <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
           <Header />
           <div className="p-6 flex items-center justify-center h-[60vh]">
             <div className="text-center">
-              <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Station Not Found</h2>
-              <p className={`text-sm mb-4 ${isDark ? "text-slate-300" : "text-slate-600"}`}>No station with ID &quot;{stationId}&quot; exists.</p>
+              <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>Station Not Found</h2>
+              <p className={`text-sm mb-4 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>No station with ID &quot;{stationId}&quot; exists.</p>
               <button onClick={() => router.push("/")} className="px-4 py-2 bg-water-blue text-white rounded-lg text-sm">
                 Back to Dashboard
               </button>
@@ -299,7 +299,7 @@ export default function StationDetailPage() {
   const hasEAVData = latestMeasurements.length > 0;
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-slate-50"}`}>
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
       <Sidebar />
       <main className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
@@ -311,31 +311,31 @@ export default function StationDetailPage() {
                 onClick={() => router.push("/")}
                 aria-label="Back to dashboard"
                 className={`p-2 rounded-lg border transition-colors flex-shrink-0 ${
-                  isDark ? "border-panel-border hover:bg-panel-hover" : "border-slate-200 hover:bg-slate-100"
+                  isDark ? "border-panel-border hover:bg-white/[0.04]" : "border-[#E5E7EB] hover:bg-[#F3F4F6]"
                 }`}
               >
-                <ArrowLeft className={`w-5 h-5 ${isDark ? "text-slate-300" : "text-slate-600"}`} aria-hidden="true" />
+                <ArrowLeft className={`w-5 h-5 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`} aria-hidden="true" />
               </button>
-              <h1 className={`text-lg sm:text-2xl font-bold flex-1 min-w-0 ${isDark ? "text-white" : "text-slate-900"}`}>{station.name}</h1>
+              <h1 className={`text-lg sm:text-2xl font-bold flex-1 min-w-0 ${isDark ? "text-white" : "text-[#111827]"}`}>{station.name}</h1>
               <StatusBadge status={station.status} isDark={isDark} />
             </div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+              <span className={`text-xs sm:text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                 <MapPin className="w-3.5 h-3.5 inline mr-1" />
                 {station.position[0].toFixed(4)}°N, {Math.abs(station.position[1]).toFixed(4)}°W
               </span>
-              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>ID: {station.id}</span>
-              <span className={`text-xs sm:text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>Type: {typeLabel}</span>
+              <span className={`text-xs sm:text-sm ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>ID: {station.id}</span>
+              <span className={`text-xs sm:text-sm ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Type: {typeLabel}</span>
             </div>
             {historical && (
-              <p className={`text-xs max-w-2xl ${isDark ? "text-slate-400" : "text-slate-600"}`}>{historical.description}</p>
+              <p className={`text-xs max-w-2xl ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{historical.description}</p>
             )}
             <div className="flex gap-2">
               <button
                 onClick={handleExportCSV}
                 aria-label={`Export CSV data for ${station.name}`}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
-                  isDark ? "border-panel-border text-slate-400 hover:bg-panel-hover" : "border-slate-200 text-slate-600 hover:bg-slate-100"
+                  isDark ? "border-panel-border text-[#D1D5DB] hover:bg-white/[0.04]" : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6]"
                 }`}
               >
                 <Download className="w-3.5 h-3.5" aria-hidden="true" /> <span className="hidden sm:inline">Export</span> CSV
@@ -343,7 +343,7 @@ export default function StationDetailPage() {
               <button
                 aria-label={`Share ${station.name} data`}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
-                isDark ? "border-panel-border text-slate-400 hover:bg-panel-hover" : "border-slate-200 text-slate-600 hover:bg-slate-100"
+                isDark ? "border-panel-border text-[#D1D5DB] hover:bg-white/[0.04]" : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6]"
               }`}>
                 <Share2 className="w-3.5 h-3.5" aria-hidden="true" /> Share
               </button>
@@ -360,7 +360,7 @@ export default function StationDetailPage() {
             const isFresh = !isSeed && hoursAgo < 2;
 
             const bannerColor = isSeed
-              ? isDark ? "border-slate-600/30 bg-slate-800/30 text-slate-400" : "border-slate-200 bg-slate-50 text-slate-500"
+              ? isDark ? "border-slate-600/30 bg-slate-800/30 text-[#9CA3AF]" : "border-[#E5E7EB] bg-[#F9FAFB] text-[#6B7280]"
               : isStale
               ? isDark ? "border-red-500/30 bg-red-950/20 text-red-300" : "border-red-200 bg-red-50 text-red-700"
               : isFresh
@@ -411,8 +411,8 @@ export default function StationDetailPage() {
                       {metric.alert && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />}
                     </div>
                     <div className={`text-lg sm:text-xl font-bold ${metric.color}`}>{metric.value}</div>
-                    {metric.unit && <div className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>{metric.unit}</div>}
-                    <div className={`text-xs mt-1 ${isDark ? "text-slate-300" : "text-slate-600"}`}>{metric.label}</div>
+                    {metric.unit && <div className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{metric.unit}</div>}
+                    <div className={`text-xs mt-1 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{metric.label}</div>
                   </div>
                 );
               })}
@@ -420,7 +420,7 @@ export default function StationDetailPage() {
           )}
 
           {reading && (
-            <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               <span>Last updated: {reading.timestamp
                 ? new Date(reading.timestamp).toLocaleString()
                 : "—"}</span>
@@ -434,7 +434,7 @@ export default function StationDetailPage() {
               )}
               {dataSources.length === 1 && dataSources[0] === "seed" && (
                 <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] ${
-                  isDark ? "bg-slate-500/10 text-slate-400" : "bg-slate-50 text-slate-600"
+                  isDark ? "bg-slate-500/10 text-[#9CA3AF]" : "bg-[#F9FAFB] text-[#4B5563]"
                 }`}>
                   <AlertTriangle className="w-3 h-3" />
                   Initial seed data — will be replaced as live ingestion runs accumulate measured values
@@ -455,11 +455,11 @@ export default function StationDetailPage() {
           {hasEAVData && (
             <div className="space-y-3">
               <div>
-                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
+                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>
                   <FlaskConical className="w-4 h-4 inline mr-1.5" />
                   All Measured Parameters
                 </h2>
-                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
                   Latest readings from all available data sources with EPA threshold compliance
                 </p>
               </div>
@@ -469,17 +469,17 @@ export default function StationDetailPage() {
                   const measurements = measurementsByCategory[cat];
                   if (!measurements || measurements.length === 0) return null;
 
-                  const catColor = CATEGORY_COLORS[cat] || "text-slate-400";
+                  const catColor = CATEGORY_COLORS[cat] || "text-[#9CA3AF]";
                   const catLabel = cat.charAt(0).toUpperCase() + cat.slice(1);
 
                   return (
                     <div key={cat} className={`glass-panel rounded-xl overflow-hidden`}>
-                      <div className={`px-3 py-2 border-b ${isDark ? "border-panel-border bg-panel-bg/50" : "border-slate-100 bg-slate-50"}`}>
+                      <div className={`px-3 py-2 border-b ${isDark ? "border-white/[0.06] bg-panel-bg/50" : "border-[#F3F4F6] bg-[#F9FAFB]"}`}>
                         <h3 className={`text-xs font-semibold uppercase tracking-wider ${catColor}`}>
                           {catLabel}
                         </h3>
                       </div>
-                      <div className="divide-y divide-panel-border/30">
+                      <div className="divide-y divide-white/[0.06]">
                         {measurements.map((m) => {
                           const level = getThresholdLevel(m.value, m.epaMin, m.epaMax);
                           const Icon = PARAM_ICONS[m.parameterId] || Activity;
@@ -488,12 +488,12 @@ export default function StationDetailPage() {
                             good: "text-green-400",
                             warning: "text-amber-400",
                             violation: "text-red-400",
-                            unknown: "text-slate-400",
+                            unknown: "text-[#9CA3AF]",
                           }[level];
 
                           return (
                             <div key={m.parameterId} className={`px-3 py-2 flex items-center gap-3 ${
-                              isDark ? "hover:bg-panel-hover/50" : "hover:bg-slate-50"
+                              isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F3F4F6]"
                             }`}>
                               <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${catColor}`} />
                               <div className="flex-1 min-w-0">
@@ -501,7 +501,7 @@ export default function StationDetailPage() {
                                   {m.parameterName}
                                 </div>
                                 {paramDef?.description && (
-                                  <div className={`text-[10px] truncate ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                                  <div className={`text-[10px] truncate ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                                     {paramDef.description}
                                   </div>
                                 )}
@@ -511,7 +511,7 @@ export default function StationDetailPage() {
                                 <span className={`text-sm font-medium ${levelTextColor}`}>
                                   {m.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                                 </span>
-                                <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                                <span className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                                   {m.unit}
                                 </span>
                               </div>
@@ -533,19 +533,19 @@ export default function StationDetailPage() {
           {historical && (
             <>
               <div>
-                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
+                <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>
                   Historical Trends
                   {dataSources.length === 1 && dataSources[0] === "seed" ? " (Seed Data)" : ""}
                 </h2>
-                <p className={`text-xs mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly averages with EPA compliance thresholds</p>
+                <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly averages with EPA compliance thresholds</p>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Dissolved Oxygen */}
                 {!isGI && (
                   <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Dissolved oxygen trend chart showing monthly averages with EPA minimum threshold of 5 mg/L">
-                    <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Dissolved Oxygen</h3>
-                    <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly average (mg/L) with EPA minimum threshold</p>
+                    <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Dissolved Oxygen</h3>
+                    <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly average (mg/L) with EPA minimum threshold</p>
                     <ResponsiveContainer width="100%" height={200}>
                       <AreaChart data={historical.data}>
                         <defs>
@@ -567,8 +567,8 @@ export default function StationDetailPage() {
 
                 {/* Temperature */}
                 <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Water temperature trend chart showing monthly averages in degrees Celsius">
-                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Water Temperature</h3>
-                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly average (°C)</p>
+                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Water Temperature</h3>
+                  <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly average (°C)</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <AreaChart data={historical.data}>
                       <defs>
@@ -588,8 +588,8 @@ export default function StationDetailPage() {
 
                 {/* E. coli */}
                 <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="E. coli levels bar chart showing monthly averages with EPA recreational limit of 410 CFU per 100mL">
-                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>E. coli Levels</h3>
-                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly average (CFU/100mL) with EPA recreational limit</p>
+                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>E. coli Levels</h3>
+                  <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly average (CFU/100mL) with EPA recreational limit</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={historical.data}>
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -604,8 +604,8 @@ export default function StationDetailPage() {
 
                 {/* Turbidity */}
                 <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Turbidity trend chart showing monthly averages in NTU">
-                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Turbidity</h3>
-                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Monthly average (NTU)</p>
+                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Turbidity</h3>
+                  <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly average (NTU)</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <AreaChart data={historical.data}>
                       <defs>
@@ -627,8 +627,8 @@ export default function StationDetailPage() {
               {/* Multi-parameter overlay */}
               {!isGI && (
                 <div className="glass-panel rounded-xl p-3 sm:p-4">
-                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>Multi-Parameter Comparison</h3>
-                  <p className={`text-xs mb-3 ${isDark ? "text-slate-400" : "text-slate-600"}`}>All parameters overlaid for correlation analysis</p>
+                  <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Multi-Parameter Comparison</h3>
+                  <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>All parameters overlaid for correlation analysis</p>
                   <ResponsiveContainer width="100%" height={220}>
                     <LineChart data={historical.data}>
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -648,7 +648,7 @@ export default function StationDetailPage() {
 
               {/* Parameters monitored */}
               <div className="glass-panel rounded-xl p-3 sm:p-4">
-                <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-slate-900"}`}>Parameters Monitored</h3>
+                <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>Parameters Monitored</h3>
                 <div className="flex flex-wrap gap-2">
                   {station.parameters.map((param) => (
                     <span key={param} className={`px-3 py-1.5 rounded-full text-xs border ${
