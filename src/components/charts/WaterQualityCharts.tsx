@@ -351,23 +351,17 @@ export function DOTrendChart() {
       </div>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (mg/L) — {DATE_RANGE}</p>
       <ResponsiveContainer width="100%" height={220}>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="doGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+        <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
           <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} domain={[0, 14]} />
           <Tooltip contentStyle={t.tooltipStyle} />
           {/* Baseline: dashed reference line */}
-          <Area type="monotone" dataKey="baselineDO" stroke="#3B82F6" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#doGradient)" fillOpacity={0.15} name="Baseline DO" connectNulls dot={false} />
-          {/* Measured: solid bright line with visible dots */}
-          {hasMeasured && <Area type="monotone" dataKey="dissolvedOxygen" stroke="#22C55E" fill="none" strokeWidth={2.5} name="Measured DO" connectNulls dot={{ r: 4, fill: "#22C55E", stroke: "#fff", strokeWidth: 1.5 }} />}
+          <Line type="monotone" dataKey="baselineDO" stroke="#3B82F6" strokeWidth={1.5} strokeDasharray="4 3" name="Baseline DO" connectNulls dot={false} />
+          {/* Measured: solid green with large visible dots */}
+          {hasMeasured && <Line type="monotone" dataKey="dissolvedOxygen" stroke="#22C55E" strokeWidth={3} name="Measured DO" connectNulls dot={{ r: 6, fill: "#22C55E", stroke: "#fff", strokeWidth: 2 }} activeDot={{ r: 8 }} />}
           <ReferenceLine y={5} stroke="#EF4444" strokeWidth={1} strokeDasharray="5 5" label={{ value: "EPA Min (5 mg/L)", fill: "#EF4444", fontSize: 10, position: "right" }} />
-        </AreaChart>
+        </LineChart>
       </ResponsiveContainer>
       <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>{BASELINE_NOTE}</p>
     </div>
@@ -398,20 +392,14 @@ export function TemperatureTrendChart() {
       </div>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average ({unitLabel}) — {DATE_RANGE}</p>
       <ResponsiveContainer width="100%" height={220}>
-        <AreaChart data={chartData}>
-          <defs>
-            <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#22D3EE" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#22D3EE" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+        <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
           <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          <Area type="monotone" dataKey="baselineTemp" stroke="#22D3EE" strokeWidth={1.5} strokeDasharray="4 3" fill="url(#tempGradient)" fillOpacity={0.15} name={`Baseline (${unitLabel})`} connectNulls dot={false} />
-          {hasMeasured && <Area type="monotone" dataKey="temperature" stroke="#F97316" fill="none" strokeWidth={2.5} name={`Measured (${unitLabel})`} connectNulls dot={{ r: 4, fill: "#F97316", stroke: "#fff", strokeWidth: 1.5 }} />}
-        </AreaChart>
+          <Line type="monotone" dataKey="baselineTemp" stroke="#22D3EE" strokeWidth={1.5} strokeDasharray="4 3" name={`Baseline (${unitLabel})`} connectNulls dot={false} />
+          {hasMeasured && <Line type="monotone" dataKey="temperature" stroke="#F97316" strokeWidth={3} name={`Measured (${unitLabel})`} connectNulls dot={{ r: 6, fill: "#F97316", stroke: "#fff", strokeWidth: 2 }} activeDot={{ r: 8 }} />}
+        </LineChart>
       </ResponsiveContainer>
       <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>{BASELINE_NOTE}</p>
     </div>
