@@ -112,6 +112,7 @@ interface ReadingRecord {
   temperature: number | null;
   pH: number | null;
   turbidity: number | null;
+  conductivity: number | null;
   eColiCount: number | null;
   source: string;
 }
@@ -122,24 +123,15 @@ interface StationHistory {
   data: ReadingRecord[];
 }
 
-// Chart data point — baseline always present, measured may be null
-interface ChartPoint {
-  label: string;
-  // Baseline (research-backed seasonal reference — always populated)
-  baselineDO: number;
-  baselineTemp: number;
-  baselinePH: number;
-  baselineTurb: number;
-  baselineEcoli: number;
-  baselineRunoff: number;
-  // Measured (real sensor data — null if no readings for this month)
-  dissolvedOxygen: number | null;
-  temperature: number | null;
-  pH: number | null;
-  turbidity: number | null;
-  eColiCount: number | null;
-  stormwaterRunoff: number | null;
-  readingCount: number;
+interface TrendPoint {
+  month: string;
+  dissolvedOxygen: number;
+  temperature: number;
+  pH: number;
+  turbidity: number;
+  eColiCount: number;
+  stormwaterRunoff: number;
+  measured: boolean; // true = replaced with real sensor data
 }
 
 const DASHBOARD_STATIONS = ["ANA-001", "ANA-002", "ANA-003", "ANA-004", "WB-001", "HR-001", "PB-001"];
@@ -165,51 +157,30 @@ function useChartTheme() {
   };
 }
 
-function buildMonthRange(): { year: number; month: number; shortLabel: string }[] {
-  const range: { year: number; month: number; shortLabel: string }[] = [];
-  let y = CURRENT_YEAR - 1;
-  let m = 0;
-  while (y < CURRENT_YEAR || (y === CURRENT_YEAR && m <= CURRENT_MONTH)) {
-    range.push({ year: y, month: m, shortLabel: `${MONTH_NAMES[m]} '${String(y).slice(2)}` });
-    m++;
-    if (m > 11) { m = 0; y++; }
-  }
-  return range;
-}
-
 // ─── Data Hook ──────────────────────────────────────────────────────────────
-// Always shows research-backed baselines. Overlays real measured data on top.
-function useRealTimeData() {
-  const [data, setData] = useState<ChartPoint[] | null>(null);
-  const [source, setSource] = useState<"loading" | "api+baseline" | "baseline-only">("loading");
-  const [readingCount, setReadingCount] = useState(0);
-  const [paramCounts, setParamCounts] = useState({ do: 0, temp: 0, ecoli: 0, turb: 0 });
+// Starts with baseline data (12 months). Fetches real USGS readings from API
+// and replaces baseline values with measured averages for months that have data.
+// Result: always a full 12-month chart, with measured data overlaid where available.
+
+function useTrendData() {
+  const [data, setData] = useState<TrendPoint[]>(() =>
+    MONTH_NAMES.map((month, i) => ({
+      month,
+      dissolvedOxygen: BASELINE.dissolvedOxygen[i],
+      temperature: BASELINE.temperature[i],
+      pH: BASELINE.pH[i],
+      turbidity: BASELINE.turbidity[i],
+      eColiCount: BASELINE.eColiCount[i],
+      stormwaterRunoff: BASELINE.stormwaterRunoff[i],
+      measured: false,
+    }))
+  );
+  const [measuredCount, setMeasuredCount] = useState(0);
 
   const fetchData = useCallback(async () => {
-    const monthRange = buildMonthRange();
-
-    // Build baseline-only data first
-    const baselineData: ChartPoint[] = monthRange.map(({ month, shortLabel }) => ({
-      label: shortLabel,
-      baselineDO: BASELINE.dissolvedOxygen[month],
-      baselineTemp: BASELINE.temperature[month],
-      baselinePH: BASELINE.pH[month],
-      baselineTurb: BASELINE.turbidity[month],
-      baselineEcoli: BASELINE.eColiCount[month],
-      baselineRunoff: BASELINE.stormwaterRunoff[month],
-      dissolvedOxygen: null,
-      temperature: null,
-      pH: null,
-      turbidity: null,
-      eColiCount: null,
-      stormwaterRunoff: null,
-      readingCount: 0,
-    }));
-
     try {
-      // Fetch readings from the start of the chart range (15 months ago) with high limit
       const fromDate = new Date();
-      fromDate.setMonth(fromDate.getMonth() - 15);
+      fromDate.setMonth(fromDate.getMonth() - 13);
       const fromStr = fromDate.toISOString().slice(0, 10);
       const promises = DASHBOARD_STATIONS.map((id) =>
         fetch(`/api/stations/${id}/history?limit=10000&from=${fromStr}`)
@@ -218,6 +189,7 @@ function useRealTimeData() {
       );
       const results = await Promise.all(promises);
 
+      // Collect all non-seed readings
       const allReadings: ReadingRecord[] = [];
       for (const r of results) {
         if (!r?.data) continue;
@@ -226,33 +198,22 @@ function useRealTimeData() {
         }
       }
 
-      if (allReadings.length === 0) {
-        setData(baselineData);
-        setSource("baseline-only");
-        setReadingCount(0);
-        return;
-      }
+      if (allReadings.length === 0) return;
+      setMeasuredCount(allReadings.length);
 
-      setReadingCount(allReadings.length);
-
-      // Group by year-month
-      const buckets: Record<string, {
-        do_sum: number; do_n: number;
-        temp_sum: number; temp_n: number;
-        ph_sum: number; ph_n: number;
-        turb_sum: number; turb_n: number;
+      // Group by month index (0-11) and average
+      const buckets: Record<number, {
+        do_sum: number; do_n: number; temp_sum: number; temp_n: number;
+        ph_sum: number; ph_n: number; turb_sum: number; turb_n: number;
         ecoli_sum: number; ecoli_n: number;
-        total: number;
       }> = {};
 
       for (const r of allReadings) {
-        const d = new Date(r.timestamp);
-        const key = `${d.getFullYear()}-${d.getMonth()}`;
-        if (!buckets[key]) {
-          buckets[key] = { do_sum: 0, do_n: 0, temp_sum: 0, temp_n: 0, ph_sum: 0, ph_n: 0, turb_sum: 0, turb_n: 0, ecoli_sum: 0, ecoli_n: 0, total: 0 };
+        const m = new Date(r.timestamp).getMonth();
+        if (!buckets[m]) {
+          buckets[m] = { do_sum:0, do_n:0, temp_sum:0, temp_n:0, ph_sum:0, ph_n:0, turb_sum:0, turb_n:0, ecoli_sum:0, ecoli_n:0 };
         }
-        const b = buckets[key];
-        b.total++;
+        const b = buckets[m];
         if (r.dissolvedOxygen != null) { b.do_sum += r.dissolvedOxygen; b.do_n++; }
         if (r.temperature != null) { b.temp_sum += r.temperature; b.temp_n++; }
         if (r.pH != null) { b.ph_sum += r.pH; b.ph_n++; }
@@ -260,126 +221,88 @@ function useRealTimeData() {
         if (r.eColiCount != null) { b.ecoli_sum += r.eColiCount; b.ecoli_n++; }
       }
 
-      // Count per-parameter readings
-      let doTotal = 0, tempTotal = 0, ecoliTotal = 0, turbTotal = 0;
-      for (const b of Object.values(buckets)) {
-        doTotal += b.do_n; tempTotal += b.temp_n; ecoliTotal += b.ecoli_n; turbTotal += b.turb_n;
-      }
-      setParamCounts({ do: doTotal, temp: tempTotal, ecoli: ecoliTotal, turb: turbTotal });
-
-      // Merge baselines + real measured data
-      const chartData: ChartPoint[] = monthRange.map(({ year, month, shortLabel }) => {
-        const key = `${year}-${month}`;
-        const b = buckets[key];
-        return {
-          label: shortLabel,
-          baselineDO: BASELINE.dissolvedOxygen[month],
-          baselineTemp: BASELINE.temperature[month],
-          baselinePH: BASELINE.pH[month],
-          baselineTurb: BASELINE.turbidity[month],
-          baselineEcoli: BASELINE.eColiCount[month],
-          baselineRunoff: BASELINE.stormwaterRunoff[month],
-          dissolvedOxygen: b?.do_n ? Math.round((b.do_sum / b.do_n) * 10) / 10 : null,
-          temperature: b?.temp_n ? Math.round((b.temp_sum / b.temp_n) * 10) / 10 : null,
-          pH: b?.ph_n ? Math.round((b.ph_sum / b.ph_n) * 10) / 10 : null,
-          turbidity: b?.turb_n ? Math.round((b.turb_sum / b.turb_n) * 10) / 10 : null,
-          eColiCount: b?.ecoli_n ? Math.round(b.ecoli_sum / b.ecoli_n) : null,
-          stormwaterRunoff: null,
-          readingCount: b?.total ?? 0,
-        };
-      });
-
-      setData(chartData);
-      setSource("api+baseline");
-    } catch {
-      setData(baselineData);
-      setSource("baseline-only");
-    }
+      // Replace baseline values with measured averages where available
+      setData((prev) =>
+        prev.map((point, i) => {
+          const b = buckets[i];
+          if (!b) return point;
+          return {
+            ...point,
+            dissolvedOxygen: b.do_n > 0 ? Math.round((b.do_sum / b.do_n) * 10) / 10 : point.dissolvedOxygen,
+            temperature: b.temp_n > 0 ? Math.round((b.temp_sum / b.temp_n) * 10) / 10 : point.temperature,
+            pH: b.ph_n > 0 ? Math.round((b.ph_sum / b.ph_n) * 10) / 10 : point.pH,
+            turbidity: b.turb_n > 0 ? Math.round((b.turb_sum / b.turb_n) * 10) / 10 : point.turbidity,
+            eColiCount: b.ecoli_n > 0 ? Math.round(b.ecoli_sum / b.ecoli_n) : point.eColiCount,
+            measured: true,
+          };
+        })
+      );
+    } catch { /* keep baseline data */ }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
-
-  const defaultData: ChartPoint[] = buildMonthRange().map(({ month, shortLabel }) => ({
-    label: shortLabel,
-    baselineDO: BASELINE.dissolvedOxygen[month], baselineTemp: BASELINE.temperature[month],
-    baselinePH: BASELINE.pH[month], baselineTurb: BASELINE.turbidity[month],
-    baselineEcoli: BASELINE.eColiCount[month], baselineRunoff: BASELINE.stormwaterRunoff[month],
-    dissolvedOxygen: null, temperature: null, pH: null, turbidity: null,
-    eColiCount: null, stormwaterRunoff: null, readingCount: 0,
-  }));
-
-  return { data: data || defaultData, source, readingCount, paramCounts };
+  return { data, measuredCount };
 }
 
 // ─── Badge ──────────────────────────────────────────────────────────────────
 
-function DataSourceBadge({ source, paramCount, isDark }: {
-  source: "loading" | "api+baseline" | "baseline-only";
-  paramCount: number; // per-parameter reading count
-  isDark: boolean;
-}) {
-  if (source === "loading") return null;
-  const hasMeasured = source === "api+baseline" && paramCount > 0;
+function DataSourceBadge({ count, isDark }: { count: number; isDark: boolean }) {
+  if (count === 0) return null;
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium border ${
-      hasMeasured
-        ? "text-green-400 bg-green-500/10 border-green-500/30"
-        : "text-blue-400 bg-blue-500/10 border-blue-500/30"
-    }`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${hasMeasured ? "bg-green-400" : "bg-blue-400"}`} />
-      {hasMeasured
-        ? `${paramCount.toLocaleString()} measured + baseline`
-        : "Research baseline"}
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium border text-green-400 bg-green-500/10 border-green-500/30">
+      <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+      {count.toLocaleString()} USGS readings
     </span>
   );
 }
 
-const DATE_RANGE = `${CURRENT_YEAR - 1}–${CURRENT_YEAR}`;
-const BASELINE_NOTE = "Dashed = published research baseline (USGS/EPA/DOEE). Solid = measured sensor data.";
-
 // ─── Chart Components ───────────────────────────────────────────────────────
+// Simple pattern: 12-month charts using baseline data as default.
+// Real USGS sensor averages replace baseline values for months with data.
+// Charts always render a full line — no gaps, no null handling issues.
 
 export function DOTrendChart() {
   const t = useChartTheme();
-  const { data, source, paramCounts } = useRealTimeData();
-  const hasMeasured = data.some((d) => d.dissolvedOxygen != null);
+  const { data, measuredCount } = useTrendData();
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
       <div className="flex items-center justify-between mb-1">
         <h3 className={`text-sm font-semibold ${t.titleColor}`}>Dissolved Oxygen Trends</h3>
-        <DataSourceBadge source={source} paramCount={paramCounts.do} isDark={t.isDark} />
+        <DataSourceBadge count={measuredCount} isDark={t.isDark} />
       </div>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (mg/L) — {DATE_RANGE}</p>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (mg/L) — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
-        <LineChart data={data}>
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="doGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
+            </linearGradient>
+          </defs>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
-          <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} domain={[0, 14]} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          {/* Baseline: dashed reference line */}
-          <Line type="monotone" dataKey="baselineDO" stroke="#3B82F6" strokeWidth={1.5} strokeDasharray="4 3" name="Baseline DO" connectNulls dot={false} />
-          {/* Measured: solid green with large visible dots */}
-          {hasMeasured && <Line type="monotone" dataKey="dissolvedOxygen" stroke="#22C55E" strokeWidth={3} name="Measured DO" connectNulls dot={{ r: 6, fill: "#22C55E", stroke: "#fff", strokeWidth: 2 }} activeDot={{ r: 8 }} />}
+          <Area type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" fill="url(#doGradient)" strokeWidth={2} name="DO (mg/L)" />
           <ReferenceLine y={5} stroke="#EF4444" strokeWidth={1} strokeDasharray="5 5" label={{ value: "EPA Min (5 mg/L)", fill: "#EF4444", fontSize: 10, position: "right" }} />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>{BASELINE_NOTE}</p>
+      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>
+        {measuredCount > 0 ? "Values updated with USGS sensor readings where available. Baseline shown for months without data." : "Research baseline (USGS/EPA/DOEE). Real sensor data will overlay as ingestion runs."}
+      </p>
     </div>
   );
 }
 
 export function TemperatureTrendChart() {
   const t = useChartTheme();
-  const { data, source, paramCounts } = useRealTimeData();
+  const { data, measuredCount } = useTrendData();
   const { unit } = useTempUnit();
-  const hasMeasured = data.some((d) => d.temperature != null);
-
+  const unitLabel = unit === "F" ? "°F" : "°C";
   const chartData = data.map((d) => ({
     ...d,
-    baselineTemp: unit === "F" ? toF(d.baselineTemp) : d.baselineTemp,
-    temperature: d.temperature != null ? (unit === "F" ? toF(d.temperature) : d.temperature) : null,
+    temperature: unit === "F" ? toF(d.temperature) : d.temperature,
   }));
-  const unitLabel = unit === "F" ? "°F" : "°C";
 
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
@@ -387,118 +310,106 @@ export function TemperatureTrendChart() {
         <h3 className={`text-sm font-semibold ${t.titleColor}`}>Water Temperature</h3>
         <div className="flex items-center gap-2">
           <TempUnitToggle />
-          <DataSourceBadge source={source} paramCount={paramCounts.temp} isDark={t.isDark} />
+          <DataSourceBadge count={measuredCount} isDark={t.isDark} />
         </div>
       </div>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average ({unitLabel}) — {DATE_RANGE}</p>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average ({unitLabel}) — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
-        <LineChart data={chartData}>
+        <AreaChart data={chartData}>
+          <defs>
+            <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#22D3EE" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#22D3EE" stopOpacity={0} />
+            </linearGradient>
+          </defs>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
-          <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          <Line type="monotone" dataKey="baselineTemp" stroke="#22D3EE" strokeWidth={1.5} strokeDasharray="4 3" name={`Baseline (${unitLabel})`} connectNulls dot={false} />
-          {hasMeasured && <Line type="monotone" dataKey="temperature" stroke="#F97316" strokeWidth={3} name={`Measured (${unitLabel})`} connectNulls dot={{ r: 6, fill: "#F97316", stroke: "#fff", strokeWidth: 2 }} activeDot={{ r: 8 }} />}
-        </LineChart>
+          <Area type="monotone" dataKey="temperature" stroke="#22D3EE" fill="url(#tempGradient)" strokeWidth={2} name={`Temperature (${unitLabel})`} />
+        </AreaChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>{BASELINE_NOTE}</p>
+      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>
+        {measuredCount > 0 ? "Values updated with USGS sensor readings where available." : "Research baseline."}
+      </p>
     </div>
   );
 }
 
 export function EColiChart() {
   const t = useChartTheme();
-  const { data, source, paramCounts } = useRealTimeData();
-  const hasMeasured = data.some((d) => d.eColiCount != null);
+  const { data } = useTrendData();
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className={`text-sm font-semibold ${t.titleColor}`}>E. coli Levels</h3>
-        <DataSourceBadge source={source} paramCount={paramCounts.ecoli} isDark={t.isDark} />
-      </div>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (CFU/100mL) — {DATE_RANGE}</p>
+      <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>E. coli Levels</h3>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (CFU/100mL) — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
-          <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          {/* Baseline bars — faded background */}
-          <Bar dataKey="baselineEcoli" name="Baseline E. coli" radius={[4, 4, 0, 0]} fill="#EF4444" fillOpacity={0.2} />
-          {/* Measured bars — solid overlay */}
-          {hasMeasured && <Bar dataKey="eColiCount" name="Measured E. coli" radius={[4, 4, 0, 0]} fill="#EF4444" fillOpacity={0.8} />}
+          <Bar dataKey="eColiCount" name="E. coli (CFU/100mL)" radius={[4, 4, 0, 0]} fill="#EF4444" fillOpacity={0.7} />
           <ReferenceLine y={410} stroke="#F59E0B" strokeWidth={1.5} strokeDasharray="5 5" label={{ value: "EPA Limit (410)", fill: "#F59E0B", fontSize: 10, position: "right" }} />
         </BarChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>Faded = published baseline (EPA/DOEE). Solid = measured sensor data.</p>
     </div>
   );
 }
 
 export function StormwaterChart() {
   const t = useChartTheme();
-  const { data, source } = useRealTimeData();
+  const { data } = useTrendData();
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className={`text-sm font-semibold ${t.titleColor}`}>Stormwater Runoff Volume</h3>
-        <DataSourceBadge source={source} paramCount={0} isDark={t.isDark} />
-      </div>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly totals (million gallons) — {DATE_RANGE}</p>
+      <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Stormwater Runoff Volume</h3>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly totals (million gallons) — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
-          <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          <Bar dataKey="baselineRunoff" name="Est. Runoff (NOAA baseline)" radius={[4, 4, 0, 0]} fill="#8B5CF6" fillOpacity={0.35} />
+          <Bar dataKey="stormwaterRunoff" name="Runoff (M gal)" radius={[4, 4, 0, 0]} fill="#8B5CF6" fillOpacity={0.7} />
         </BarChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>Estimates based on NOAA precipitation normals and DC DOEE MS4 reports. Not directly measured.</p>
+      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>Estimates based on NOAA precipitation normals and DC DOEE MS4 reports.</p>
     </div>
   );
 }
 
 export function MultiParameterChart() {
   const t = useChartTheme();
-  const { data, source, readingCount } = useRealTimeData();
+  const { data, measuredCount } = useTrendData();
   const { unit } = useTempUnit();
-  const hasMeasuredDO = data.some((d) => d.dissolvedOxygen != null);
-  const hasMeasuredTemp = data.some((d) => d.temperature != null);
-  const hasMeasuredTurb = data.some((d) => d.turbidity != null);
-
+  const unitLabel = unit === "F" ? "°F" : "°C";
   const chartData = data.map((d) => ({
     ...d,
-    baselineTemp: unit === "F" ? toF(d.baselineTemp) : d.baselineTemp,
-    temperature: d.temperature != null ? (unit === "F" ? toF(d.temperature) : d.temperature) : null,
+    temperature: unit === "F" ? toF(d.temperature) : d.temperature,
   }));
-  const unitLabel = unit === "F" ? "°F" : "°C";
 
   return (
     <div className="glass-panel rounded-xl p-3 sm:p-4">
       <div className="flex items-center justify-between mb-1">
         <h3 className={`text-sm font-semibold ${t.titleColor}`}>Multi-Parameter Overview</h3>
-        <DataSourceBadge source={source} paramCount={readingCount} isDark={t.isDark} />
+        <DataSourceBadge count={measuredCount} isDark={t.isDark} />
       </div>
-      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Water quality trends — {DATE_RANGE}</p>
+      <p className={`text-xs mb-4 ${t.subtitleColor}`}>Water quality trends — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
-          <XAxis dataKey="label" tick={{ fontSize: 10, fill: t.tickColor }} interval="preserveStartEnd" />
+          <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
           <Tooltip contentStyle={t.tooltipStyle} />
-          <Legend wrapperStyle={{ fontSize: 10, color: t.isDark ? "#94A3B8" : "#64748B" }} />
-          {/* Baselines — dashed */}
-          <Line type="monotone" dataKey="baselineDO" stroke="#3B82F6" strokeWidth={1} strokeDasharray="4 3" name="DO baseline" dot={false} connectNulls />
-          <Line type="monotone" dataKey="baselineTemp" stroke="#22D3EE" strokeWidth={1} strokeDasharray="4 3" name={`Temp baseline`} dot={false} connectNulls />
-          <Line type="monotone" dataKey="baselineTurb" stroke="#F59E0B" strokeWidth={1} strokeDasharray="4 3" name="Turb baseline" dot={false} connectNulls />
-          {/* Measured — solid with distinct colors and large dots */}
-          {hasMeasuredDO && <Line type="monotone" dataKey="dissolvedOxygen" stroke="#22C55E" strokeWidth={2.5} name="DO measured" dot={{ r: 4, fill: "#22C55E", stroke: "#fff", strokeWidth: 1.5 }} connectNulls />}
-          {hasMeasuredTemp && <Line type="monotone" dataKey="temperature" stroke="#F97316" strokeWidth={2.5} name={`Temp measured`} dot={{ r: 4, fill: "#F97316", stroke: "#fff", strokeWidth: 1.5 }} connectNulls />}
-          {hasMeasuredTurb && <Line type="monotone" dataKey="turbidity" stroke="#EF4444" strokeWidth={2.5} name="Turb measured" dot={{ r: 4, fill: "#EF4444", stroke: "#fff", strokeWidth: 1.5 }} connectNulls />}
+          <Legend wrapperStyle={{ fontSize: 11, color: t.isDark ? "#94A3B8" : "#64748B" }} />
+          <Line type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" strokeWidth={2} name="DO (mg/L)" dot={{ r: 2 }} />
+          <Line type="monotone" dataKey="temperature" stroke="#22D3EE" strokeWidth={2} name={`Temp (${unitLabel})`} dot={{ r: 2 }} />
+          <Line type="monotone" dataKey="turbidity" stroke="#F59E0B" strokeWidth={2} name="Turbidity (NTU)" dot={{ r: 2 }} />
         </LineChart>
       </ResponsiveContainer>
-      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>{BASELINE_NOTE}</p>
+      <p className={`text-[9px] mt-1 ${t.isDark ? "text-slate-600" : "text-slate-400"}`}>
+        {measuredCount > 0 ? "USGS sensor data replaces baseline for months with readings." : "Research baseline — real data overlays as ingestion accumulates."}
+      </p>
     </div>
   );
 }
