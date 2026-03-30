@@ -18,12 +18,12 @@
   --color-udc-navy: #002B5C;
 
   /* ── Dark Theme Palette (warm charcoal, not cold navy) ── */
-  --color-udc-dark: #0C0F17;
+  --color-udc-dark: #090B11;
   --color-udc-blue: #1E4D8C;
-  --color-panel-bg: #13161F;
+  --color-panel-bg: #12151E;
   --color-panel-border: #23262F;
   --color-panel-hover: #1A1D27;
-  --color-dashboard-bg: #0C0F17;
+  --color-dashboard-bg: #090B11;
 
   /* ── Light Theme Palette ── */
   --color-panel-bg-light: #FFFFFF;
@@ -53,7 +53,7 @@ body {
    DARK THEME
    ============================================================ */
 html.dark body {
-  background-color: var(--color-udc-dark);
+  background-color: #090B11;
   color: #E5E7EB;
 }
 
@@ -64,7 +64,7 @@ html.dark ::-webkit-scrollbar-thumb { background: #2A2D37; border-radius: 3px; }
 html.dark ::-webkit-scrollbar-thumb:hover { background: #3A3D47; }
 
 /* Leaflet Map */
-html.dark .leaflet-container { background: var(--color-udc-dark) !important; }
+html.dark .leaflet-container { background: #090B11 !important; }
 html.dark .leaflet-control-zoom a {
   background-color: var(--color-panel-bg) !important;
   color: #E5E7EB !important;
@@ -128,23 +128,25 @@ html.light .leaflet-control-attribution a { color: #2563EB !important; }
    Consistent depth via shadow + subtle border + translucent bg
    ============================================================ */
 html.dark .glass-panel {
-  background: rgba(19, 22, 31, 0.8);
+  background: rgba(19, 22, 31, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.02);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
+  border-radius: 16px;
 }
 html.dark .glass-panel:hover {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
 }
 
 html.light .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
+  background: #FFFFFF;
   border: 1px solid #E5E7EB;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  border-radius: 16px;
 }
 html.light .glass-panel:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  border-color: #D1D5DB;
 }
 
 /* ── Theme-aware panels ── */
@@ -220,12 +222,12 @@ html.light .theme-input:focus {
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 html.dark .metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
 }
 html.light .metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.04);
 }
 
 /* Station marker pulse */
