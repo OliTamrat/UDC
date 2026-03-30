@@ -544,11 +544,21 @@ async function ingestWQP(): Promise<{ count: number; measurementCount: number; e
 // API handlers
 // ---------------------------------------------------------------------------
 
-// GET handler for Vercel Cron — authenticated via CRON_SECRET header
+// GET handler for Vercel Cron — authenticated via CRON_SECRET
+// Vercel sends the secret as "authorization: Bearer <CRON_SECRET>" on cron invocations
+// but only if CRON_SECRET is set in vercel.json or env vars.
+// We also accept x-vercel-cron-secret for compatibility.
 export async function GET(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret && request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (cronSecret) {
+    const authHeader = request.headers.get("authorization");
+    const vercelCronHeader = request.headers.get("x-vercel-cron-secret");
+    const isAuthorized =
+      authHeader === `Bearer ${cronSecret}` ||
+      vercelCronHeader === cronSecret;
+    if (!isAuthorized) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   // Delegate to the shared ingest logic
