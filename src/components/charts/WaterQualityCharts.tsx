@@ -207,8 +207,12 @@ function useRealTimeData() {
     }));
 
     try {
+      // Fetch readings from the start of the chart range (15 months ago) with high limit
+      const fromDate = new Date();
+      fromDate.setMonth(fromDate.getMonth() - 15);
+      const fromStr = fromDate.toISOString().slice(0, 10);
       const promises = DASHBOARD_STATIONS.map((id) =>
-        fetch(`/api/stations/${id}/history?limit=2000`)
+        fetch(`/api/stations/${id}/history?limit=10000&from=${fromStr}`)
           .then((r) => (r.ok ? r.json() as Promise<StationHistory> : null))
           .catch(() => null)
       );

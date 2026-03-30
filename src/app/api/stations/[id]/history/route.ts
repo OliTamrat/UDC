@@ -19,7 +19,7 @@ export async function GET(
   }
 
   const searchParams = request.nextUrl.searchParams;
-  const limit = Math.min(parseInt(searchParams.get("limit") || "365"), 1000);
+  const limit = Math.min(parseInt(searchParams.get("limit") || "365"), 10000);
   const from = searchParams.get("from");
   const to = searchParams.get("to");
 
