@@ -24,7 +24,7 @@ export default function AboutPage() {
   const sidebarClass = useSidebarClass();
 
   const cardClass = `rounded-xl border p-6 ${
-    isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white border-[#E5E7EB] shadow-sm"
+    isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white border-[#E5E7EB] shadow-sm"
   }`;
 
   const headingClass = `text-lg font-bold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`;
@@ -42,7 +42,7 @@ export default function AboutPage() {
           <section
             className={`relative overflow-hidden rounded-2xl border p-8 md:p-10 ${
               isDark
-                ? "border-panel-border bg-gradient-to-br from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
+                ? "border-white/[0.06] bg-gradient-to-br from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
                 : "border-[#E5E7EB] bg-gradient-to-br from-white via-blue-50/30 to-[#F9FAFB] shadow-sm"
             }`}
           >
@@ -129,7 +129,7 @@ export default function AboutPage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               {/* Olink Technologies */}
-              <div className={`rounded-xl border p-5 ${isDark ? "bg-slate-800/50 border-panel-border" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
+              <div className={`rounded-xl border p-5 ${isDark ? "bg-[#1F2937]/50 border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
                 <div className="flex items-center gap-3 mb-2">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isDark ? "bg-blue-500/15" : "bg-blue-50"}`}>
                     <Building2 className="w-4.5 h-4.5 text-blue-400" />
@@ -142,7 +142,7 @@ export default function AboutPage() {
               </div>
 
               {/* DAPS Analytics */}
-              <div className={`rounded-xl border p-5 ${isDark ? "bg-slate-800/50 border-panel-border" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
+              <div className={`rounded-xl border p-5 ${isDark ? "bg-[#1F2937]/50 border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
                 <div className="flex items-center gap-3 mb-2">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isDark ? "bg-emerald-500/15" : "bg-emerald-50"}`}>
                     <BarChart3 className="w-4.5 h-4.5 text-emerald-400" />
@@ -207,7 +207,7 @@ export default function AboutPage() {
               For questions about this project, the data, or partnership inquiries:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800/50" : "bg-[#F9FAFB]"}`}>
+              <div className={`rounded-lg p-4 ${isDark ? "bg-[#1F2937]/50" : "bg-[#F9FAFB]"}`}>
                 <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   Academic &amp; Research
                 </p>
@@ -224,7 +224,7 @@ export default function AboutPage() {
                   <Mail className="w-3 h-3" /> wrri@udc.edu
                 </a>
               </div>
-              <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800/50" : "bg-[#F9FAFB]"}`}>
+              <div className={`rounded-lg p-4 ${isDark ? "bg-[#1F2937]/50" : "bg-[#F9FAFB]"}`}>
                 <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   Technical &amp; Development
                 </p>

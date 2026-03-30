@@ -55,7 +55,7 @@ export default function EnvironmentalJustice() {
           <div
             key={ward.ward}
             className={`rounded-lg border p-2 text-center ${
-              isDark ? "border-panel-border" : "border-[#E5E7EB] bg-white"
+              isDark ? "border-white/[0.06]" : "border-[#E5E7EB] bg-white"
             }`}
           >
             <div className={`text-[10px] uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Ward {ward.ward}</div>

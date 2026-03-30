@@ -329,7 +329,7 @@ export default function EducationPage() {
           {/* Page Header */}
           <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
-              ? "border-panel-border bg-gradient-to-br from-emerald-900/10 via-[#0C0F17] to-[#0C0F17]"
+              ? "border-white/[0.06] bg-gradient-to-br from-emerald-900/10 via-[#0C0F17] to-[#0C0F17]"
               : "border-[#E5E7EB] bg-gradient-to-br from-white via-emerald-50/30 to-[#F9FAFB]"
           }`}>
             <div className="relative z-10">
@@ -396,7 +396,7 @@ export default function EducationPage() {
                 </div>
                 <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{audience.title}</h3>
                 <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{audience.description}</p>
-                <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
+                <div className="flex items-center gap-1 mt-3 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
                   <span>{audience.cta}</span>
                   <ArrowRight className="w-3 h-3" />
                 </div>
@@ -494,7 +494,7 @@ export default function EducationPage() {
                           ? "bg-water-blue/20 border-water-blue/30 text-water-blue"
                           : "bg-blue-50 border-blue-300 text-blue-600"
                         : isDark
-                          ? "bg-panel-bg border-panel-border text-[#D1D5DB] hover:border-white/[0.06]"
+                          ? "bg-[#13161F] border-white/[0.06] text-[#D1D5DB] hover:border-white/[0.06]"
                           : "bg-white border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"
                     }`}
                   >
@@ -543,7 +543,7 @@ export default function EducationPage() {
                       </li>
                     ))}
                   </ul>
-                  <div className="flex items-center gap-1 mt-4 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
+                  <div className="flex items-center gap-1 mt-4 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
                     <span>View module details</span>
                     <ArrowRight className="w-3 h-3" />
                   </div>

@@ -43,7 +43,7 @@ export default function Footer() {
               <div>
                 <p
                   className={`text-sm font-semibold leading-tight ${
-                    isDark ? "text-white" : "text-slate-900"
+                    isDark ? "text-white" : "text-[#111827]"
                   }`}
                 >
                   {t("footer.udc_full")}
@@ -62,7 +62,7 @@ export default function Footer() {
           <div>
             <h3
               className={`text-xs font-semibold uppercase tracking-wider mb-3 ${
-                isDark ? "text-[#E5E7EB]" : "text-slate-800"
+                isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
               }`}
             >
               {t("footer.institute")}
@@ -102,7 +102,7 @@ export default function Footer() {
           <div>
             <h3
               className={`text-xs font-semibold uppercase tracking-wider mb-3 ${
-                isDark ? "text-[#E5E7EB]" : "text-slate-800"
+                isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
               }`}
             >
               {t("footer.quick_links")}
@@ -130,7 +130,7 @@ export default function Footer() {
           <div>
             <h3
               className={`text-xs font-semibold uppercase tracking-wider mb-3 ${
-                isDark ? "text-[#E5E7EB]" : "text-slate-800"
+                isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
               }`}
             >
               {t("footer.data_sources")}
@@ -179,26 +179,26 @@ export default function Footer() {
       {/* Attribution bar */}
       <div
         className={`border-t px-4 sm:px-6 py-4 ${
-          isDark ? "border-white/[0.06] bg-udc-dark/80" : "border-[#E5E7EB]/80 bg-slate-100/60"
+          isDark ? "border-white/[0.06] bg-udc-dark/80" : "border-[#E5E7EB]/80 bg-[#F3F4F6]/60"
         }`}
       >
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className={`text-[11px] text-center sm:text-left leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
             {t("footer.built_by")}{" "}
-            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-slate-700"}`}>
+            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
               Olink Technologies Inc
             </span>{" "}
             {t("footer.and")}{" "}
-            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-slate-700"}`}>
+            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
               DAPS Analytics
             </span>{" "}
             {t("footer.in_collaboration")}{" "}
-            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-slate-700"}`}>
+            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
               Dr. Tolessa Deksissa
             </span>
             {t("footer.director_title")}
           </p>
-          <div className={`flex items-center gap-1.5 shrink-0 ${isDark ? "text-[#9CA3AF]" : "text-slate-400"}`}>
+          <div className={`flex items-center gap-1.5 shrink-0 ${isDark ? "text-[#9CA3AF]" : "text-[#D1D5DB]"}`}>
             <Droplets className="w-3.5 h-3.5" />
             <span className="text-[10px]">
               &copy; {new Date().getFullYear()} UDC CAUSES / WRRI
@@ -213,7 +213,7 @@ export default function Footer() {
           isDark ? "border-white/[0.06]" : "border-[#E5E7EB]/50"
         }`}
       >
-        <p className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-slate-400"}`}>
+        <p className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-[#D1D5DB]"}`}>
           {t("footer.funded")}
         </p>
       </div>

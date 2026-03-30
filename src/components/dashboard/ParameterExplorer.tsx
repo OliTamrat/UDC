@@ -264,14 +264,14 @@ export default function ParameterExplorer({
           animate-slide-in-right shadow-2xl border-l
           ${
             isDark
-              ? "bg-udc-dark border-panel-border"
+              ? "bg-udc-dark border-white/[0.06]"
               : "bg-white border-[#E5E7EB]"
           }`}
       >
         {/* Header */}
         <div
           className={`flex-shrink-0 border-b px-5 py-4 ${
-            isDark ? "border-panel-border" : "border-[#E5E7EB]"
+            isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
           }`}
         >
           <div className="flex items-center justify-between mb-3">
@@ -327,8 +327,8 @@ export default function ParameterExplorer({
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-9 pr-4 py-2 rounded-lg text-sm border transition-colors ${
                 isDark
-                  ? "bg-panel-bg border-panel-border text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-water-blue/50"
-                  : "bg-[#F9FAFB] border-[#E5E7EB] text-slate-800 placeholder:text-[#9CA3AF] focus:border-blue-400"
+                  ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-water-blue/50"
+                  : "bg-[#F9FAFB] border-[#E5E7EB] text-[#1F2937] placeholder:text-[#9CA3AF] focus:border-blue-400"
               } focus:outline-none`}
             />
           </div>
@@ -343,8 +343,8 @@ export default function ParameterExplorer({
                     ? "bg-water-blue/20 text-blue-300 border border-water-blue/40"
                     : "bg-blue-100 text-blue-700 border border-blue-300"
                   : isDark
-                    ? "bg-panel-bg text-[#D1D5DB] border border-panel-border hover:border-slate-500"
-                    : "bg-slate-100 text-[#6B7280] border border-[#E5E7EB] hover:border-slate-300"
+                    ? "bg-[#13161F] text-[#D1D5DB] border border-white/[0.06] hover:border-[#6B7280]"
+                    : "bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB] hover:border-[#D1D5DB]"
               }`}
             >
               All ({parameters.length})
@@ -365,8 +365,8 @@ export default function ParameterExplorer({
                         ? `${g.bgColor} ${g.color} border ${g.borderColor}`
                         : `${g.lightBg} ${g.color} border ${g.lightBorder}`
                       : isDark
-                        ? "bg-panel-bg text-[#D1D5DB] border border-panel-border hover:border-slate-500"
-                        : "bg-slate-100 text-[#6B7280] border border-[#E5E7EB] hover:border-slate-300"
+                        ? "bg-[#13161F] text-[#D1D5DB] border border-white/[0.06] hover:border-[#6B7280]"
+                        : "bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB] hover:border-[#D1D5DB]"
                   }`}
                 >
                   <Icon className="w-3 h-3" />
@@ -380,7 +380,7 @@ export default function ParameterExplorer({
           {selectedParams.length > 0 && (
             <div
               className={`flex items-center justify-between mt-3 pt-3 border-t ${
-                isDark ? "border-panel-border" : "border-[#F3F4F6]"
+                isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"
               }`}
             >
               <span
@@ -421,7 +421,7 @@ export default function ParameterExplorer({
                 <div
                   className={`sticky top-0 z-10 px-5 py-3 border-b ${
                     isDark
-                      ? "bg-udc-dark/95 backdrop-blur-sm border-panel-border/50"
+                      ? "bg-udc-dark/95 backdrop-blur-sm border-white/[0.04]"
                       : "bg-white/95 backdrop-blur-sm border-[#F3F4F6]"
                   }`}
                 >
@@ -462,8 +462,8 @@ export default function ParameterExplorer({
                             ? "bg-water-blue/20 text-blue-300"
                             : "bg-blue-100 text-blue-700"
                           : isDark
-                            ? "bg-panel-bg text-[#D1D5DB] hover:text-[#E5E7EB]"
-                            : "bg-slate-100 text-[#6B7280] hover:text-[#374151]"
+                            ? "bg-[#13161F] text-[#D1D5DB] hover:text-[#E5E7EB]"
+                            : "bg-[#F3F4F6] text-[#6B7280] hover:text-[#374151]"
                       }`}
                     >
                       <div
@@ -474,7 +474,7 @@ export default function ParameterExplorer({
                               ? "border-water-blue/50 bg-water-blue/20"
                               : isDark
                                 ? "border-white/[0.06]"
-                                : "border-slate-300"
+                                : "border-[#D1D5DB]"
                         }`}
                       >
                         {allSelected && (
@@ -507,8 +507,8 @@ export default function ParameterExplorer({
                               ? `${group.bgColor} ${group.borderColor}`
                               : `${group.lightBg} ${group.lightBorder}`
                             : isDark
-                              ? "border-panel-border hover:border-panel-border/80 bg-panel-bg/50"
-                              : "border-[#E5E7EB] hover:border-slate-300 bg-white"
+                              ? "border-white/[0.06] hover:border-white/[0.06]/80 bg-[#13161F]/50"
+                              : "border-[#E5E7EB] hover:border-[#D1D5DB] bg-white"
                         }`}
                       >
                         {/* Card Header — always visible */}
@@ -523,8 +523,8 @@ export default function ParameterExplorer({
                               isSelected
                                 ? "bg-water-blue border-water-blue"
                                 : isDark
-                                  ? "border-white/[0.06] hover:border-slate-400"
-                                  : "border-slate-300 hover:border-slate-400"
+                                  ? "border-white/[0.06] hover:border-[#9CA3AF]"
+                                  : "border-[#D1D5DB] hover:border-[#9CA3AF]"
                             }`}
                             role="checkbox"
                             aria-checked={isSelected}
@@ -547,7 +547,7 @@ export default function ParameterExplorer({
                             <div className="flex items-center gap-2">
                               <span
                                 className={`text-sm font-medium ${
-                                  isDark ? "text-slate-100" : "text-slate-800"
+                                  isDark ? "text-[#F3F4F6]" : "text-[#1F2937]"
                                 }`}
                               >
                                 {param.name}
@@ -663,7 +663,7 @@ export default function ParameterExplorer({
                               <div
                                 className={`rounded-lg border p-3 ${
                                   isDark
-                                    ? "bg-panel-bg/50 border-panel-border"
+                                    ? "bg-[#13161F]/50 border-white/[0.06]"
                                     : "bg-white border-[#E5E7EB]"
                                 }`}
                               >
@@ -769,7 +769,7 @@ export default function ParameterExplorer({
             <div className="flex flex-col items-center justify-center py-16 px-8">
               <Search
                 className={`w-8 h-8 mb-3 ${
-                  isDark ? "text-[#9CA3AF]" : "text-slate-300"
+                  isDark ? "text-[#9CA3AF]" : "text-[#E5E7EB]"
                 }`}
               />
               <p
@@ -795,7 +795,7 @@ export default function ParameterExplorer({
         {/* Footer / Apply Button */}
         <div
           className={`flex-shrink-0 border-t px-5 py-4 ${
-            isDark ? "border-panel-border bg-udc-dark" : "border-[#E5E7EB] bg-white"
+            isDark ? "border-white/[0.06] bg-udc-dark" : "border-[#E5E7EB] bg-white"
           }`}
         >
           <button
@@ -825,7 +825,7 @@ function ThresholdBar({
     <div className="mt-2">
       <div
         className={`h-2 rounded-full overflow-hidden flex ${
-          isDark ? "bg-slate-700" : "bg-slate-200"
+          isDark ? "bg-[#374151]" : "bg-[#E5E7EB]"
         }`}
       >
         {epaMin != null && (

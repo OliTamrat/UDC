@@ -176,7 +176,7 @@ export default function Header() {
 
   return (
     <header className={`h-14 border-b flex items-center justify-between px-2 sm:px-4 md:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
-      isDark ? "border-panel-border bg-panel-bg/80" : "border-gray-200 bg-white/80"
+      isDark ? "border-white/[0.06] bg-[#0C0F17]/80" : "border-[#E5E7EB] bg-white/80"
     }`}>
       {/* Left side: hamburger + logo + search */}
       <div className="flex items-center gap-1.5 sm:gap-3 flex-1 min-w-0">
@@ -214,13 +214,13 @@ export default function Header() {
             onFocus={() => { if (searchQuery) setShowResults(true); }}
             className={`w-full border rounded-lg pl-8 sm:pl-10 pr-3 py-1.5 text-sm focus:outline-none transition-colors ${
               isDark
-                ? "bg-udc-dark/50 border-panel-border text-gray-200 placeholder:text-gray-500 focus:border-water-blue/50"
+                ? "bg-udc-dark/50 border-white/[0.06] text-gray-200 placeholder:text-gray-500 focus:border-water-blue/50"
                 : "bg-gray-100 border-gray-200 text-gray-700 placeholder:text-gray-400 focus:border-blue-500"
             }`}
           />
           {showResults && searchQuery && (
             <div role="listbox" aria-label="Search results" className={`absolute left-0 top-full mt-1 w-full sm:w-80 rounded-lg border shadow-lg py-1 z-50 max-h-80 overflow-y-auto ${
-              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-gray-200"
+              isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-gray-200"
             }`}>
               {searchResults.length === 0 ? (
                 <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-[#9CA3AF]" : "text-[#4B5563]"}`}>
@@ -283,7 +283,7 @@ export default function Header() {
           </button>
           {showLangMenu && (
             <div className={`absolute right-0 top-full mt-1 rounded-lg border shadow-lg py-1 min-w-[140px] z-50 ${
-              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-gray-200"
+              isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-gray-200"
             }`}>
               <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
                 isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"
@@ -332,7 +332,7 @@ export default function Header() {
           </button>
           {showThemeMenu && (
             <div className={`absolute right-0 top-full mt-1 rounded-lg border shadow-lg py-1 min-w-[140px] z-50 ${
-              isDark ? "bg-panel-bg border-panel-border" : "bg-white border-gray-200"
+              isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-gray-200"
             }`}>
               <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
                 isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"
@@ -381,7 +381,7 @@ export default function Header() {
         <button
           className={`hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg transition-colors border ${
             isDark
-              ? "hover:bg-white/[0.04] border-panel-border"
+              ? "hover:bg-white/[0.04] border-white/[0.06]"
               : "hover:bg-[#F3F4F6] border-[#E5E7EB]"
           }`}
           title={t("header.stakeholder_soon")}

@@ -103,7 +103,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
         onClick={() => setOpen(!open)}
         className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
           isDark
-            ? "border-panel-border bg-panel-bg hover:bg-white/[0.04] text-[#E5E7EB]"
+            ? "border-white/[0.06] bg-[#13161F] hover:bg-white/[0.04] text-[#E5E7EB]"
             : "border-[#E5E7EB] bg-white hover:bg-[#F3F4F6] text-[#374151]"
         } ${selectedParams.length > 0 ? (isDark ? "border-water-blue/50" : "border-blue-400") : ""}`}
       >
@@ -128,7 +128,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
               <span
                 key={id}
                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] border ${
-                  isDark ? "bg-panel-bg border-white/[0.06] text-[#E5E7EB]" : "bg-slate-100 border-[#E5E7EB] text-[#4B5563]"
+                  isDark ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB]" : "bg-[#F3F4F6] border-[#E5E7EB] text-[#4B5563]"
                 }`}
               >
                 {p?.name || id}
@@ -155,11 +155,11 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
       {/* Dropdown panel */}
       {open && (
         <div className={`absolute z-50 mt-1 left-0 w-72 rounded-xl border shadow-xl overflow-hidden ${
-          isDark ? "bg-udc-dark border-panel-border" : "bg-white border-[#E5E7EB]"
+          isDark ? "bg-udc-dark border-white/[0.06]" : "bg-white border-[#E5E7EB]"
         }`}>
           {/* Header */}
           <div className={`flex items-center justify-between px-3 py-2 border-b ${
-            isDark ? "border-panel-border" : "border-[#F3F4F6]"
+            isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"
           }`}>
             <span className={`text-xs font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>
               Filter by Parameter
@@ -184,7 +184,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
                   <button
                     onClick={() => selectCategory(group.category)}
                     className={`w-full flex items-center gap-2 px-3 py-1.5 text-[10px] uppercase tracking-wider font-semibold ${
-                      isDark ? "bg-panel-bg/50 text-[#D1D5DB] hover:bg-white/[0.04]" : "bg-[#F9FAFB] text-[#6B7280] hover:bg-[#F3F4F6]"
+                      isDark ? "bg-[#13161F]/50 text-[#D1D5DB] hover:bg-white/[0.04]" : "bg-[#F9FAFB] text-[#6B7280] hover:bg-[#F3F4F6]"
                     }`}
                   >
                     <div className={`w-3 h-3 rounded border flex items-center justify-center ${
@@ -192,7 +192,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
                         ? "bg-water-blue border-water-blue"
                         : someSelected
                           ? "border-water-blue/50 bg-water-blue/20"
-                          : isDark ? "border-white/[0.06]" : "border-slate-300"
+                          : isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
                     }`}>
                       {allSelected && <Check className="w-2 h-2 text-white" />}
                       {someSelected && !allSelected && <span className="w-1.5 h-1.5 rounded-sm bg-water-blue" />}
@@ -217,12 +217,12 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
                         <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 ${
                           isSelected
                             ? "bg-water-blue border-water-blue"
-                            : isDark ? "border-white/[0.06]" : "border-slate-300"
+                            : isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
                         }`}>
                           {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className={`text-xs truncate ${isDark ? "text-[#E5E7EB]" : "text-slate-800"}`}>
+                          <div className={`text-xs truncate ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                             {param.name}
                           </div>
                           <div className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>

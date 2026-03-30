@@ -6,10 +6,10 @@ interface Props { stationId: string; stationName?: string; onClose: () => void; 
 
 function Lines({ text }: { text: string }) {
   return (
-    <div className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+    <div className="space-y-2 text-sm text-[#374151] dark:text-[#E5E7EB]">
       {text.split('\n').map((line, i) => {
-        if (line.startsWith('# '))  return <h2 key={i} className="text-base font-semibold text-slate-900 dark:text-slate-100 mt-4 first:mt-0">{line.slice(2)}</h2>;
-        if (line.startsWith('## ')) return <h3 key={i} className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-3">{line.slice(3)}</h3>;
+        if (line.startsWith('# '))  return <h2 key={i} className="text-base font-semibold text-[#111827] dark:text-[#F3F4F6] mt-4 first:mt-0">{line.slice(2)}</h2>;
+        if (line.startsWith('## ')) return <h3 key={i} className="text-sm font-semibold text-[#1F2937] dark:text-[#E5E7EB] mt-3">{line.slice(3)}</h3>;
         if (line.startsWith('- ') || line.startsWith('• ')) return <li key={i} className="ml-4 list-disc leading-relaxed">{line.slice(2)}</li>;
         if (line.trim() === '') return <div key={i} className="h-1" />;
         return <p key={i} className="leading-relaxed">{line}</p>;
@@ -44,22 +44,22 @@ export function WqisStationAnalysis({ stationId, stationName, onClose }: Props) 
     <>
       <div className="fixed inset-0 z-40 bg-black/30" onClick={onClose} aria-hidden />
       <div role="dialog" aria-label={`AI Analysis — ${stationName ?? stationId}`}
-        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-lg flex flex-col bg-white dark:bg-[#22272B] border-l border-slate-200 dark:border-slate-700 shadow-xl">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-lg flex flex-col bg-white dark:bg-[#22272B] border-l border-[#E5E7EB] dark:border-[#374151] shadow-xl">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#374151]">
           <div>
-            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">AI Station Analysis</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{stationName ?? stationId} · WQIS Agent</p>
+            <h2 className="text-sm font-semibold text-[#111827] dark:text-[#F3F4F6]">AI Station Analysis</h2>
+            <p className="text-xs text-[#6B7280] dark:text-[#D1D5DB] mt-0.5">{stationName ?? stationId} · WQIS Agent</p>
           </div>
           <div className="flex items-center gap-2">
-            {data && <button onClick={analyze} disabled={loading} className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 underline disabled:opacity-40">Refresh</button>}
-            <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl px-1" aria-label="Close">×</button>
+            {data && <button onClick={analyze} disabled={loading} className="text-xs text-[#6B7280] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline disabled:opacity-40">Refresh</button>}
+            <button onClick={onClose} className="text-[#D1D5DB] hover:text-[#4B5563] dark:hover:text-[#E5E7EB] text-xl px-1" aria-label="Close">×</button>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {loading && (
             <div className="flex flex-col items-center justify-center h-48 gap-3">
               <div className="w-6 h-6 border-2 border-[#1C8C7D] border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm text-slate-500 dark:text-slate-400 text-center">WQIS agent analyzing {stationName ?? stationId}…</p>
+              <p className="text-sm text-[#6B7280] dark:text-[#D1D5DB] text-center">WQIS agent analyzing {stationName ?? stationId}…</p>
             </div>
           )}
           {error && (
@@ -70,7 +70,7 @@ export function WqisStationAnalysis({ stationId, stationName, onClose }: Props) 
           )}
           {data && !loading && (
             <div>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">Analyzed {new Date(data.analyzedAt).toLocaleString()}</p>
+              <p className="text-xs text-[#D1D5DB] dark:text-[#6B7280] mb-4">Analyzed {new Date(data.analyzedAt).toLocaleString()}</p>
               <Lines text={data.analysis} />
             </div>
           )}

@@ -39,7 +39,7 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
       <div className="space-y-6">
         {/* Appearance */}
         <div>
-          <label className={`block text-sm font-semibold mb-3 ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+          <label className={`block text-sm font-semibold mb-3 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
             {t("settings.appearance")}
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -56,8 +56,8 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
                         ? "bg-udc-blue/20 border-udc-blue/40 text-water-blue"
                         : "bg-blue-50 border-blue-300 text-blue-700"
                       : isDark
-                        ? "bg-white/5 border-panel-border text-slate-400 hover:border-slate-500"
-                        : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300"
+                        ? "bg-white/5 border-white/[0.06] text-[#D1D5DB] hover:border-[#6B7280]"
+                        : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563] hover:border-[#D1D5DB]"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -70,7 +70,7 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
 
         {/* Language */}
         <div>
-          <label className={`block text-sm font-semibold mb-3 ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+          <label className={`block text-sm font-semibold mb-3 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
             {t("settings.language")}
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -86,8 +86,8 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
                         ? "bg-udc-blue/20 border-udc-blue/40 text-water-blue"
                         : "bg-blue-50 border-blue-300 text-blue-700"
                       : isDark
-                        ? "bg-white/5 border-panel-border text-slate-400 hover:border-slate-500"
-                        : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300"
+                        ? "bg-white/5 border-white/[0.06] text-[#D1D5DB] hover:border-[#6B7280]"
+                        : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563] hover:border-[#D1D5DB]"
                   }`}
                 >
                   <span className="text-lg">{opt.flag}</span>

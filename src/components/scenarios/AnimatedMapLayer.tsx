@@ -73,14 +73,14 @@ export default function AnimatedMapLayer({
     <div className={className}>
       <div
         className={`rounded-xl border overflow-hidden ${
-          isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-slate-200 shadow-sm"
+          isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#E5E7EB] shadow-sm"
         }`}
       >
         <div className="p-3 pb-0">
-          <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+          <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>
             Watershed Station Map
           </h4>
-          <p className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
             Station colors reflect current water quality status
           </p>
         </div>

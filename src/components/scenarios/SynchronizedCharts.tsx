@@ -131,10 +131,10 @@ export default function SynchronizedCharts({
       <div className={className}>
         <div
           className={`rounded-xl border p-8 text-center ${
-            isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-slate-200"
+            isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#E5E7EB]"
           }`}
         >
-          <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+          <p className={`text-sm ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
             Select stations above to view synchronized charts
           </p>
         </div>
@@ -149,10 +149,10 @@ export default function SynchronizedCharts({
           <div
             key={chart.title}
             className={`rounded-xl border p-4 ${
-              isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-slate-200 shadow-sm"
+              isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#E5E7EB] shadow-sm"
             }`}
           >
-            <h5 className={`text-xs font-semibold mb-3 ${isDark ? "text-white" : "text-slate-900"}`}>
+            <h5 className={`text-xs font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>
               {chart.title}
             </h5>
             <ResponsiveContainer width="100%" height={180}>
@@ -238,11 +238,11 @@ export default function SynchronizedCharts({
                 className="w-2.5 h-2.5 rounded-full"
                 style={{ backgroundColor: STATION_COLORS[i % STATION_COLORS.length] }}
               />
-              <span className={`text-[10px] font-medium ${isDark ? "text-slate-300" : "text-slate-700"}`}>
+              <span className={`text-[10px] font-medium ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
                 {stId}
               </span>
               {snap && (
-                <span className={`text-[9px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                <span className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
                   ({snap.stationName})
                 </span>
               )}

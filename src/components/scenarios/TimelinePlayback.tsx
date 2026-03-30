@@ -83,14 +83,14 @@ export default function TimelinePlayback({
       <div
         className={`rounded-xl border p-4 ${
           isDark
-            ? "bg-panel-bg/90 border-panel-border backdrop-blur-md"
-            : "bg-white/90 border-slate-200 backdrop-blur-md shadow-sm"
+            ? "bg-[#13161F]/90 border-white/[0.06] backdrop-blur-md"
+            : "bg-white/90 border-[#E5E7EB] backdrop-blur-md shadow-sm"
         }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+            <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>
               Scenario Timeline
             </h4>
             <span
@@ -98,8 +98,8 @@ export default function TimelinePlayback({
                 playing
                   ? "bg-green-500/20 text-green-400"
                   : isDark
-                    ? "bg-slate-700 text-slate-400"
-                    : "bg-slate-100 text-slate-500"
+                    ? "bg-[#374151] text-[#D1D5DB]"
+                    : "bg-[#F3F4F6] text-[#6B7280]"
               }`}
             >
               {playing ? "Playing" : currentStep === 0 ? "Ready" : "Paused"}
@@ -121,7 +121,7 @@ export default function TimelinePlayback({
             <button
               onClick={onReset}
               className={`p-1.5 rounded-lg transition-colors ${
-                isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-600"
+                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#4B5563]"
               }`}
               aria-label="Reset timeline"
             >
@@ -132,7 +132,7 @@ export default function TimelinePlayback({
               disabled={currentStep === 0}
               aria-label="Step back"
               className={`p-1.5 rounded-lg transition-colors disabled:opacity-30 ${
-                isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-600"
+                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#4B5563]"
               }`}
             >
               <SkipBack className="w-3.5 h-3.5" aria-hidden="true" />
@@ -155,7 +155,7 @@ export default function TimelinePlayback({
               disabled={currentStep >= totalSteps}
               aria-label="Step forward"
               className={`p-1.5 rounded-lg transition-colors disabled:opacity-30 ${
-                isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-600"
+                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#4B5563]"
               }`}
             >
               <SkipForward className="w-3.5 h-3.5" aria-hidden="true" />
@@ -182,7 +182,7 @@ export default function TimelinePlayback({
             {/* Background track */}
             <div
               className={`absolute inset-0 rounded-full overflow-hidden ${
-                isDark ? "bg-slate-700" : "bg-slate-200"
+                isDark ? "bg-[#374151]" : "bg-[#E5E7EB]"
               }`}
             >
               {/* Color segments based on severity */}
@@ -225,7 +225,7 @@ export default function TimelinePlayback({
           <button
             onClick={cycleSpeed}
             className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors ${
-              isDark ? "bg-slate-700 text-slate-300 hover:bg-slate-600" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              isDark ? "bg-[#374151] text-[#E5E7EB] hover:bg-[#4B5563]" : "bg-[#F3F4F6] text-[#4B5563] hover:bg-[#E5E7EB]"
             }`}
             aria-label={`Playback speed: ${speed}x. Click to change.`}
           >
@@ -236,13 +236,13 @@ export default function TimelinePlayback({
 
         {/* Bottom info */}
         <div className="flex items-center justify-between mt-2">
-          <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+          <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
             0h
           </span>
-          <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+          <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
             Step {currentStep} of {totalSteps} ({Math.round(progress)}%)
           </span>
-          <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+          <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
             {totalSteps}h
           </span>
         </div>

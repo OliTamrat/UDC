@@ -143,7 +143,7 @@ export default function WhatsInTheWater() {
       <FadeIn>
         <p
           className={`text-sm leading-relaxed mb-6 ${
-            isDark ? "text-slate-300" : "text-slate-600"
+            isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
           }`}
         >
           Water quality scientists measure dozens of parameters to understand
@@ -163,11 +163,11 @@ export default function WhatsInTheWater() {
                 className={`rounded-xl border transition-all duration-300 ${
                   isExpanded
                     ? isDark
-                      ? "bg-panel-bg border-water-blue/30"
+                      ? "bg-[#13161F] border-water-blue/30"
                       : "bg-white border-blue-200 shadow-sm"
                     : isDark
-                      ? "bg-panel-bg/50 border-panel-border hover:border-panel-border/80"
-                      : "bg-white border-slate-200 hover:border-slate-300"
+                      ? "bg-[#13161F]/50 border-white/[0.06] hover:border-white/[0.06]/80"
+                      : "bg-white border-[#E5E7EB] hover:border-[#D1D5DB]"
                 }`}
               >
                 {/* Clickable header */}
@@ -179,7 +179,7 @@ export default function WhatsInTheWater() {
                 >
                   <div
                     className={`p-2 rounded-lg flex-shrink-0 ${
-                      isDark ? "bg-white/5" : "bg-slate-50"
+                      isDark ? "bg-white/5" : "bg-[#F9FAFB]"
                     }`}
                   >
                     <Icon className={`w-4 h-4 ${param.categoryColor}`} />
@@ -188,14 +188,14 @@ export default function WhatsInTheWater() {
                     <div className="flex items-center gap-2">
                       <span
                         className={`text-sm font-semibold ${
-                          isDark ? "text-white" : "text-slate-900"
+                          isDark ? "text-white" : "text-[#111827]"
                         }`}
                       >
                         {param.name}
                       </span>
                       <span
                         className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${param.categoryColor} ${
-                          isDark ? "bg-white/5" : "bg-slate-100"
+                          isDark ? "bg-white/5" : "bg-[#F3F4F6]"
                         }`}
                       >
                         {param.category}
@@ -203,7 +203,7 @@ export default function WhatsInTheWater() {
                     </div>
                     <p
                       className={`text-xs mt-0.5 ${
-                        isDark ? "text-slate-400" : "text-slate-500"
+                        isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
                       }`}
                     >
                       {param.simple}
@@ -212,7 +212,7 @@ export default function WhatsInTheWater() {
                   <ChevronRight
                     className={`w-4 h-4 flex-shrink-0 transition-transform ${
                       isExpanded ? "rotate-90" : ""
-                    } ${isDark ? "text-slate-500" : "text-slate-400"}`}
+                    } ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}
                   />
                 </button>
 
@@ -220,13 +220,13 @@ export default function WhatsInTheWater() {
                 {isExpanded && (
                   <div
                     className={`px-4 pb-4 pt-1 border-t space-y-4 ${
-                      isDark ? "border-white/5" : "border-slate-100"
+                      isDark ? "border-white/5" : "border-[#F3F4F6]"
                     }`}
                   >
                     {/* Science explanation */}
                     <p
                       className={`text-sm leading-relaxed ${
-                        isDark ? "text-slate-300" : "text-slate-600"
+                        isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
                       }`}
                     >
                       {param.detail}

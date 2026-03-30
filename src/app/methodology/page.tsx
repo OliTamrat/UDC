@@ -152,7 +152,7 @@ export default function MethodologyPage() {
           <section
             className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
               isDark
-                ? "border-panel-border bg-gradient-to-br from-blue-900/10 via-[#0C0F17] to-[#0C0F17]"
+                ? "border-white/[0.06] bg-gradient-to-br from-blue-900/10 via-[#0C0F17] to-[#0C0F17]"
                 : "border-[#E5E7EB] bg-gradient-to-br from-white via-blue-50/30 to-[#F9FAFB]"
             }`}
           >
@@ -229,7 +229,7 @@ export default function MethodologyPage() {
                   source: "Baseline / Modeled",
                   badge: "seed",
                   color: "text-[#9CA3AF]",
-                  bg: "bg-slate-500/10 border-slate-500/20",
+                  bg: "bg-[#6B7280]/10 border-[#6B7280]/20",
                   description: "Initial dataset derived from published averages and modeled values for station commissioning. Being progressively replaced by measured data.",
                   sites: "All 12 stations",
                   frequency: "One-time seed data",
@@ -442,7 +442,7 @@ export default function MethodologyPage() {
             <div className="glass-panel rounded-xl overflow-x-auto">
               <table className="w-full text-sm min-w-[500px]">
                 <thead>
-                  <tr className={`border-b ${isDark ? "border-panel-border bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
+                  <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
                     {["Parameter", "Min", "Max", "Unit", "Action if Out-of-Range"].map((h) => (
                       <th key={h} className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{h}</th>
                     ))}
@@ -452,7 +452,7 @@ export default function MethodologyPage() {
                   {DATA_DICTIONARY.map((p) => {
                     const [min, max] = p.range.replace(/,/g, "").split(" to ");
                     return (
-                      <tr key={p.field} className={`border-b ${isDark ? "border-panel-border/50" : "border-[#F3F4F6]"}`}>
+                      <tr key={p.field} className={`border-b ${isDark ? "border-white/[0.04]" : "border-[#F3F4F6]"}`}>
                         <td className={`py-2 px-4 text-xs ${isDark ? "text-white" : "text-[#111827]"}`}>{p.parameter}</td>
                         <td className={`py-2 px-4 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{min}</td>
                         <td className={`py-2 px-4 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{max}</td>
@@ -482,12 +482,12 @@ export default function MethodologyPage() {
                 </div>
               ) : logs.length === 0 ? (
                 <div className={`p-8 text-center text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
-                  No ingestion events recorded yet. Run <code className="px-1 py-0.5 rounded bg-slate-800 text-[#E5E7EB]">POST /api/ingest?source=usgs</code> to trigger the first data ingestion.
+                  No ingestion events recorded yet. Run <code className="px-1 py-0.5 rounded bg-[#1F2937] text-[#E5E7EB]">POST /api/ingest?source=usgs</code> to trigger the first data ingestion.
                 </div>
               ) : (
                 <table className="w-full text-sm min-w-[500px]">
                   <thead>
-                    <tr className={`border-b ${isDark ? "border-panel-border bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
+                    <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
                       {["Date", "Source", "Status", "Records", "Errors"].map((h) => (
                         <th key={h} className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{h}</th>
                       ))}
@@ -495,7 +495,7 @@ export default function MethodologyPage() {
                   </thead>
                   <tbody>
                     {logs.map((log) => (
-                      <tr key={log.id} className={`border-b ${isDark ? "border-panel-border/50" : "border-[#F3F4F6]"}`}>
+                      <tr key={log.id} className={`border-b ${isDark ? "border-white/[0.04]" : "border-[#F3F4F6]"}`}>
                         <td className={`py-2 px-4 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
                           {log.completed_at ? new Date(log.completed_at).toLocaleString() : new Date(log.started_at).toLocaleString()}
                         </td>
@@ -505,7 +505,7 @@ export default function MethodologyPage() {
                               ? "text-blue-400 bg-blue-500/10 border-blue-500/30"
                               : log.source === "epa"
                               ? "text-green-400 bg-green-500/10 border-green-500/30"
-                              : "text-[#9CA3AF] bg-slate-500/10 border-slate-500/30"
+                              : "text-[#9CA3AF] bg-[#6B7280]/10 border-[#6B7280]/30"
                           }`}>
                             {log.source.toUpperCase()}
                           </span>
@@ -542,7 +542,7 @@ export default function MethodologyPage() {
               <div>
                 <h3 className={`text-xs font-semibold mb-1 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>Dataset Citation (APA 7th)</h3>
                 <div className={`text-xs p-3 rounded-lg border font-mono leading-relaxed ${
-                  isDark ? "bg-[#0C0F17]/50 border-panel-border text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563]"
+                  isDark ? "bg-[#0C0F17]/50 border-white/[0.06] text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563]"
                 }`}>
                   UDC Water Resources Research Institute. (2026). <em>Anacostia Watershed Water Quality Monitoring Data</em> [Dataset]. University of the District of Columbia, College of Agriculture, Urban Sustainability and Environmental Sciences (CAUSES). Retrieved from https://udc-water.vercel.app/api/export
                 </div>
@@ -550,7 +550,7 @@ export default function MethodologyPage() {
               <div>
                 <h3 className={`text-xs font-semibold mb-1 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>API Endpoint for Programmatic Access</h3>
                 <div className={`text-xs p-3 rounded-lg border font-mono ${
-                  isDark ? "bg-[#0C0F17]/50 border-panel-border text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563]"
+                  isDark ? "bg-[#0C0F17]/50 border-white/[0.06] text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563]"
                 }`}>
                   <div>GET /api/stations — List all monitoring stations with latest readings</div>
                   <div>GET /api/stations/:id/history — Historical readings for a station</div>
@@ -559,7 +559,7 @@ export default function MethodologyPage() {
                 </div>
               </div>
               <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
-                CSV and JSON exports include machine-readable citation metadata. All exports include the <code className="px-1 py-0.5 rounded bg-slate-800 text-[#E5E7EB]">source</code> field for each reading.
+                CSV and JSON exports include machine-readable citation metadata. All exports include the <code className="px-1 py-0.5 rounded bg-[#1F2937] text-[#E5E7EB]">source</code> field for each reading.
               </p>
             </div>
           </section>

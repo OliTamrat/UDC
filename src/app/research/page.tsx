@@ -68,7 +68,7 @@ export default function ResearchPage() {
           {/* Page Header */}
           <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
-              ? "border-panel-border bg-gradient-to-br from-purple-900/10 via-[#0C0F17] to-[#0C0F17]"
+              ? "border-white/[0.06] bg-gradient-to-br from-purple-900/10 via-[#0C0F17] to-[#0C0F17]"
               : "border-[#E5E7EB] bg-gradient-to-br from-white via-purple-50/30 to-[#F9FAFB]"
           }`}>
             <div className="relative z-10">
@@ -101,7 +101,7 @@ export default function ResearchPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={`w-full border rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none transition-colors ${
                   isDark
-                    ? "bg-panel-bg border-panel-border text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-udc-blue/50"
+                    ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-udc-blue/50"
                     : "bg-white border-[#E5E7EB] text-[#374151] placeholder:text-[#9CA3AF] focus:border-blue-400"
                 }`}
               />
@@ -114,7 +114,7 @@ export default function ResearchPage() {
                   !selectedTag
                     ? "bg-water-blue/20 text-water-blue border-water-blue/30"
                     : isDark
-                      ? "bg-panel-bg text-[#D1D5DB] border-panel-border hover:border-white/[0.06]"
+                      ? "bg-[#13161F] text-[#D1D5DB] border-white/[0.06] hover:border-white/[0.06]"
                       : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#9CA3AF]"
                 }`}
               >
@@ -126,9 +126,9 @@ export default function ResearchPage() {
                   onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
                   className={`px-3 py-1 rounded-full text-xs border transition-all ${
                     selectedTag === tag
-                      ? tagColors[tag] || "bg-slate-500/10 text-[#D1D5DB] border-slate-500/20"
+                      ? tagColors[tag] || "bg-[#6B7280]/10 text-[#D1D5DB] border-[#6B7280]/20"
                       : isDark
-                        ? "bg-panel-bg text-[#D1D5DB] border-panel-border hover:border-white/[0.06]"
+                        ? "bg-[#13161F] text-[#D1D5DB] border-white/[0.06] hover:border-white/[0.06]"
                         : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#9CA3AF]"
                   }`}
                 >
@@ -210,7 +210,7 @@ export default function ResearchPage() {
                     <span
                       key={tag}
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
-                        tagColors[tag] || "bg-slate-500/10 text-[#D1D5DB] border-slate-500/20"
+                        tagColors[tag] || "bg-[#6B7280]/10 text-[#D1D5DB] border-[#6B7280]/20"
                       }`}
                     >
                       <Tag className="w-2.5 h-2.5" />
@@ -233,7 +233,7 @@ export default function ResearchPage() {
               <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                 Sampling protocols, QA/QC procedures, parameter definitions, and EPA threshold documentation.
               </p>
-              <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
+              <div className="flex items-center gap-1 mt-3 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
                 View documentation <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
@@ -247,7 +247,7 @@ export default function ResearchPage() {
               <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                 Download all water quality readings as CSV with citation metadata, source provenance, and station metadata.
               </p>
-              <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
+              <div className="flex items-center gap-1 mt-3 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
                 Download CSV <ArrowRight className="w-3 h-3" />
               </div>
             </a>
@@ -260,7 +260,7 @@ export default function ResearchPage() {
               <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
                 REST API access, Python/R analysis templates, and programmatic data retrieval for research integration.
               </p>
-              <div className="flex items-center gap-1 mt-3 text-xs text-slate-500 group-hover:text-water-blue transition-colors">
+              <div className="flex items-center gap-1 mt-3 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
                 Access API docs <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
@@ -314,7 +314,7 @@ export default function ResearchPage() {
                 <div
                   key={source.name}
                   className={`rounded-lg border p-4 hover:border-blue-500/30 transition-all ${
-                    isDark ? "border-panel-border" : "border-[#E5E7EB] bg-white"
+                    isDark ? "border-white/[0.06]" : "border-[#E5E7EB] bg-white"
                   }`}
                 >
                   <h4 className={`text-xs font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{source.name}</h4>

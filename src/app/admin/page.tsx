@@ -170,7 +170,7 @@ export default function AdminPage() {
     }
     return (
       <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
-        <div className={`w-full max-w-sm p-6 rounded-2xl border shadow-lg ${isDark ? "bg-panel-bg border-panel-border" : "bg-white border-[#E5E7EB]"}`}>
+        <div className={`w-full max-w-sm p-6 rounded-2xl border shadow-lg ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#E5E7EB]"}`}>
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center">
               <Shield className="w-5 h-5 text-white" />
@@ -191,7 +191,7 @@ export default function AdminPage() {
             placeholder="Enter ADMIN_API_KEY..."
             className={`w-full px-3 py-2 rounded-lg border text-sm mb-3 ${
               isDark
-                ? "bg-udc-dark border-panel-border text-[#E5E7EB] placeholder:text-[#9CA3AF]"
+                ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF]"
                 : "bg-[#F9FAFB] border-[#E5E7EB] text-[#374151]"
             }`}
           />
@@ -217,13 +217,13 @@ export default function AdminPage() {
   return (
     <div className={`min-h-screen ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
       {/* Header */}
-      <header className={`border-b px-4 sm:px-6 py-4 ${isDark ? "border-panel-border bg-panel-bg" : "border-[#E5E7EB] bg-white"}`}>
+      <header className={`border-b px-4 sm:px-6 py-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <a href="/" className={`text-xs hover:underline ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
               &larr; Dashboard
             </a>
-            <div className="w-px h-5 bg-slate-600" />
+            <div className="w-px h-5 bg-[#4B5563]" />
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-[9px]">
                 UDC
@@ -242,7 +242,7 @@ export default function AdminPage() {
             }}
             className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
               isDark
-                ? "border-panel-border text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]"
+                ? "border-white/[0.06] text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]"
                 : "border-[#E5E7EB] text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6]"
             }`}
           >
@@ -252,7 +252,7 @@ export default function AdminPage() {
       </header>
 
       {/* Tabs */}
-      <div className={`border-b ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
+      <div className={`border-b ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto">
           {([
             { id: "upload" as Tab, label: "Upload Data", icon: Upload },
@@ -270,7 +270,7 @@ export default function AdminPage() {
                     ? "border-udc-gold text-udc-gold"
                     : "border-blue-600 text-blue-600"
                   : isDark
-                    ? "border-transparent text-[#D1D5DB] hover:text-slate-200"
+                    ? "border-transparent text-[#D1D5DB] hover:text-[#E5E7EB]"
                     : "border-transparent text-[#6B7280] hover:text-[#374151]"
               }`}
             >
@@ -434,7 +434,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
               uploadType === type
                 ? "bg-gradient-to-r from-udc-gold to-udc-red text-white"
                 : isDark
-                  ? "bg-panel-bg border border-panel-border text-[#D1D5DB] hover:text-white"
+                  ? "bg-[#13161F] border border-white/[0.06] text-[#D1D5DB] hover:text-white"
                   : "bg-white border border-[#E5E7EB] text-[#4B5563] hover:text-[#111827]"
             }`}
           >
@@ -452,7 +452,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
         className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
           dragOver
             ? isDark ? "border-udc-gold bg-udc-gold/5" : "border-blue-400 bg-blue-50"
-            : isDark ? "border-panel-border hover:border-slate-500" : "border-[#E5E7EB] hover:border-slate-400"
+            : isDark ? "border-white/[0.06] hover:border-[#6B7280]" : "border-[#E5E7EB] hover:border-[#9CA3AF]"
         }`}
       >
         <input
@@ -486,7 +486,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
       </div>
 
       {/* Expected format hint */}
-      <div className={`rounded-lg border p-4 ${isDark ? "border-panel-border bg-panel-bg" : "border-[#E5E7EB] bg-white"}`}>
+      <div className={`rounded-lg border p-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
         <h3 className={`text-xs font-semibold mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
           <FileText className="w-3.5 h-3.5 inline mr-1.5" />
           Expected Format — {uploadType === "readings" ? "Readings" : "Stations"}
@@ -515,7 +515,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
 
       {/* AI Column Mapping Preview */}
       {preview && (
-        <div className={`rounded-xl border p-4 space-y-4 ${isDark ? "border-panel-border bg-panel-bg" : "border-[#E5E7EB] bg-white"}`}>
+        <div className={`rounded-xl border p-4 space-y-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className={`w-4 h-4 ${isDark ? "text-udc-gold" : "text-amber-500"}`} />
@@ -568,7 +568,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
                           className={`px-1.5 py-0.5 rounded border text-xs ${
                             mapped
                               ? isDark ? "bg-green-950/30 border-green-500/30 text-green-400" : "bg-green-50 border-green-200 text-green-700"
-                              : isDark ? "bg-udc-dark border-panel-border text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#9CA3AF]"
+                              : isDark ? "bg-udc-dark border-white/[0.06] text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#9CA3AF]"
                           }`}
                         >
                           <option value="">— skip —</option>
@@ -801,7 +801,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
           <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{stations.length} stations registered</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={fetchStations} className={`p-2 rounded-lg border text-xs ${isDark ? "border-panel-border text-[#D1D5DB] hover:text-white" : "border-[#E5E7EB] text-[#6B7280] hover:text-[#374151]"}`}>
+          <button onClick={fetchStations} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB] hover:text-white" : "border-[#E5E7EB] text-[#6B7280] hover:text-[#374151]"}`}>
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
           <button
@@ -815,7 +815,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
 
       {/* Add Form */}
       {showAddForm && (
-        <div className={`rounded-xl border p-4 ${isDark ? "border-panel-border bg-panel-bg" : "border-[#E5E7EB] bg-white"}`}>
+        <div className={`rounded-xl border p-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
           <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>New Station</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
@@ -830,7 +830,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                   value={newStation[field.key as keyof typeof newStation]}
                   onChange={(e) => setNewStation({ ...newStation, [field.key]: e.target.value })}
                   placeholder={field.placeholder}
-                  className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
+                  className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
                 />
               </div>
             ))}
@@ -839,7 +839,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
               <select
                 value={newStation.type}
                 onChange={(e) => setNewStation({ ...newStation, type: e.target.value })}
-                className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
+                className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
               >
                 <option value="river">River</option>
                 <option value="stream">Stream</option>
@@ -852,7 +852,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
               <select
                 value={newStation.status}
                 onChange={(e) => setNewStation({ ...newStation, status: e.target.value })}
-                className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
+                className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
               >
                 <option value="active">Active</option>
                 <option value="maintenance">Maintenance</option>
@@ -877,11 +877,11 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
           <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
         </div>
       ) : (
-        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-panel-bg text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
+                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
                   <th className="text-left px-3 py-2.5 font-medium">ID</th>
                   <th className="text-left px-3 py-2.5 font-medium">Name</th>
                   <th className="text-left px-3 py-2.5 font-medium">Type</th>
@@ -902,14 +902,14 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                           <input
                             defaultValue={s.name}
                             onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                            className={`w-full px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`w-full px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
                           />
                         </td>
                         <td className="px-3 py-2">
                           <select
                             defaultValue={s.type}
                             onChange={(e) => setEditData({ ...editData, type: e.target.value })}
-                            className={`px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
                           >
                             <option value="river">River</option>
                             <option value="stream">Stream</option>
@@ -921,7 +921,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                           <select
                             defaultValue={s.status}
                             onChange={(e) => setEditData({ ...editData, status: e.target.value })}
-                            className={`px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
                           >
                             <option value="active">Active</option>
                             <option value="maintenance">Maintenance</option>
@@ -932,14 +932,14 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                           <input
                             defaultValue={s.latitude}
                             onChange={(e) => setEditData({ ...editData, latitude: parseFloat(e.target.value) })}
-                            className={`w-20 px-1.5 py-0.5 rounded border text-xs text-right ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`w-20 px-1.5 py-0.5 rounded border text-xs text-right ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
                           />
                         </td>
                         <td className="px-3 py-2">
                           <input
                             defaultValue={s.longitude}
                             onChange={(e) => setEditData({ ...editData, longitude: parseFloat(e.target.value) })}
-                            className={`w-20 px-1.5 py-0.5 rounded border text-xs text-right ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`w-20 px-1.5 py-0.5 rounded border text-xs text-right ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
                           />
                         </td>
                         <td className={`text-right px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{s.reading_count}</td>
@@ -948,7 +948,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                             <button onClick={handleSaveEdit} className="p-1 rounded text-green-400 hover:bg-green-500/10" title="Save">
                               <Save className="w-3.5 h-3.5" />
                             </button>
-                            <button onClick={() => setEditingId(null)} className="p-1 rounded text-[#9CA3AF] hover:bg-slate-500/10" title="Cancel">
+                            <button onClick={() => setEditingId(null)} className="p-1 rounded text-[#9CA3AF] hover:bg-[#6B7280]/10" title="Cancel">
                               <X className="w-3.5 h-3.5" />
                             </button>
                           </div>
@@ -1057,14 +1057,14 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
             value={stationFilter}
             onChange={(e) => { setStationFilter(e.target.value); setOffset(0); }}
             placeholder="Filter by station ID..."
-            className={`px-3 py-1.5 rounded-lg border text-xs w-44 ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB] placeholder:text-[#9CA3AF]" : "bg-white border-[#E5E7EB]"}`}
+            className={`px-3 py-1.5 rounded-lg border text-xs w-44 ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF]" : "bg-white border-[#E5E7EB]"}`}
           />
-          <button onClick={fetchReadings} className={`p-2 rounded-lg border text-xs ${isDark ? "border-panel-border text-[#D1D5DB]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
+          <button onClick={fetchReadings} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
           <a
             href={`/api/export?format=csv${stationFilter ? `&station=${stationFilter}` : ""}`}
-            className={`flex items-center gap-1.5 p-2 rounded-lg border text-xs ${isDark ? "border-panel-border text-[#D1D5DB] hover:text-white" : "border-[#E5E7EB] text-[#6B7280] hover:text-[#374151]"}`}
+            className={`flex items-center gap-1.5 p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB] hover:text-white" : "border-[#E5E7EB] text-[#6B7280] hover:text-[#374151]"}`}
             title="Export CSV"
           >
             <Download className="w-3.5 h-3.5" />
@@ -1077,11 +1077,11 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
           <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
         </div>
       ) : (
-        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-panel-bg text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
+                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
                   <th className="text-left px-3 py-2.5 font-medium">Station</th>
                   <th className="text-left px-3 py-2.5 font-medium">Timestamp</th>
                   <th className="text-right px-3 py-2.5 font-medium">Temp °C</th>
@@ -1218,12 +1218,12 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
             value={stationFilter}
             onChange={(e) => { setStationFilter(e.target.value); setOffset(0); }}
             placeholder="Station ID..."
-            className={`px-3 py-1.5 rounded-lg border text-xs w-32 ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB] placeholder:text-[#9CA3AF]" : "bg-white border-[#E5E7EB]"}`}
+            className={`px-3 py-1.5 rounded-lg border text-xs w-32 ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF]" : "bg-white border-[#E5E7EB]"}`}
           />
           <select
             value={categoryFilter}
             onChange={(e) => { setCategoryFilter(e.target.value); setOffset(0); }}
-            className={`px-3 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+            className={`px-3 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
           >
             <option value="">All Categories</option>
             <option value="physical">Physical</option>
@@ -1237,11 +1237,11 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
               type="checkbox"
               checked={violationsOnly}
               onChange={(e) => { setViolationsOnly(e.target.checked); setOffset(0); }}
-              className="rounded border-slate-400"
+              className="rounded border-[#9CA3AF]"
             />
             Violations only
           </label>
-          <button onClick={fetchMeasurements} className={`p-2 rounded-lg border text-xs ${isDark ? "border-panel-border text-[#D1D5DB]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
+          <button onClick={fetchMeasurements} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -1252,11 +1252,11 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
           <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
         </div>
       ) : (
-        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-panel-bg text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
+                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
                   <th className="text-left px-3 py-2.5 font-medium">Station</th>
                   <th className="text-left px-3 py-2.5 font-medium">Parameter</th>
                   <th className="text-left px-3 py-2.5 font-medium">Category</th>
@@ -1425,7 +1425,7 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
           <select
             value={triggerSource}
             onChange={(e) => setTriggerSource(e.target.value)}
-            className={`px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-panel-border text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+            className={`px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
           >
             <option value="usgs">USGS NWIS (Real-time IV)</option>
             <option value="epa">EPA WQP (Legacy)</option>
@@ -1526,11 +1526,11 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
           No ingestion logs yet. Run an ingestion to get started.
         </div>
       ) : (
-        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-panel-bg text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
+                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
                   <th className="text-left px-3 py-2.5 font-medium">Source</th>
                   <th className="text-left px-3 py-2.5 font-medium">Status</th>
                   <th className="text-right px-3 py-2.5 font-medium">Records</th>

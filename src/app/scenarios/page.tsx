@@ -221,7 +221,7 @@ export default function ScenariosPage() {
             <div>
               <div
                 className={`rounded-xl border p-4 h-full ${
-                  isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-[#E5E7EB] shadow-sm"
+                  isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#E5E7EB] shadow-sm"
                 }`}
               >
                 <h4
@@ -276,7 +276,7 @@ export default function ScenariosPage() {
           {/* Station Selector */}
           <div
             className={`rounded-xl border p-4 mb-4 ${
-              isDark ? "bg-panel-bg/90 border-panel-border" : "bg-white/90 border-[#E5E7EB] shadow-sm"
+              isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#E5E7EB] shadow-sm"
             }`}
           >
             <h4 className={`text-xs font-semibold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
@@ -298,8 +298,8 @@ export default function ScenariosPage() {
                           ? "bg-water-blue/20 border-water-blue/40 text-blue-300"
                           : "bg-blue-50 border-blue-300 text-blue-700"
                         : isDark
-                          ? "bg-transparent border-panel-border text-[#D1D5DB] hover:border-slate-500"
-                          : "bg-transparent border-[#E5E7EB] text-[#6B7280] hover:border-slate-300"
+                          ? "bg-transparent border-white/[0.06] text-[#D1D5DB] hover:border-[#6B7280]"
+                          : "bg-transparent border-[#E5E7EB] text-[#6B7280] hover:border-[#D1D5DB]"
                     }`}
                   >
                     {station.stationId}
@@ -329,7 +329,7 @@ export default function ScenariosPage() {
               />
               <div
                 className={`relative z-10 w-full max-w-md rounded-2xl border p-6 ${
-                  isDark ? "bg-panel-bg border-panel-border" : "bg-white border-[#E5E7EB] shadow-xl"
+                  isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#E5E7EB] shadow-xl"
                 }`}
               >
                 <button
@@ -378,7 +378,7 @@ export default function ScenariosPage() {
                     return items.map((item) => (
                       <div
                         key={item.label}
-                        className={`p-3 rounded-lg ${isDark ? "bg-slate-800" : "bg-[#F9FAFB]"}`}
+                        className={`p-3 rounded-lg ${isDark ? "bg-[#1F2937]" : "bg-[#F9FAFB]"}`}
                       >
                         <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                           {item.label}
@@ -412,7 +412,7 @@ export default function ScenariosPage() {
           {/* Footer */}
           <div
             className={`rounded-xl border p-4 ${
-              isDark ? "bg-panel-bg/60 border-panel-border" : "bg-[#F9FAFB] border-[#E5E7EB]"
+              isDark ? "bg-[#13161F]/60 border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"
             }`}
           >
             <div className="flex items-start gap-2 mb-3">
@@ -426,7 +426,7 @@ export default function ScenariosPage() {
               </p>
             </div>
             {baselineInfo && (
-              <div className={`flex items-center gap-2 pt-3 border-t ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
+              <div className={`flex items-center gap-2 pt-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
                 <Database className={`w-3.5 h-3.5 ${baselineInfo.source === "real" ? "text-green-400" : "text-amber-400"}`} />
                 <p className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                   {baselineInfo.source === "real" ? (

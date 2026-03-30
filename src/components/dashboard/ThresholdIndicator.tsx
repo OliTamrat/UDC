@@ -63,11 +63,11 @@ const LEVEL_CONFIG = {
     label: "Exceeds limit",
   },
   unknown: {
-    dot: "bg-slate-400",
-    ring: "ring-slate-400/30",
-    text: "text-slate-400",
-    bgDark: "bg-slate-500/10 border-slate-500/20",
-    bgLight: "bg-slate-50 border-slate-200",
+    dot: "bg-[#9CA3AF]",
+    ring: "ring-[#9CA3AF]/30",
+    text: "text-[#D1D5DB]",
+    bgDark: "bg-[#6B7280]/10 border-[#6B7280]/20",
+    bgLight: "bg-[#F9FAFB] border-[#E5E7EB]",
     label: "No data",
   },
 };
@@ -91,7 +91,7 @@ export default function ThresholdIndicator({ value, epaMin, epaMax, unit, compac
   const config = LEVEL_CONFIG[level];
 
   if (value == null) {
-    return <span className={`text-sm ${isDark ? "text-slate-500" : "text-slate-400"}`}>—</span>;
+    return <span className={`text-sm ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>—</span>;
   }
 
   if (compact) {
@@ -101,7 +101,7 @@ export default function ThresholdIndicator({ value, epaMin, epaMax, unit, compac
         <span className={`text-sm ${config.text}`}>
           {typeof value === "number" ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : value}
         </span>
-        {unit && <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{unit}</span>}
+        {unit && <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>{unit}</span>}
       </div>
     );
   }
@@ -113,9 +113,9 @@ export default function ThresholdIndicator({ value, epaMin, epaMax, unit, compac
         <span className={`text-sm font-medium ${config.text}`}>
           {value.toLocaleString(undefined, { maximumFractionDigits: 2 })}
         </span>
-        {unit && <span className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{unit}</span>}
+        {unit && <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>{unit}</span>}
       </div>
-      <div className={`text-[9px] mt-0.5 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+      <div className={`text-[9px] mt-0.5 ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
         {config.label}
         {epaMax != null && ` (max: ${epaMax})`}
         {epaMin != null && epaMax == null && ` (min: ${epaMin})`}

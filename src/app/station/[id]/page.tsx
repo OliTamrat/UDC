@@ -75,7 +75,7 @@ const SOURCE_CONFIG: Record<string, { label: string; abbr: string; color: string
   usgs:   { label: "USGS NWIS",          abbr: "USGS",   color: "text-blue-400",   bg: "bg-blue-500/10 border-blue-500/30" },
   epa:    { label: "EPA Water Quality Exchange", abbr: "EPA",  color: "text-green-400",  bg: "bg-green-500/10 border-green-500/30" },
   wqp:    { label: "Water Quality Portal", abbr: "WQP",   color: "text-teal-400",   bg: "bg-teal-500/10 border-teal-500/30" },
-  seed:   { label: "Initial Seed Data",    abbr: "Seed",   color: "text-[#9CA3AF]",  bg: "bg-slate-500/10 border-slate-500/30" },
+  seed:   { label: "Initial Seed Data",    abbr: "Seed",   color: "text-[#9CA3AF]",  bg: "bg-[#6B7280]/10 border-[#6B7280]/30" },
   manual: { label: "Manual Entry",         abbr: "Manual", color: "text-amber-400",  bg: "bg-amber-500/10 border-amber-500/30" },
 };
 
@@ -311,7 +311,7 @@ export default function StationDetailPage() {
                 onClick={() => router.push("/")}
                 aria-label="Back to dashboard"
                 className={`p-2 rounded-lg border transition-colors flex-shrink-0 ${
-                  isDark ? "border-panel-border hover:bg-white/[0.04]" : "border-[#E5E7EB] hover:bg-[#F3F4F6]"
+                  isDark ? "border-white/[0.06] hover:bg-white/[0.04]" : "border-[#E5E7EB] hover:bg-[#F3F4F6]"
                 }`}
               >
                 <ArrowLeft className={`w-5 h-5 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`} aria-hidden="true" />
@@ -335,7 +335,7 @@ export default function StationDetailPage() {
                 onClick={handleExportCSV}
                 aria-label={`Export CSV data for ${station.name}`}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
-                  isDark ? "border-panel-border text-[#D1D5DB] hover:bg-white/[0.04]" : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6]"
+                  isDark ? "border-white/[0.06] text-[#D1D5DB] hover:bg-white/[0.04]" : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6]"
                 }`}
               >
                 <Download className="w-3.5 h-3.5" aria-hidden="true" /> <span className="hidden sm:inline">Export</span> CSV
@@ -343,7 +343,7 @@ export default function StationDetailPage() {
               <button
                 aria-label={`Share ${station.name} data`}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
-                isDark ? "border-panel-border text-[#D1D5DB] hover:bg-white/[0.04]" : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6]"
+                isDark ? "border-white/[0.06] text-[#D1D5DB] hover:bg-white/[0.04]" : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6]"
               }`}>
                 <Share2 className="w-3.5 h-3.5" aria-hidden="true" /> Share
               </button>
@@ -360,7 +360,7 @@ export default function StationDetailPage() {
             const isFresh = !isSeed && hoursAgo < 2;
 
             const bannerColor = isSeed
-              ? isDark ? "border-slate-600/30 bg-slate-800/30 text-[#9CA3AF]" : "border-[#E5E7EB] bg-[#F9FAFB] text-[#6B7280]"
+              ? isDark ? "border-[#4B5563]/30 bg-[#1F2937]/30 text-[#9CA3AF]" : "border-[#E5E7EB] bg-[#F9FAFB] text-[#6B7280]"
               : isStale
               ? isDark ? "border-red-500/30 bg-red-950/20 text-red-300" : "border-red-200 bg-red-50 text-red-700"
               : isFresh
@@ -434,7 +434,7 @@ export default function StationDetailPage() {
               )}
               {dataSources.length === 1 && dataSources[0] === "seed" && (
                 <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] ${
-                  isDark ? "bg-slate-500/10 text-[#9CA3AF]" : "bg-[#F9FAFB] text-[#4B5563]"
+                  isDark ? "bg-[#6B7280]/10 text-[#9CA3AF]" : "bg-[#F9FAFB] text-[#4B5563]"
                 }`}>
                   <AlertTriangle className="w-3 h-3" />
                   Initial seed data — will be replaced as live ingestion runs accumulate measured values
@@ -474,7 +474,7 @@ export default function StationDetailPage() {
 
                   return (
                     <div key={cat} className={`glass-panel rounded-xl overflow-hidden`}>
-                      <div className={`px-3 py-2 border-b ${isDark ? "border-white/[0.06] bg-panel-bg/50" : "border-[#F3F4F6] bg-[#F9FAFB]"}`}>
+                      <div className={`px-3 py-2 border-b ${isDark ? "border-white/[0.06] bg-[#13161F]/50" : "border-[#F3F4F6] bg-[#F9FAFB]"}`}>
                         <h3 className={`text-xs font-semibold uppercase tracking-wider ${catColor}`}>
                           {catLabel}
                         </h3>
@@ -497,7 +497,7 @@ export default function StationDetailPage() {
                             }`}>
                               <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${catColor}`} />
                               <div className="flex-1 min-w-0">
-                                <div className={`text-xs font-medium ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+                                <div className={`text-xs font-medium ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                                   {m.parameterName}
                                 </div>
                                 {paramDef?.description && (

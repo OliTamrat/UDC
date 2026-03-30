@@ -81,7 +81,7 @@ export default function Sidebar() {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-panel-border" : "border-gray-200"}`}>
+      <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0 shadow-lg shadow-udc-gold/20">
           UDC
         </div>
@@ -143,7 +143,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className={`border-t p-3 ${isDark ? "border-panel-border" : "border-gray-200"}`}>
+      <div className={`border-t p-3 ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
         <button
           onClick={() => setSettingsOpen(true)}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
@@ -176,7 +176,7 @@ export default function Sidebar() {
         className={`hidden lg:flex fixed left-0 top-0 h-screen border-r z-50 flex-col transition-all duration-300 ${
           collapsed ? "w-[68px]" : "w-[240px]"
         } ${
-          isDark ? "bg-panel-bg border-panel-border" : "bg-white border-gray-200"
+          isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#E5E7EB]"
         }`}
       >
         {sidebarContent}
@@ -193,7 +193,7 @@ export default function Sidebar() {
           <aside
             aria-label="Main navigation"
             className={`absolute left-0 top-0 h-full w-[280px] flex flex-col shadow-2xl animate-slide-in-left ${
-              isDark ? "bg-panel-bg border-r border-panel-border" : "bg-white border-r border-gray-200"
+              isDark ? "bg-[#13161F] border-r border-white/[0.06]" : "bg-white border-r border-[#E5E7EB]"
             }`}
           >
             {sidebarContent}

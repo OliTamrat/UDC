@@ -65,7 +65,7 @@ export default function Dashboard() {
           {/* Hero Section */}
           <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
-              ? "border-panel-border bg-gradient-to-br from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
+              ? "border-white/[0.06] bg-gradient-to-br from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
               : "border-[#E5E7EB] bg-gradient-to-br from-white via-blue-50/30 to-[#F9FAFB]"
           }`}>
             <div className={`absolute inset-0 ${
@@ -207,7 +207,7 @@ export default function Dashboard() {
                 onClick={() => setExplorerOpen(true)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${
                   isDark
-                    ? "border-panel-border bg-panel-bg hover:bg-white/[0.04] text-[#E5E7EB] hover:border-water-blue/50"
+                    ? "border-white/[0.06] bg-[#13161F] hover:bg-white/[0.04] text-[#E5E7EB] hover:border-water-blue/50"
                     : "border-[#E5E7EB] bg-white hover:bg-[#F3F4F6] text-[#111827] hover:border-blue-400"
                 } ${selectedParams.length > 0 ? (isDark ? "border-water-blue/50" : "border-blue-400") : ""}`}
               >

@@ -40,17 +40,17 @@ export function WqisInsightsPanel() {
   useEffect(() => { fetch_(); }, [fetch_]);
 
   if (loading) return (
-    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 animate-pulse">
-      <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/3 mb-3" />
-      <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-2/3 mb-2" />
-      <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2" />
+    <div className="rounded-lg border border-[#E5E7EB] dark:border-[#374151] bg-white dark:bg-[#22272B] p-4 animate-pulse">
+      <div className="h-4 bg-[#E5E7EB] dark:bg-[#374151] rounded w-1/3 mb-3" />
+      <div className="h-3 bg-[#E5E7EB] dark:bg-[#374151] rounded w-2/3 mb-2" />
+      <div className="h-3 bg-[#E5E7EB] dark:bg-[#374151] rounded w-1/2" />
     </div>
   );
 
   if (error) return (
-    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#22272B] p-4 flex items-center justify-between">
-      <span className="text-sm text-slate-500 dark:text-slate-400">WQIS Insights unavailable: {error}</span>
-      <button onClick={fetch_} className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 underline ml-3">Retry</button>
+    <div className="rounded-lg border border-[#E5E7EB] dark:border-[#374151] bg-white dark:bg-[#22272B] p-4 flex items-center justify-between">
+      <span className="text-sm text-[#6B7280] dark:text-[#D1D5DB]">WQIS Insights unavailable: {error}</span>
+      <button onClick={fetch_} className="text-xs text-[#6B7280] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline ml-3">Retry</button>
     </div>
   );
 
@@ -61,11 +61,11 @@ export function WqisInsightsPanel() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className={`w-2.5 h-2.5 rounded-full ${s.dot}`} />
-          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">Basin Status — {s.label}</span>
+          <span className="text-sm font-semibold text-[#1F2937] dark:text-[#F3F4F6]">Basin Status — {s.label}</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-500 dark:text-slate-400">Updated {timeAgo(data.checkedAt)}</span>
-          <button onClick={fetch_} className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 underline">Refresh</button>
+          <span className="text-xs text-[#6B7280] dark:text-[#D1D5DB]">Updated {timeAgo(data.checkedAt)}</span>
+          <button onClick={fetch_} className="text-xs text-[#6B7280] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline">Refresh</button>
         </div>
       </div>
       {data.alerts.length > 0 && (
@@ -73,13 +73,13 @@ export function WqisInsightsPanel() {
           {data.alerts.map((a, i) => (
             <div key={i} className="flex items-center gap-2 text-xs bg-white/60 dark:bg-black/20 rounded-md px-3 py-1.5">
               <span className={`rounded px-1.5 py-0.5 font-medium ${BADGE[a.severity]}`}>{a.severity}</span>
-              <span className="text-slate-700 dark:text-slate-300 font-medium">{a.stationName || a.station}</span>
-              <span className="text-slate-500 dark:text-slate-400">{a.parameter.replace(/_/g,' ')}: {a.value} (threshold {a.threshold})</span>
+              <span className="text-[#374151] dark:text-[#E5E7EB] font-medium">{a.stationName || a.station}</span>
+              <span className="text-[#6B7280] dark:text-[#D1D5DB]">{a.parameter.replace(/_/g,' ')}: {a.value} (threshold {a.threshold})</span>
             </div>
           ))}
         </div>
       )}
-      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">{data.summary}</p>
+      <p className="text-xs text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed line-clamp-3">{data.summary}</p>
     </div>
   );
 }

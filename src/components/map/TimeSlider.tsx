@@ -74,14 +74,14 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
   return (
     <div className={`${className}`}>
       <div className={`rounded-xl border p-4 ${
-        isDark ? "bg-panel-bg/90 border-panel-border backdrop-blur-md" : "bg-white/90 border-slate-200 backdrop-blur-md shadow-sm"
+        isDark ? "bg-[#13161F]/90 border-white/[0.06] backdrop-blur-md" : "bg-white/90 border-[#E5E7EB] backdrop-blur-md shadow-sm"
       }`}>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
+            <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>
               Water Quality Timeline — {CURRENT_YEAR}
             </h4>
-            <p className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Seasonal variation in water quality parameters
             </p>
           </div>
@@ -101,7 +101,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               onClick={goBack}
               disabled={monthIndex === 0}
               className={`p-1.5 rounded-lg transition-colors disabled:opacity-30 ${
-                isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-600"
+                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#4B5563]"
               }`}
             >
               <SkipBack className="w-3.5 h-3.5" />
@@ -120,7 +120,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               onClick={goForward}
               disabled={monthIndex === 11}
               className={`p-1.5 rounded-lg transition-colors disabled:opacity-30 ${
-                isDark ? "hover:bg-panel-hover text-slate-400" : "hover:bg-slate-100 text-slate-600"
+                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#4B5563]"
               }`}
             >
               <SkipForward className="w-3.5 h-3.5" />
@@ -151,7 +151,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
           </div>
 
           {/* Month labels */}
-          <div className={`text-[10px] font-medium min-w-[30px] text-right ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          <div className={`text-[10px] font-medium min-w-[30px] text-right ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
             {MONTHS[monthIndex]}
           </div>
         </div>
@@ -163,8 +163,8 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               key={m}
               className={`flex-1 text-center text-[8px] transition-colors ${
                 idx === monthIndex
-                  ? isDark ? "text-white font-semibold" : "text-slate-900 font-semibold"
-                  : isDark ? "text-slate-500" : "text-slate-400"
+                  ? isDark ? "text-white font-semibold" : "text-[#111827] font-semibold"
+                  : isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
               }`}
             >
               {m}
@@ -176,17 +176,17 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
         <div className="flex items-center gap-4 mt-3 pt-3 border-t" style={{ borderColor: isDark ? "#1E3A5F" : "#E2E8F0" }}>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#22C55E" : "#16A34A" }} />
-            <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Good quality</span>
+            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Good quality</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#F59E0B" : "#D97706" }} />
-            <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Moderate</span>
+            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Moderate</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#EF4444" : "#DC2626" }} />
-            <span className={`text-[10px] ${isDark ? "text-slate-400" : "text-slate-600"}`}>Poor quality</span>
+            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Poor quality</span>
           </div>
-          <div className={`ml-auto text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+          <div className={`ml-auto text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
             E. coli severity: {(SEASONAL_ECOLI_MULTIPLIER[monthIndex] * 100).toFixed(0)}% of peak
           </div>
         </div>

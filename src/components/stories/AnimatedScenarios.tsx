@@ -214,13 +214,13 @@ function TimelinePlayer({
   };
 
   return (
-    <div className={`rounded-xl border p-4 ${isDark ? "bg-panel-bg border-panel-border" : "bg-slate-50 border-slate-200"}`}>
+    <div className={`rounded-xl border p-4 ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
       {/* Controls row */}
       <div className="flex items-center gap-3 mb-3">
         <button
           onClick={onStepBack}
           aria-label="Step back"
-          className={`p-1.5 rounded-lg transition-colors ${isDark ? "hover:bg-white/10 text-slate-400" : "hover:bg-slate-200 text-slate-500"}`}
+          className={`p-1.5 rounded-lg transition-colors ${isDark ? "hover:bg-white/10 text-[#D1D5DB]" : "hover:bg-[#E5E7EB] text-[#6B7280]"}`}
         >
           <SkipBack className="w-4 h-4" />
         </button>
@@ -234,11 +234,11 @@ function TimelinePlayer({
         <button
           onClick={onStepForward}
           aria-label="Step forward"
-          className={`p-1.5 rounded-lg transition-colors ${isDark ? "hover:bg-white/10 text-slate-400" : "hover:bg-slate-200 text-slate-500"}`}
+          className={`p-1.5 rounded-lg transition-colors ${isDark ? "hover:bg-white/10 text-[#D1D5DB]" : "hover:bg-[#E5E7EB] text-[#6B7280]"}`}
         >
           <SkipForward className="w-4 h-4" />
         </button>
-        <span className={`text-lg font-mono font-bold ml-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+        <span className={`text-lg font-mono font-bold ml-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
           {currentHour.toString().padStart(2, "0")}:00
         </span>
         <div className="flex-1" />
@@ -253,7 +253,7 @@ function TimelinePlayer({
       {/* Scrub track */}
       <div
         ref={trackRef}
-        className={`relative h-8 rounded-lg cursor-pointer ${isDark ? "bg-slate-800" : "bg-slate-200"}`}
+        className={`relative h-8 rounded-lg cursor-pointer ${isDark ? "bg-[#1F2937]" : "bg-[#E5E7EB]"}`}
         onClick={handleTrackClick}
       >
         {/* Progress fill */}
@@ -290,7 +290,7 @@ function TimelinePlayer({
         {/* Hour labels */}
         <div className="absolute -bottom-5 left-0 right-0 flex justify-between px-1">
           {[0, 6, 12, 18, 23].map((h) => (
-            <span key={h} className={`text-[9px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+            <span key={h} className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
               {h.toString().padStart(2, "0")}:00
             </span>
           ))}
@@ -329,7 +329,7 @@ function AnimatedRiverMap({
   const tribHR = "M 320,170 C 330,155 340,140 350,130";
 
   return (
-    <div className={`rounded-xl border overflow-hidden ${isDark ? "bg-slate-900/50 border-panel-border" : "bg-blue-50/50 border-slate-200"}`}>
+    <div className={`rounded-xl border overflow-hidden ${isDark ? "bg-[#111827]/50 border-white/[0.06]" : "bg-blue-50/50 border-[#E5E7EB]"}`}>
       <svg viewBox="0 0 600 200" className="w-full h-auto" role="img" aria-label="Animated river map showing station water quality">
         {/* Water background gradient */}
         <defs>
@@ -480,16 +480,16 @@ function MiniChart({
   };
 
   return (
-    <div className={`rounded-lg border p-2 ${isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200"}`}>
+    <div className={`rounded-lg border p-2 ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#E5E7EB]"}`}>
       <div className="flex items-center justify-between mb-1 px-1">
-        <span className={`text-[10px] font-semibold uppercase tracking-wide ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+        <span className={`text-[10px] font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
           {label} ({unit})
         </span>
         <div className="flex gap-2">
           {STATIONS_META.map((st) => (
             <span key={st.id} className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full inline-block" style={{ background: stationColors[st.id] }} />
-              <span className={`text-[8px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{st.short}</span>
+              <span className={`text-[8px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>{st.short}</span>
             </span>
           ))}
         </div>
@@ -601,7 +601,7 @@ function SpikeAlerts({ spikes, isDark }: { spikes: Spike[]; isDark: boolean }) {
           <div key={i} className={`text-[11px] flex items-center gap-2 ${isDark ? "text-red-300/80" : "text-red-600"}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${sp.severity === "danger" ? "bg-red-500" : "bg-amber-500"}`} />
             <span className="font-medium">{stationName(sp.station)}</span>
-            <span className={isDark ? "text-slate-500" : "text-slate-400"}>—</span>
+            <span className={isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}>—</span>
             <span>{sp.parameter}: {sp.value} {sp.parameter === "Turbidity" ? "NTU" : "mg/L"}</span>
           </div>
         ))}
@@ -663,7 +663,7 @@ export default function AnimatedScenarios() {
       <div className="space-y-4">
         {/* Scenario description */}
         <FadeIn>
-          <p className={`text-sm leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+          <p className={`text-sm leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
             This simulation shows a typical spring storm event hitting the Anacostia watershed.
             Press play to watch pollution levels rise as stormwater overwhelms the system,
             triggering Combined Sewer Overflow (CSO) events. Notice how upstream tributaries
@@ -681,8 +681,8 @@ export default function AnimatedScenarios() {
                 selectedParam === p
                   ? "bg-water-blue text-white"
                   : isDark
-                    ? "bg-panel-bg border border-panel-border text-slate-400 hover:text-white"
-                    : "bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-700"
+                    ? "bg-[#13161F] border border-white/[0.06] text-[#D1D5DB] hover:text-white"
+                    : "bg-[#F3F4F6] border border-[#E5E7EB] text-[#6B7280] hover:text-[#374151]"
               }`}
             >
               {p === "turbidity" ? "Turbidity" : "Dissolved Oxygen"}
@@ -754,14 +754,14 @@ export default function AnimatedScenarios() {
 
         {/* Scenario info */}
         <FadeIn delay={200}>
-          <div className={`rounded-xl border p-4 ${isDark ? "bg-panel-bg border-panel-border" : "bg-slate-50 border-slate-200"}`}>
+          <div className={`rounded-xl border p-4 ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
             <div className="flex items-start gap-3">
               <Timer className="w-4 h-4 mt-0.5 text-water-blue flex-shrink-0" />
               <div>
-                <h4 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
+                <h4 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>
                   About This Scenario
                 </h4>
-                <p className={`text-xs leading-relaxed ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-xs leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   Based on real storm event patterns from USGS gauges in the Anacostia watershed.
                   During heavy rainfall, DC&apos;s aging combined sewer system overflows, discharging
                   untreated sewage directly into waterways. The 2023 Clean Rivers Project tunnel

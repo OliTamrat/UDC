@@ -57,22 +57,22 @@ export default function Modal({ open, onClose, title, subtitle, icon, children, 
       <div
         className={`relative ${maxWidth} w-full rounded-2xl border shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${
           isDark
-            ? "bg-panel-bg border-panel-border shadow-black/40"
-            : "bg-white border-slate-200 shadow-slate-300/30"
+            ? "bg-[#13161F] border-white/[0.06] shadow-black/40"
+            : "bg-white border-[#E5E7EB] shadow-black/[0.03]"
         }`}
       >
         {/* Header */}
-        <div className={`flex items-start justify-between p-3 sm:p-5 pb-3 border-b ${isDark ? "border-panel-border" : "border-slate-100"}`}>
+        <div className={`flex items-start justify-between p-3 sm:p-5 pb-3 border-b ${isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"}`}>
           <div className="flex items-start gap-3">
             {icon && (
-              <div className={`p-2.5 rounded-xl ${isDark ? "bg-white/5" : "bg-slate-50"}`}>
+              <div className={`p-2.5 rounded-xl ${isDark ? "bg-white/5" : "bg-[#F9FAFB]"}`}>
                 {icon}
               </div>
             )}
             <div>
-              <h2 className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-900"}`}>{title}</h2>
+              <h2 className={`text-lg font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>{title}</h2>
               {subtitle && (
-                <p className={`text-xs mt-0.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>{subtitle}</p>
+                <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{subtitle}</p>
               )}
             </div>
           </div>
@@ -80,7 +80,7 @@ export default function Modal({ open, onClose, title, subtitle, icon, children, 
             onClick={onClose}
             aria-label="Close modal"
             className={`p-1.5 rounded-lg transition-colors ${
-              isDark ? "hover:bg-white/10 text-slate-400" : "hover:bg-slate-100 text-slate-500"
+              isDark ? "hover:bg-white/10 text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#6B7280]"
             }`}
           >
             <X className="w-4 h-4" />

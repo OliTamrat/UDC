@@ -219,7 +219,7 @@ function StationsModal({ metrics, isDark, router }: { metrics: Metrics; isDark: 
         {[
           { label: "Active", count: byStatus.active.length, color: "text-green-400", bg: isDark ? "bg-green-500/10 border-green-500/20" : "bg-green-50 border-green-200" },
           { label: "Maintenance", count: byStatus.maintenance.length, color: "text-amber-400", bg: isDark ? "bg-amber-500/10 border-amber-500/20" : "bg-amber-50 border-amber-200" },
-          { label: "Offline", count: byStatus.offline.length, color: "text-[#D1D5DB]", bg: isDark ? "bg-slate-500/10 border-slate-500/20" : "bg-slate-50 border-slate-200" },
+          { label: "Offline", count: byStatus.offline.length, color: "text-[#D1D5DB]", bg: isDark ? "bg-[#6B7280]/10 border-[#6B7280]/20" : "bg-[#F9FAFB] border-[#E5E7EB]" },
         ].map((s) => (
           <div key={s.label} className={`rounded-xl border p-3 text-center ${s.bg}`}>
             <div className={`text-2xl font-bold ${s.color}`}>{s.count}</div>
@@ -314,7 +314,7 @@ function DOModal({ metrics, isDark }: { metrics: Metrics; isDark: boolean }) {
             return (
               <div key={s.id} className={`flex items-center gap-3 p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-[#F9FAFB]"}`}>
                 <div className={`w-24 text-xs truncate ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{s.name.split(" ").slice(0, 2).join(" ")}</div>
-                <div className="flex-1 h-2 rounded-full bg-slate-700/30 overflow-hidden">
+                <div className="flex-1 h-2 rounded-full bg-[#374151]/30 overflow-hidden">
                   <div className={`h-full rounded-full ${isGood ? "bg-blue-400" : "bg-red-400"}`} style={{ width: `${pct}%` }} />
                 </div>
                 <div className={`text-xs font-mono w-16 text-right ${isGood ? "text-blue-400" : "text-red-400"}`}>
@@ -356,7 +356,7 @@ function TempModal({ metrics, isDark }: { metrics: Metrics; isDark: boolean }) {
           <div className="text-2xl font-bold text-cyan-400">{metrics.avgTemp}°C</div>
           <div className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{(metrics.avgTemp * 9 / 5 + 32).toFixed(1)}°F</div>
         </div>
-        <div className={`rounded-xl border p-4 ${isDark ? "bg-white/5 border-panel-border" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border p-4 ${isDark ? "bg-white/5 border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
           <div className={`text-xs font-semibold mb-1 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>EPA Warm-Water Limit</div>
           <div className="text-2xl font-bold text-amber-400">32°C</div>
           <div className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>89.6°F max for aquatic life</div>
@@ -458,7 +458,7 @@ function TurbidityModal({ metrics, isDark }: { metrics: Metrics; isDark: boolean
             {metrics.avgTurbidity <= 25 ? "Clear water" : metrics.avgTurbidity <= 50 ? "Moderate sediment" : "Elevated — storm impact likely"}
           </div>
         </div>
-        <div className={`rounded-xl border p-4 ${isDark ? "bg-white/5 border-panel-border" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border p-4 ${isDark ? "bg-white/5 border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
           <div className={`text-xs font-semibold mb-1 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>DC DOEE Reference</div>
           <div className="text-2xl font-bold text-[#9CA3AF]">&le;50 NTU</div>
           <div className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Typical healthy freshwater</div>
@@ -613,7 +613,7 @@ function ResearchModal({ isDark, router }: { isDark: boolean; router: ReturnType
 
       <div className="space-y-2">
         {projects.map((p) => (
-          <div key={p.title} className={`p-3 rounded-xl border ${isDark ? "border-panel-border bg-white/5" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
+          <div key={p.title} className={`p-3 rounded-xl border ${isDark ? "border-white/[0.06] bg-white/5" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
             <div className="flex items-start justify-between">
               <div>
                 <div className={`text-xs font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{p.title}</div>

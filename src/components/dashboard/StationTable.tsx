@@ -52,7 +52,7 @@ const SOURCE_STYLES: Record<string, { abbr: string; color: string }> = {
   usgs:   { abbr: "USGS",   color: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
   epa:    { abbr: "EPA",    color: "text-green-400 bg-green-500/10 border-green-500/30" },
   wqp:    { abbr: "WQP",    color: "text-teal-400 bg-teal-500/10 border-teal-500/30" },
-  seed:   { abbr: "Seed",   color: "text-[#D1D5DB] bg-slate-500/10 border-slate-500/30" },
+  seed:   { abbr: "Seed",   color: "text-[#D1D5DB] bg-[#6B7280]/10 border-[#6B7280]/30" },
   manual: { abbr: "Manual", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" },
 };
 
@@ -227,14 +227,14 @@ export default function StationTable({ onStationClick, selectedParams }: Station
 
   return (
     <div className="glass-panel rounded-xl overflow-hidden">
-      <div className={`p-4 border-b ${isDark ? "border-panel-border" : "border-[#E5E7EB]"}`}>
+      <div className={`p-4 border-b ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
         <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{t("table.title")}</h3>
         <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.subtitle")}</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
-            <tr className={`border-b ${isDark ? "border-panel-border bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
+            <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.station")}</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.type")}</th>
               <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.status")}</th>

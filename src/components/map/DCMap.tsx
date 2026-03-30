@@ -498,7 +498,7 @@ export default function DCMap({
 
   return (
     <div className={`relative w-full h-full rounded-xl overflow-hidden border transition-colors duration-300 ${
-      isDark ? "border-panel-border" : "border-[#E5E7EB]"
+      isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
     }`}>
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
       <div id="dc-map" className="w-full h-full min-h-[500px]" />

@@ -56,7 +56,7 @@ export function TempUnitToggle() {
       onClick={toggle}
       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border transition-colors ${
         isDark
-          ? "border-panel-border text-[#E5E7EB] hover:border-blue-500/40 hover:text-blue-300"
+          ? "border-white/[0.06] text-[#E5E7EB] hover:border-blue-500/40 hover:text-blue-300"
           : "border-[#E5E7EB] text-[#4B5563] hover:border-blue-300 hover:text-blue-600"
       }`}
       title="Toggle temperature unit"

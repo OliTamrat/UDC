@@ -87,19 +87,19 @@ export function StoryCard({ title, subtitle, icon, accentColor, children }: Stor
       ref={ref}
       className={`rounded-2xl border overflow-hidden transition-all duration-700 ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      } ${isDark ? "bg-panel-bg border-panel-border" : "bg-white border-slate-200 shadow-sm"}`}
+      } ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#E5E7EB] shadow-sm"}`}
     >
       {/* Header */}
-      <div className={`px-6 pt-6 pb-4 border-b ${isDark ? "border-panel-border" : "border-slate-100"}`}>
+      <div className={`px-6 pt-6 pb-4 border-b ${isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"}`}>
         <div className="flex items-start gap-3">
           <div className={`p-2.5 rounded-xl ${accentColor}`}>
             {icon}
           </div>
           <div>
-            <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+            <h3 className={`text-lg font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>
               {title}
             </h3>
-            <p className={`text-sm mt-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <p className={`text-sm mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
               {subtitle}
             </p>
           </div>

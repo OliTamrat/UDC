@@ -234,7 +234,7 @@ export default function YearInAnacostia() {
         <div className="mb-6">
           <h4
             className={`text-sm font-semibold mb-3 ${
-              isDark ? "text-white" : "text-slate-800"
+              isDark ? "text-white" : "text-[#1F2937]"
             }`}
           >
             Seasonal Water Quality Heatmap
@@ -245,7 +245,7 @@ export default function YearInAnacostia() {
                 <tr>
                   <th
                     className={`text-left py-1 pr-3 ${
-                      isDark ? "text-slate-400" : "text-slate-500"
+                      isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
                     }`}
                   >
                     Parameter
@@ -257,10 +257,10 @@ export default function YearInAnacostia() {
                         activeMonth === i
                           ? isDark
                             ? "text-white"
-                            : "text-slate-900"
+                            : "text-[#111827]"
                           : isDark
-                            ? "text-slate-500"
-                            : "text-slate-400"
+                            ? "text-[#6B7280]"
+                            : "text-[#D1D5DB]"
                       }`}
                       onClick={() => setActiveMonth(i)}
                     >
@@ -274,7 +274,7 @@ export default function YearInAnacostia() {
                   <tr key={p.key}>
                     <td
                       className={`py-1 pr-3 font-medium whitespace-nowrap ${
-                        isDark ? "text-slate-300" : "text-slate-700"
+                        isDark ? "text-[#E5E7EB]" : "text-[#374151]"
                       }`}
                     >
                       {p.label}
@@ -308,7 +308,7 @@ export default function YearInAnacostia() {
           <div className="flex items-center gap-3 mt-2 justify-end">
             <span
               className={`text-[10px] ${
-                isDark ? "text-slate-500" : "text-slate-400"
+                isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
               }`}
             >
               Healthy
@@ -320,7 +320,7 @@ export default function YearInAnacostia() {
             </div>
             <span
               className={`text-[10px] ${
-                isDark ? "text-slate-500" : "text-slate-400"
+                isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
               }`}
             >
               Stressed
@@ -333,7 +333,7 @@ export default function YearInAnacostia() {
       <FadeIn delay={200}>
         <div
           className={`rounded-xl border p-4 ${
-            isDark ? "bg-panel-bg border-panel-border" : "bg-slate-50 border-slate-200"
+            isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"
           }`}
         >
           <div className="flex items-center gap-2 mb-3">
@@ -343,7 +343,7 @@ export default function YearInAnacostia() {
             <div>
               <h4
                 className={`text-sm font-bold ${
-                  isDark ? "text-white" : "text-slate-900"
+                  isDark ? "text-white" : "text-[#111827]"
                 }`}
               >
                 {data.month}
@@ -376,7 +376,7 @@ export default function YearInAnacostia() {
                   </div>
                   <div
                     className={`text-[10px] ${
-                      isDark ? "text-slate-500" : "text-slate-400"
+                      isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
                     }`}
                   >
                     {p.label}
@@ -389,7 +389,7 @@ export default function YearInAnacostia() {
           {/* Narrative */}
           <p
             className={`text-sm leading-relaxed ${
-              isDark ? "text-slate-300" : "text-slate-600"
+              isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
             }`}
           >
             {data.narrative}
@@ -420,8 +420,8 @@ export default function YearInAnacostia() {
                     isActive
                       ? `${sc.bg} ${sc.border} ${sc.text}`
                       : isDark
-                        ? "border-panel-border text-slate-500 hover:text-slate-300"
-                        : "border-slate-200 text-slate-400 hover:text-slate-600"
+                        ? "border-white/[0.06] text-[#6B7280] hover:text-[#E5E7EB]"
+                        : "border-[#E5E7EB] text-[#D1D5DB] hover:text-[#4B5563]"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />

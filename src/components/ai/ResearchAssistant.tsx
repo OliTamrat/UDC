@@ -99,7 +99,7 @@ export default function ResearchAssistant() {
         className={`fixed bottom-5 right-5 z-[10000] flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all duration-300 group ${
           isOpen
             ? isDark
-              ? "bg-panel-bg border border-panel-border text-[#E5E7EB]"
+              ? "bg-[#13161F] border border-white/[0.06] text-[#E5E7EB]"
               : "bg-white border border-[#E5E7EB] text-[#4B5563]"
             : "bg-gradient-to-r from-udc-gold to-udc-red text-white hover:shadow-xl hover:scale-105"
         }`}
@@ -129,14 +129,14 @@ export default function ResearchAssistant() {
         <div
           className={`w-full sm:w-[420px] h-[560px] sm:h-[600px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden ${
             isDark
-              ? "bg-panel-bg border-panel-border"
+              ? "bg-[#13161F] border-white/[0.06]"
               : "bg-white border-[#E5E7EB]"
           }`}
         >
           {/* Header */}
           <div
             className={`flex items-center justify-between px-4 py-3 border-b shrink-0 ${
-              isDark ? "border-panel-border" : "border-[#F3F4F6]"
+              isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -236,7 +236,7 @@ export default function ResearchAssistant() {
                       onClick={() => handleSend(q)}
                       className={`text-[11px] px-2.5 py-1.5 rounded-full border transition-colors text-left ${
                         isDark
-                          ? "border-panel-border text-[#D1D5DB] hover:bg-white/[0.04] hover:text-[#E5E7EB]"
+                          ? "border-white/[0.06] text-[#D1D5DB] hover:bg-white/[0.04] hover:text-[#E5E7EB]"
                           : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
                       }`}
                     >
@@ -360,7 +360,7 @@ export default function ResearchAssistant() {
           {/* Input Area */}
           <div
             className={`border-t px-3 py-3 shrink-0 ${
-              isDark ? "border-panel-border" : "border-[#F3F4F6]"
+              isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"
             }`}
           >
             <div className="flex items-end gap-2">
@@ -378,7 +378,7 @@ export default function ResearchAssistant() {
                 rows={1}
                 className={`flex-1 resize-none rounded-xl px-3.5 py-2.5 text-sm border focus:outline-none transition-colors min-h-[40px] max-h-[100px] ${
                   isDark
-                    ? "bg-[#0C0F17]/50 border-panel-border text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-udc-blue/50"
+                    ? "bg-[#0C0F17]/50 border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-udc-blue/50"
                     : "bg-[#F9FAFB] border-[#E5E7EB] text-[#374151] placeholder:text-[#9CA3AF] focus:border-blue-400"
                 } disabled:opacity-50`}
               />

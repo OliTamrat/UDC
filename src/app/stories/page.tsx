@@ -33,7 +33,7 @@ export default function StoriesPage() {
           <section
             className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-6 sm:p-8 md:p-10 text-center ${
               isDark
-                ? "border-panel-border bg-gradient-to-b from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
+                ? "border-white/[0.06] bg-gradient-to-b from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
                 : "border-[#E5E7EB] bg-gradient-to-b from-white via-blue-50/30 to-[#F9FAFB]"
             }`}
           >
@@ -77,7 +77,7 @@ export default function StoriesPage() {
                   href={item.href}
                   className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${
                     isDark
-                      ? "border-panel-border hover:border-water-blue/40 bg-panel-bg text-[#E5E7EB]"
+                      ? "border-white/[0.06] hover:border-water-blue/40 bg-[#13161F] text-[#E5E7EB]"
                       : "border-[#E5E7EB] hover:border-blue-300 bg-white text-[#4B5563]"
                   }`}
                 >
@@ -114,7 +114,7 @@ export default function StoriesPage() {
             <section
               className={`rounded-2xl border p-6 sm:p-8 text-center ${
                 isDark
-                  ? "bg-gradient-to-br from-udc-navy/50 to-panel-bg border-panel-border"
+                  ? "bg-gradient-to-br from-[#13161F] to-[#0C0F17] border-white/[0.06]"
                   : "bg-gradient-to-br from-blue-50 to-white border-[#E5E7EB]"
               }`}
             >
@@ -141,7 +141,7 @@ export default function StoriesPage() {
                   href="/api/export?format=csv"
                   className={`px-5 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
                     isDark
-                      ? "border-panel-border text-[#E5E7EB] hover:bg-white/[0.04]"
+                      ? "border-white/[0.06] text-[#E5E7EB] hover:bg-white/[0.04]"
                       : "border-[#E5E7EB] text-[#374151] hover:bg-[#F3F4F6]"
                   }`}
                 >
