@@ -33,14 +33,19 @@
 Interactive water quality monitoring dashboard for UDC's Water Resources Research Institute (WRRI) and CAUSES.
 Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Recharts, React 19.
 
-## Current State (as of March 2026)
+## Current State (as of March 30, 2026)
 - **Full-stack Next.js application** with SQLite (local) / Neon PostgreSQL (production) database
 - **Real data ingestion pipeline** — pulls live sensor data from USGS NWIS, EPA WQP, and Water Quality Portal
-- **12 monitoring stations** (9 water quality + 3 green infrastructure BMPs) with 10,000+ readings
-- **Automated cron ingestion** — USGS every 6 hours, EPA daily, WQP weekly (see `vercel.json`)
+- **12 monitoring stations** (4 active USGS + 3 offline + 3 green infrastructure + 2 stormwater) with 12,500+ real USGS readings
+- **Automated cron ingestion** — USGS daily 06:00 UTC, EPA daily 07:00 UTC, WQP weekly Monday 08:00 UTC
+- **Deduplication** — UNIQUE indexes + ON CONFLICT upserts prevent duplicate rows
+- **5 real-time USGS parameters** — temperature, dissolved_oxygen, pH, turbidity, conductivity
+- **25 total parameters** in EAV schema (lab params from WQP accumulate over time)
+- **52 tests** across 11 suites, all passing
 - **Geospatial data** derived from official DC GIS government sources (verified)
 - **Theme system** working (dark/light/system) with localStorage persistence
-- **6 app pages** — Dashboard, Station Detail, Stories, Scenarios, Admin, API routes
+- **7 app pages** — Dashboard, Station Detail, Stories, Scenarios, Admin, About, API routes
+- **Production URL**: https://udc-one.vercel.app
 
 ## Data Ingestion Pipeline — REAL SENSOR DATA
 **IMPORTANT FOR AUDITORS**: This dashboard ingests real data from public government APIs. It is NOT a static mockup.
@@ -158,11 +163,27 @@ Every reading is tagged with its provenance:
 - [x] Pollution spike detection and scenario library — `src/components/scenarios/ScenarioLibrary.tsx`, `src/data/scenarios.ts`
 - [x] Full `/scenarios` page with 5 pre-built scenarios, alerts panel, station detail modal
 
-#### Sprint 5: Polish & Integration — TODO
-- [ ] AI assistant context update for new parameters
-- [ ] Admin panel updates for new parameter format
-- [ ] Tests for new API routes and components
-- [ ] Performance optimization and accessibility
+#### Sprint 5: Polish & Integration — DONE
+- [x] **AI assistant context** — System prompt expanded with 25 EAV parameters, sensor status; `getMeasurements` tool added
+- [x] **Admin panel** — New "Measurements (EAV)" tab with category/station/violations filters
+- [x] **Tests** — 52 tests across 11 suites (api-measurements, api-parameters, deduplication, etc.)
+- [x] **Performance** — Lazy-loaded story components, preconnect hints, history API limit increased to 10000
+- [x] **Accessibility** — aria-label on nav, aria-live on animated scenarios, semantic HTML
+- [x] **Data freshness** — Clock indicators on station table + detail page (fresh/warning/stale/baseline)
+- [x] **Charts fixed** — Simple 12-month pattern with USGS data overlay (baseline replaced where measured data exists)
+- [x] **Deduplication** — UNIQUE indexes + ON CONFLICT upserts on readings and measurements tables
+- [x] **Cron fix** — Removed mismatched CRON_SECRET, increased function timeout to 60s
+- [x] **Station statuses** — ANA-001/ANA-004/PB-001 set offline, HR-001 set active (verified against USGS API)
+
+### Phase 8: UI/UX Redesign — TODO
+User feedback: the dark blue navy background, card design, and fonts don't look good. Full visual redesign needed.
+- [ ] Theme system overhaul — new color palette, card styles, typography
+- [ ] All pages design audit (dashboard, station detail, stories, scenarios, admin, education, research, about)
+- [ ] Dark mode refinement — better contrast, card backgrounds, border treatments
+- [ ] Light mode polish
+- [ ] Font selection and sizing
+- [ ] Mobile responsive improvements
+- [ ] Component consistency across all pages
 
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)
