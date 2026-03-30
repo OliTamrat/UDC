@@ -28,8 +28,8 @@ const PARAM_TO_READING_FIELD: Record<string, string> = {
   phosphorus_total: "phosphorus",
 };
 
-// Default columns when no filter is active
-const DEFAULT_PARAMS = ["dissolved_oxygen", "ph", "turbidity", "ecoli"];
+// Default columns — aligned with what USGS sensors actually provide
+const DEFAULT_PARAMS = ["temperature", "dissolved_oxygen", "ph", "turbidity", "conductivity"];
 
 function StatusBadge({ status }: { status: string }) {
   const config = {

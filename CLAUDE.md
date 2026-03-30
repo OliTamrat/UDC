@@ -9,6 +9,15 @@
 - If a user shares a credential in conversation, do NOT echo it back in code, commits, or file contents
 - `.env.local` is gitignored — secrets belong there, never in tracked files
 
+### Data Ingestion Pipeline — DO NOT MODIFY
+- **NEVER** change the ingestion configuration, cron schedule, or `CRON_SECRET` / auth logic in `src/app/api/ingest/route.ts` without explicit user approval
+- **NEVER** add, remove, or modify Vercel environment variables (`CRON_SECRET`, `DATABASE_URL`, `INGEST_API_KEY`) without explicit user approval
+- **NEVER** modify `vercel.json` cron schedules without explicit user approval
+- **NEVER** change USGS site mappings, station IDs, or the `USGS_SITES` array without verifying against live USGS API data first
+- The pipeline was broken for 13 days (March 17-30, 2026) because a `CRON_SECRET` env var was added that mismatched Vercel's internal cron auth. Any change to ingestion auth can silently break data flow.
+- If you need to debug ingestion, check the `/api/health` endpoint and ingestion logs first — never modify the pipeline as a troubleshooting step
+- Current working cron schedule: USGS daily 06:00 UTC, EPA daily 07:00 UTC, WQP weekly Monday 08:00 UTC
+
 ### Git Commit & Push Rules — IP Protection
 - **NEVER** use Claude/Anthropic as the git author or committer — always commit as the repository owner:
   - `git config user.name "Oli T. Oli"`
