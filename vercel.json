@@ -11,14 +11,6 @@
     {
       "path": "/api/ingest?source=usgs",
       "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/ingest?source=epa",
-      "schedule": "0 7 * * *"
-    },
-    {
-      "path": "/api/ingest?source=wqp",
-      "schedule": "0 8 * * 1"
     }
   ]
 }
