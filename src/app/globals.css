@@ -244,6 +244,17 @@ html.light .metric-card:hover {
   animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
+/* Ensure Leaflet map doesn't overlap modals */
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control {
+  z-index: 1 !important;
+}
+.leaflet-popup-pane {
+  z-index: 2 !important;
+}
+
 /* Water flow animation */
 @keyframes water-flow {
   0% { stroke-dashoffset: 0; }

@@ -218,21 +218,22 @@ export default function ScenariosPage() {
             </div>
 
             {/* Active Alerts */}
-            <div>
+            <div className="min-h-0">
               <div
-                className={`rounded-xl border p-4 h-full ${
+                className={`rounded-xl border p-4 flex flex-col ${
                   isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#E5E7EB] shadow-sm"
                 }`}
+                style={{ maxHeight: "calc(100vh - 280px)" }}
               >
                 <h4
-                  className={`text-xs font-semibold mb-3 flex items-center gap-2 ${
+                  className={`text-xs font-semibold mb-3 flex items-center gap-2 flex-shrink-0 ${
                     isDark ? "text-white" : "text-[#111827]"
                   }`}
                 >
                   <AlertCircle className="w-3.5 h-3.5 text-red-400" />
                   Active Alerts ({currentFrame?.spikes.length || 0})
                 </h4>
-                <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
+                <div className="space-y-2 overflow-y-auto pr-1 flex-1 min-h-0">
                   {currentFrame?.spikes.length === 0 && (
                     <p className={`text-[11px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
                       No EPA threshold violations at this time step.
