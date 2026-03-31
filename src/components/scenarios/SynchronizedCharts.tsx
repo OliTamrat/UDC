@@ -131,10 +131,10 @@ export default function SynchronizedCharts({
       <div className={className}>
         <div
           className={`rounded-xl border p-8 text-center ${
-            isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#E5E7EB]"
+            isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#D1D5DB]"
           }`}
         >
-          <p className={`text-sm ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+          <p className={`text-sm ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
             Select stations above to view synchronized charts
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function SynchronizedCharts({
           <div
             key={chart.title}
             className={`rounded-xl border p-4 ${
-              isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#E5E7EB] shadow-sm"
+              isDark ? "bg-[#13161F]/90 border-white/[0.06]" : "bg-white/90 border-[#D1D5DB] shadow-sm"
             }`}
           >
             <h5 className={`text-xs font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>
@@ -242,7 +242,7 @@ export default function SynchronizedCharts({
                 {stId}
               </span>
               {snap && (
-                <span className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+                <span className={`text-[9px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                   ({snap.stationName})
                 </span>
               )}

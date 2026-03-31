@@ -42,7 +42,7 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
           className={`flex items-center gap-2 px-3 py-2 rounded-lg border shadow-lg text-xs font-medium transition-colors ${
             isDark
               ? "bg-[#13161F]/95 border-white/[0.06] text-[#E5E7EB] hover:bg-white/[0.04] backdrop-blur-md"
-              : "bg-white/95 border-[#E5E7EB] text-[#374151] hover:bg-[#F9FAFB] backdrop-blur-md shadow-md"
+              : "bg-white/95 border-[#D1D5DB] text-[#374151] hover:bg-[#F0F1F3] backdrop-blur-md shadow-md"
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -50,21 +50,21 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
         </button>
       ) : (
         <div className={`rounded-xl border shadow-xl text-xs ${
-          isDark ? "bg-[#13161F]/95 border-white/[0.06] backdrop-blur-md" : "bg-white/95 border-[#E5E7EB] backdrop-blur-md shadow-lg"
+          isDark ? "bg-[#13161F]/95 border-white/[0.06] backdrop-blur-md" : "bg-white/95 border-[#D1D5DB] backdrop-blur-md shadow-lg"
         }`}>
           <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: isDark ? "#1E3A5F" : "#E2E8F0" }}>
             <div className="flex items-center gap-2">
-              <Layers className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`} />
+              <Layers className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`} />
               <span className={`font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Map Layers</span>
             </div>
             <button onClick={() => setExpanded(false)} className={`p-1 rounded hover:bg-opacity-20 ${isDark ? "hover:bg-white" : "hover:bg-[#E5E7EB]"}`}>
-              <ChevronUp className={`w-3.5 h-3.5 ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`} />
+              <ChevronUp className={`w-3.5 h-3.5 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`} />
             </button>
           </div>
           <div className="py-1.5">
             {groups.map((group) => (
               <div key={group}>
-                <div className={`px-3 py-1 text-[9px] font-semibold uppercase tracking-wider ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                <div className={`px-3 py-1 text-[9px] font-semibold uppercase tracking-wider ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                   {group}
                 </div>
                 {LAYER_CONFIG.filter(l => l.group === group).map((layerDef) => {
@@ -74,7 +74,7 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
                       key={layerDef.key}
                       onClick={() => onLayerToggle(layerDef.key)}
                       className={`w-full flex items-center gap-2.5 px-3 py-1.5 transition-colors ${
-                        isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F9FAFB]"
+                        isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F0F1F3]"
                       }`}
                     >
                       <div className="w-3 h-3 rounded-sm border flex items-center justify-center flex-shrink-0" style={{
@@ -86,13 +86,13 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
                       <span className={`flex-1 text-left ${
                         isOn
                           ? isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
-                          : isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"
+                          : isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"
                       }`}>
                         {layerDef.label}
                       </span>
                       {isOn
                         ? <Eye className="w-3 h-3" style={{ color: layerDef.color }} />
-                        : <EyeOff className={`w-3 h-3 ${isDark ? "text-[#6B7280]" : "text-[#E5E7EB]"}`} />
+                        : <EyeOff className={`w-3 h-3 ${isDark ? "text-[#374151]" : "text-[#E5E7EB]"}`} />
                       }
                     </button>
                   );

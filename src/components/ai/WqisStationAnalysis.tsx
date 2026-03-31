@@ -44,33 +44,33 @@ export function WqisStationAnalysis({ stationId, stationName, onClose }: Props) 
     <>
       <div className="fixed inset-0 z-40 bg-black/30" onClick={onClose} aria-hidden />
       <div role="dialog" aria-label={`AI Analysis — ${stationName ?? stationId}`}
-        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-lg flex flex-col bg-white dark:bg-[#22272B] border-l border-[#E5E7EB] dark:border-[#374151] shadow-xl">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#374151]">
+        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-lg flex flex-col bg-white dark:bg-[#22272B] border-l border-[#D1D5DB] dark:border-[#374151] shadow-xl">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#D1D5DB] dark:border-[#374151]">
           <div>
             <h2 className="text-sm font-semibold text-[#111827] dark:text-[#F3F4F6]">AI Station Analysis</h2>
-            <p className="text-xs text-[#6B7280] dark:text-[#D1D5DB] mt-0.5">{stationName ?? stationId} · WQIS Agent</p>
+            <p className="text-xs text-[#374151] dark:text-[#D1D5DB] mt-0.5">{stationName ?? stationId} · WQIS Agent</p>
           </div>
           <div className="flex items-center gap-2">
-            {data && <button onClick={analyze} disabled={loading} className="text-xs text-[#6B7280] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline disabled:opacity-40">Refresh</button>}
-            <button onClick={onClose} className="text-[#D1D5DB] hover:text-[#4B5563] dark:hover:text-[#E5E7EB] text-xl px-1" aria-label="Close">×</button>
+            {data && <button onClick={analyze} disabled={loading} className="text-xs text-[#374151] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline disabled:opacity-40">Refresh</button>}
+            <button onClick={onClose} className="text-[#D1D5DB] hover:text-[#1F2937] dark:hover:text-[#E5E7EB] text-xl px-1" aria-label="Close">×</button>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {loading && (
             <div className="flex flex-col items-center justify-center h-48 gap-3">
               <div className="w-6 h-6 border-2 border-[#1C8C7D] border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm text-[#6B7280] dark:text-[#D1D5DB] text-center">WQIS agent analyzing {stationName ?? stationId}…</p>
+              <p className="text-sm text-[#374151] dark:text-[#D1D5DB] text-center">WQIS agent analyzing {stationName ?? stationId}…</p>
             </div>
           )}
           {error && (
-            <div className="rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 p-4">
+            <div className="rounded-lg bg-red-100 dark:bg-red-950/30 border border-red-300 dark:border-red-800 p-4">
               <p className="text-sm text-red-700 dark:text-red-300 mb-2">{error}</p>
               <button onClick={analyze} className="text-xs text-red-600 dark:text-red-400 underline">Try again</button>
             </div>
           )}
           {data && !loading && (
             <div>
-              <p className="text-xs text-[#D1D5DB] dark:text-[#6B7280] mb-4">Analyzed {new Date(data.analyzedAt).toLocaleString()}</p>
+              <p className="text-xs text-[#D1D5DB] dark:text-[#374151] mb-4">Analyzed {new Date(data.analyzedAt).toLocaleString()}</p>
               <Lines text={data.analysis} />
             </div>
           )}

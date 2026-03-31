@@ -104,7 +104,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
         className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
           isDark
             ? "border-white/[0.06] bg-[#13161F] hover:bg-white/[0.04] text-[#E5E7EB]"
-            : "border-[#E5E7EB] bg-white hover:bg-[#F3F4F6] text-[#374151]"
+            : "border-[#D1D5DB] bg-white hover:bg-[#E5E7EB] text-[#374151]"
         } ${selectedParams.length > 0 ? (isDark ? "border-water-blue/50" : "border-blue-400") : ""}`}
       >
         <Filter className="w-3.5 h-3.5" />
@@ -128,7 +128,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
               <span
                 key={id}
                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] border ${
-                  isDark ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB]" : "bg-[#F3F4F6] border-[#E5E7EB] text-[#4B5563]"
+                  isDark ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB]" : "bg-[#E5E7EB] border-[#D1D5DB] text-[#1F2937]"
                 }`}
               >
                 {p?.name || id}
@@ -139,13 +139,13 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
             );
           })}
           {selectedParams.length > 3 && (
-            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
               +{selectedParams.length - 3} more
             </span>
           )}
           <button
             onClick={clearAll}
-            className={`text-[10px] px-1.5 py-0.5 rounded hover:text-red-400 ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}
+            className={`text-[10px] px-1.5 py-0.5 rounded hover:text-red-400 ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}
           >
             Clear
           </button>
@@ -155,11 +155,11 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
       {/* Dropdown panel */}
       {open && (
         <div className={`absolute z-50 mt-1 left-0 w-72 rounded-xl border shadow-xl overflow-hidden ${
-          isDark ? "bg-udc-dark border-white/[0.06]" : "bg-white border-[#E5E7EB]"
+          isDark ? "bg-udc-dark border-white/[0.06]" : "bg-white border-[#D1D5DB]"
         }`}>
           {/* Header */}
           <div className={`flex items-center justify-between px-3 py-2 border-b ${
-            isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"
+            isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
           }`}>
             <span className={`text-xs font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>
               Filter by Parameter
@@ -184,7 +184,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
                   <button
                     onClick={() => selectCategory(group.category)}
                     className={`w-full flex items-center gap-2 px-3 py-1.5 text-[10px] uppercase tracking-wider font-semibold ${
-                      isDark ? "bg-[#13161F]/50 text-[#D1D5DB] hover:bg-white/[0.04]" : "bg-[#F9FAFB] text-[#6B7280] hover:bg-[#F3F4F6]"
+                      isDark ? "bg-[#13161F]/50 text-[#D1D5DB] hover:bg-white/[0.04]" : "bg-[#F0F1F3] text-[#374151] hover:bg-[#E5E7EB]"
                     }`}
                   >
                     <div className={`w-3 h-3 rounded border flex items-center justify-center ${
@@ -198,7 +198,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
                       {someSelected && !allSelected && <span className="w-1.5 h-1.5 rounded-sm bg-water-blue" />}
                     </div>
                     <span className={group.color}>{group.label}</span>
-                    <span className={`ml-auto ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+                    <span className={`ml-auto ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
                       {catIds.filter((id) => selectedParams.includes(id)).length}/{catIds.length}
                     </span>
                   </button>
@@ -211,7 +211,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
                         key={param.id}
                         onClick={() => toggle(param.id)}
                         className={`w-full flex items-center gap-2 px-3 py-1.5 text-left transition-colors ${
-                          isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F3F4F6]"
+                          isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#E5E7EB]"
                         }`}
                       >
                         <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 ${
@@ -225,7 +225,7 @@ export default function ParameterFilter({ selectedParams, onParamsChange }: Para
                           <div className={`text-xs truncate ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                             {param.name}
                           </div>
-                          <div className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+                          <div className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
                             {param.unit}
                             {param.epaMax != null && ` · EPA max: ${param.epaMax}`}
                             {param.epaMin != null && param.epaMax == null && ` · EPA min: ${param.epaMin}`}

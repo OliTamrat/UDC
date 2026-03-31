@@ -321,7 +321,7 @@ export default function EducationPage() {
   }
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
@@ -330,7 +330,7 @@ export default function EducationPage() {
           <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
               ? "border-white/[0.06] bg-gradient-to-br from-emerald-900/10 via-[#0C0F17] to-[#0C0F17]"
-              : "border-[#E5E7EB] bg-gradient-to-br from-white via-emerald-50/30 to-[#F9FAFB]"
+              : "border-[#D1D5DB] bg-gradient-to-br from-white via-emerald-50/30 to-[#F9FAFB]"
           }`}>
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-2">
@@ -342,7 +342,7 @@ export default function EducationPage() {
               <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
                 Learn About DC&apos;s Water Resources
               </h1>
-              <p className={`text-sm max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+              <p className={`text-sm max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                 Educational resources for DC residents, UDC students, and faculty. From
                 introductory water quality concepts to advanced data analysis — empowering informed
                 stewardship of our waterways.
@@ -388,15 +388,15 @@ export default function EducationPage() {
                 key={audience.title}
                 onClick={audience.action}
                 className={`glass-panel rounded-2xl p-3 sm:p-5 text-left transition-all group hover:scale-[1.02] ${
-                  isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB] hover:shadow-md"
+                  isDark ? "hover:border-white/[0.06]" : "hover:border-[#9CA3AF] hover:shadow-md"
                 }`}
               >
                 <div className={`p-3 rounded-lg ${audience.bgColor} w-fit mb-3`}>
                   <audience.icon className={`w-5 h-5 ${audience.color}`} />
                 </div>
                 <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{audience.title}</h3>
-                <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{audience.description}</p>
-                <div className="flex items-center gap-1 mt-3 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
+                <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{audience.description}</p>
+                <div className="flex items-center gap-1 mt-3 text-xs text-[#374151] group-hover:text-water-blue transition-colors">
                   <span>{audience.cta}</span>
                   <ArrowRight className="w-3 h-3" />
                 </div>
@@ -410,7 +410,7 @@ export default function EducationPage() {
               <HelpCircle className="w-5 h-5 text-amber-400" />
               <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>What Does This Reading Mean?</h2>
             </div>
-            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
               Interactive exercises — click to reveal the answer and learn how to interpret real water quality data
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -422,7 +422,7 @@ export default function EducationPage() {
                     <button
                       onClick={() => toggleExercise(i)}
                       className={`w-full p-4 text-left transition-colors ${
-                        isDark ? "hover:bg-white/5" : "hover:bg-[#F3F4F6]"
+                        isDark ? "hover:bg-white/5" : "hover:bg-[#E5E7EB]"
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -441,7 +441,7 @@ export default function EducationPage() {
                             }`}>{ex.threshold}</span>
                           </div>
                           <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{ex.question}</p>
-                          <span className={`text-[10px] mt-2 inline-flex items-center gap-1 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                          <span className={`text-[10px] mt-2 inline-flex items-center gap-1 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                             {revealed ? "Hide" : "Reveal"} answer
                             <ArrowRight className={`w-2.5 h-2.5 transition-transform ${revealed ? "rotate-90" : ""}`} />
                           </span>
@@ -449,13 +449,13 @@ export default function EducationPage() {
                       </div>
                     </button>
                     {revealed && (
-                      <div className={`px-4 pb-4 pt-0 border-t ${isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"}`}>
+                      <div className={`px-4 pb-4 pt-0 border-t ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
                         <div className={`mt-3 rounded-lg p-3 ${
                           ex.severity === "good"
-                            ? isDark ? "bg-green-500/5" : "bg-green-50"
+                            ? isDark ? "bg-green-500/5" : "bg-green-100"
                             : ex.severity === "warning"
-                            ? isDark ? "bg-amber-500/5" : "bg-amber-50"
-                            : isDark ? "bg-red-500/5" : "bg-red-50"
+                            ? isDark ? "bg-amber-500/5" : "bg-amber-100"
+                            : isDark ? "bg-red-500/5" : "bg-red-100"
                         }`}>
                           <div className="flex items-start gap-2">
                             <Lightbulb className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 ${
@@ -479,7 +479,7 @@ export default function EducationPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Learning Modules</h2>
-                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                   Self-paced educational content for all knowledge levels
                 </p>
               </div>
@@ -492,10 +492,10 @@ export default function EducationPage() {
                       levelFilter === level
                         ? isDark
                           ? "bg-water-blue/20 border-water-blue/30 text-water-blue"
-                          : "bg-blue-50 border-blue-300 text-blue-600"
+                          : "bg-blue-100 border-blue-300 text-blue-600"
                         : isDark
                           ? "bg-[#13161F] border-white/[0.06] text-[#D1D5DB] hover:border-white/[0.06]"
-                          : "bg-white border-[#E5E7EB] text-[#6B7280] hover:border-[#9CA3AF]"
+                          : "bg-white border-[#D1D5DB] text-[#374151] hover:border-[#9CA3AF]"
                     }`}
                   >
                     {level}
@@ -509,7 +509,7 @@ export default function EducationPage() {
                   key={module.title}
                   onClick={() => setActiveModule(module)}
                   className={`glass-panel rounded-2xl p-3 sm:p-5 text-left transition-all group cursor-pointer hover:scale-[1.02] ${
-                    isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB] hover:shadow-md"
+                    isDark ? "hover:border-white/[0.06]" : "hover:border-[#9CA3AF] hover:shadow-md"
                   }`}
                 >
                   <div className="flex items-start justify-between mb-3">
@@ -517,7 +517,7 @@ export default function EducationPage() {
                       <module.icon className={`w-4 h-4 ${module.color}`} />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{module.duration}</span>
+                      <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>{module.duration}</span>
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded-full border ${
                           module.level === "Beginner"
@@ -532,18 +532,18 @@ export default function EducationPage() {
                     </div>
                   </div>
                   <h3 className={`text-sm font-semibold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>{module.title}</h3>
-                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                     {module.description}
                   </p>
                   <ul className="space-y-1.5">
                     {module.topics.map((topic) => (
-                      <li key={topic} className={`flex items-center gap-2 text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
-                        <BookOpen className={`w-3 h-3 ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
+                      <li key={topic} className={`flex items-center gap-2 text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
+                        <BookOpen className={`w-3 h-3 ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`} />
                         {topic}
                       </li>
                     ))}
                   </ul>
-                  <div className="flex items-center gap-1 mt-4 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
+                  <div className="flex items-center gap-1 mt-4 text-xs text-[#374151] group-hover:text-water-blue transition-colors">
                     <span>View module details</span>
                     <ArrowRight className="w-3 h-3" />
                   </div>
@@ -562,12 +562,12 @@ export default function EducationPage() {
               icon={<activeModule.icon className={`w-5 h-5 ${activeModule.color}`} />}
             >
               <div className="space-y-5">
-                <p className={`text-sm leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+                <p className={`text-sm leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                   {activeModule.description}
                 </p>
 
                 {/* Key Fact */}
-                <div className={`rounded-xl p-4 ${isDark ? "bg-amber-500/5 border border-amber-500/20" : "bg-amber-50 border border-amber-200"}`}>
+                <div className={`rounded-xl p-4 ${isDark ? "bg-amber-500/5 border border-amber-500/20" : "bg-amber-100 border border-amber-300"}`}>
                   <div className="flex items-start gap-2">
                     <Lightbulb className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
                     <p className={`text-xs leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
@@ -578,10 +578,10 @@ export default function EducationPage() {
 
                 {/* Topics Covered */}
                 <div>
-                  <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Topics Covered</h4>
+                  <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>Topics Covered</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {activeModule.topics.map((topic) => (
-                      <div key={topic} className={`flex items-center gap-2 p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-[#F9FAFB]"}`}>
+                      <div key={topic} className={`flex items-center gap-2 p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-[#F0F1F3]"}`}>
                         <BookOpen className={`w-3 h-3 flex-shrink-0 ${activeModule.color}`} />
                         <span className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{topic}</span>
                       </div>
@@ -591,13 +591,13 @@ export default function EducationPage() {
 
                 {/* Learning Outcomes */}
                 <div>
-                  <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                  <h4 className={`text-xs font-semibold uppercase tracking-wider mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                     <Target className="w-3 h-3 inline mr-1" />
                     Learning Outcomes
                   </h4>
                   <div className="space-y-2">
                     {activeModule.outcomes.map((outcome, i) => (
-                      <div key={i} className={`flex items-start gap-2 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+                      <div key={i} className={`flex items-start gap-2 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                         <CheckCircle2 className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 ${activeModule.color}`} />
                         <span className="text-xs leading-relaxed">{outcome}</span>
                       </div>
@@ -606,7 +606,7 @@ export default function EducationPage() {
                 </div>
 
                 {/* Related resources */}
-                <div className={`rounded-xl p-4 ${isDark ? "bg-white/5 border border-white/[0.06]" : "bg-[#F9FAFB] border border-[#E5E7EB]"}`}>
+                <div className={`rounded-xl p-4 ${isDark ? "bg-white/5 border border-white/[0.06]" : "bg-[#F0F1F3] border border-[#D1D5DB]"}`}>
                   <h4 className={`text-xs font-semibold mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>Related Dashboard Resources</h4>
                   <div className="flex flex-wrap gap-2">
                     <a href="/methodology" className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-[10px] border border-blue-500/20 hover:bg-blue-500/20 transition-colors">
@@ -627,7 +627,7 @@ export default function EducationPage() {
           {/* Community Events */}
           <section id="community">
             <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Community Events</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
               Upcoming opportunities to engage with DC water resources
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -642,8 +642,8 @@ export default function EducationPage() {
                     </span>
                   </div>
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{event.title}</h3>
-                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{event.description}</p>
-                  <div className={`flex items-center gap-4 text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{event.description}</p>
+                  <div className={`flex items-center gap-4 text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       <span>{event.date}</span>
@@ -661,7 +661,7 @@ export default function EducationPage() {
           {/* Analysis Templates */}
           <section>
             <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Analysis Templates</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
               Download ready-to-use scripts that fetch real data from the dashboard API
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -705,8 +705,8 @@ export default function EducationPage() {
                     </a>
                   </div>
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{tmpl.name}</h3>
-                  <p className={`text-xs mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{tmpl.description}</p>
-                  <code className={`text-[10px] block p-2 rounded ${isDark ? "bg-[#0C0F17]/50 text-[#9CA3AF]" : "bg-[#F3F4F6] text-[#6B7280]"}`}>
+                  <p className={`text-xs mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{tmpl.description}</p>
+                  <code className={`text-[10px] block p-2 rounded ${isDark ? "bg-[#0C0F17]/50 text-[#6B7280]" : "bg-[#E5E7EB] text-[#374151]"}`}>
                     {tmpl.requires}
                   </code>
                 </div>
@@ -717,7 +717,7 @@ export default function EducationPage() {
           {/* Open Data */}
           <section id="resources">
             <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Open Data Portal</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
               Download research datasets for analysis and education. Data is available via the API or as direct downloads.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -740,14 +740,14 @@ export default function EducationPage() {
                         Download
                       </a>
                     ) : (
-                      <span className={`text-[10px] px-2 py-1 rounded-lg ${isDark ? "bg-white/[0.02] text-[#9CA3AF]" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
+                      <span className={`text-[10px] px-2 py-1 rounded-lg ${isDark ? "bg-white/[0.02] text-[#6B7280]" : "bg-[#E5E7EB] text-[#6B7280]"}`}>
                         Coming soon
                       </span>
                     )}
                   </div>
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{dataset.name}</h3>
-                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{dataset.description}</p>
-                  <div className={`flex items-center gap-4 text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                  <p className={`text-xs mb-3 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{dataset.description}</p>
+                  <div className={`flex items-center gap-4 text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                     <span>Format: {dataset.format}</span>
                     <span>Size: {dataset.size}</span>
                     <span>Records: {dataset.records}</span>
@@ -758,16 +758,16 @@ export default function EducationPage() {
           </section>
 
           {/* API Access Banner */}
-          <section className={`rounded-xl border p-3 sm:p-5 ${isDark ? "border-blue-500/20 bg-blue-500/5" : "border-blue-200 bg-blue-50"}`}>
+          <section className={`rounded-xl border p-3 sm:p-5 ${isDark ? "border-blue-500/20 bg-blue-500/5" : "border-blue-300 bg-blue-100"}`}>
             <div className="flex items-start gap-3">
               <Globe className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
               <div>
                 <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Programmatic API Access</h3>
-                <p className={`text-xs leading-relaxed mb-3 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+                <p className={`text-xs leading-relaxed mb-3 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                   All data is available via REST API for integration into your own applications,
                   research scripts, or community tools. No authentication required for read access.
                 </p>
-                <div className={`font-mono text-[10px] p-3 rounded-lg space-y-1 ${isDark ? "bg-[#0C0F17]/50 text-[#9CA3AF]" : "bg-white text-[#4B5563]"}`}>
+                <div className={`font-mono text-[10px] p-3 rounded-lg space-y-1 ${isDark ? "bg-[#0C0F17]/50 text-[#6B7280]" : "bg-white text-[#1F2937]"}`}>
                   <div>GET /api/stations — All stations with latest readings</div>
                   <div>GET /api/stations/:id/history — Historical data for a station</div>
                   <div>GET /api/export?format=csv — Full dataset export</div>

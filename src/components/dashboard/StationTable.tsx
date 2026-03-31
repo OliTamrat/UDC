@@ -229,29 +229,29 @@ export default function StationTable({ onStationClick, selectedParams }: Station
     <div className={`rounded-2xl overflow-hidden ${
       isDark
         ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20"
-        : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"
+        : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"
     }`}>
-      <div className={`px-5 py-4 border-b ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+      <div className={`px-5 py-4 border-b ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
         <h3 className={`text-sm font-semibold ${isDark ? "text-[#F3F4F6]" : "text-[#1F2937]"}`}>{t("table.title")}</h3>
-        <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.subtitle")}</p>
+        <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.subtitle")}</p>
       </div>
       <div className="station-table-wrap">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
-            <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
-              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.station")}</th>
-              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.type")}</th>
-              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.status")}</th>
+            <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#D1D5DB] bg-[#F0F1F3]"}`}>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.station")}</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.type")}</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.status")}</th>
               {visibleParams.map((p) => (
-                <th key={p.id} scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+                <th key={p.id} scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                   <span title={`${p.name} (${p.unit})`}>
                     {p.name.length > 18 ? p.name.slice(0, 16) + "…" : p.name}
                   </span>
                 </th>
               ))}
-              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>Trend</th>
-              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.updated")}</th>
-              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}><span className="sr-only">{t("table.details")}</span></th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Trend</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.updated")}</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}><span className="sr-only">{t("table.details")}</span></th>
             </tr>
           </thead>
           <tbody>
@@ -269,7 +269,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                   className={`border-b transition-colors cursor-pointer ${
                     isDark
                       ? "border-white/[0.04] hover:bg-white/[0.03] focus:bg-white/[0.03] focus:outline-none focus:ring-1 focus:ring-water-blue"
-                      : "border-[#F3F4F6] hover:bg-[#F9FAFB] focus:bg-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-blue-400"
+                      : "border-[#E5E7EB] hover:bg-[#F0F1F3] focus:bg-[#F0F1F3] focus:outline-none focus:ring-1 focus:ring-blue-400"
                   }`}
                 >
                   <td className="py-2.5 px-4">
@@ -277,12 +277,12 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                       <MapPin className="w-3.5 h-3.5 text-water-blue flex-shrink-0" />
                       <div>
                         <div className={`text-xs font-medium ${isDark ? "text-white" : "text-[#111827]"}`}>{station.name}</div>
-                        <div className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{station.id}</div>
+                        <div className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>{station.id}</div>
                       </div>
                     </div>
                   </td>
                   <td className="py-2.5 px-4">
-                    <span className={`text-xs capitalize ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{station.type.replace("-", " ")}</span>
+                    <span className={`text-xs capitalize ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{station.type.replace("-", " ")}</span>
                   </td>
                   <td className="py-2.5 px-4">
                     <StatusBadge status={station.status} />
@@ -302,7 +302,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                       good: isDark ? "text-green-400" : "text-green-600",
                       warning: isDark ? "text-amber-400" : "text-amber-600",
                       violation: isDark ? "text-red-400" : "text-red-600",
-                      unknown: isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]",
+                      unknown: isDark ? "text-[#6B7280]" : "text-[#6B7280]",
                     }[level];
 
                     return (
@@ -315,7 +315,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                             </span>
                           </div>
                         ) : (
-                          <span className={`text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>—</span>
+                          <span className={`text-xs ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>—</span>
                         )}
                       </td>
                     );
@@ -324,13 +324,13 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                     {(() => {
                       const hist = historyMap[station.id] as unknown as { data?: Array<Record<string, number | null>> } | undefined;
                       const histData = hist?.data;
-                      if (!histData || histData.length < 2) return <span className={`text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>—</span>;
+                      if (!histData || histData.length < 2) return <span className={`text-xs ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>—</span>;
                       const doValues = histData.map((d) => d.dissolvedOxygen).filter((v): v is number => v != null);
-                      if (doValues.length < 2) return <span className={`text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>—</span>;
+                      if (doValues.length < 2) return <span className={`text-xs ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>—</span>;
                       return <Sparkline data={doValues} color="#60A5FA" />;
                     })()}
                   </td>
-                  <td className={`py-2.5 px-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                  <td className={`py-2.5 px-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px]">{r
                         ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
@@ -339,7 +339,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                     </div>
                   </td>
                   <td className="py-2.5 px-4">
-                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-[#9CA3AF] hover:text-blue-400" : "text-[#9CA3AF] hover:text-blue-500"} transition-colors`} />
+                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-[#6B7280] hover:text-blue-400" : "text-[#6B7280] hover:text-blue-500"} transition-colors`} />
                   </td>
                 </tr>
               );

@@ -89,7 +89,7 @@ function NTUModal({
       <div className="absolute inset-0 bg-black/70" />
       <div
         className={`relative max-w-md w-full rounded-t-2xl sm:rounded-2xl border p-5 shadow-2xl max-h-[85vh] overflow-y-auto ${
-          isDark ? "bg-[#111827] border-white/[0.06]" : "bg-white border-[#E5E7EB]"
+          isDark ? "bg-[#111827] border-white/[0.06]" : "bg-white border-[#D1D5DB]"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -102,7 +102,7 @@ function NTUModal({
           onClick={onClose}
           aria-label="Close"
           className={`absolute top-3 right-3 p-2 rounded-lg transition-colors ${
-            isDark ? "hover:bg-white/10 active:bg-white/20 text-[#D1D5DB]" : "hover:bg-[#F3F4F6] active:bg-[#E5E7EB] text-[#6B7280]"
+            isDark ? "hover:bg-white/10 active:bg-white/20 text-[#D1D5DB]" : "hover:bg-[#E5E7EB] active:bg-[#E5E7EB] text-[#374151]"
           }`}
         >
           <X className="w-5 h-5" />
@@ -110,38 +110,38 @@ function NTUModal({
 
         {/* Header */}
         <div className="flex items-start gap-3 mb-4">
-          <div className={`p-2 rounded-xl ${isDark ? "bg-water-blue/10" : "bg-blue-50"}`}>
+          <div className={`p-2 rounded-xl ${isDark ? "bg-water-blue/10" : "bg-blue-100"}`}>
             <Info className="w-5 h-5 text-water-blue" />
           </div>
           <div>
             <h3 className={`text-base font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>
               {station.name}
             </h3>
-            <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+            <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
               Station {station.id} · {station.type === "headwater" ? "Headwater" : station.type === "tributary" ? "Tributary" : station.type === "tidal" ? "Tidal" : "Main Channel"}
             </p>
           </div>
         </div>
 
         {/* Current reading */}
-        <div className={`rounded-xl p-3 mb-4 border ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl p-3 mb-4 border ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F0F1F3] border-[#D1D5DB]"}`}>
           <div className="flex items-center justify-between">
             <div>
-              <span className={`text-[10px] uppercase tracking-wide ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+              <span className={`text-[10px] uppercase tracking-wide ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                 Current Turbidity
               </span>
               <div className="flex items-baseline gap-1.5">
                 <span className={`text-2xl font-bold ${statusColor}`}>{currentTurbidity}</span>
-                <span className={`text-xs ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>NTU</span>
+                <span className={`text-xs ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>NTU</span>
               </div>
             </div>
             <div className="text-right">
-              <span className={`text-[10px] uppercase tracking-wide ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+              <span className={`text-[10px] uppercase tracking-wide ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                 Baseline
               </span>
               <div className="flex items-baseline gap-1.5">
                 <span className={`text-lg font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{station.turbidity}</span>
-                <span className={`text-xs ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>NTU</span>
+                <span className={`text-xs ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>NTU</span>
               </div>
             </div>
           </div>
@@ -150,7 +150,7 @@ function NTUModal({
               {status}
             </span>
             {ratio > 1.1 && (
-              <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+              <span className={`text-[10px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                 {ratio.toFixed(1)}x baseline
               </span>
             )}
@@ -158,13 +158,13 @@ function NTUModal({
         </div>
 
         {/* Explanation */}
-        <p className={`text-sm leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+        <p className={`text-sm leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
           {station.explanation}
         </p>
 
         {/* NTU scale reference */}
-        <div className={`mt-4 pt-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
-          <span className={`text-[10px] font-medium uppercase tracking-wide ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+        <div className={`mt-4 pt-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
+          <span className={`text-[10px] font-medium uppercase tracking-wide ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
             NTU Reference Scale
           </span>
           <div className="flex items-center gap-1 mt-1.5">
@@ -177,7 +177,7 @@ function NTUModal({
             ].map((item) => (
               <div key={item.range} className="flex-1 text-center">
                 <div className={`h-1.5 rounded-full ${item.color} mb-1`} />
-                <span className={`text-[7px] block ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>{item.range}</span>
+                <span className={`text-[7px] block ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>{item.range}</span>
               </div>
             ))}
           </div>
@@ -189,7 +189,7 @@ function NTUModal({
           className={`sm:hidden w-full mt-4 py-3 rounded-xl text-sm font-medium transition-colors ${
             isDark
               ? "bg-white/10 text-[#E5E7EB] active:bg-white/20"
-              : "bg-[#F3F4F6] text-[#4B5563] active:bg-[#E5E7EB]"
+              : "bg-[#E5E7EB] text-[#1F2937] active:bg-[#E5E7EB]"
           }`}
         >
           Close
@@ -308,12 +308,12 @@ export default function UpstreamDownstream() {
       title="Upstream to Downstream"
       subtitle="Watch pollution travel through the watershed"
       icon={<ArrowRight className="w-5 h-5 text-cyan-400" />}
-      accentColor={isDark ? "bg-cyan-500/10" : "bg-cyan-50"}
+      accentColor={isDark ? "bg-cyan-500/10" : "bg-cyan-100"}
     >
       <FadeIn>
         <p
           className={`text-sm leading-relaxed mb-5 ${
-            isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
+            isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
           }`}
         >
           When pollution enters the Anacostia watershed, it doesn&apos;t stay put. Water carries
@@ -337,10 +337,10 @@ export default function UpstreamDownstream() {
                 scenario === s.id
                   ? isDark
                     ? "bg-[#13161F] border-water-blue/40"
-                    : "bg-blue-50 border-blue-300"
+                    : "bg-blue-100 border-blue-300"
                   : isDark
                     ? "border-white/[0.06] hover:border-white/[0.06]/80"
-                    : "border-[#E5E7EB] hover:border-[#D1D5DB]"
+                    : "border-[#D1D5DB] hover:border-[#9CA3AF]"
               }`}
             >
               <div className="flex items-center gap-1.5">
@@ -351,7 +351,7 @@ export default function UpstreamDownstream() {
               </div>
               <p
                 className={`text-[10px] mt-0.5 ${
-                  isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
+                  isDark ? "text-[#374151]" : "text-[#D1D5DB]"
                 }`}
               >
                 {s.desc}
@@ -365,12 +365,12 @@ export default function UpstreamDownstream() {
       <FadeIn delay={200}>
         <div
           className={`rounded-xl border overflow-hidden ${
-            isDark ? "bg-[#111827]/80 border-white/[0.06]" : "bg-gradient-to-b from-green-50/50 to-[#F9FAFB] border-[#E5E7EB]"
+            isDark ? "bg-[#111827]/80 border-white/[0.06]" : "bg-gradient-to-b from-green-50/50 to-[#F9FAFB] border-[#D1D5DB]"
           }`}
         >
           {/* Time indicator + controls */}
           <div className={`flex items-center justify-between px-4 py-2.5 border-b ${
-            isDark ? "border-white/[0.06] bg-[#13161F]/50" : "border-[#E5E7EB] bg-white/80"
+            isDark ? "border-white/[0.06] bg-[#13161F]/50" : "border-[#D1D5DB] bg-white/80"
           }`}>
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${playing ? "bg-green-400 animate-pulse" : timeStep > 0 ? "bg-amber-400" : "bg-[#9CA3AF]"}`} />
@@ -394,7 +394,7 @@ export default function UpstreamDownstream() {
                 className={`p-1.5 rounded-lg transition-colors ${
                   isDark
                     ? "text-[#D1D5DB] hover:text-[#E5E7EB] hover:bg-white/5"
-                    : "text-[#D1D5DB] hover:text-[#4B5563] hover:bg-[#F3F4F6]"
+                    : "text-[#D1D5DB] hover:text-[#1F2937] hover:bg-[#E5E7EB]"
                 }`}
               >
                 <RotateCcw className="w-4 h-4" />
@@ -645,9 +645,9 @@ export default function UpstreamDownstream() {
           </div>
 
           {/* Timeline scrubber */}
-          <div className={`px-4 py-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+          <div className={`px-4 py-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
             <div className="flex items-center gap-3">
-              <span className={`text-[9px] font-medium w-6 ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>0h</span>
+              <span className={`text-[9px] font-medium w-6 ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>0h</span>
               <input
                 type="range"
                 min={0}
@@ -664,7 +664,7 @@ export default function UpstreamDownstream() {
                     : `linear-gradient(to right, #3B82F6 ${(timeStep / MAX_STEPS) * 100}%, #E2E8F0 ${(timeStep / MAX_STEPS) * 100}%)`,
                 }}
               />
-              <span className={`text-[9px] font-medium w-8 text-right ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>48h</span>
+              <span className={`text-[9px] font-medium w-8 text-right ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>48h</span>
             </div>
             <div className="flex items-center justify-center gap-4 mt-2">
               {[
@@ -675,10 +675,10 @@ export default function UpstreamDownstream() {
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-1">
                   <div className={`w-2 h-2 rounded-full ${item.color}`} />
-                  <span className={`text-[8px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>{item.label}</span>
+                  <span className={`text-[8px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>{item.label}</span>
                 </div>
               ))}
-              <span className={`text-[8px] ml-2 ${isDark ? "text-[#4B5563]" : "text-[#D1D5DB]"}`}>
+              <span className={`text-[8px] ml-2 ${isDark ? "text-[#1F2937]" : "text-[#D1D5DB]"}`}>
                 Click markers for details
               </span>
             </div>
@@ -690,7 +690,7 @@ export default function UpstreamDownstream() {
       <FadeIn delay={400}>
         <div
           className={`rounded-xl border p-4 mt-4 ${
-            isDark ? "bg-cyan-950/20 border-cyan-500/20" : "bg-cyan-50 border-cyan-200"
+            isDark ? "bg-cyan-950/20 border-cyan-500/20" : "bg-cyan-100 border-cyan-200"
           }`}
         >
           <p className={`text-sm leading-relaxed ${isDark ? "text-cyan-300" : "text-cyan-700"}`}>

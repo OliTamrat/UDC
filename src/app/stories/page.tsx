@@ -24,7 +24,7 @@ export default function StoriesPage() {
   const sidebarClass = useSidebarClass();
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
@@ -34,7 +34,7 @@ export default function StoriesPage() {
             className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-6 sm:p-8 md:p-10 text-center ${
               isDark
                 ? "border-white/[0.06] bg-gradient-to-b from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
-                : "border-[#E5E7EB] bg-gradient-to-b from-white via-blue-50/30 to-[#F9FAFB]"
+                : "border-[#D1D5DB] bg-gradient-to-b from-white via-blue-50/30 to-[#F9FAFB]"
             }`}
           >
             <div className={`absolute inset-0 ${
@@ -43,20 +43,20 @@ export default function StoriesPage() {
             <div className="relative z-10 max-w-2xl mx-auto">
               <FadeIn>
                 <div className="flex items-center justify-center gap-2 mb-4">
-                  <div className={`p-2.5 rounded-xl ${isDark ? "bg-water-blue/10" : "bg-blue-50"}`}>
+                  <div className={`p-2.5 rounded-xl ${isDark ? "bg-water-blue/10" : "bg-blue-100"}`}>
                     <BookOpen className="w-6 h-6 text-water-blue" />
                   </div>
                 </div>
                 <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>
                   {t("stories.title")}
                 </h1>
-                <p className={`text-sm sm:text-base leading-relaxed max-w-xl mx-auto ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+                <p className={`text-sm sm:text-base leading-relaxed max-w-xl mx-auto ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                   {t("stories.subtitle")}
                 </p>
               </FadeIn>
               <FadeIn delay={400}>
                 <div className="mt-6 flex items-center justify-center">
-                  <ChevronDown className={`w-5 h-5 animate-bounce ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
+                  <ChevronDown className={`w-5 h-5 animate-bounce ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`} />
                 </div>
               </FadeIn>
             </div>
@@ -78,7 +78,7 @@ export default function StoriesPage() {
                   className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors ${
                     isDark
                       ? "border-white/[0.06] hover:border-water-blue/40 bg-[#13161F] text-[#E5E7EB]"
-                      : "border-[#E5E7EB] hover:border-blue-300 bg-white text-[#4B5563]"
+                      : "border-[#D1D5DB] hover:border-blue-300 bg-white text-[#1F2937]"
                   }`}
                 >
                   <span className={item.color}>&#9679;</span>{" "}
@@ -115,13 +115,13 @@ export default function StoriesPage() {
               className={`rounded-2xl border p-6 sm:p-8 text-center ${
                 isDark
                   ? "bg-gradient-to-br from-[#13161F] to-[#0C0F17] border-white/[0.06]"
-                  : "bg-gradient-to-br from-blue-50 to-white border-[#E5E7EB]"
+                  : "bg-gradient-to-br from-blue-50 to-white border-[#D1D5DB]"
               }`}
             >
               <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
                 {t("stories.cta_title")}
               </h2>
-              <p className={`text-sm mb-4 max-w-lg mx-auto ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+              <p className={`text-sm mb-4 max-w-lg mx-auto ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                 {t("stories.cta_text")}
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
@@ -142,7 +142,7 @@ export default function StoriesPage() {
                   className={`px-5 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
                     isDark
                       ? "border-white/[0.06] text-[#E5E7EB] hover:bg-white/[0.04]"
-                      : "border-[#E5E7EB] text-[#374151] hover:bg-[#F3F4F6]"
+                      : "border-[#D1D5DB] text-[#374151] hover:bg-[#E5E7EB]"
                   }`}
                 >
                   {t("stories.cta_download")}

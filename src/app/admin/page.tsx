@@ -163,17 +163,17 @@ export default function AdminPage() {
   if (!authenticated) {
     if (!authChecked) {
       return (
-        <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
-          <div className={`text-sm ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>Checking authentication...</div>
+        <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
+          <div className={`text-sm ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Checking authentication...</div>
         </div>
       );
     }
     return (
-      <div className={`min-h-screen flex flex-col items-center justify-center px-4 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
+      <div className={`min-h-screen flex flex-col items-center justify-center px-4 ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
         <div className={`w-full max-w-sm rounded-2xl border overflow-hidden ${
           isDark
             ? "bg-[#13161F] border-white/[0.06] shadow-2xl shadow-black/40"
-            : "bg-white border-[#E5E7EB] shadow-xl shadow-black/[0.06]"
+            : "bg-white border-[#D1D5DB] shadow-xl shadow-black/[0.06]"
         }`}>
           {/* Header with gradient accent */}
           <div className="bg-gradient-to-r from-udc-gold/10 via-udc-red/5 to-transparent p-6 pb-5">
@@ -183,14 +183,14 @@ export default function AdminPage() {
               </div>
               <div>
                 <h1 className={`text-lg font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>Admin Panel</h1>
-                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>UDC Water Resources Data Management</p>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>UDC Water Resources Data Management</p>
               </div>
             </div>
           </div>
 
           {/* Form */}
           <div className="p-6 pt-4">
-            <label className={`block text-xs font-semibold uppercase tracking-wide mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+            <label className={`block text-xs font-semibold uppercase tracking-wide mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
               Admin API Key
             </label>
             <input
@@ -201,13 +201,13 @@ export default function AdminPage() {
               placeholder="Enter your admin key..."
               className={`w-full px-4 py-2.5 rounded-xl border text-sm mb-4 outline-none transition-all ${
                 isDark
-                  ? "bg-[#090B11] border-white/[0.08] text-white placeholder:text-[#4B5563] focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
-                  : "bg-[#F9FAFB] border-[#E5E7EB] text-[#374151] placeholder:text-[#9CA3AF] focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+                  ? "bg-[#090B11] border-white/[0.08] text-white placeholder:text-[#1F2937] focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
+                  : "bg-[#F0F1F3] border-[#D1D5DB] text-[#374151] placeholder:text-[#6B7280] focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
               }`}
             />
             {loginError && (
               <div className={`flex items-start gap-2 p-3 rounded-xl text-xs mb-4 ${
-                isDark ? "bg-red-500/10 border border-red-500/20 text-red-300" : "bg-red-50 border border-red-200 text-red-700"
+                isDark ? "bg-red-500/10 border border-red-500/20 text-red-300" : "bg-red-100 border border-red-300 text-red-700"
               }`}>
                 <XCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>{loginError}</span>
@@ -226,7 +226,7 @@ export default function AdminPage() {
         <a
           href="/"
           className={`mt-4 inline-flex items-center gap-1.5 text-xs transition-colors ${
-            isDark ? "text-[#9CA3AF] hover:text-white" : "text-[#9CA3AF] hover:text-[#111827]"
+            isDark ? "text-[#6B7280] hover:text-white" : "text-[#6B7280] hover:text-[#111827]"
           }`}
         >
           &larr; Back to Dashboard
@@ -236,9 +236,9 @@ export default function AdminPage() {
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
+    <div className={`min-h-screen ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
       {/* Header */}
-      <header className={`border-b px-4 sm:px-6 py-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
+      <header className={`border-b px-4 sm:px-6 py-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#D1D5DB] bg-white"}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <a
@@ -246,7 +246,7 @@ export default function AdminPage() {
               className={`flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors ${
                 isDark
                   ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]"
-                  : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6]"
+                  : "text-[#374151] hover:text-[#111827] hover:bg-[#E5E7EB]"
               }`}
             >
               &larr; Dashboard
@@ -258,7 +258,7 @@ export default function AdminPage() {
               </div>
               <div>
                 <h1 className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>Data Management</h1>
-                <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>WRRI Faculty Admin Panel</p>
+                <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>WRRI Faculty Admin Panel</p>
               </div>
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function AdminPage() {
             className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
               isDark
                 ? "border-white/[0.06] text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]"
-                : "border-[#E5E7EB] text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6]"
+                : "border-[#D1D5DB] text-[#374151] hover:text-[#111827] hover:bg-[#E5E7EB]"
             }`}
           >
             Sign Out
@@ -280,7 +280,7 @@ export default function AdminPage() {
       </header>
 
       {/* Tabs */}
-      <div className={`border-b ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+      <div className={`border-b ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto">
           {([
             { id: "upload" as Tab, label: "Upload Data", icon: Upload },
@@ -299,7 +299,7 @@ export default function AdminPage() {
                     : "border-blue-600 text-blue-600"
                   : isDark
                     ? "border-transparent text-[#D1D5DB] hover:text-[#E5E7EB]"
-                    : "border-transparent text-[#6B7280] hover:text-[#374151]"
+                    : "border-transparent text-[#374151] hover:text-[#374151]"
               }`}
             >
               <tab.icon className="w-3.5 h-3.5" />
@@ -446,7 +446,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
     <div className="space-y-6">
       <div>
         <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Upload Data</h2>
-        <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+        <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
           Upload CSV or JSON files with water quality readings or station data.
           Column names are automatically mapped to the database schema.
         </p>
@@ -463,7 +463,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
                 ? "bg-gradient-to-r from-udc-gold to-udc-red text-white"
                 : isDark
                   ? "bg-[#13161F] border border-white/[0.06] text-[#D1D5DB] hover:text-white"
-                  : "bg-white border border-[#E5E7EB] text-[#4B5563] hover:text-[#111827]"
+                  : "bg-white border border-[#D1D5DB] text-[#1F2937] hover:text-[#111827]"
             }`}
           >
             {type === "readings" ? "Water Quality Readings" : "Station Metadata"}
@@ -479,8 +479,8 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
         onClick={() => fileRef.current?.click()}
         className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
           dragOver
-            ? isDark ? "border-udc-gold bg-udc-gold/5" : "border-blue-400 bg-blue-50"
-            : isDark ? "border-white/[0.06] hover:border-[#6B7280]" : "border-[#E5E7EB] hover:border-[#9CA3AF]"
+            ? isDark ? "border-udc-gold bg-udc-gold/5" : "border-blue-400 bg-blue-100"
+            : isDark ? "border-white/[0.06] hover:border-[#6B7280]" : "border-[#D1D5DB] hover:border-[#9CA3AF]"
         }`}
       >
         <input
@@ -500,12 +500,12 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <Upload className={`w-8 h-8 ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
+            <Upload className={`w-8 h-8 ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`} />
             <div>
               <p className={`text-sm font-medium ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
                 Drop your {uploadType === "readings" ? "readings" : "stations"} file here
               </p>
-              <p className={`text-xs mt-1 ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+              <p className={`text-xs mt-1 ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
                 Supports CSV and JSON &bull; Click to browse
               </p>
             </div>
@@ -514,12 +514,12 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
       </div>
 
       {/* Expected format hint */}
-      <div className={`rounded-lg border p-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
+      <div className={`rounded-lg border p-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#D1D5DB] bg-white"}`}>
         <h3 className={`text-xs font-semibold mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
           <FileText className="w-3.5 h-3.5 inline mr-1.5" />
           Expected Format — {uploadType === "readings" ? "Readings" : "Stations"}
         </h3>
-        <div className={`text-[11px] font-mono p-3 rounded-lg overflow-x-auto ${isDark ? "bg-udc-dark text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#4B5563]"}`}>
+        <div className={`text-[11px] font-mono p-3 rounded-lg overflow-x-auto ${isDark ? "bg-udc-dark text-[#D1D5DB]" : "bg-[#F0F1F3] text-[#1F2937]"}`}>
           {uploadType === "readings" ? (
             <>
               <div className="text-green-500 mb-1"># CSV columns (names are flexible — auto-mapped):</div>
@@ -536,14 +536,14 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
             </>
           )}
         </div>
-        <p className={`text-[10px] mt-2 ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+        <p className={`text-[10px] mt-2 ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
           Column aliases supported: temp, DO, water_temp, e_coli, specific_conductance, etc.
         </p>
       </div>
 
       {/* AI Column Mapping Preview */}
       {preview && (
-        <div className={`rounded-xl border p-4 space-y-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
+        <div className={`rounded-xl border p-4 space-y-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#D1D5DB] bg-white"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className={`w-4 h-4 ${isDark ? "text-udc-gold" : "text-amber-500"}`} />
@@ -554,18 +554,18 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-400">AI-assisted</span>
               )}
               {preview.loadingAI && (
-                <span className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>Analyzing columns...</span>
+                <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>Analyzing columns...</span>
               )}
             </div>
             <button
               onClick={() => setPreview(null)}
-              className={`p-1 rounded ${isDark ? "text-[#D1D5DB] hover:text-white" : "text-[#9CA3AF] hover:text-[#374151]"}`}
+              className={`p-1 rounded ${isDark ? "text-[#D1D5DB] hover:text-white" : "text-[#6B7280] hover:text-[#374151]"}`}
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
             File: <strong>{preview.file.name}</strong> &bull; {preview.sampleRows.length} sample rows &bull; {preview.columns.length} columns detected
           </p>
 
@@ -573,7 +573,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}>
+                <tr className={isDark ? "text-[#D1D5DB]" : "text-[#374151]"}>
                   <th className="text-left px-2 py-1.5 font-medium">Your Column</th>
                   <th className="text-left px-2 py-1.5 font-medium">Maps To</th>
                   <th className="text-left px-2 py-1.5 font-medium">Sample Value</th>
@@ -595,8 +595,8 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
                           onChange={(e) => setCustomMapping({ ...customMapping, [col]: e.target.value || null })}
                           className={`px-1.5 py-0.5 rounded border text-xs ${
                             mapped
-                              ? isDark ? "bg-green-950/30 border-green-500/30 text-green-400" : "bg-green-50 border-green-200 text-green-700"
-                              : isDark ? "bg-udc-dark border-white/[0.06] text-[#9CA3AF]" : "bg-[#F9FAFB] border-[#E5E7EB] text-[#9CA3AF]"
+                              ? isDark ? "bg-green-950/30 border-green-500/30 text-green-400" : "bg-green-100 border-green-300 text-green-700"
+                              : isDark ? "bg-udc-dark border-white/[0.06] text-[#6B7280]" : "bg-[#F0F1F3] border-[#D1D5DB] text-[#6B7280]"
                           }`}
                         >
                           <option value="">— skip —</option>
@@ -605,7 +605,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
                           ))}
                         </select>
                       </td>
-                      <td className={`px-2 py-1.5 font-mono text-[11px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+                      <td className={`px-2 py-1.5 font-mono text-[11px] ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
                         {preview.sampleRows[0]?.[col] || "—"}
                       </td>
                     </tr>
@@ -618,10 +618,10 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
           {/* Sample Data Preview */}
           {preview.sampleRows.length > 0 && (
             <details>
-              <summary className={`text-xs cursor-pointer ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+              <summary className={`text-xs cursor-pointer ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                 Preview first {preview.sampleRows.length} rows
               </summary>
-              <div className={`mt-2 text-[10px] font-mono p-3 rounded-lg overflow-x-auto ${isDark ? "bg-udc-dark text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#4B5563]"}`}>
+              <div className={`mt-2 text-[10px] font-mono p-3 rounded-lg overflow-x-auto ${isDark ? "bg-udc-dark text-[#D1D5DB]" : "bg-[#F0F1F3] text-[#1F2937]"}`}>
                 <table className="w-full">
                   <thead>
                     <tr>
@@ -656,7 +656,7 @@ function UploadTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) 
             </button>
             <button
               onClick={() => setPreview(null)}
-              className={`px-4 py-2 rounded-lg text-xs ${isDark ? "text-[#D1D5DB] hover:text-white" : "text-[#6B7280] hover:text-[#374151]"}`}
+              className={`px-4 py-2 rounded-lg text-xs ${isDark ? "text-[#D1D5DB] hover:text-white" : "text-[#374151] hover:text-[#374151]"}`}
             >
               Cancel
             </button>
@@ -678,10 +678,10 @@ function UploadResultPanel({ result, isDark }: { result: UploadResult; isDark: b
   return (
     <div className={`rounded-xl border p-4 space-y-4 ${
       allFailed
-        ? isDark ? "border-red-500/30 bg-red-950/20" : "border-red-200 bg-red-50"
+        ? isDark ? "border-red-500/30 bg-red-950/20" : "border-red-300 bg-red-100"
         : hasErrors
-          ? isDark ? "border-amber-500/30 bg-amber-950/20" : "border-amber-200 bg-amber-50"
-          : isDark ? "border-green-500/30 bg-green-950/20" : "border-green-200 bg-green-50"
+          ? isDark ? "border-amber-500/30 bg-amber-950/20" : "border-amber-300 bg-amber-100"
+          : isDark ? "border-green-500/30 bg-green-950/20" : "border-green-300 bg-green-100"
     }`}>
       {/* Summary */}
       <div className="flex items-center gap-3">
@@ -696,7 +696,7 @@ function UploadResultPanel({ result, isDark }: { result: UploadResult; isDark: b
           <p className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>
             {allFailed ? "Upload Failed" : hasErrors ? "Partial Upload" : "Upload Successful"}
           </p>
-          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
             {result.inserted} of {result.total_rows} {result.type} records inserted
           </p>
         </div>
@@ -710,7 +710,7 @@ function UploadResultPanel({ result, isDark }: { result: UploadResult; isDark: b
             {Object.entries(result.column_mapping).map(([from, to]) => (
               <span
                 key={from}
-                className={`text-[10px] px-2 py-0.5 rounded-full ${isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-white text-[#4B5563]"}`}
+                className={`text-[10px] px-2 py-0.5 rounded-full ${isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-white text-[#1F2937]"}`}
               >
                 {from} &rarr; {to}
               </span>
@@ -826,10 +826,10 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
       <div className="flex items-center justify-between">
         <div>
           <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Monitoring Stations</h2>
-          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{stations.length} stations registered</p>
+          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{stations.length} stations registered</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={fetchStations} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB] hover:text-white" : "border-[#E5E7EB] text-[#6B7280] hover:text-[#374151]"}`}>
+          <button onClick={fetchStations} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB] hover:text-white" : "border-[#D1D5DB] text-[#374151] hover:text-[#374151]"}`}>
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
           <button
@@ -843,7 +843,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
 
       {/* Add Form */}
       {showAddForm && (
-        <div className={`rounded-xl border p-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
+        <div className={`rounded-xl border p-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#D1D5DB] bg-white"}`}>
           <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>New Station</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
@@ -853,21 +853,21 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
               { key: "longitude", label: "Longitude", placeholder: "-76.9xxx" },
             ].map((field) => (
               <div key={field.key}>
-                <label className={`text-[10px] font-medium block mb-1 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{field.label}</label>
+                <label className={`text-[10px] font-medium block mb-1 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{field.label}</label>
                 <input
                   value={newStation[field.key as keyof typeof newStation]}
                   onChange={(e) => setNewStation({ ...newStation, [field.key]: e.target.value })}
                   placeholder={field.placeholder}
-                  className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
+                  className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F0F1F3] border-[#D1D5DB]"}`}
                 />
               </div>
             ))}
             <div>
-              <label className={`text-[10px] font-medium block mb-1 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>Type</label>
+              <label className={`text-[10px] font-medium block mb-1 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Type</label>
               <select
                 value={newStation.type}
                 onChange={(e) => setNewStation({ ...newStation, type: e.target.value })}
-                className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
+                className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F0F1F3] border-[#D1D5DB]"}`}
               >
                 <option value="river">River</option>
                 <option value="stream">Stream</option>
@@ -876,11 +876,11 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
               </select>
             </div>
             <div>
-              <label className={`text-[10px] font-medium block mb-1 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>Status</label>
+              <label className={`text-[10px] font-medium block mb-1 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Status</label>
               <select
                 value={newStation.status}
                 onChange={(e) => setNewStation({ ...newStation, status: e.target.value })}
-                className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F9FAFB] border-[#E5E7EB]"}`}
+                className={`w-full px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-[#F0F1F3] border-[#D1D5DB]"}`}
               >
                 <option value="active">Active</option>
                 <option value="maintenance">Maintenance</option>
@@ -892,7 +892,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
             <button onClick={handleAdd} className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-udc-gold to-udc-red text-white text-xs font-medium">
               <Save className="w-3.5 h-3.5" /> Save Station
             </button>
-            <button onClick={() => setShowAddForm(false)} className={`px-3 py-2 rounded-lg text-xs ${isDark ? "text-[#D1D5DB] hover:text-white" : "text-[#6B7280] hover:text-[#374151]"}`}>
+            <button onClick={() => setShowAddForm(false)} className={`px-3 py-2 rounded-lg text-xs ${isDark ? "text-[#D1D5DB] hover:text-white" : "text-[#374151] hover:text-[#374151]"}`}>
               Cancel
             </button>
           </div>
@@ -902,14 +902,14 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
+          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`} />
         </div>
       ) : (
-        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
+                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F0F1F3] text-[#374151]"}>
                   <th className="text-left px-3 py-2.5 font-medium">ID</th>
                   <th className="text-left px-3 py-2.5 font-medium">Name</th>
                   <th className="text-left px-3 py-2.5 font-medium">Type</th>
@@ -922,7 +922,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
               </thead>
               <tbody className={isDark ? "divide-y divide-white/[0.06]" : "divide-y divide-[#F3F4F6]"}>
                 {stations.map((s) => (
-                  <tr key={s.id} className={isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F3F4F6]"}>
+                  <tr key={s.id} className={isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#E5E7EB]"}>
                     {editingId === s.id ? (
                       <>
                         <td className={`px-3 py-2 font-mono ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{s.id}</td>
@@ -930,14 +930,14 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                           <input
                             defaultValue={s.name}
                             onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                            className={`w-full px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`w-full px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#D1D5DB]"}`}
                           />
                         </td>
                         <td className="px-3 py-2">
                           <select
                             defaultValue={s.type}
                             onChange={(e) => setEditData({ ...editData, type: e.target.value })}
-                            className={`px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#D1D5DB]"}`}
                           >
                             <option value="river">River</option>
                             <option value="stream">Stream</option>
@@ -949,7 +949,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                           <select
                             defaultValue={s.status}
                             onChange={(e) => setEditData({ ...editData, status: e.target.value })}
-                            className={`px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`px-1.5 py-0.5 rounded border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#D1D5DB]"}`}
                           >
                             <option value="active">Active</option>
                             <option value="maintenance">Maintenance</option>
@@ -960,23 +960,23 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                           <input
                             defaultValue={s.latitude}
                             onChange={(e) => setEditData({ ...editData, latitude: parseFloat(e.target.value) })}
-                            className={`w-20 px-1.5 py-0.5 rounded border text-xs text-right ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`w-20 px-1.5 py-0.5 rounded border text-xs text-right ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#D1D5DB]"}`}
                           />
                         </td>
                         <td className="px-3 py-2">
                           <input
                             defaultValue={s.longitude}
                             onChange={(e) => setEditData({ ...editData, longitude: parseFloat(e.target.value) })}
-                            className={`w-20 px-1.5 py-0.5 rounded border text-xs text-right ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+                            className={`w-20 px-1.5 py-0.5 rounded border text-xs text-right ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#D1D5DB]"}`}
                           />
                         </td>
-                        <td className={`text-right px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{s.reading_count}</td>
+                        <td className={`text-right px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{s.reading_count}</td>
                         <td className="text-right px-3 py-2">
                           <div className="flex items-center justify-end gap-1">
                             <button onClick={handleSaveEdit} className="p-1 rounded text-green-400 hover:bg-green-500/10" title="Save">
                               <Save className="w-3.5 h-3.5" />
                             </button>
-                            <button onClick={() => setEditingId(null)} className="p-1 rounded text-[#9CA3AF] hover:bg-[#6B7280]/10" title="Cancel">
+                            <button onClick={() => setEditingId(null)} className="p-1 rounded text-[#6B7280] hover:bg-[#6B7280]/10" title="Cancel">
                               <X className="w-3.5 h-3.5" />
                             </button>
                           </div>
@@ -987,7 +987,7 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                         <td className={`px-3 py-2 font-mono font-medium ${isDark ? "text-udc-gold" : "text-blue-600"}`}>{s.id}</td>
                         <td className={`px-3 py-2 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{s.name}</td>
                         <td className="px-3 py-2">
-                          <span className={`px-1.5 py-0.5 rounded text-[10px] ${isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#F3F4F6] text-[#4B5563]"}`}>
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] ${isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#E5E7EB] text-[#1F2937]"}`}>
                             {s.type}
                           </span>
                         </td>
@@ -1000,21 +1000,21 @@ function StationsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                             {s.status}
                           </span>
                         </td>
-                        <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{Number(s.latitude).toFixed(4)}</td>
-                        <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{Number(s.longitude).toFixed(4)}</td>
-                        <td className={`text-right px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{s.reading_count}</td>
+                        <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{Number(s.latitude).toFixed(4)}</td>
+                        <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{Number(s.longitude).toFixed(4)}</td>
+                        <td className={`text-right px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{s.reading_count}</td>
                         <td className="text-right px-3 py-2">
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => { setEditingId(s.id); setEditData({}); }}
-                              className={`p-1 rounded ${isDark ? "text-[#D1D5DB] hover:text-blue-400 hover:bg-blue-500/10" : "text-[#9CA3AF] hover:text-blue-600 hover:bg-blue-50"}`}
+                              className={`p-1 rounded ${isDark ? "text-[#D1D5DB] hover:text-blue-400 hover:bg-blue-500/10" : "text-[#6B7280] hover:text-blue-600 hover:bg-blue-100"}`}
                               title="Edit"
                             >
                               <Edit3 className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleDelete(s.id)}
-                              className={`p-1 rounded ${isDark ? "text-[#D1D5DB] hover:text-red-400 hover:bg-red-500/10" : "text-[#9CA3AF] hover:text-red-600 hover:bg-red-50"}`}
+                              className={`p-1 rounded ${isDark ? "text-[#D1D5DB] hover:text-red-400 hover:bg-red-500/10" : "text-[#6B7280] hover:text-red-600 hover:bg-red-100"}`}
                               title="Delete"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -1078,21 +1078,21 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Water Quality Readings</h2>
-          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{total} total readings</p>
+          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{total} total readings</p>
         </div>
         <div className="flex items-center gap-2">
           <input
             value={stationFilter}
             onChange={(e) => { setStationFilter(e.target.value); setOffset(0); }}
             placeholder="Filter by station ID..."
-            className={`px-3 py-1.5 rounded-lg border text-xs w-44 ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF]" : "bg-white border-[#E5E7EB]"}`}
+            className={`px-3 py-1.5 rounded-lg border text-xs w-44 ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB] placeholder:text-[#6B7280]" : "bg-white border-[#D1D5DB]"}`}
           />
-          <button onClick={fetchReadings} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
+          <button onClick={fetchReadings} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB]" : "border-[#D1D5DB] text-[#374151]"}`}>
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
           <a
             href={`/api/export?format=csv${stationFilter ? `&station=${stationFilter}` : ""}`}
-            className={`flex items-center gap-1.5 p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB] hover:text-white" : "border-[#E5E7EB] text-[#6B7280] hover:text-[#374151]"}`}
+            className={`flex items-center gap-1.5 p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB] hover:text-white" : "border-[#D1D5DB] text-[#374151] hover:text-[#374151]"}`}
             title="Export CSV"
           >
             <Download className="w-3.5 h-3.5" />
@@ -1102,14 +1102,14 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
+          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`} />
         </div>
       ) : (
-        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
+                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F0F1F3] text-[#374151]"}>
                   <th className="text-left px-3 py-2.5 font-medium">Station</th>
                   <th className="text-left px-3 py-2.5 font-medium">Timestamp</th>
                   <th className="text-right px-3 py-2.5 font-medium">Temp °C</th>
@@ -1124,27 +1124,27 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
               </thead>
               <tbody className={isDark ? "divide-y divide-white/[0.06]" : "divide-y divide-[#F3F4F6]"}>
                 {readings.map((r) => (
-                  <tr key={r.id} className={isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F3F4F6]"}>
+                  <tr key={r.id} className={isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#E5E7EB]"}>
                     <td className={`px-3 py-2 font-mono ${isDark ? "text-udc-gold" : "text-blue-600"}`}>{r.station_id}</td>
                     <td className={`px-3 py-2 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
                       {new Date(r.timestamp).toLocaleString()}
                     </td>
-                    <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{formatVal(r.temperature)}</td>
+                    <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{formatVal(r.temperature)}</td>
                     <td className={`text-right px-3 py-2 font-mono ${
-                      r.dissolved_oxygen != null && r.dissolved_oxygen < 5 ? "text-red-400 font-semibold" : isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
+                      r.dissolved_oxygen != null && r.dissolved_oxygen < 5 ? "text-red-400 font-semibold" : isDark ? "text-[#D1D5DB]" : "text-[#374151]"
                     }`}>{formatVal(r.dissolved_oxygen)}</td>
-                    <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{formatVal(r.ph)}</td>
-                    <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{formatVal(r.turbidity)}</td>
-                    <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{formatVal(r.conductivity)}</td>
+                    <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{formatVal(r.ph)}</td>
+                    <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{formatVal(r.turbidity)}</td>
+                    <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{formatVal(r.conductivity)}</td>
                     <td className={`text-right px-3 py-2 font-mono ${
-                      r.ecoli_count != null && r.ecoli_count > 410 ? "text-red-400 font-semibold" : isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
+                      r.ecoli_count != null && r.ecoli_count > 410 ? "text-red-400 font-semibold" : isDark ? "text-[#D1D5DB]" : "text-[#374151]"
                     }`}>{formatVal(r.ecoli_count)}</td>
                     <td className="px-3 py-2">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] ${
                         r.source === "usgs" ? "bg-blue-500/10 text-blue-400" :
                         r.source === "epa" ? "bg-green-500/10 text-green-400" :
                         r.source === "upload" ? "bg-purple-500/10 text-purple-400" :
-                        isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#F3F4F6] text-[#6B7280]"
+                        isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#E5E7EB] text-[#374151]"
                       }`}>
                         {r.source}
                       </span>
@@ -1152,7 +1152,7 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
                     <td className="text-right px-3 py-2">
                       <button
                         onClick={() => handleDelete(r.id)}
-                        className={`p-1 rounded ${isDark ? "text-[#9CA3AF] hover:text-red-400 hover:bg-red-500/10" : "text-[#9CA3AF] hover:text-red-600 hover:bg-red-50"}`}
+                        className={`p-1 rounded ${isDark ? "text-[#6B7280] hover:text-red-400 hover:bg-red-500/10" : "text-[#6B7280] hover:text-red-600 hover:bg-red-100"}`}
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>
@@ -1164,22 +1164,22 @@ function ReadingsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }
           </div>
 
           {/* Pagination */}
-          <div className={`flex items-center justify-between px-4 py-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"}`}>
-            <p className={`text-[11px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+          <div className={`flex items-center justify-between px-4 py-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+            <p className={`text-[11px] ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
               Showing {offset + 1}–{Math.min(offset + limit, total)} of {total}
             </p>
             <div className="flex gap-1">
               <button
                 onClick={() => setOffset(Math.max(0, offset - limit))}
                 disabled={offset === 0}
-                className={`p-1.5 rounded ${isDark ? "text-[#D1D5DB] hover:bg-white/[0.04] disabled:opacity-30" : "text-[#6B7280] hover:bg-[#F3F4F6] disabled:opacity-30"}`}
+                className={`p-1.5 rounded ${isDark ? "text-[#D1D5DB] hover:bg-white/[0.04] disabled:opacity-30" : "text-[#374151] hover:bg-[#E5E7EB] disabled:opacity-30"}`}
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setOffset(offset + limit)}
                 disabled={offset + limit >= total}
-                className={`p-1.5 rounded ${isDark ? "text-[#D1D5DB] hover:bg-white/[0.04] disabled:opacity-30" : "text-[#6B7280] hover:bg-[#F3F4F6] disabled:opacity-30"}`}
+                className={`p-1.5 rounded ${isDark ? "text-[#D1D5DB] hover:bg-white/[0.04] disabled:opacity-30" : "text-[#374151] hover:bg-[#E5E7EB] disabled:opacity-30"}`}
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -1239,19 +1239,19 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>EAV Measurements</h2>
-          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{total} total measurements (25 parameters across 5 categories)</p>
+          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{total} total measurements (25 parameters across 5 categories)</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <input
             value={stationFilter}
             onChange={(e) => { setStationFilter(e.target.value); setOffset(0); }}
             placeholder="Station ID..."
-            className={`px-3 py-1.5 rounded-lg border text-xs w-32 ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF]" : "bg-white border-[#E5E7EB]"}`}
+            className={`px-3 py-1.5 rounded-lg border text-xs w-32 ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB] placeholder:text-[#6B7280]" : "bg-white border-[#D1D5DB]"}`}
           />
           <select
             value={categoryFilter}
             onChange={(e) => { setCategoryFilter(e.target.value); setOffset(0); }}
-            className={`px-3 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+            className={`px-3 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#D1D5DB]"}`}
           >
             <option value="">All Categories</option>
             <option value="physical">Physical</option>
@@ -1260,7 +1260,7 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
             <option value="biological">Biological</option>
             <option value="organic">Organic / Emerging</option>
           </select>
-          <label className={`flex items-center gap-1.5 text-xs cursor-pointer ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+          <label className={`flex items-center gap-1.5 text-xs cursor-pointer ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
             <input
               type="checkbox"
               checked={violationsOnly}
@@ -1269,7 +1269,7 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
             />
             Violations only
           </label>
-          <button onClick={fetchMeasurements} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB]" : "border-[#E5E7EB] text-[#6B7280]"}`}>
+          <button onClick={fetchMeasurements} className={`p-2 rounded-lg border text-xs ${isDark ? "border-white/[0.06] text-[#D1D5DB]" : "border-[#D1D5DB] text-[#374151]"}`}>
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -1277,14 +1277,14 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
+          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`} />
         </div>
       ) : (
-        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
+                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F0F1F3] text-[#374151]"}>
                   <th className="text-left px-3 py-2.5 font-medium">Station</th>
                   <th className="text-left px-3 py-2.5 font-medium">Parameter</th>
                   <th className="text-left px-3 py-2.5 font-medium">Category</th>
@@ -1299,24 +1299,24 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
                 {measurements.map((m) => {
                   const violation = isViolation(m);
                   return (
-                    <tr key={m.id} className={`${isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F3F4F6]"} ${violation ? (isDark ? "bg-red-500/5" : "bg-red-50/50") : ""}`}>
+                    <tr key={m.id} className={`${isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#E5E7EB]"} ${violation ? (isDark ? "bg-red-500/5" : "bg-red-100/50") : ""}`}>
                       <td className={`px-3 py-2 font-mono ${isDark ? "text-udc-gold" : "text-blue-600"}`}>{m.stationId}</td>
                       <td className={`px-3 py-2 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
                         <span className="font-medium">{m.parameterName}</span>
                       </td>
                       <td className="px-3 py-2">
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] ${CATEGORY_COLORS[m.category] || (isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#F3F4F6] text-[#6B7280]")}`}>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] ${CATEGORY_COLORS[m.category] || (isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#E5E7EB] text-[#374151]")}`}>
                           {m.category}
                         </span>
                       </td>
                       <td className={`px-3 py-2 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
                         {new Date(m.timestamp).toLocaleString()}
                       </td>
-                      <td className={`text-right px-3 py-2 font-mono ${violation ? "text-red-400 font-semibold" : isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+                      <td className={`text-right px-3 py-2 font-mono ${violation ? "text-red-400 font-semibold" : isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                         {m.value.toFixed(3)}
                       </td>
-                      <td className={`px-3 py-2 ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>{m.unit}</td>
-                      <td className={`px-3 py-2 text-[11px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+                      <td className={`px-3 py-2 ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>{m.unit}</td>
+                      <td className={`px-3 py-2 text-[11px] ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
                         {m.epaMin != null && m.epaMax != null
                           ? `${m.epaMin}–${m.epaMax}`
                           : m.epaMin != null
@@ -1330,7 +1330,7 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
                           m.source === "usgs" ? "bg-blue-500/10 text-blue-400" :
                           m.source === "epa" ? "bg-green-500/10 text-green-400" :
                           m.source === "wqp" ? "bg-teal-500/10 text-teal-400" :
-                          isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#F3F4F6] text-[#6B7280]"
+                          isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#E5E7EB] text-[#374151]"
                         }`}>
                           {m.source}
                         </span>
@@ -1340,7 +1340,7 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
                 })}
                 {measurements.length === 0 && (
                   <tr>
-                    <td colSpan={8} className={`px-3 py-8 text-center text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+                    <td colSpan={8} className={`px-3 py-8 text-center text-xs ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
                       No measurements found matching filters.
                     </td>
                   </tr>
@@ -1350,22 +1350,22 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
           </div>
 
           {/* Pagination */}
-          <div className={`flex items-center justify-between px-4 py-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"}`}>
-            <p className={`text-[11px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+          <div className={`flex items-center justify-between px-4 py-3 border-t ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+            <p className={`text-[11px] ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
               Showing {total > 0 ? offset + 1 : 0}–{Math.min(offset + limit, total)} of {total}
             </p>
             <div className="flex gap-1">
               <button
                 onClick={() => setOffset(Math.max(0, offset - limit))}
                 disabled={offset === 0}
-                className={`p-1.5 rounded ${isDark ? "text-[#D1D5DB] hover:bg-white/[0.04] disabled:opacity-30" : "text-[#6B7280] hover:bg-[#F3F4F6] disabled:opacity-30"}`}
+                className={`p-1.5 rounded ${isDark ? "text-[#D1D5DB] hover:bg-white/[0.04] disabled:opacity-30" : "text-[#374151] hover:bg-[#E5E7EB] disabled:opacity-30"}`}
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setOffset(offset + limit)}
                 disabled={offset + limit >= total}
-                className={`p-1.5 rounded ${isDark ? "text-[#D1D5DB] hover:bg-white/[0.04] disabled:opacity-30" : "text-[#6B7280] hover:bg-[#F3F4F6] disabled:opacity-30"}`}
+                className={`p-1.5 rounded ${isDark ? "text-[#D1D5DB] hover:bg-white/[0.04] disabled:opacity-30" : "text-[#374151] hover:bg-[#E5E7EB] disabled:opacity-30"}`}
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -1447,13 +1447,13 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>Ingestion Log</h2>
-          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>History of all data ingestion runs</p>
+          <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>History of all data ingestion runs</p>
         </div>
         <div className="flex items-center gap-2">
           <select
             value={triggerSource}
             onChange={(e) => setTriggerSource(e.target.value)}
-            className={`px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#E5E7EB]"}`}
+            className={`px-2.5 py-1.5 rounded-lg border text-xs ${isDark ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB]" : "bg-white border-[#D1D5DB]"}`}
           >
             <option value="usgs">USGS NWIS (Real-time IV)</option>
             <option value="epa">EPA WQP (Legacy)</option>
@@ -1474,8 +1474,8 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
       {ingestResult && (
         <div className={`rounded-xl border p-4 ${
           ingestResult.status === "error"
-            ? isDark ? "border-red-500/30 bg-red-950/20" : "border-red-200 bg-red-50"
-            : isDark ? "border-green-500/30 bg-green-950/20" : "border-green-200 bg-green-50"
+            ? isDark ? "border-red-500/30 bg-red-950/20" : "border-red-300 bg-red-100"
+            : isDark ? "border-green-500/30 bg-green-950/20" : "border-green-300 bg-green-100"
         }`}>
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3">
@@ -1488,7 +1488,7 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
                 <p className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>
                   Ingestion Complete — {ingestResult.source.toUpperCase()}
                 </p>
-                <div className={`mt-2 grid grid-cols-2 gap-x-6 gap-y-1 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+                <div className={`mt-2 grid grid-cols-2 gap-x-6 gap-y-1 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                   <div className="flex items-center gap-1.5">
                     <Database className="w-3 h-3 text-blue-400" />
                     <span><strong>{ingestResult.records_ingested}</strong> legacy readings</span>
@@ -1499,7 +1499,7 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
                   </div>
                 </div>
                 {ingestResult.records_ingested === 0 && ingestResult.measurements_ingested === 0 && ingestResult.errors.length === 0 && (
-                  <p className={`mt-2 text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+                  <p className={`mt-2 text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                     No new data was returned. This can happen if the USGS sites lack real-time water quality sensors, or data for the current period was already ingested.
                   </p>
                 )}
@@ -1537,7 +1537,7 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
             </div>
             <button
               onClick={() => setIngestResult(null)}
-              className={`p-1 rounded ${isDark ? "text-[#D1D5DB] hover:text-white" : "text-[#9CA3AF] hover:text-[#374151]"}`}
+              className={`p-1 rounded ${isDark ? "text-[#D1D5DB] hover:text-white" : "text-[#6B7280] hover:text-[#374151]"}`}
             >
               <X className="w-4 h-4" />
             </button>
@@ -1547,18 +1547,18 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`} />
+          <RefreshCw className={`w-5 h-5 animate-spin ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`} />
         </div>
       ) : logs.length === 0 ? (
-        <div className={`text-center py-12 text-sm ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+        <div className={`text-center py-12 text-sm ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
           No ingestion logs yet. Run an ingestion to get started.
         </div>
       ) : (
-        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+        <div className={`rounded-xl border overflow-hidden ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F9FAFB] text-[#6B7280]"}>
+                <tr className={isDark ? "bg-[#13161F] text-[#D1D5DB]" : "bg-[#F0F1F3] text-[#374151]"}>
                   <th className="text-left px-3 py-2.5 font-medium">Source</th>
                   <th className="text-left px-3 py-2.5 font-medium">Status</th>
                   <th className="text-right px-3 py-2.5 font-medium">Records</th>
@@ -1569,13 +1569,13 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
               </thead>
               <tbody className={isDark ? "divide-y divide-white/[0.06]" : "divide-y divide-[#F3F4F6]"}>
                 {logs.map((log) => (
-                  <tr key={log.id} className={isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F3F4F6]"}>
+                  <tr key={log.id} className={isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#E5E7EB]"}>
                     <td className="px-3 py-2">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] ${
                         log.source.includes("usgs") ? "bg-blue-500/10 text-blue-400" :
                         log.source.includes("epa") ? "bg-green-500/10 text-green-400" :
                         log.source.includes("upload") ? "bg-purple-500/10 text-purple-400" :
-                        isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#F3F4F6] text-[#6B7280]"
+                        isDark ? "bg-white/5 text-[#D1D5DB]" : "bg-[#E5E7EB] text-[#374151]"
                       }`}>
                         {log.source}
                       </span>
@@ -1588,10 +1588,10 @@ function LogsTab({ isDark, adminKey }: { isDark: boolean; adminKey: string }) {
                       )}
                     </td>
                     <td className={`text-right px-3 py-2 font-mono ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{log.records_count}</td>
-                    <td className={`px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+                    <td className={`px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                       {log.started_at ? new Date(log.started_at).toLocaleString() : "—"}
                     </td>
-                    <td className={`px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+                    <td className={`px-3 py-2 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                       {log.completed_at ? new Date(log.completed_at).toLocaleString() : "—"}
                     </td>
                     <td className={`px-3 py-2 max-w-[200px] truncate ${isDark ? "text-red-300/80" : "text-red-600"}`} title={log.error_message || ""}>

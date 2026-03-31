@@ -6,10 +6,10 @@ interface Alert { station: string; stationName: string; parameter: string; value
 interface Insights { overallStatus: Status; alerts: Alert[]; summary: string; checkedAt: string; }
 
 const STATUS: Record<Status, { label: string; classes: string; dot: string }> = {
-  GOOD:     { label: 'All Clear', classes: 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800', dot: 'bg-emerald-500' },
-  WARNING:  { label: 'Warning',   classes: 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800',         dot: 'bg-amber-500'  },
+  GOOD:     { label: 'All Clear', classes: 'bg-emerald-100 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800', dot: 'bg-emerald-500' },
+  WARNING:  { label: 'Warning',   classes: 'bg-amber-100 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800',         dot: 'bg-amber-500'  },
   POOR:     { label: 'Poor',      classes: 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800',     dot: 'bg-orange-500' },
-  CRITICAL: { label: 'Critical',  classes: 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800',                dot: 'bg-red-500'    },
+  CRITICAL: { label: 'Critical',  classes: 'bg-red-100 dark:bg-red-950/30 border-red-300 dark:border-red-800',                dot: 'bg-red-500'    },
 };
 const BADGE: Record<string, string> = {
   WARNING:  'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
@@ -40,7 +40,7 @@ export function WqisInsightsPanel() {
   useEffect(() => { fetch_(); }, [fetch_]);
 
   if (loading) return (
-    <div className="rounded-lg border border-[#E5E7EB] dark:border-[#374151] bg-white dark:bg-[#22272B] p-4 animate-pulse">
+    <div className="rounded-lg border border-[#D1D5DB] dark:border-[#374151] bg-white dark:bg-[#22272B] p-4 animate-pulse">
       <div className="h-4 bg-[#E5E7EB] dark:bg-[#374151] rounded w-1/3 mb-3" />
       <div className="h-3 bg-[#E5E7EB] dark:bg-[#374151] rounded w-2/3 mb-2" />
       <div className="h-3 bg-[#E5E7EB] dark:bg-[#374151] rounded w-1/2" />
@@ -48,9 +48,9 @@ export function WqisInsightsPanel() {
   );
 
   if (error) return (
-    <div className="rounded-lg border border-[#E5E7EB] dark:border-[#374151] bg-white dark:bg-[#22272B] p-4 flex items-center justify-between">
-      <span className="text-sm text-[#6B7280] dark:text-[#D1D5DB]">WQIS Insights unavailable: {error}</span>
-      <button onClick={fetch_} className="text-xs text-[#6B7280] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline ml-3">Retry</button>
+    <div className="rounded-lg border border-[#D1D5DB] dark:border-[#374151] bg-white dark:bg-[#22272B] p-4 flex items-center justify-between">
+      <span className="text-sm text-[#374151] dark:text-[#D1D5DB]">WQIS Insights unavailable: {error}</span>
+      <button onClick={fetch_} className="text-xs text-[#374151] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline ml-3">Retry</button>
     </div>
   );
 
@@ -64,8 +64,8 @@ export function WqisInsightsPanel() {
           <span className="text-sm font-semibold text-[#1F2937] dark:text-[#F3F4F6]">Basin Status — {s.label}</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-[#6B7280] dark:text-[#D1D5DB]">Updated {timeAgo(data.checkedAt)}</span>
-          <button onClick={fetch_} className="text-xs text-[#6B7280] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline">Refresh</button>
+          <span className="text-xs text-[#374151] dark:text-[#D1D5DB]">Updated {timeAgo(data.checkedAt)}</span>
+          <button onClick={fetch_} className="text-xs text-[#374151] hover:text-[#374151] dark:hover:text-[#E5E7EB] underline">Refresh</button>
         </div>
       </div>
       {data.alerts.length > 0 && (
@@ -74,12 +74,12 @@ export function WqisInsightsPanel() {
             <div key={i} className="flex items-center gap-2 text-xs bg-white/60 dark:bg-black/20 rounded-md px-3 py-1.5">
               <span className={`rounded px-1.5 py-0.5 font-medium ${BADGE[a.severity]}`}>{a.severity}</span>
               <span className="text-[#374151] dark:text-[#E5E7EB] font-medium">{a.stationName || a.station}</span>
-              <span className="text-[#6B7280] dark:text-[#D1D5DB]">{a.parameter.replace(/_/g,' ')}: {a.value} (threshold {a.threshold})</span>
+              <span className="text-[#374151] dark:text-[#D1D5DB]">{a.parameter.replace(/_/g,' ')}: {a.value} (threshold {a.threshold})</span>
             </div>
           ))}
         </div>
       )}
-      <p className="text-xs text-[#4B5563] dark:text-[#D1D5DB] leading-relaxed line-clamp-3">{data.summary}</p>
+      <p className="text-xs text-[#1F2937] dark:text-[#D1D5DB] leading-relaxed line-clamp-3">{data.summary}</p>
     </div>
   );
 }

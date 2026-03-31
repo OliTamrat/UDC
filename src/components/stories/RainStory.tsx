@@ -81,7 +81,7 @@ function RiverCrossSection({
 
   return (
     <div className={`relative rounded-xl overflow-hidden border ${
-      isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
+      isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
     }`} style={{ height: "200px" }}>
       {/* Sky / background */}
       <div className={`absolute inset-0 ${
@@ -238,10 +238,10 @@ function TurbidityBar({
         isActive
           ? isDark
             ? "bg-white/5 ring-1 ring-water-blue"
-            : "bg-blue-50 ring-1 ring-blue-300"
+            : "bg-blue-100 ring-1 ring-blue-300"
           : isDark
             ? "hover:bg-white/5"
-            : "hover:bg-[#F9FAFB]"
+            : "hover:bg-[#F0F1F3]"
       }`}
     >
       {/* Rainfall drops */}
@@ -276,7 +276,7 @@ function TurbidityBar({
         {value}
       </span>
       <span
-        className={`text-[8px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}
+        className={`text-[8px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}
       >
         {date}
       </span>
@@ -296,7 +296,7 @@ export default function RainStory() {
       title={t("stories.rain_title")}
       subtitle={t("stories.rain_subtitle")}
       icon={<CloudRain className="w-5 h-5 text-blue-400" />}
-      accentColor={isDark ? "bg-blue-500/10" : "bg-blue-50"}
+      accentColor={isDark ? "bg-blue-500/10" : "bg-blue-100"}
     >
       {/* Narrative */}
       <FadeIn>
@@ -304,12 +304,12 @@ export default function RainStory() {
           className={`rounded-xl p-4 mb-6 border ${
             isDark
               ? "bg-blue-950/30 border-blue-500/20"
-              : "bg-blue-50 border-blue-200"
+              : "bg-blue-100 border-blue-300"
           }`}
         >
           <p
             className={`text-sm leading-relaxed ${
-              isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
+              isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
             }`}
           >
             {t("stories.rain_narrative")}
@@ -340,24 +340,24 @@ export default function RainStory() {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
                 <div className="w-3 h-1.5 rounded-sm bg-blue-400/50" />
-                <span className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+                <span className={`text-[9px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                   {t("stories.rain_clear")}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-3 h-1.5 rounded-sm bg-amber-500/50" />
-                <span className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+                <span className={`text-[9px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                   {t("stories.rain_murky")}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <div className="w-3 h-1.5 rounded-sm" style={{ backgroundColor: "rgba(139,90,43,0.7)" }} />
-                <span className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+                <span className={`text-[9px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                   {t("stories.rain_muddy")}
                 </span>
               </div>
             </div>
-            <span className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+            <span className={`text-[9px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
               {t("stories.rain_click_bar")}
             </span>
           </div>
@@ -395,7 +395,7 @@ export default function RainStory() {
       <FadeIn delay={450}>
         <div
           className={`rounded-xl border p-4 ${
-            isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"
+            isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F0F1F3] border-[#D1D5DB]"
           }`}
         >
           <div className="flex items-center justify-between mb-2">
@@ -424,18 +424,18 @@ export default function RainStory() {
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <span className={`text-[10px] uppercase ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+              <span className={`text-[10px] uppercase ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                 {t("stories.rain_rainfall")}
               </span>
               <div className="flex items-baseline gap-1">
                 <span className={`text-xl font-bold ${isDark ? "text-blue-400" : "text-blue-600"}`}>
                   {event.rainfall}
                 </span>
-                <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>in</span>
+                <span className={`text-[10px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>in</span>
               </div>
             </div>
             <div>
-              <span className={`text-[10px] uppercase ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+              <span className={`text-[10px] uppercase ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                 {t("stories.rain_water_level")}
               </span>
               <div className="flex items-baseline gap-1">
@@ -444,11 +444,11 @@ export default function RainStory() {
                 }`}>
                   {event.waterLevel}
                 </span>
-                <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>ft</span>
+                <span className={`text-[10px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>ft</span>
               </div>
             </div>
             <div>
-              <span className={`text-[10px] uppercase ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+              <span className={`text-[10px] uppercase ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
                 {t("stories.rain_turbidity")}
               </span>
               <div className="flex items-baseline gap-1">
@@ -457,7 +457,7 @@ export default function RainStory() {
                 }`}>
                   {event.turbidity}
                 </span>
-                <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>NTU</span>
+                <span className={`text-[10px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>NTU</span>
               </div>
             </div>
           </div>
@@ -469,7 +469,7 @@ export default function RainStory() {
         <div className="mt-5 flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
           <p
-            className={`text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}
+            className={`text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}
           >
             {t("stories.rain_insight")}
           </p>

@@ -100,7 +100,7 @@ export default function ResearchAssistant() {
           isOpen
             ? isDark
               ? "bg-[#13161F] border border-white/[0.06] text-[#E5E7EB]"
-              : "bg-white border border-[#E5E7EB] text-[#4B5563]"
+              : "bg-white border border-[#D1D5DB] text-[#1F2937]"
             : "bg-gradient-to-r from-udc-gold to-udc-red text-white hover:shadow-xl hover:scale-105"
         }`}
         aria-label={isOpen ? "Close AI assistant" : "Open AI research assistant"}
@@ -130,13 +130,13 @@ export default function ResearchAssistant() {
           className={`w-full sm:w-[420px] h-[560px] sm:h-[600px] rounded-2xl border shadow-2xl flex flex-col overflow-hidden ${
             isDark
               ? "bg-[#13161F] border-white/[0.06]"
-              : "bg-white border-[#E5E7EB]"
+              : "bg-white border-[#D1D5DB]"
           }`}
         >
           {/* Header */}
           <div
             className={`flex items-center justify-between px-4 py-3 border-b shrink-0 ${
-              isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"
+              isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -151,7 +151,7 @@ export default function ResearchAssistant() {
                 >
                   Research Assistant
                 </h3>
-                <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+                <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                   Powered by Claude AI
                 </p>
               </div>
@@ -161,7 +161,7 @@ export default function ResearchAssistant() {
                 <button
                   onClick={() => setMessages([])}
                   className={`p-1.5 rounded-lg transition-colors ${
-                    isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#6B7280]"
+                    isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#E5E7EB] text-[#374151]"
                   }`}
                   title="Clear conversation"
                   aria-label="Clear conversation"
@@ -172,7 +172,7 @@ export default function ResearchAssistant() {
               <button
                 onClick={() => setIsOpen(false)}
                 className={`p-1.5 rounded-lg transition-colors ${
-                  isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#6B7280]"
+                  isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#E5E7EB] text-[#374151]"
                 }`}
                 aria-label="Close panel"
               >
@@ -189,7 +189,7 @@ export default function ResearchAssistant() {
                 className={`flex items-start gap-3 p-3 rounded-lg border text-xs ${
                   isDark
                     ? "border-amber-500/30 bg-amber-950/30 text-amber-300"
-                    : "border-amber-200 bg-amber-50 text-amber-800"
+                    : "border-amber-300 bg-amber-100 text-amber-800"
                 }`}
               >
                 <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
@@ -237,7 +237,7 @@ export default function ResearchAssistant() {
                       className={`text-[11px] px-2.5 py-1.5 rounded-full border transition-colors text-left ${
                         isDark
                           ? "border-white/[0.06] text-[#D1D5DB] hover:bg-white/[0.04] hover:text-[#E5E7EB]"
-                          : "border-[#E5E7EB] text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]"
+                          : "border-[#D1D5DB] text-[#1F2937] hover:bg-[#E5E7EB] hover:text-[#111827]"
                       }`}
                     >
                       {q}
@@ -281,7 +281,7 @@ export default function ResearchAssistant() {
                         : "bg-blue-600 text-white"
                       : isDark
                         ? "bg-white/[0.04] text-[#E5E7EB]"
-                        : "bg-[#F3F4F6] text-[#374151]"
+                        : "bg-[#E5E7EB] text-[#374151]"
                   }`}
                 >
                   {message.parts?.map((part, i) => {
@@ -303,7 +303,7 @@ export default function ResearchAssistant() {
                         <div
                           key={i}
                           className={`flex items-center gap-1.5 text-[10px] my-1 py-1 px-2 rounded-md ${
-                            isDark ? "bg-white/5 text-[#9CA3AF]" : "bg-white/50 text-[#9CA3AF]"
+                            isDark ? "bg-white/5 text-[#6B7280]" : "bg-white/50 text-[#6B7280]"
                           }`}
                         >
                           <Loader2 className={`w-3 h-3 ${isResult ? "" : "animate-spin"}`} />
@@ -325,7 +325,7 @@ export default function ResearchAssistant() {
                 </div>
                 <div
                   className={`rounded-xl px-3.5 py-2.5 ${
-                    isDark ? "bg-white/[0.04]" : "bg-[#F3F4F6]"
+                    isDark ? "bg-white/[0.04]" : "bg-[#E5E7EB]"
                   }`}
                 >
                   <div className="flex items-center gap-1.5">
@@ -343,7 +343,7 @@ export default function ResearchAssistant() {
                 className={`flex items-start gap-2 p-3 rounded-lg border text-xs ${
                   isDark
                     ? "border-red-500/30 bg-red-950/30 text-red-300"
-                    : "border-red-200 bg-red-50 text-red-800"
+                    : "border-red-300 bg-red-100 text-red-800"
                 }`}
               >
                 <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
@@ -360,7 +360,7 @@ export default function ResearchAssistant() {
           {/* Input Area */}
           <div
             className={`border-t px-3 py-3 shrink-0 ${
-              isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"
+              isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
             }`}
           >
             <div className="flex items-end gap-2">
@@ -378,8 +378,8 @@ export default function ResearchAssistant() {
                 rows={1}
                 className={`flex-1 resize-none rounded-xl px-3.5 py-2.5 text-sm border focus:outline-none transition-colors h-[40px] overflow-y-auto ${
                   isDark
-                    ? "bg-[#0C0F17]/50 border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-udc-blue/50"
-                    : "bg-[#F9FAFB] border-[#E5E7EB] text-[#374151] placeholder:text-[#9CA3AF] focus:border-blue-400"
+                    ? "bg-[#0C0F17]/50 border-white/[0.06] text-[#E5E7EB] placeholder:text-[#6B7280] focus:border-udc-blue/50"
+                    : "bg-[#F0F1F3] border-[#D1D5DB] text-[#374151] placeholder:text-[#6B7280] focus:border-blue-400"
                 } disabled:opacity-50`}
               />
               <button
@@ -389,8 +389,8 @@ export default function ResearchAssistant() {
                   input.trim() && !isLoading
                     ? "bg-gradient-to-r from-udc-gold to-udc-red text-white hover:shadow-lg"
                     : isDark
-                      ? "bg-white/[0.04] text-[#9CA3AF]"
-                      : "bg-[#F3F4F6] text-[#9CA3AF]"
+                      ? "bg-white/[0.04] text-[#6B7280]"
+                      : "bg-[#E5E7EB] text-[#6B7280]"
                 } disabled:cursor-not-allowed`}
                 aria-label="Send message"
               >
@@ -403,7 +403,7 @@ export default function ResearchAssistant() {
             </div>
             <p
               className={`text-[9px] mt-1.5 text-center ${
-                isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"
+                isDark ? "text-[#6B7280]" : "text-[#6B7280]"
               }`}
             >
               AI responses may contain errors. Verify with official data sources.

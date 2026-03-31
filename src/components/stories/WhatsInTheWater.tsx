@@ -138,12 +138,12 @@ export default function WhatsInTheWater() {
       title="What's in the Water?"
       subtitle="A plain-English guide to what scientists measure"
       icon={<FlaskConical className="w-5 h-5 text-green-400" />}
-      accentColor={isDark ? "bg-green-500/10" : "bg-green-50"}
+      accentColor={isDark ? "bg-green-500/10" : "bg-green-100"}
     >
       <FadeIn>
         <p
           className={`text-sm leading-relaxed mb-6 ${
-            isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
+            isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
           }`}
         >
           Water quality scientists measure dozens of parameters to understand
@@ -164,10 +164,10 @@ export default function WhatsInTheWater() {
                   isExpanded
                     ? isDark
                       ? "bg-[#13161F] border-water-blue/30"
-                      : "bg-white border-blue-200 shadow-sm"
+                      : "bg-white border-blue-300 shadow-sm"
                     : isDark
                       ? "bg-[#13161F]/50 border-white/[0.06] hover:border-white/[0.06]/80"
-                      : "bg-white border-[#E5E7EB] hover:border-[#D1D5DB]"
+                      : "bg-white border-[#D1D5DB] hover:border-[#9CA3AF]"
                 }`}
               >
                 {/* Clickable header */}
@@ -179,7 +179,7 @@ export default function WhatsInTheWater() {
                 >
                   <div
                     className={`p-2 rounded-lg flex-shrink-0 ${
-                      isDark ? "bg-white/5" : "bg-[#F9FAFB]"
+                      isDark ? "bg-white/5" : "bg-[#F0F1F3]"
                     }`}
                   >
                     <Icon className={`w-4 h-4 ${param.categoryColor}`} />
@@ -195,7 +195,7 @@ export default function WhatsInTheWater() {
                       </span>
                       <span
                         className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${param.categoryColor} ${
-                          isDark ? "bg-white/5" : "bg-[#F3F4F6]"
+                          isDark ? "bg-white/5" : "bg-[#E5E7EB]"
                         }`}
                       >
                         {param.category}
@@ -203,7 +203,7 @@ export default function WhatsInTheWater() {
                     </div>
                     <p
                       className={`text-xs mt-0.5 ${
-                        isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
+                        isDark ? "text-[#D1D5DB]" : "text-[#374151]"
                       }`}
                     >
                       {param.simple}
@@ -212,7 +212,7 @@ export default function WhatsInTheWater() {
                   <ChevronRight
                     className={`w-4 h-4 flex-shrink-0 transition-transform ${
                       isExpanded ? "rotate-90" : ""
-                    } ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}
+                    } ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}
                   />
                 </button>
 
@@ -220,13 +220,13 @@ export default function WhatsInTheWater() {
                 {isExpanded && (
                   <div
                     className={`px-4 pb-4 pt-1 border-t space-y-4 ${
-                      isDark ? "border-white/5" : "border-[#F3F4F6]"
+                      isDark ? "border-white/5" : "border-[#E5E7EB]"
                     }`}
                   >
                     {/* Science explanation */}
                     <p
                       className={`text-sm leading-relaxed ${
-                        isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
+                        isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
                       }`}
                     >
                       {param.detail}
@@ -238,7 +238,7 @@ export default function WhatsInTheWater() {
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
                           isDark
                             ? "bg-amber-500/5 border border-amber-500/20"
-                            : "bg-amber-50 border border-amber-200"
+                            : "bg-amber-100 border border-amber-300"
                         }`}
                       >
                         <Shield className="w-4 h-4 text-amber-400 flex-shrink-0" />
@@ -260,7 +260,7 @@ export default function WhatsInTheWater() {
                       className={`flex items-start gap-2 px-3 py-2 rounded-lg ${
                         isDark
                           ? "bg-blue-500/5 border border-blue-500/20"
-                          : "bg-blue-50 border border-blue-200"
+                          : "bg-blue-100 border border-blue-300"
                       }`}
                     >
                       <CheckCircle2 className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
@@ -278,7 +278,7 @@ export default function WhatsInTheWater() {
                       className={`flex items-start gap-2 px-3 py-2 rounded-lg ${
                         isDark
                           ? "bg-purple-500/5 border border-purple-500/20"
-                          : "bg-purple-50 border border-purple-200"
+                          : "bg-purple-100 border border-purple-300"
                       }`}
                     >
                       <AlertTriangle className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />

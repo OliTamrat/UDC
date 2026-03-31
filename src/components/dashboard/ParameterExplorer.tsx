@@ -56,8 +56,8 @@ const CATEGORY_CONFIG: Record<
     color: "text-blue-400",
     bgColor: "bg-blue-500/10",
     borderColor: "border-blue-500/30",
-    lightBg: "bg-blue-50",
-    lightBorder: "border-blue-200",
+    lightBg: "bg-blue-100",
+    lightBorder: "border-blue-300",
     tagline: "Temperature, clarity, and dissolved substances",
   },
   nutrients: {
@@ -66,8 +66,8 @@ const CATEGORY_CONFIG: Record<
     color: "text-green-400",
     bgColor: "bg-green-500/10",
     borderColor: "border-green-500/30",
-    lightBg: "bg-green-50",
-    lightBorder: "border-green-200",
+    lightBg: "bg-green-100",
+    lightBorder: "border-green-300",
     tagline: "Nitrogen and phosphorus that fuel algae growth",
   },
   biological: {
@@ -76,8 +76,8 @@ const CATEGORY_CONFIG: Record<
     color: "text-red-400",
     bgColor: "bg-red-500/10",
     borderColor: "border-red-500/30",
-    lightBg: "bg-red-50",
-    lightBorder: "border-red-200",
+    lightBg: "bg-red-100",
+    lightBorder: "border-red-300",
     tagline: "Bacteria indicators of sewage contamination",
   },
   metals: {
@@ -96,8 +96,8 @@ const CATEGORY_CONFIG: Record<
     color: "text-purple-400",
     bgColor: "bg-purple-500/10",
     borderColor: "border-purple-500/30",
-    lightBg: "bg-purple-50",
-    lightBorder: "border-purple-200",
+    lightBg: "bg-purple-100",
+    lightBorder: "border-purple-300",
     tagline: "Industrial chemicals and flame retardants",
   },
 };
@@ -265,20 +265,20 @@ export default function ParameterExplorer({
           ${
             isDark
               ? "bg-udc-dark border-white/[0.06]"
-              : "bg-white border-[#E5E7EB]"
+              : "bg-white border-[#D1D5DB]"
           }`}
       >
         {/* Header */}
         <div
           className={`flex-shrink-0 border-b px-5 py-4 ${
-            isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
+            isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
           }`}
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
               <div
                 className={`p-2 rounded-xl ${
-                  isDark ? "bg-water-blue/10" : "bg-blue-50"
+                  isDark ? "bg-water-blue/10" : "bg-blue-100"
                 }`}
               >
                 <Droplets className="w-5 h-5 text-water-blue" />
@@ -293,7 +293,7 @@ export default function ParameterExplorer({
                 </h2>
                 <p
                   className={`text-xs ${
-                    isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
+                    isDark ? "text-[#D1D5DB]" : "text-[#374151]"
                   }`}
                 >
                   Explore what we measure and why it matters
@@ -306,7 +306,7 @@ export default function ParameterExplorer({
               className={`p-2 rounded-lg transition-colors ${
                 isDark
                   ? "hover:bg-white/10 text-[#D1D5DB]"
-                  : "hover:bg-[#F3F4F6] text-[#6B7280]"
+                  : "hover:bg-[#E5E7EB] text-[#374151]"
               }`}
             >
               <X className="w-5 h-5" />
@@ -317,7 +317,7 @@ export default function ParameterExplorer({
           <div className="relative mb-3">
             <Search
               className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${
-                isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"
+                isDark ? "text-[#6B7280]" : "text-[#6B7280]"
               }`}
             />
             <input
@@ -327,8 +327,8 @@ export default function ParameterExplorer({
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-9 pr-4 py-2 rounded-lg text-sm border transition-colors ${
                 isDark
-                  ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-water-blue/50"
-                  : "bg-[#F9FAFB] border-[#E5E7EB] text-[#1F2937] placeholder:text-[#9CA3AF] focus:border-blue-400"
+                  ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB] placeholder:text-[#6B7280] focus:border-water-blue/50"
+                  : "bg-[#F0F1F3] border-[#D1D5DB] text-[#1F2937] placeholder:text-[#6B7280] focus:border-blue-400"
               } focus:outline-none`}
             />
           </div>
@@ -344,7 +344,7 @@ export default function ParameterExplorer({
                     : "bg-blue-100 text-blue-700 border border-blue-300"
                   : isDark
                     ? "bg-[#13161F] text-[#D1D5DB] border border-white/[0.06] hover:border-[#6B7280]"
-                    : "bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB] hover:border-[#D1D5DB]"
+                    : "bg-[#E5E7EB] text-[#374151] border border-[#D1D5DB] hover:border-[#9CA3AF]"
               }`}
             >
               All ({parameters.length})
@@ -366,7 +366,7 @@ export default function ParameterExplorer({
                         : `${g.lightBg} ${g.color} border ${g.lightBorder}`
                       : isDark
                         ? "bg-[#13161F] text-[#D1D5DB] border border-white/[0.06] hover:border-[#6B7280]"
-                        : "bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB] hover:border-[#D1D5DB]"
+                        : "bg-[#E5E7EB] text-[#374151] border border-[#D1D5DB] hover:border-[#9CA3AF]"
                   }`}
                 >
                   <Icon className="w-3 h-3" />
@@ -380,12 +380,12 @@ export default function ParameterExplorer({
           {selectedParams.length > 0 && (
             <div
               className={`flex items-center justify-between mt-3 pt-3 border-t ${
-                isDark ? "border-white/[0.06]" : "border-[#F3F4F6]"
+                isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
               }`}
             >
               <span
                 className={`text-xs ${
-                  isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
+                  isDark ? "text-[#D1D5DB]" : "text-[#374151]"
                 }`}
               >
                 <span className="font-semibold text-water-blue">
@@ -422,7 +422,7 @@ export default function ParameterExplorer({
                   className={`sticky top-0 z-10 px-5 py-3 border-b ${
                     isDark
                       ? "bg-udc-dark/95 backdrop-blur-sm border-white/[0.04]"
-                      : "bg-white/95 backdrop-blur-sm border-[#F3F4F6]"
+                      : "bg-white/95 backdrop-blur-sm border-[#E5E7EB]"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -444,7 +444,7 @@ export default function ParameterExplorer({
                         </h3>
                         <p
                           className={`text-[11px] ${
-                            isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"
+                            isDark ? "text-[#6B7280]" : "text-[#6B7280]"
                           }`}
                         >
                           {group.tagline}
@@ -463,7 +463,7 @@ export default function ParameterExplorer({
                             : "bg-blue-100 text-blue-700"
                           : isDark
                             ? "bg-[#13161F] text-[#D1D5DB] hover:text-[#E5E7EB]"
-                            : "bg-[#F3F4F6] text-[#6B7280] hover:text-[#374151]"
+                            : "bg-[#E5E7EB] text-[#374151] hover:text-[#374151]"
                       }`}
                     >
                       <div
@@ -508,7 +508,7 @@ export default function ParameterExplorer({
                               : `${group.lightBg} ${group.lightBorder}`
                             : isDark
                               ? "border-white/[0.06] hover:border-white/[0.06]/80 bg-[#13161F]/50"
-                              : "border-[#E5E7EB] hover:border-[#D1D5DB] bg-white"
+                              : "border-[#D1D5DB] hover:border-[#9CA3AF] bg-white"
                         }`}
                       >
                         {/* Card Header — always visible */}
@@ -557,7 +557,7 @@ export default function ParameterExplorer({
                                   className={`flex-shrink-0 px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase ${
                                     isDark
                                       ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                                      : "bg-amber-50 text-amber-700 border border-amber-200"
+                                      : "bg-amber-100 text-amber-700 border border-amber-300"
                                   }`}
                                 >
                                   EPA Regulated
@@ -566,7 +566,7 @@ export default function ParameterExplorer({
                             </div>
                             <span
                               className={`text-xs ${
-                                isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"
+                                isDark ? "text-[#6B7280]" : "text-[#6B7280]"
                               }`}
                             >
                               Measured in {param.unit}
@@ -582,8 +582,8 @@ export default function ParameterExplorer({
                             }
                             className={`flex-shrink-0 p-1 rounded-lg transition-colors ${
                               isDark
-                                ? "text-[#9CA3AF] hover:text-[#E5E7EB] hover:bg-white/5"
-                                : "text-[#9CA3AF] hover:text-[#4B5563] hover:bg-[#F3F4F6]"
+                                ? "text-[#6B7280] hover:text-[#E5E7EB] hover:bg-white/5"
+                                : "text-[#6B7280] hover:text-[#1F2937] hover:bg-[#E5E7EB]"
                             }`}
                             aria-label={isExpanded ? "Collapse details" : "Expand details"}
                           >
@@ -601,7 +601,7 @@ export default function ParameterExplorer({
                             className={`px-4 pb-4 pt-1 border-t ${
                               isDark
                                 ? "border-white/5"
-                                : "border-[#F3F4F6]"
+                                : "border-[#E5E7EB]"
                             }`}
                           >
                             {/* What it measures */}
@@ -622,7 +622,7 @@ export default function ParameterExplorer({
                               </div>
                               <p
                                 className={`text-sm leading-relaxed ${
-                                  isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
+                                  isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
                                 }`}
                               >
                                 {param.description}
@@ -650,7 +650,7 @@ export default function ParameterExplorer({
                                   className={`text-sm leading-relaxed ${
                                     isDark
                                       ? "text-[#E5E7EB]"
-                                      : "text-[#4B5563]"
+                                      : "text-[#1F2937]"
                                   }`}
                                 >
                                   {whyText}
@@ -664,7 +664,7 @@ export default function ParameterExplorer({
                                 className={`rounded-lg border p-3 ${
                                   isDark
                                     ? "bg-[#13161F]/50 border-white/[0.06]"
-                                    : "bg-white border-[#E5E7EB]"
+                                    : "bg-white border-[#D1D5DB]"
                                 }`}
                               >
                                 <div className="flex items-center gap-1.5 mb-2">
@@ -685,8 +685,8 @@ export default function ParameterExplorer({
                                       <span
                                         className={`text-[10px] uppercase ${
                                           isDark
-                                            ? "text-[#9CA3AF]"
-                                            : "text-[#9CA3AF]"
+                                            ? "text-[#6B7280]"
+                                            : "text-[#6B7280]"
                                         }`}
                                       >
                                         Minimum
@@ -704,8 +704,8 @@ export default function ParameterExplorer({
                                         <span
                                           className={`text-xs ${
                                             isDark
-                                              ? "text-[#9CA3AF]"
-                                              : "text-[#9CA3AF]"
+                                              ? "text-[#6B7280]"
+                                              : "text-[#6B7280]"
                                           }`}
                                         >
                                           {param.unit}
@@ -718,8 +718,8 @@ export default function ParameterExplorer({
                                       <span
                                         className={`text-[10px] uppercase ${
                                           isDark
-                                            ? "text-[#9CA3AF]"
-                                            : "text-[#9CA3AF]"
+                                            ? "text-[#6B7280]"
+                                            : "text-[#6B7280]"
                                         }`}
                                       >
                                         Maximum
@@ -737,8 +737,8 @@ export default function ParameterExplorer({
                                         <span
                                           className={`text-xs ${
                                             isDark
-                                              ? "text-[#9CA3AF]"
-                                              : "text-[#9CA3AF]"
+                                              ? "text-[#6B7280]"
+                                              : "text-[#6B7280]"
                                           }`}
                                         >
                                           {param.unit}
@@ -769,12 +769,12 @@ export default function ParameterExplorer({
             <div className="flex flex-col items-center justify-center py-16 px-8">
               <Search
                 className={`w-8 h-8 mb-3 ${
-                  isDark ? "text-[#9CA3AF]" : "text-[#E5E7EB]"
+                  isDark ? "text-[#6B7280]" : "text-[#E5E7EB]"
                 }`}
               />
               <p
                 className={`text-sm font-medium ${
-                  isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
+                  isDark ? "text-[#D1D5DB]" : "text-[#374151]"
                 }`}
               >
                 No parameters match your search
@@ -795,7 +795,7 @@ export default function ParameterExplorer({
         {/* Footer / Apply Button */}
         <div
           className={`flex-shrink-0 border-t px-5 py-4 ${
-            isDark ? "border-white/[0.06] bg-udc-dark" : "border-[#E5E7EB] bg-white"
+            isDark ? "border-white/[0.06] bg-udc-dark" : "border-[#D1D5DB] bg-white"
           }`}
         >
           <button
@@ -843,11 +843,11 @@ function ThresholdBar({
         )}
       </div>
       <div className="flex justify-between mt-1">
-        <span className={`text-[9px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+        <span className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
           {epaMin != null ? `Min: ${epaMin}` : "Low"}
         </span>
         <span className={`text-[9px] text-green-500 font-medium`}>Safe Range</span>
-        <span className={`text-[9px] ${isDark ? "text-[#9CA3AF]" : "text-[#9CA3AF]"}`}>
+        <span className={`text-[9px] ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
           {epaMax != null ? `Max: ${epaMax}` : "High"}
         </span>
       </div>

@@ -498,15 +498,15 @@ export default function DCMap({
 
   return (
     <div className={`relative w-full h-full rounded-xl overflow-hidden border transition-colors duration-300 ${
-      isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"
+      isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
     }`}>
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
       <div id="dc-map" className="w-full h-full min-h-[500px]" />
       {!mapReady && (
-        <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
+        <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
-            <span className={`text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>Loading DC Map...</span>
+            <span className={`text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>Loading DC Map...</span>
           </div>
         </div>
       )}

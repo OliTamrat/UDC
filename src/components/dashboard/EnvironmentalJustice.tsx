@@ -43,9 +43,9 @@ export default function EnvironmentalJustice() {
   const tickColor = isDark ? "#9CA3AF" : "#94A3B8";
 
   return (
-    <div className={`rounded-2xl p-4 ${isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
+    <div className={`rounded-2xl p-4 ${isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
       <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{t("ej.chart_title")}</h3>
-      <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
+      <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
         {t("ej.chart_desc")}
       </p>
 
@@ -55,17 +55,17 @@ export default function EnvironmentalJustice() {
           <div
             key={ward.ward}
             className={`rounded-lg border p-2 text-center ${
-              isDark ? "border-white/[0.06]" : "border-[#E5E7EB] bg-white"
+              isDark ? "border-white/[0.06]" : "border-[#D1D5DB] bg-white"
             }`}
           >
-            <div className={`text-[10px] uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Ward {ward.ward}</div>
+            <div className={`text-[10px] uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>Ward {ward.ward}</div>
             <div
               className="text-xs font-semibold mt-1"
               style={{ color: riskColors[ward.floodRisk] }}
             >
               {ward.floodRisk}
             </div>
-            <div className={`text-[10px] mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{ward.csoEvents} CSOs</div>
+            <div className={`text-[10px] mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>{ward.csoEvents} CSOs</div>
           </div>
         ))}
       </div>
@@ -73,7 +73,7 @@ export default function EnvironmentalJustice() {
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{t("ej.cso_chart")}</h4>
+          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{t("ej.cso_chart")}</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={wardData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -89,7 +89,7 @@ export default function EnvironmentalJustice() {
           </ResponsiveContainer>
         </div>
         <div>
-          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{t("ej.green_chart")}</h4>
+          <h4 className={`text-xs font-medium mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{t("ej.green_chart")}</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={wardData}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -106,7 +106,7 @@ export default function EnvironmentalJustice() {
       <div className={`mt-4 rounded-lg border px-4 py-3 text-xs ${
         isDark
           ? "border-amber-500/20 bg-amber-950/20 text-amber-200/80"
-          : "border-amber-200 bg-amber-50 text-amber-900"
+          : "border-amber-300 bg-amber-100 text-amber-900"
       }`}>
         <span className="font-semibold">{t("ej.key_finding")}</span>{" "}
         {t("ej.finding_text")}

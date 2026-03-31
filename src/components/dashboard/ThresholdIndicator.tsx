@@ -43,7 +43,7 @@ const LEVEL_CONFIG = {
     ring: "ring-green-400/30",
     text: "text-green-400",
     bgDark: "bg-green-500/10 border-green-500/20",
-    bgLight: "bg-green-50 border-green-200",
+    bgLight: "bg-green-100 border-green-300",
     label: "Within limits",
   },
   warning: {
@@ -51,7 +51,7 @@ const LEVEL_CONFIG = {
     ring: "ring-amber-400/30",
     text: "text-amber-400",
     bgDark: "bg-amber-500/10 border-amber-500/20",
-    bgLight: "bg-amber-50 border-amber-200",
+    bgLight: "bg-amber-100 border-amber-300",
     label: "Near threshold",
   },
   violation: {
@@ -59,7 +59,7 @@ const LEVEL_CONFIG = {
     ring: "ring-red-500/30",
     text: "text-red-400",
     bgDark: "bg-red-500/10 border-red-500/20",
-    bgLight: "bg-red-50 border-red-200",
+    bgLight: "bg-red-100 border-red-300",
     label: "Exceeds limit",
   },
   unknown: {
@@ -67,7 +67,7 @@ const LEVEL_CONFIG = {
     ring: "ring-[#9CA3AF]/30",
     text: "text-[#D1D5DB]",
     bgDark: "bg-[#6B7280]/10 border-[#6B7280]/20",
-    bgLight: "bg-[#F9FAFB] border-[#E5E7EB]",
+    bgLight: "bg-[#F0F1F3] border-[#D1D5DB]",
     label: "No data",
   },
 };
@@ -91,7 +91,7 @@ export default function ThresholdIndicator({ value, epaMin, epaMax, unit, compac
   const config = LEVEL_CONFIG[level];
 
   if (value == null) {
-    return <span className={`text-sm ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>—</span>;
+    return <span className={`text-sm ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>—</span>;
   }
 
   if (compact) {
@@ -101,7 +101,7 @@ export default function ThresholdIndicator({ value, epaMin, epaMax, unit, compac
         <span className={`text-sm ${config.text}`}>
           {typeof value === "number" ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : value}
         </span>
-        {unit && <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>{unit}</span>}
+        {unit && <span className={`text-[10px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>{unit}</span>}
       </div>
     );
   }
@@ -113,9 +113,9 @@ export default function ThresholdIndicator({ value, epaMin, epaMax, unit, compac
         <span className={`text-sm font-medium ${config.text}`}>
           {value.toLocaleString(undefined, { maximumFractionDigits: 2 })}
         </span>
-        {unit && <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>{unit}</span>}
+        {unit && <span className={`text-[10px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>{unit}</span>}
       </div>
-      <div className={`text-[9px] mt-0.5 ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+      <div className={`text-[9px] mt-0.5 ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
         {config.label}
         {epaMax != null && ` (max: ${epaMax})`}
         {epaMin != null && epaMax == null && ` (min: ${epaMin})`}

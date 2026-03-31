@@ -227,7 +227,7 @@ export default function YearInAnacostia() {
       title="A Year in the Anacostia"
       subtitle="How seasons shape the health of DC's river"
       icon={<Calendar className="w-5 h-5 text-amber-400" />}
-      accentColor={isDark ? "bg-amber-500/10" : "bg-amber-50"}
+      accentColor={isDark ? "bg-amber-500/10" : "bg-amber-100"}
     >
       {/* Heatmap Grid */}
       <FadeIn>
@@ -245,7 +245,7 @@ export default function YearInAnacostia() {
                 <tr>
                   <th
                     className={`text-left py-1 pr-3 ${
-                      isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"
+                      isDark ? "text-[#D1D5DB]" : "text-[#374151]"
                     }`}
                   >
                     Parameter
@@ -259,7 +259,7 @@ export default function YearInAnacostia() {
                             ? "text-white"
                             : "text-[#111827]"
                           : isDark
-                            ? "text-[#6B7280]"
+                            ? "text-[#374151]"
                             : "text-[#D1D5DB]"
                       }`}
                       onClick={() => setActiveMonth(i)}
@@ -308,7 +308,7 @@ export default function YearInAnacostia() {
           <div className="flex items-center gap-3 mt-2 justify-end">
             <span
               className={`text-[10px] ${
-                isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
+                isDark ? "text-[#374151]" : "text-[#D1D5DB]"
               }`}
             >
               Healthy
@@ -320,7 +320,7 @@ export default function YearInAnacostia() {
             </div>
             <span
               className={`text-[10px] ${
-                isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
+                isDark ? "text-[#374151]" : "text-[#D1D5DB]"
               }`}
             >
               Stressed
@@ -333,7 +333,7 @@ export default function YearInAnacostia() {
       <FadeIn delay={200}>
         <div
           className={`rounded-xl border p-4 ${
-            isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F9FAFB] border-[#E5E7EB]"
+            isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-[#F0F1F3] border-[#D1D5DB]"
           }`}
         >
           <div className="flex items-center gap-2 mb-3">
@@ -376,7 +376,7 @@ export default function YearInAnacostia() {
                   </div>
                   <div
                     className={`text-[10px] ${
-                      isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
+                      isDark ? "text-[#374151]" : "text-[#D1D5DB]"
                     }`}
                   >
                     {p.label}
@@ -389,7 +389,7 @@ export default function YearInAnacostia() {
           {/* Narrative */}
           <p
             className={`text-sm leading-relaxed ${
-              isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"
+              isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"
             }`}
           >
             {data.narrative}
@@ -420,8 +420,8 @@ export default function YearInAnacostia() {
                     isActive
                       ? `${sc.bg} ${sc.border} ${sc.text}`
                       : isDark
-                        ? "border-white/[0.06] text-[#6B7280] hover:text-[#E5E7EB]"
-                        : "border-[#E5E7EB] text-[#D1D5DB] hover:text-[#4B5563]"
+                        ? "border-white/[0.06] text-[#374151] hover:text-[#E5E7EB]"
+                        : "border-[#D1D5DB] text-[#D1D5DB] hover:text-[#1F2937]"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />

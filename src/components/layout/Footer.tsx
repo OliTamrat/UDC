@@ -22,13 +22,13 @@ export default function Footer() {
   const isDark = resolvedTheme === "dark";
 
   const linkClass = `transition-colors ${
-    isDark ? "text-[#D1D5DB] hover:text-udc-gold" : "text-[#4B5563] hover:text-udc-red"
+    isDark ? "text-[#D1D5DB] hover:text-udc-gold" : "text-[#1F2937] hover:text-udc-red"
   }`;
 
   return (
     <footer
       className={`border-t mt-8 ${
-        isDark ? "border-white/[0.06] bg-[#0C0F17]/50" : "border-[#E5E7EB] bg-[#F9FAFB]/80"
+        isDark ? "border-white/[0.06] bg-[#0C0F17]/50" : "border-[#D1D5DB] bg-[#F0F1F3]/80"
       }`}
     >
       {/* Main footer grid */}
@@ -48,12 +48,12 @@ export default function Footer() {
                 >
                   {t("footer.udc_full")}
                 </p>
-                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                   {t("footer.causes_full")}
                 </p>
               </div>
             </div>
-            <p className={`text-xs leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+            <p className={`text-xs leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
               {t("footer.mission")}
             </p>
           </div>
@@ -68,17 +68,17 @@ export default function Footer() {
               {t("footer.institute")}
             </h3>
             <ul className="space-y-2 text-xs">
-              <li className={isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}>
+              <li className={isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}>
                 <span className="font-medium">{t("footer.wrri")}</span> (WRRI)
               </li>
-              <li className={isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}>
+              <li className={isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}>
                 Center for Urban Resilience, Innovation &amp; Infrastructure (CURII)
               </li>
-              <li className={isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}>
+              <li className={isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}>
                 Environmental Quality Testing Laboratory (EQTL)
               </li>
               <li className="pt-1">
-                <div className={`flex items-start gap-2 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                <div className={`flex items-start gap-2 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                   <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0 text-udc-gold" />
                   <span>4200 Connecticut Ave NW<br />Washington, DC 20008</span>
                 </div>
@@ -179,11 +179,11 @@ export default function Footer() {
       {/* Attribution bar */}
       <div
         className={`border-t px-4 sm:px-6 py-4 ${
-          isDark ? "border-white/[0.06] bg-udc-dark/80" : "border-[#E5E7EB]/80 bg-[#F3F4F6]/60"
+          isDark ? "border-white/[0.06] bg-udc-dark/80" : "border-[#D1D5DB]/80 bg-[#E5E7EB]/60"
         }`}
       >
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className={`text-[11px] text-center sm:text-left leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+          <p className={`text-[11px] text-center sm:text-left leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
             {t("footer.built_by")}{" "}
             <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
               Olink Technologies Inc
@@ -198,7 +198,7 @@ export default function Footer() {
             </span>
             {t("footer.director_title")}
           </p>
-          <div className={`flex items-center gap-1.5 shrink-0 ${isDark ? "text-[#9CA3AF]" : "text-[#D1D5DB]"}`}>
+          <div className={`flex items-center gap-1.5 shrink-0 ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
             <Droplets className="w-3.5 h-3.5" />
             <span className="text-[10px]">
               &copy; {new Date().getFullYear()} UDC CAUSES / WRRI
@@ -210,10 +210,10 @@ export default function Footer() {
       {/* Funding line */}
       <div
         className={`border-t text-center px-4 py-2 ${
-          isDark ? "border-white/[0.06]" : "border-[#E5E7EB]/50"
+          isDark ? "border-white/[0.06]" : "border-[#D1D5DB]/50"
         }`}
       >
-        <p className={`text-[10px] ${isDark ? "text-[#9CA3AF]" : "text-[#D1D5DB]"}`}>
+        <p className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
           {t("footer.funded")}
         </p>
       </div>

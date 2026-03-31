@@ -74,20 +74,20 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
   return (
     <div className={`${className}`}>
       <div className={`rounded-xl border p-4 ${
-        isDark ? "bg-[#13161F]/90 border-white/[0.06] backdrop-blur-md" : "bg-white/90 border-[#E5E7EB] backdrop-blur-md shadow-sm"
+        isDark ? "bg-[#13161F]/90 border-white/[0.06] backdrop-blur-md" : "bg-white/90 border-[#D1D5DB] backdrop-blur-md shadow-sm"
       }`}>
         <div className="flex items-center justify-between mb-3">
           <div>
             <h4 className={`text-xs font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>
               Water Quality Timeline — {CURRENT_YEAR}
             </h4>
-            <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+            <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
               Seasonal variation in water quality parameters
             </p>
           </div>
           <div className="flex items-center gap-3">
             <div className={`px-3 py-1 rounded-lg text-sm font-bold ${
-              isDark ? "bg-water-blue/20 text-blue-300" : "bg-blue-50 text-blue-700"
+              isDark ? "bg-water-blue/20 text-blue-300" : "bg-blue-100 text-blue-700"
             }`}>
               {MONTHS[monthIndex]} {CURRENT_YEAR}
             </div>
@@ -101,7 +101,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               onClick={goBack}
               disabled={monthIndex === 0}
               className={`p-1.5 rounded-lg transition-colors disabled:opacity-30 ${
-                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#4B5563]"
+                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#E5E7EB] text-[#1F2937]"
               }`}
             >
               <SkipBack className="w-3.5 h-3.5" />
@@ -111,7 +111,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               className={`p-2 rounded-lg transition-colors ${
                 playing
                   ? "bg-water-blue text-white"
-                  : isDark ? "bg-water-blue/20 text-blue-300 hover:bg-water-blue/30" : "bg-blue-50 text-blue-600 hover:bg-blue-100"
+                  : isDark ? "bg-water-blue/20 text-blue-300 hover:bg-water-blue/30" : "bg-blue-100 text-blue-600 hover:bg-blue-100"
               }`}
             >
               {playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -120,7 +120,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               onClick={goForward}
               disabled={monthIndex === 11}
               className={`p-1.5 rounded-lg transition-colors disabled:opacity-30 ${
-                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#F3F4F6] text-[#4B5563]"
+                isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-[#E5E7EB] text-[#1F2937]"
               }`}
             >
               <SkipForward className="w-3.5 h-3.5" />
@@ -151,7 +151,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
           </div>
 
           {/* Month labels */}
-          <div className={`text-[10px] font-medium min-w-[30px] text-right ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+          <div className={`text-[10px] font-medium min-w-[30px] text-right ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
             {MONTHS[monthIndex]}
           </div>
         </div>
@@ -164,7 +164,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               className={`flex-1 text-center text-[8px] transition-colors ${
                 idx === monthIndex
                   ? isDark ? "text-white font-semibold" : "text-[#111827] font-semibold"
-                  : isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"
+                  : isDark ? "text-[#374151]" : "text-[#D1D5DB]"
               }`}
             >
               {m}
@@ -176,17 +176,17 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
         <div className="flex items-center gap-4 mt-3 pt-3 border-t" style={{ borderColor: isDark ? "#1E3A5F" : "#E2E8F0" }}>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#22C55E" : "#16A34A" }} />
-            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Good quality</span>
+            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>Good quality</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#F59E0B" : "#D97706" }} />
-            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Moderate</span>
+            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>Moderate</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: isDark ? "#EF4444" : "#DC2626" }} />
-            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Poor quality</span>
+            <span className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>Poor quality</span>
           </div>
-          <div className={`ml-auto text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
+          <div className={`ml-auto text-[10px] ${isDark ? "text-[#374151]" : "text-[#D1D5DB]"}`}>
             E. coli severity: {(SEASONAL_ECOLI_MULTIPLIER[monthIndex] * 100).toFixed(0)}% of peak
           </div>
         </div>

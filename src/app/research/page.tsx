@@ -60,7 +60,7 @@ export default function ResearchPage() {
   });
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />
@@ -69,7 +69,7 @@ export default function ResearchPage() {
           <section className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-4 sm:p-6 md:p-8 ${
             isDark
               ? "border-white/[0.06] bg-gradient-to-br from-purple-900/10 via-[#0C0F17] to-[#0C0F17]"
-              : "border-[#E5E7EB] bg-gradient-to-br from-white via-purple-50/30 to-[#F9FAFB]"
+              : "border-[#D1D5DB] bg-gradient-to-br from-white via-purple-50/30 to-[#F9FAFB]"
           }`}>
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-2">
@@ -81,7 +81,7 @@ export default function ResearchPage() {
               <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
                 WRRI & CAUSES Research Projects
               </h1>
-              <p className={`text-sm max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+              <p className={`text-sm max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                 Active research initiatives from UDC&apos;s Water Resources Research Institute and
                 the College of Agriculture, Urban Sustainability & Environmental Sciences.
                 Addressing critical water quality, stormwater management, and environmental justice
@@ -93,7 +93,7 @@ export default function ResearchPage() {
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`} />
+              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`} />
               <input
                 type="text"
                 placeholder="Search projects, PIs, descriptions..."
@@ -101,13 +101,13 @@ export default function ResearchPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={`w-full border rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none transition-colors ${
                   isDark
-                    ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-udc-blue/50"
-                    : "bg-white border-[#E5E7EB] text-[#374151] placeholder:text-[#9CA3AF] focus:border-blue-400"
+                    ? "bg-[#13161F] border-white/[0.06] text-[#E5E7EB] placeholder:text-[#6B7280] focus:border-udc-blue/50"
+                    : "bg-white border-[#D1D5DB] text-[#374151] placeholder:text-[#6B7280] focus:border-blue-400"
                 }`}
               />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <Filter className={`w-4 h-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`} />
+              <Filter className={`w-4 h-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`} />
               <button
                 onClick={() => setSelectedTag(null)}
                 className={`px-3 py-1 rounded-full text-xs border transition-all ${
@@ -115,7 +115,7 @@ export default function ResearchPage() {
                     ? "bg-water-blue/20 text-water-blue border-water-blue/30"
                     : isDark
                       ? "bg-[#13161F] text-[#D1D5DB] border-white/[0.06] hover:border-white/[0.06]"
-                      : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#9CA3AF]"
+                      : "bg-white text-[#374151] border-[#D1D5DB] hover:border-[#9CA3AF]"
                 }`}
               >
                 All
@@ -129,7 +129,7 @@ export default function ResearchPage() {
                       ? tagColors[tag] || "bg-[#6B7280]/10 text-[#D1D5DB] border-[#6B7280]/20"
                       : isDark
                         ? "bg-[#13161F] text-[#D1D5DB] border-white/[0.06] hover:border-white/[0.06]"
-                        : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#9CA3AF]"
+                        : "bg-white text-[#374151] border-[#D1D5DB] hover:border-[#9CA3AF]"
                   }`}
                 >
                   {tag.replace(/-/g, " ")}
@@ -139,7 +139,7 @@ export default function ResearchPage() {
           </div>
 
           {/* Results count */}
-          <div className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+          <div className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
             Showing {filteredProjects.length} of {researchProjects.length} projects
             {selectedTag && <span> tagged <strong className={isDark ? "text-[#E5E7EB]" : "text-[#374151]"}>{selectedTag.replace(/-/g, " ")}</strong></span>}
             {searchTerm && <span> matching &quot;{searchTerm}&quot;</span>}
@@ -169,10 +169,10 @@ export default function ResearchPage() {
                   </div>
                   <Link
                     href="/methodology"
-                    className={`opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg ${isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#F3F4F6]"}`}
+                    className={`opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg ${isDark ? "hover:bg-white/[0.04]" : "hover:bg-[#E5E7EB]"}`}
                     title="View methodology & data"
                   >
-                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`} />
+                    <ExternalLink className={`w-3.5 h-3.5 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`} />
                   </Link>
                 </div>
 
@@ -180,27 +180,27 @@ export default function ResearchPage() {
                   {project.title}
                 </h3>
 
-                <p className={`text-xs mb-4 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+                <p className={`text-xs mb-4 leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                   {project.description}
                 </p>
 
                 <div className="space-y-2 mb-4">
-                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
-                    <User className={`w-3.5 h-3.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`} />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
+                    <User className={`w-3.5 h-3.5 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`} />
                     <span className={`font-medium ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{project.pi}</span>
                   </div>
-                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
-                    <Building2 className={`w-3.5 h-3.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`} />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
+                    <Building2 className={`w-3.5 h-3.5 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`} />
                     <span>{project.department}</span>
                   </div>
-                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
-                    <Calendar className={`w-3.5 h-3.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`} />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
+                    <Calendar className={`w-3.5 h-3.5 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`} />
                     <span>
                       {project.startDate} — {project.endDate}
                     </span>
                   </div>
-                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
-                    <DollarSign className={`w-3.5 h-3.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`} />
+                  <div className={`flex items-center gap-2 text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
+                    <DollarSign className={`w-3.5 h-3.5 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`} />
                     <span>{project.funding}</span>
                   </div>
                 </div>
@@ -226,41 +226,41 @@ export default function ResearchPage() {
           <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               href="/methodology"
-              className={`glass-panel rounded-2xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB] hover:shadow-md"}`}
+              className={`glass-panel rounded-2xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-white/[0.06]" : "hover:border-[#9CA3AF] hover:shadow-md"}`}
             >
               <BookOpen className="w-5 h-5 text-blue-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Methodology & Data Dictionary</h3>
-              <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+              <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                 Sampling protocols, QA/QC procedures, parameter definitions, and EPA threshold documentation.
               </p>
-              <div className="flex items-center gap-1 mt-3 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
+              <div className="flex items-center gap-1 mt-3 text-xs text-[#374151] group-hover:text-water-blue transition-colors">
                 View documentation <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
             <a
               href="/api/export?format=csv"
               download
-              className={`glass-panel rounded-2xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB] hover:shadow-md"}`}
+              className={`glass-panel rounded-2xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-white/[0.06]" : "hover:border-[#9CA3AF] hover:shadow-md"}`}
             >
               <Download className="w-5 h-5 text-green-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Export Full Dataset</h3>
-              <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+              <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                 Download all water quality readings as CSV with citation metadata, source provenance, and station metadata.
               </p>
-              <div className="flex items-center gap-1 mt-3 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
+              <div className="flex items-center gap-1 mt-3 text-xs text-[#374151] group-hover:text-water-blue transition-colors">
                 Download CSV <ArrowRight className="w-3 h-3" />
               </div>
             </a>
             <Link
               href="/education#resources"
-              className={`glass-panel rounded-2xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB] hover:shadow-md"}`}
+              className={`glass-panel rounded-2xl p-3 sm:p-5 transition-all hover:scale-[1.02] group ${isDark ? "hover:border-white/[0.06]" : "hover:border-[#9CA3AF] hover:shadow-md"}`}
             >
               <Globe className="w-5 h-5 text-purple-400 mb-2" />
               <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>API & Open Data</h3>
-              <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>
+              <p className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                 REST API access, Python/R analysis templates, and programmatic data retrieval for research integration.
               </p>
-              <div className="flex items-center gap-1 mt-3 text-xs text-[#6B7280] group-hover:text-water-blue transition-colors">
+              <div className="flex items-center gap-1 mt-3 text-xs text-[#374151] group-hover:text-water-blue transition-colors">
                 Access API docs <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
@@ -269,7 +269,7 @@ export default function ResearchPage() {
           {/* Data Sources */}
           <section className="glass-panel rounded-2xl p-3 sm:p-4 md:p-6">
             <h2 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Data Integration Sources</h2>
-            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+            <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
               Partner organizations and external data feeds integrated into the dashboard
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
@@ -314,11 +314,11 @@ export default function ResearchPage() {
                 <div
                   key={source.name}
                   className={`rounded-lg border p-4 hover:border-blue-500/30 transition-all ${
-                    isDark ? "border-white/[0.06]" : "border-[#E5E7EB] bg-white"
+                    isDark ? "border-white/[0.06]" : "border-[#D1D5DB] bg-white"
                   }`}
                 >
                   <h4 className={`text-xs font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{source.name}</h4>
-                  <p className={`text-[10px] mb-3 ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>{source.description}</p>
+                  <p className={`text-[10px] mb-3 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>{source.description}</p>
                   <div className="flex flex-wrap gap-1">
                     {source.datasets.map((ds) => (
                       <span

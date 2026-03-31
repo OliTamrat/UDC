@@ -54,10 +54,10 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
                     isActive
                       ? isDark
                         ? "bg-udc-blue/20 border-udc-blue/40 text-water-blue"
-                        : "bg-blue-50 border-blue-300 text-blue-700"
+                        : "bg-blue-100 border-blue-300 text-blue-700"
                       : isDark
                         ? "bg-white/5 border-white/[0.06] text-[#D1D5DB] hover:border-[#6B7280]"
-                        : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563] hover:border-[#D1D5DB]"
+                        : "bg-[#F0F1F3] border-[#D1D5DB] text-[#1F2937] hover:border-[#9CA3AF]"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -84,10 +84,10 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
                     isActive
                       ? isDark
                         ? "bg-udc-blue/20 border-udc-blue/40 text-water-blue"
-                        : "bg-blue-50 border-blue-300 text-blue-700"
+                        : "bg-blue-100 border-blue-300 text-blue-700"
                       : isDark
                         ? "bg-white/5 border-white/[0.06] text-[#D1D5DB] hover:border-[#6B7280]"
-                        : "bg-[#F9FAFB] border-[#E5E7EB] text-[#4B5563] hover:border-[#D1D5DB]"
+                        : "bg-[#F0F1F3] border-[#D1D5DB] text-[#1F2937] hover:border-[#9CA3AF]"
                   }`}
                 >
                   <span className="text-lg">{opt.flag}</span>

@@ -176,7 +176,7 @@ export default function Header() {
 
   return (
     <header className={`h-14 border-b flex items-center justify-between px-2 sm:px-4 md:px-6 sticky top-0 z-40 backdrop-blur-md transition-colors duration-300 ${
-      isDark ? "border-white/[0.06] bg-[#0C0F17]/80" : "border-[#E5E7EB] bg-white/80"
+      isDark ? "border-white/[0.06] bg-[#0C0F17]/80" : "border-[#D1D5DB] bg-white/80"
     }`}>
       {/* Left side: hamburger + logo + search */}
       <div className="flex items-center gap-1.5 sm:gap-3 flex-1 min-w-0">
@@ -185,7 +185,7 @@ export default function Header() {
           onClick={openMobile}
           aria-label={t("header.open_nav")}
           className={`lg:hidden p-2.5 rounded-lg transition-colors flex-shrink-0 ${
-            isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
+            isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#1F2937]"
           }`}
         >
           <Menu className="w-5 h-5" />
@@ -198,7 +198,7 @@ export default function Header() {
 
         {/* Search */}
         <div className="relative flex-1 min-w-0 lg:flex-none lg:w-72" ref={searchRef} role="search">
-          <Search className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`} aria-hidden="true" />
+          <Search className={`absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-[#6B7280]" : "text-[#374151]"}`} aria-hidden="true" />
           <input
             type="search"
             aria-label={t("header.search_label")}
@@ -223,7 +223,7 @@ export default function Header() {
               isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-gray-200"
             }`}>
               {searchResults.length === 0 ? (
-                <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-[#9CA3AF]" : "text-[#4B5563]"}`}>
+                <div className={`px-3 py-4 text-sm text-center ${isDark ? "text-[#6B7280]" : "text-[#1F2937]"}`}>
                   {t("header.no_results")}
                 </div>
               ) : (
@@ -240,7 +240,7 @@ export default function Header() {
                     }`} />
                     <div className="min-w-0">
                       <span className="block truncate">{result.name}</span>
-                      <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`}>
+                      <span className={`text-[10px] uppercase tracking-wider ${isDark ? "text-[#6B7280]" : "text-[#374151]"}`}>
                         {result.type === "parameter" ? "parameter" : t(`search.${result.type}` as "search.station" | "search.research" | "search.page")}
                       </span>
                     </div>
@@ -255,7 +255,7 @@ export default function Header() {
       {/* Right side: date, live, language, theme, bell, stakeholder */}
       <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-3 flex-shrink-0 ml-2">
         {/* Date — hidden below md */}
-        <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#4B5563]"}`}>
+        <div className={`hidden md:flex items-center gap-2 text-xs ${isDark ? "text-[#6B7280]" : "text-[#1F2937]"}`}>
           <Calendar className="w-3.5 h-3.5" />
           <span className="hidden lg:inline">{dateStr}</span>
           <span className="lg:hidden">{now.toLocaleDateString(locale === "es" ? "es-US" : "en-US", { month: "short", day: "numeric" })}</span>
@@ -264,7 +264,7 @@ export default function Header() {
         {/* Live indicator — hidden below sm */}
         <div className="hidden sm:flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-water-clean animate-pulse" />
-          <span className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{t("header.live")}</span>
+          <span className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{t("header.live")}</span>
         </div>
 
         {/* Language Switcher */}
@@ -272,7 +272,7 @@ export default function Header() {
           <button
             onClick={() => setShowLangMenu(!showLangMenu)}
             className={`p-2.5 rounded-lg transition-colors ${
-              isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
+              isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#1F2937]"
             }`}
             title={t("header.language")}
             aria-label={t("header.language")}
@@ -286,7 +286,7 @@ export default function Header() {
               isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-gray-200"
             }`}>
               <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
-                isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"
+                isDark ? "text-[#6B7280]" : "text-[#374151]"
               }`}>
                 {t("header.language")}
               </div>
@@ -300,7 +300,7 @@ export default function Header() {
                       isActive
                         ? isDark
                           ? "bg-udc-blue/20 text-blue-400"
-                          : "bg-blue-50 text-blue-600"
+                          : "bg-blue-100 text-blue-600"
                         : isDark
                           ? "text-[#E5E7EB] hover:bg-white/[0.04]"
                           : "text-gray-700 hover:bg-gray-50"
@@ -321,7 +321,7 @@ export default function Header() {
           <button
             onClick={() => setShowThemeMenu(!showThemeMenu)}
             className={`p-2.5 rounded-lg transition-colors ${
-              isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
+              isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#1F2937]"
             }`}
             title={t("header.change_appearance")}
             aria-label={t("header.change_appearance")}
@@ -335,7 +335,7 @@ export default function Header() {
               isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-gray-200"
             }`}>
               <div className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${
-                isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"
+                isDark ? "text-[#6B7280]" : "text-[#374151]"
               }`}>
                 {t("header.appearance")}
               </div>
@@ -350,7 +350,7 @@ export default function Header() {
                       isActive
                         ? isDark
                           ? "bg-udc-blue/20 text-blue-400"
-                          : "bg-blue-50 text-blue-600"
+                          : "bg-blue-100 text-blue-600"
                         : isDark
                           ? "text-[#E5E7EB] hover:bg-white/[0.04]"
                           : "text-gray-700 hover:bg-gray-50"
@@ -374,7 +374,7 @@ export default function Header() {
           title={t("header.notifications")}
           aria-label={t("header.notifications")}
         >
-          <Bell className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`} aria-hidden="true" />
+          <Bell className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`} aria-hidden="true" />
         </button>
 
         {/* About link — replaces placeholder Stakeholder button */}
@@ -383,12 +383,12 @@ export default function Header() {
           className={`hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg transition-colors border ${
             isDark
               ? "hover:bg-white/[0.04] border-white/[0.06]"
-              : "hover:bg-[#F3F4F6] border-[#E5E7EB]"
+              : "hover:bg-[#E5E7EB] border-[#D1D5DB]"
           }`}
           title="About this dashboard"
         >
-          <User className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`} aria-hidden="true" />
-          <span className={`hidden md:inline text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>About</span>
+          <User className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`} aria-hidden="true" />
+          <span className={`hidden md:inline text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>About</span>
         </a>
       </div>
     </header>

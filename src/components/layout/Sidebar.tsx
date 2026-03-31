@@ -81,14 +81,14 @@ export default function Sidebar() {
   const sidebarContent = (
     <>
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+      <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0 shadow-lg shadow-udc-gold/20">
           UDC
         </div>
         {!collapsed && (
           <div className="overflow-hidden flex-1 min-w-0">
             <h1 className={`font-bold text-sm leading-tight ${isDark ? "text-white" : "text-[#111827]"}`}>{t("sidebar.water_resources")}</h1>
-            <p className={`text-[10px] leading-tight ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`}>{t("sidebar.subtitle")}</p>
+            <p className={`text-[10px] leading-tight ${isDark ? "text-[#6B7280]" : "text-[#374151]"}`}>{t("sidebar.subtitle")}</p>
           </div>
         )}
         {/* Close button — mobile only */}
@@ -96,7 +96,7 @@ export default function Sidebar() {
           onClick={closeMobile}
           aria-label={t("sidebar.close_nav")}
           className={`lg:hidden p-1.5 rounded-lg transition-colors ${
-            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#4B5563] hover:text-[#111827] hover:bg-gray-100"
+            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#1F2937] hover:text-[#111827] hover:bg-gray-100"
           }`}
         >
           <X className="w-4 h-4" />
@@ -110,7 +110,7 @@ export default function Sidebar() {
           return (
             <div key={section.key} className="mb-3">
               {!collapsed && (
-                <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`}>
+                <p className={`px-3 py-1 text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-[#6B7280]" : "text-[#374151]"}`}>
                   {t(section.labelKey)}
                 </p>
               )}
@@ -125,10 +125,10 @@ export default function Sidebar() {
                       isActive
                         ? isDark
                           ? "bg-water-blue/10 text-water-blue font-medium"
-                          : "bg-blue-50 text-blue-700 font-medium"
+                          : "bg-blue-100 text-blue-700 font-medium"
                         : isDark
                           ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]"
-                          : "text-[#4B5563] hover:text-[#111827] hover:bg-gray-100"
+                          : "text-[#1F2937] hover:text-[#111827] hover:bg-gray-100"
                     } ${collapsed ? "justify-center" : ""}`}
                     title={collapsed ? t(item.labelKey) : undefined}
                   >
@@ -143,11 +143,11 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className={`border-t p-3 ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+      <div className={`border-t p-3 ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
         <button
           onClick={() => setSettingsOpen(true)}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
-            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#4B5563] hover:text-[#111827] hover:bg-gray-100"
+            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#1F2937] hover:text-[#111827] hover:bg-gray-100"
           } ${collapsed ? "justify-center" : ""}`}
           title={collapsed ? t("sidebar.settings") : undefined}
         >
@@ -158,7 +158,7 @@ export default function Sidebar() {
           onClick={toggleCollapsed}
           aria-label={collapsed ? t("sidebar.expand") : t("sidebar.collapse_sidebar")}
           className={`hidden lg:flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all w-full ${
-            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#4B5563] hover:text-[#111827] hover:bg-gray-100"
+            isDark ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]" : "text-[#1F2937] hover:text-[#111827] hover:bg-gray-100"
           } ${collapsed ? "justify-center" : ""}`}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" aria-hidden="true" /> : <ChevronLeft className="w-4 h-4" aria-hidden="true" />}
@@ -176,7 +176,7 @@ export default function Sidebar() {
         className={`hidden lg:flex fixed left-0 top-0 h-screen border-r z-50 flex-col transition-all duration-300 ${
           collapsed ? "w-[68px]" : "w-[240px]"
         } ${
-          isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#E5E7EB]"
+          isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#D1D5DB]"
         }`}
       >
         {sidebarContent}
@@ -193,7 +193,7 @@ export default function Sidebar() {
           <aside
             aria-label="Main navigation"
             className={`absolute left-0 top-0 h-full w-[calc(100vw-3rem)] max-w-[280px] flex flex-col shadow-2xl animate-slide-in-left ${
-              isDark ? "bg-[#13161F] border-r border-white/[0.06]" : "bg-white border-r border-[#E5E7EB]"
+              isDark ? "bg-[#13161F] border-r border-white/[0.06]" : "bg-white border-r border-[#D1D5DB]"
             }`}
           >
             {sidebarContent}
