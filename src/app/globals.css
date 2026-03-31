@@ -244,11 +244,11 @@ html.light .metric-card:hover {
   animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-/* Leaflet map containment — prevent tiles from causing page overflow */
+/* Leaflet map containment — clip transformed tile layers */
 .leaflet-container {
   position: relative;
   overflow: hidden !important;
-  -webkit-overflow-scrolling: touch;
+  contain: paint;
 }
 
 /* Station table containment — keep table scroll internal */
@@ -257,6 +257,15 @@ html.light .metric-card:hover {
   overflow-y: visible;
   -webkit-overflow-scrolling: touch;
   max-width: 100%;
+}
+
+/* Recharts containment — prevent axis labels from overflowing */
+.recharts-wrapper,
+.recharts-surface {
+  overflow: hidden !important;
+}
+.recharts-responsive-container {
+  overflow: hidden;
 }
 
 /* Water flow animation */
