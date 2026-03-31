@@ -258,6 +258,17 @@ html.light .metric-card:hover {
   overflow: clip;
 }
 
+/* Leaflet tile pane and map pane — prevent tiles from escaping map bounds */
+.leaflet-map-pane,
+.leaflet-tile-pane {
+  overflow: clip;
+}
+
+/* Recharts — clip SVG that extends beyond container */
+.recharts-wrapper {
+  overflow: clip !important;
+}
+
 /* Water flow animation */
 @keyframes water-flow {
   0% { stroke-dashoffset: 0; }
