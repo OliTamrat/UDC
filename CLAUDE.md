@@ -9,16 +9,18 @@
 - If a user shares a credential in conversation, do NOT echo it back in code, commits, or file contents
 - `.env.local` is gitignored — secrets belong there, never in tracked files
 
-### Data Ingestion Pipeline — DO NOT MODIFY
-- **NEVER** change the ingestion configuration, cron schedule, or `CRON_SECRET` / auth logic in `src/app/api/ingest/route.ts` without explicit user approval
+### Data Ingestion Pipeline — DO NOT MODIFY (CRITICAL)
+- **NEVER** change the ingestion configuration, cron schedule, or auth logic in `src/app/api/ingest/route.ts` without explicit user approval
 - **NEVER** add, remove, or modify Vercel environment variables (`CRON_SECRET`, `DATABASE_URL`, `INGEST_API_KEY`) without explicit user approval
 - **NEVER** modify `vercel.json` cron schedules without explicit user approval
 - **NEVER** change USGS site mappings, station IDs, or the `USGS_SITES` array without verifying against live USGS API data first
-- The pipeline was broken for 13 days (March 17-30, 2026) because a `CRON_SECRET` env var was added that mismatched Vercel's internal cron auth. Any change to ingestion auth can silently break data flow.
-- If you need to debug ingestion, check the `/api/health` endpoint and ingestion logs first — never modify the pipeline as a troubleshooting step
-- Current working cron schedule: USGS daily 06:00 UTC (single cron — Vercel Hobby plan allows only 1 cron job per day)
-- EPA and WQP ingestion must be triggered manually from admin panel (or upgrade Vercel plan for more crons)
-- **NEVER add more than 1 cron job** on the free plan — having multiple crons caused Vercel to disable ALL cron execution
+- **NEVER add more than 1 cron job in `vercel.json`** — Vercel Hobby (free) plan allows only 1 cron per day. Adding more silently disables ALL cron execution. This rule stands until user confirms they have upgraded the Vercel plan.
+- Two data loss incidents caused by unauthorized changes:
+  1. `CRON_SECRET` env var added → broke auth for 13 days (March 17-30, 2026)
+  2. Three cron jobs added → exceeded free plan limit, disabled all crons (March 30-31, 2026)
+- Current working configuration: **single USGS cron at 06:00 UTC daily** in `vercel.json`
+- EPA and WQP ingestion: trigger manually from admin panel only
+- If you need to debug ingestion, check `/api/health` endpoint and ingestion logs first — never modify the pipeline as a troubleshooting step
 
 ### Git Commit & Push Rules — IP Protection
 - **NEVER** use Claude/Anthropic as the git author or committer — always commit as the repository owner:
