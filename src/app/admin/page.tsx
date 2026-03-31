@@ -171,6 +171,14 @@ export default function AdminPage() {
     return (
       <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
         <div className={`w-full max-w-sm p-6 rounded-2xl border shadow-lg ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#E5E7EB]"}`}>
+          <a
+            href="/"
+            className={`inline-flex items-center gap-1 text-xs mb-4 transition-colors ${
+              isDark ? "text-[#9CA3AF] hover:text-white" : "text-[#6B7280] hover:text-[#111827]"
+            }`}
+          >
+            &larr; Back to Dashboard
+          </a>
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center">
               <Shield className="w-5 h-5 text-white" />
@@ -220,8 +228,15 @@ export default function AdminPage() {
       <header className={`border-b px-4 sm:px-6 py-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <a href="/" className={`text-xs hover:underline ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
-              &larr; Dashboard
+            <a
+              href="/"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-[#E5E7EB] bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06]"
+                  : "text-[#374151] bg-[#F3F4F6] hover:bg-[#E5E7EB] border border-[#E5E7EB]"
+              }`}
+            >
+              &larr; Back to Dashboard
             </a>
             <div className="w-px h-5 bg-[#4B5563]" />
             <div className="flex items-center gap-2.5">

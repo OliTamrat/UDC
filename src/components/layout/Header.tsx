@@ -377,19 +377,19 @@ export default function Header() {
           <Bell className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`} aria-hidden="true" />
         </button>
 
-        {/* Stakeholder button — hidden on mobile, icon-only on tablet */}
-        <button
+        {/* About link — replaces placeholder Stakeholder button */}
+        <a
+          href="/about"
           className={`hidden sm:flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg transition-colors border ${
             isDark
               ? "hover:bg-white/[0.04] border-white/[0.06]"
               : "hover:bg-[#F3F4F6] border-[#E5E7EB]"
           }`}
-          title={t("header.stakeholder_soon")}
-          aria-label={t("header.stakeholder_soon")}
+          title="About this dashboard"
         >
           <User className={`w-4 h-4 ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`} aria-hidden="true" />
-          <span className={`hidden md:inline text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>{t("header.stakeholder")}</span>
-        </button>
+          <span className={`hidden md:inline text-sm ${isDark ? "text-[#E5E7EB]" : "text-[#4B5563]"}`}>About</span>
+        </a>
       </div>
     </header>
   );
