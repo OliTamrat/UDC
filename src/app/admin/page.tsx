@@ -169,47 +169,68 @@ export default function AdminPage() {
       );
     }
     return (
-      <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
-        <div className={`w-full max-w-sm p-6 rounded-2xl border shadow-lg ${isDark ? "bg-[#13161F] border-white/[0.06]" : "bg-white border-[#E5E7EB]"}`}>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className={`text-lg font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>Admin Panel</h1>
-              <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>UDC Water Resources Data Management</p>
+      <div className={`min-h-screen flex flex-col items-center justify-center px-4 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
+        <div className={`w-full max-w-sm rounded-2xl border overflow-hidden ${
+          isDark
+            ? "bg-[#13161F] border-white/[0.06] shadow-2xl shadow-black/40"
+            : "bg-white border-[#E5E7EB] shadow-xl shadow-black/[0.06]"
+        }`}>
+          {/* Header with gradient accent */}
+          <div className="bg-gradient-to-r from-udc-gold/10 via-udc-red/5 to-transparent p-6 pb-5">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center shadow-lg shadow-udc-gold/20">
+                <Shield className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className={`text-lg font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>Admin Panel</h1>
+                <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>UDC Water Resources Data Management</p>
+              </div>
             </div>
           </div>
-          <label className={`block text-sm font-medium mb-2 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
-            Admin API Key
-          </label>
-          <input
-            type="password"
-            value={adminKey}
-            onChange={(e) => setAdminKey(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-            placeholder="Enter ADMIN_API_KEY..."
-            className={`w-full px-3 py-2 rounded-lg border text-sm mb-3 ${
-              isDark
-                ? "bg-udc-dark border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF]"
-                : "bg-[#F9FAFB] border-[#E5E7EB] text-[#374151]"
-            }`}
-          />
-          {loginError && (
-            <div className={`flex items-start gap-2 p-3 rounded-lg text-xs mb-3 ${
-              isDark ? "bg-red-500/10 border border-red-500/30 text-red-300" : "bg-red-50 border border-red-200 text-red-700"
-            }`}>
-              <XCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-              <span>{loginError}</span>
-            </div>
-          )}
-          <button
-            onClick={handleLogin}
-            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-udc-gold to-udc-red text-white text-sm font-medium hover:shadow-lg transition-all"
-          >
-            Sign In
-          </button>
+
+          {/* Form */}
+          <div className="p-6 pt-4">
+            <label className={`block text-xs font-semibold uppercase tracking-wide mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+              Admin API Key
+            </label>
+            <input
+              type="password"
+              value={adminKey}
+              onChange={(e) => setAdminKey(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              placeholder="Enter your admin key..."
+              className={`w-full px-4 py-2.5 rounded-xl border text-sm mb-4 outline-none transition-all ${
+                isDark
+                  ? "bg-[#090B11] border-white/[0.08] text-white placeholder:text-[#4B5563] focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
+                  : "bg-[#F9FAFB] border-[#E5E7EB] text-[#374151] placeholder:text-[#9CA3AF] focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+              }`}
+            />
+            {loginError && (
+              <div className={`flex items-start gap-2 p-3 rounded-xl text-xs mb-4 ${
+                isDark ? "bg-red-500/10 border border-red-500/20 text-red-300" : "bg-red-50 border border-red-200 text-red-700"
+              }`}>
+                <XCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <span>{loginError}</span>
+              </div>
+            )}
+            <button
+              onClick={handleLogin}
+              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-udc-gold to-udc-red text-white text-sm font-semibold hover:shadow-lg hover:shadow-udc-gold/20 transition-all active:scale-[0.98]"
+            >
+              Sign In
+            </button>
+          </div>
         </div>
+
+        {/* Back to dashboard link — outside the card */}
+        <a
+          href="/"
+          className={`mt-4 inline-flex items-center gap-1.5 text-xs transition-colors ${
+            isDark ? "text-[#9CA3AF] hover:text-white" : "text-[#9CA3AF] hover:text-[#111827]"
+          }`}
+        >
+          &larr; Back to Dashboard
+        </a>
       </div>
     );
   }
@@ -220,7 +241,14 @@ export default function AdminPage() {
       <header className={`border-b px-4 sm:px-6 py-4 ${isDark ? "border-white/[0.06] bg-[#13161F]" : "border-[#E5E7EB] bg-white"}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <a href="/" className={`text-xs hover:underline ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+            <a
+              href="/"
+              className={`flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors ${
+                isDark
+                  ? "text-[#D1D5DB] hover:text-white hover:bg-white/[0.04]"
+                  : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6]"
+              }`}
+            >
               &larr; Dashboard
             </a>
             <div className="w-px h-5 bg-[#4B5563]" />
