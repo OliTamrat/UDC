@@ -16,7 +16,9 @@
 - **NEVER** change USGS site mappings, station IDs, or the `USGS_SITES` array without verifying against live USGS API data first
 - The pipeline was broken for 13 days (March 17-30, 2026) because a `CRON_SECRET` env var was added that mismatched Vercel's internal cron auth. Any change to ingestion auth can silently break data flow.
 - If you need to debug ingestion, check the `/api/health` endpoint and ingestion logs first — never modify the pipeline as a troubleshooting step
-- Current working cron schedule: USGS daily 06:00 UTC, EPA daily 07:00 UTC, WQP weekly Monday 08:00 UTC
+- Current working cron schedule: USGS daily 06:00 UTC (single cron — Vercel Hobby plan allows only 1 cron job per day)
+- EPA and WQP ingestion must be triggered manually from admin panel (or upgrade Vercel plan for more crons)
+- **NEVER add more than 1 cron job** on the free plan — having multiple crons caused Vercel to disable ALL cron execution
 
 ### Git Commit & Push Rules — IP Protection
 - **NEVER** use Claude/Anthropic as the git author or committer — always commit as the repository owner:
