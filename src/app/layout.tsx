@@ -90,16 +90,18 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <ThemeProvider>
-          <LanguageProvider>
-            <SidebarProvider>
-              <ErrorBoundary>
-                {children}
-                <ResearchAssistantWrapper />
-              </ErrorBoundary>
-            </SidebarProvider>
-          </LanguageProvider>
-        </ThemeProvider>
+        <div className="viewport-lock">
+          <ThemeProvider>
+            <LanguageProvider>
+              <SidebarProvider>
+                <ErrorBoundary>
+                  {children}
+                  <ResearchAssistantWrapper />
+                </ErrorBoundary>
+              </SidebarProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </div>
       </body>
     </html>
   );

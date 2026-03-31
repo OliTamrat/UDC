@@ -258,9 +258,12 @@ html.light .metric-card:hover {
   overflow: clip;
 }
 
-/* Main content area — final barrier against overflow reaching page level */
-#main-content {
-  overflow-x: clip;
+/* Viewport wrapper — prevents ALL horizontal overflow on mobile */
+.viewport-lock {
+  width: 100vw;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 
