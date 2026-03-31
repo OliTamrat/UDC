@@ -265,7 +265,7 @@ export function DOTrendChart() {
   const t = useChartTheme();
   const { data, measuredCount } = useTrendData();
   return (
-    <div className="glass-panel rounded-xl p-3 sm:p-4">
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
       <div className="flex items-center justify-between mb-1">
         <h3 className={`text-sm font-semibold ${t.titleColor}`}>Dissolved Oxygen Trends</h3>
         <DataSourceBadge count={measuredCount} isDark={t.isDark} />
@@ -305,7 +305,7 @@ export function TemperatureTrendChart() {
   }));
 
   return (
-    <div className="glass-panel rounded-xl p-3 sm:p-4">
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
       <div className="flex items-center justify-between mb-1">
         <h3 className={`text-sm font-semibold ${t.titleColor}`}>Water Temperature</h3>
         <div className="flex items-center gap-2">
@@ -340,7 +340,7 @@ export function EColiChart() {
   const t = useChartTheme();
   const { data } = useTrendData();
   return (
-    <div className="glass-panel rounded-xl p-3 sm:p-4">
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>E. coli Levels</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (CFU/100mL) — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
@@ -361,7 +361,7 @@ export function StormwaterChart() {
   const t = useChartTheme();
   const { data } = useTrendData();
   return (
-    <div className="glass-panel rounded-xl p-3 sm:p-4">
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
       <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Stormwater Runoff Volume</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly totals (million gallons) — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
@@ -389,7 +389,7 @@ export function MultiParameterChart() {
   }));
 
   return (
-    <div className="glass-panel rounded-xl p-3 sm:p-4">
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
       <div className="flex items-center justify-between mb-1">
         <h3 className={`text-sm font-semibold ${t.titleColor}`}>Multi-Parameter Overview</h3>
         <DataSourceBadge count={measuredCount} isDark={t.isDark} />
@@ -437,7 +437,7 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
 
   if (loading) {
     return (
-      <div className="glass-panel rounded-xl p-4 flex items-center justify-center h-[300px]">
+      <div className={`rounded-2xl p-4 sm:p-5 flex items-center justify-center h-[300px] ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
         <div className="w-6 h-6 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -445,7 +445,7 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
 
   if (data.length < 2) {
     return (
-      <div className={`glass-panel rounded-xl p-4 flex items-center justify-center h-[300px] text-sm ${t.isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
+      <div className={`rounded-2xl p-4 sm:p-5 flex items-center justify-center h-[300px] text-sm ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20 text-[#D1D5DB]" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03] text-[#6B7280]"}`}>
         Insufficient data for chart — awaiting more readings from ingestion
       </div>
     );
@@ -463,7 +463,7 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
   const sourceLabel = data[0]?.source === "usgs" ? "USGS NWIS" : data[0]?.source === "epa" ? "EPA WQP" : data[0]?.source;
 
   return (
-    <div className="glass-panel rounded-xl p-3 sm:p-4">
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
       <div className="flex items-center justify-between mb-1">
         <h3 className={`text-sm font-semibold ${t.titleColor}`}>Recent Readings</h3>
         <div className="flex items-center gap-2">

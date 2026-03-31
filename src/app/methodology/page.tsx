@@ -185,7 +185,7 @@ export default function MethodologyPage() {
               <a
                 key={nav.label}
                 href={nav.href}
-                className={`glass-panel rounded-xl p-4 flex items-center gap-3 transition-all hover:scale-[1.02] ${
+                className={`glass-panel rounded-2xl p-4 flex items-center gap-3 transition-all hover:scale-[1.02] ${
                   isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB]"
                 }`}
               >
@@ -246,7 +246,7 @@ export default function MethodologyPage() {
                   url: "",
                 },
               ].map((src) => (
-                <div key={src.badge} className={`glass-panel rounded-xl p-4 border ${isDark ? "" : ""}`}>
+                <div key={src.badge} className={`glass-panel rounded-2xl p-4 border ${isDark ? "" : ""}`}>
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${src.bg} ${src.color}`}>
                       {src.badge.toUpperCase()}
@@ -280,7 +280,7 @@ export default function MethodologyPage() {
             </p>
             <div className="space-y-4">
               {DATA_DICTIONARY.map((param) => (
-                <div key={param.field} className="glass-panel rounded-xl p-3 sm:p-5">
+                <div key={param.field} className="glass-panel rounded-2xl p-3 sm:p-5">
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{param.parameter}</h3>
@@ -369,7 +369,7 @@ export default function MethodologyPage() {
                   ],
                 },
               ].map((protocol) => (
-                <div key={protocol.title} className="glass-panel rounded-xl p-3 sm:p-5">
+                <div key={protocol.title} className="glass-panel rounded-2xl p-3 sm:p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <protocol.icon className={`w-4 h-4 ${isDark ? "text-green-400" : "text-green-600"}`} />
                     <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{protocol.title}</h3>
@@ -396,7 +396,7 @@ export default function MethodologyPage() {
             <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Procedures ensuring data reliability and fitness for research use
             </p>
-            <div className="glass-panel rounded-xl p-3 sm:p-5">
+            <div className="glass-panel rounded-2xl p-3 sm:p-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>Automated Validation (Ingest Pipeline)</h3>
@@ -439,7 +439,7 @@ export default function MethodologyPage() {
           {/* Validation Ranges Quick Reference */}
           <section>
             <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>Validation Ranges (Automated Rejection Thresholds)</h3>
-            <div className="glass-panel rounded-xl overflow-x-auto">
+            <div className="glass-panel rounded-2xl overflow-x-auto">
               <table className="w-full text-sm min-w-[500px]">
                 <thead>
                   <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
@@ -475,7 +475,7 @@ export default function MethodologyPage() {
             <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Log of all data ingestion events — when data was fetched, how many records were added, and any errors encountered
             </p>
-            <div className="glass-panel rounded-xl overflow-x-auto">
+            <div className="glass-panel rounded-2xl overflow-x-auto">
               {logsLoading ? (
                 <div className="p-8 flex items-center justify-center">
                   <div className="w-6 h-6 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
@@ -538,7 +538,7 @@ export default function MethodologyPage() {
             <p className={`text-xs mb-4 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
               Recommended citations for academic publications and reports
             </p>
-            <div className="glass-panel rounded-xl p-3 sm:p-5 space-y-4">
+            <div className="glass-panel rounded-2xl p-3 sm:p-5 space-y-4">
               <div>
                 <h3 className={`text-xs font-semibold mb-1 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>Dataset Citation (APA 7th)</h3>
                 <div className={`text-xs p-3 rounded-lg border font-mono leading-relaxed ${

@@ -43,7 +43,7 @@ export default function EnvironmentalJustice() {
   const tickColor = isDark ? "#9CA3AF" : "#94A3B8";
 
   return (
-    <div className="glass-panel rounded-xl p-4">
+    <div className={`rounded-2xl p-4 ${isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"}`}>
       <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{t("ej.chart_title")}</h3>
       <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>
         {t("ej.chart_desc")}

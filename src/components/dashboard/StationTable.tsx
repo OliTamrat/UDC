@@ -219,35 +219,39 @@ export default function StationTable({ onStationClick, selectedParams }: Station
 
   if (loading) {
     return (
-      <div className="glass-panel rounded-xl p-8 flex items-center justify-center">
+      <div className="glass-panel rounded-2xl p-8 flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="glass-panel rounded-xl overflow-hidden">
-      <div className={`p-4 border-b ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
-        <h3 className={`text-sm font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{t("table.title")}</h3>
-        <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.subtitle")}</p>
+    <div className={`rounded-2xl overflow-hidden ${
+      isDark
+        ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20"
+        : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03]"
+    }`}>
+      <div className={`px-5 py-4 border-b ${isDark ? "border-white/[0.06]" : "border-[#E5E7EB]"}`}>
+        <h3 className={`text-sm font-semibold ${isDark ? "text-[#F3F4F6]" : "text-[#1F2937]"}`}>{t("table.title")}</h3>
+        <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.subtitle")}</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
             <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.station")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.type")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.status")}</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.station")}</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.type")}</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.status")}</th>
               {visibleParams.map((p) => (
-                <th key={p.id} scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>
+                <th key={p.id} scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>
                   <span title={`${p.name} (${p.unit})`}>
                     {p.name.length > 18 ? p.name.slice(0, 16) + "…" : p.name}
                   </span>
                 </th>
               ))}
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Trend</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>{t("table.updated")}</th>
-              <th scope="col" className={`text-left py-2 px-4 text-xs font-medium uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}><span className="sr-only">{t("table.details")}</span></th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>Trend</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.updated")}</th>
+              <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}><span className="sr-only">{t("table.details")}</span></th>
             </tr>
           </thead>
           <tbody>
@@ -264,8 +268,8 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                   aria-label={`View details for ${station.name}`}
                   className={`border-b transition-colors cursor-pointer ${
                     isDark
-                      ? "border-white/[0.04] hover:bg-white/[0.04] focus:bg-white/[0.04] focus:outline-none focus:ring-1 focus:ring-water-blue"
-                      : "border-[#F3F4F6] hover:bg-[#F3F4F6] focus:bg-[#F3F4F6] focus:outline-none focus:ring-1 focus:ring-blue-400"
+                      ? "border-white/[0.04] hover:bg-white/[0.03] focus:bg-white/[0.03] focus:outline-none focus:ring-1 focus:ring-water-blue"
+                      : "border-[#F3F4F6] hover:bg-[#F9FAFB] focus:bg-[#F9FAFB] focus:outline-none focus:ring-1 focus:ring-blue-400"
                   }`}
                 >
                   <td className="py-2.5 px-4">

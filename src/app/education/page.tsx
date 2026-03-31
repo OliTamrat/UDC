@@ -387,7 +387,7 @@ export default function EducationPage() {
               <button
                 key={audience.title}
                 onClick={audience.action}
-                className={`glass-panel rounded-xl p-3 sm:p-5 text-left transition-all group hover:scale-[1.02] ${
+                className={`glass-panel rounded-2xl p-3 sm:p-5 text-left transition-all group hover:scale-[1.02] ${
                   isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB] hover:shadow-md"
                 }`}
               >
@@ -418,7 +418,7 @@ export default function EducationPage() {
                 const revealed = revealedExercises.has(i);
                 const Icon = ex.icon;
                 return (
-                  <div key={i} className="glass-panel rounded-xl overflow-hidden">
+                  <div key={i} className="glass-panel rounded-2xl overflow-hidden">
                     <button
                       onClick={() => toggleExercise(i)}
                       className={`w-full p-4 text-left transition-colors ${
@@ -508,7 +508,7 @@ export default function EducationPage() {
                 <button
                   key={module.title}
                   onClick={() => setActiveModule(module)}
-                  className={`glass-panel rounded-xl p-3 sm:p-5 text-left transition-all group cursor-pointer hover:scale-[1.02] ${
+                  className={`glass-panel rounded-2xl p-3 sm:p-5 text-left transition-all group cursor-pointer hover:scale-[1.02] ${
                     isDark ? "hover:border-white/[0.06]" : "hover:border-[#E5E7EB] hover:shadow-md"
                   }`}
                 >
@@ -634,7 +634,7 @@ export default function EducationPage() {
               {communityEvents.map((event) => (
                 <div
                   key={event.title}
-                  className="glass-panel rounded-xl p-3 sm:p-5 hover:border-emerald-500/30 transition-all"
+                  className="glass-panel rounded-2xl p-3 sm:p-5 hover:border-emerald-500/30 transition-all"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <span className="text-[10px] font-medium text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
@@ -689,7 +689,7 @@ export default function EducationPage() {
               ].map((tmpl) => (
                 <div
                   key={tmpl.file}
-                  className="glass-panel rounded-xl p-3 sm:p-5 hover:border-blue-500/30 transition-all group"
+                  className="glass-panel rounded-2xl p-3 sm:p-5 hover:border-blue-500/30 transition-all group"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className={`p-2 rounded-lg ${tmpl.bg}`}>
@@ -724,7 +724,7 @@ export default function EducationPage() {
               {openDatasets.map((dataset) => (
                 <div
                   key={dataset.name}
-                  className="glass-panel rounded-xl p-3 sm:p-5 hover:border-blue-500/30 transition-all group"
+                  className="glass-panel rounded-2xl p-3 sm:p-5 hover:border-blue-500/30 transition-all group"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="p-2 rounded-lg bg-blue-500/10">

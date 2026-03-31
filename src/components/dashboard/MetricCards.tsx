@@ -672,7 +672,7 @@ export default function MetricCards() {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="glass-panel rounded-xl border p-2 sm:p-4 h-24 sm:h-28 animate-pulse" />
+          <div key={i} className="glass-panel rounded-2xl border p-2 sm:p-4 h-24 sm:h-28 animate-pulse" />
         ))}
       </div>
     );
@@ -741,10 +741,10 @@ export default function MetricCards() {
               key={card.label}
               onClick={() => setActiveModal(card.modalKey)}
               aria-label={`View details for ${card.label}`}
-              className={`metric-card rounded-xl border p-2 sm:p-4 text-left transition-all hover:scale-[1.02] hover:shadow-lg cursor-pointer group ${
+              className={`rounded-2xl p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer group ${
                 isDark
-                  ? `${card.borderColor} ${card.bgColor} hover:border-opacity-60`
-                  : `${card.lightBorderColor} ${card.lightBgColor} hover:shadow-md`
+                  ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20 hover:border-white/[0.12] hover:shadow-xl hover:shadow-black/30"
+                  : "bg-white border border-[#E5E7EB] shadow-sm shadow-black/[0.03] hover:shadow-md hover:border-[#D1D5DB]"
               }`}
             >
               <div className="flex items-start justify-between mb-1 sm:mb-2">

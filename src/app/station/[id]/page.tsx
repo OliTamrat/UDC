@@ -473,7 +473,7 @@ export default function StationDetailPage() {
                   const catLabel = cat.charAt(0).toUpperCase() + cat.slice(1);
 
                   return (
-                    <div key={cat} className={`glass-panel rounded-xl overflow-hidden`}>
+                    <div key={cat} className={`glass-panel rounded-2xl overflow-hidden`}>
                       <div className={`px-3 py-2 border-b ${isDark ? "border-white/[0.06] bg-[#13161F]/50" : "border-[#F3F4F6] bg-[#F9FAFB]"}`}>
                         <h3 className={`text-xs font-semibold uppercase tracking-wider ${catColor}`}>
                           {catLabel}
@@ -543,7 +543,7 @@ export default function StationDetailPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Dissolved Oxygen */}
                 {!isGI && (
-                  <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Dissolved oxygen trend chart showing monthly averages with EPA minimum threshold of 5 mg/L">
+                  <div className="glass-panel rounded-2xl p-3 sm:p-4" role="img" aria-label="Dissolved oxygen trend chart showing monthly averages with EPA minimum threshold of 5 mg/L">
                     <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Dissolved Oxygen</h3>
                     <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly average (mg/L) with EPA minimum threshold</p>
                     <ResponsiveContainer width="100%" height={200}>
@@ -566,7 +566,7 @@ export default function StationDetailPage() {
                 )}
 
                 {/* Temperature */}
-                <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Water temperature trend chart showing monthly averages in degrees Celsius">
+                <div className="glass-panel rounded-2xl p-3 sm:p-4" role="img" aria-label="Water temperature trend chart showing monthly averages in degrees Celsius">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Water Temperature</h3>
                   <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly average (°C)</p>
                   <ResponsiveContainer width="100%" height={200}>
@@ -587,7 +587,7 @@ export default function StationDetailPage() {
                 </div>
 
                 {/* E. coli */}
-                <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="E. coli levels bar chart showing monthly averages with EPA recreational limit of 410 CFU per 100mL">
+                <div className="glass-panel rounded-2xl p-3 sm:p-4" role="img" aria-label="E. coli levels bar chart showing monthly averages with EPA recreational limit of 410 CFU per 100mL">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>E. coli Levels</h3>
                   <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly average (CFU/100mL) with EPA recreational limit</p>
                   <ResponsiveContainer width="100%" height={200}>
@@ -603,7 +603,7 @@ export default function StationDetailPage() {
                 </div>
 
                 {/* Turbidity */}
-                <div className="glass-panel rounded-xl p-3 sm:p-4" role="img" aria-label="Turbidity trend chart showing monthly averages in NTU">
+                <div className="glass-panel rounded-2xl p-3 sm:p-4" role="img" aria-label="Turbidity trend chart showing monthly averages in NTU">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Turbidity</h3>
                   <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>Monthly average (NTU)</p>
                   <ResponsiveContainer width="100%" height={200}>
@@ -626,7 +626,7 @@ export default function StationDetailPage() {
 
               {/* Multi-parameter overlay */}
               {!isGI && (
-                <div className="glass-panel rounded-xl p-3 sm:p-4">
+                <div className="glass-panel rounded-2xl p-3 sm:p-4">
                   <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Multi-Parameter Comparison</h3>
                   <p className={`text-xs mb-3 ${isDark ? "text-[#D1D5DB]" : "text-[#4B5563]"}`}>All parameters overlaid for correlation analysis</p>
                   <ResponsiveContainer width="100%" height={220}>
@@ -647,7 +647,7 @@ export default function StationDetailPage() {
               )}
 
               {/* Parameters monitored */}
-              <div className="glass-panel rounded-xl p-3 sm:p-4">
+              <div className="glass-panel rounded-2xl p-3 sm:p-4">
                 <h3 className={`text-sm font-semibold mb-3 ${isDark ? "text-white" : "text-[#111827]"}`}>Parameters Monitored</h3>
                 <div className="flex flex-wrap gap-2">
                   {station.parameters.map((param) => (
