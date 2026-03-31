@@ -168,7 +168,7 @@ export default function Dashboard() {
                 <span className={`text-xs ${isDark ? "text-[#E5E7EB]" : "text-[#6B7280]"}`}>{t("section.map_network")}</span>
               </div>
             </div>
-            <div className="h-[250px] sm:h-[350px] md:h-[550px] overflow-hidden rounded-2xl" aria-label="Interactive watershed map">
+            <div className="h-[250px] sm:h-[350px] md:h-[550px] overflow-hidden rounded-2xl clip-contents" aria-label="Interactive watershed map">
               <DCMap
                 onStationSelect={setSelectedStation}
                 selectedStation={selectedStation}
@@ -191,7 +191,7 @@ export default function Dashboard() {
                 {t("section.wq_desc")}
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 clip-contents">
               <DOTrendChart />
               <TemperatureTrendChart />
               <EColiChart />
@@ -207,7 +207,9 @@ export default function Dashboard() {
                 {t("section.multi_desc")}
               </p>
             </div>
-            <MultiParameterChart />
+            <div className="clip-contents">
+              <MultiParameterChart />
+            </div>
           </section>
           </TempUnitProvider>
 
@@ -219,7 +221,9 @@ export default function Dashboard() {
                 {t("section.ej_desc")}
               </p>
             </div>
-            <EnvironmentalJustice />
+            <div className="clip-contents">
+              <EnvironmentalJustice />
+            </div>
           </section>
 
           {/* Station Table */}

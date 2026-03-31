@@ -244,13 +244,6 @@ html.light .metric-card:hover {
   animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-/* Leaflet map containment — clip transformed tile layers */
-.leaflet-container {
-  position: relative;
-  overflow: hidden !important;
-  contain: paint;
-}
-
 /* Station table containment — keep table scroll internal */
 .station-table-wrap {
   overflow-x: auto;
@@ -259,13 +252,10 @@ html.light .metric-card:hover {
   max-width: 100%;
 }
 
-/* Recharts containment — prevent axis labels from overflowing */
-.recharts-wrapper,
-.recharts-surface {
-  overflow: hidden !important;
-}
-.recharts-responsive-container {
-  overflow: hidden;
+/* Clip containers — clip-path:inset(0) clips CSS-transformed children
+   unlike overflow:hidden which fails on transformed elements */
+.clip-contents {
+  clip-path: inset(0);
 }
 
 /* Water flow animation */
