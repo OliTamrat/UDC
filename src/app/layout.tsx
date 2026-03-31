@@ -30,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark overflow-x-hidden">
       <head>
         {/* Preconnect to external origins for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,7 +47,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased transition-colors duration-300">
+      <body className="antialiased transition-colors duration-300 overflow-x-hidden">
         {/* Skip-to-content link for keyboard/screen reader users (WCAG 2.1 AA §2.4.1) */}
         <a
           href="#main-content"
