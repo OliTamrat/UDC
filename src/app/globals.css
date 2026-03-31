@@ -252,20 +252,10 @@ html.light .metric-card:hover {
   max-width: 100%;
 }
 
-/* Clip containers — clip-path:inset(0) clips CSS-transformed children
-   unlike overflow:hidden which fails on transformed elements */
+/* Clip containers — prevents any child from causing page-level overflow */
 .clip-contents {
   clip-path: inset(0);
-}
-
-/* Force Leaflet tile container to respect parent bounds */
-.leaflet-tile-container {
-  clip-path: inset(0) !important;
-}
-
-/* Force Recharts SVG to not extend beyond its container */
-.recharts-wrapper svg {
-  clip-path: inset(0);
+  overflow: clip;
 }
 
 /* Water flow animation */
