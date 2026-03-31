@@ -244,9 +244,19 @@ html.light .metric-card:hover {
   animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-/* Leaflet map containment */
+/* Leaflet map containment — prevent tiles from causing page overflow */
 .leaflet-container {
   position: relative;
+  overflow: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Station table containment — keep table scroll internal */
+.station-table-wrap {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
 }
 
 /* Water flow animation */

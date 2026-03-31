@@ -235,7 +235,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
         <h3 className={`text-sm font-semibold ${isDark ? "text-[#F3F4F6]" : "text-[#1F2937]"}`}>{t("table.title")}</h3>
         <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#6B7280]"}`}>{t("table.subtitle")}</p>
       </div>
-      <div className="overflow-x-auto">
+      <div className="station-table-wrap">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
             <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#E5E7EB] bg-[#F9FAFB]"}`}>
