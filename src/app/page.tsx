@@ -19,7 +19,7 @@ import Footer from "@/components/layout/Footer";
 import ParameterExplorer from "@/components/dashboard/ParameterExplorer";
 import TimeSlider, { type MonthlySnapshot } from "@/components/map/TimeSlider";
 import { Droplets, MapPin, TrendingUp, Shield, SlidersHorizontal } from "lucide-react";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import type { MonitoringStation } from "@/data/dc-waterways";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -36,34 +36,6 @@ const DCMap = dynamic(() => import("@/components/map/DCMap"), {
     </div>
   ),
 });
-
-function OverflowDebug() {
-  const [info, setInfo] = useState<string[]>([]);
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const w = document.documentElement.clientWidth;
-      const found: string[] = [`Viewport: ${w}px`];
-      document.querySelectorAll("*").forEach((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.right > w + 2) {
-          const tag = el.tagName.toLowerCase();
-          const cls = typeof el.className === "string" ? el.className.split(" ").slice(0, 4).join(" ") : "";
-          found.push(`<${tag}> cls="${cls}" right=${Math.round(r.right)} overflow=${Math.round(r.right - w)}px`);
-        }
-      });
-      setInfo(found);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
-  if (info.length <= 1) return null;
-  return (
-    <div style={{ position: "fixed", bottom: 60, left: 8, right: 8, zIndex: 99999, background: "rgba(0,0,0,0.95)", color: "#0f0", fontSize: 9, padding: 8, borderRadius: 8, maxHeight: 200, overflow: "auto" }}>
-      <button onClick={() => setShow(!show)} style={{ color: "#ff0", marginBottom: 4 }}>{show ? "Hide" : `Show ${info.length - 1} overflow elements`}</button>
-      {show && info.map((s, i) => <div key={i} style={{ marginBottom: 2 }}>{s}</div>)}
-    </div>
-  );
-}
 
 export default function Dashboard() {
   const [selectedStation, setSelectedStation] = useState<MonitoringStation | null>(null);
@@ -261,8 +233,6 @@ export default function Dashboard() {
           <Footer />
         </div>
       </main>
-      <OverflowDebug />
-
       {/* Parameter Explorer Slide-out */}
       <ParameterExplorer
         open={explorerOpen}
