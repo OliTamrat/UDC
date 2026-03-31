@@ -143,7 +143,7 @@ export default function MethodologyPage() {
   }, [fetchLogs]);
 
   return (
-    <div className={`flex min-h-screen overflow-x-hidden transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
+    <div className={`flex min-h-screen transition-colors duration-300 ${isDark ? "bg-udc-dark" : "bg-[#F9FAFB]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />

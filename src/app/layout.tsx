@@ -64,7 +64,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark overflow-x-hidden">
+    <html lang="en" className="dark">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Preconnect to external origins for faster loading */}
@@ -82,7 +82,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased transition-colors duration-300 overflow-x-hidden">
+      <body className="antialiased transition-colors duration-300">
         {/* Skip-to-content link for keyboard/screen reader users (WCAG 2.1 AA §2.4.1) */}
         <a
           href="#main-content"

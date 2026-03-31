@@ -41,12 +41,7 @@
   --color-accent-teal: #2DD4BF;
 }
 
-/* ── Base Typography & Overflow Prevention ── */
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
+/* ── Base Typography ── */
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -249,9 +244,8 @@ html.light .metric-card:hover {
   animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-/* Contain Leaflet map within its parent — prevent overflow and z-index conflicts */
+/* Leaflet map containment */
 .leaflet-container {
-  z-index: 0;
   position: relative;
 }
 
