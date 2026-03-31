@@ -6,10 +6,18 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ResearchAssistantWrapper from "@/components/ai/ResearchAssistantWrapper";
 import "./globals.css";
 
+const siteUrl = "https://udc-one.vercel.app";
+const siteTitle = "UDC Water Resources Dashboard | Data Integration, Analysis & Visualization";
+const siteDescription =
+  "Real-time water quality monitoring, analysis, and visualization for the Anacostia River watershed. University of the District of Columbia CAUSES/WRRI research dashboard with USGS sensor data, EPA standards tracking, and environmental education.";
+
 export const metadata: Metadata = {
-  title: "UDC Water Resources Dashboard | Data Integration, Analysis & Visualization",
-  description:
-    "University of the District of Columbia CAUSES/WRRI interactive water resources dashboard for the Anacostia River watershed. Monitoring, research data, and environmental education for DC communities.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteTitle,
+    template: "%s | UDC Water Resources",
+  },
+  description: siteDescription,
   keywords: [
     "UDC",
     "University of the District of Columbia",
@@ -21,7 +29,33 @@ export const metadata: Metadata = {
     "green infrastructure",
     "environmental data",
     "DC watershed",
+    "USGS",
+    "EPA",
+    "water monitoring",
+    "dissolved oxygen",
+    "environmental justice",
   ],
+  authors: [{ name: "UDC CAUSES / WRRI", url: "https://www.udc.edu/causes/" }],
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    title: siteTitle,
+    description: siteDescription,
+    siteName: "UDC Water Resources Dashboard",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
