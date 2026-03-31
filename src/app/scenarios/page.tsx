@@ -147,7 +147,7 @@ export default function ScenariosPage() {
   const availableStations = currentFrame?.stations || [];
 
   return (
-    <div className={`flex min-h-screen ${isDark ? "bg-udc-dark text-white" : "bg-[#F9FAFB] text-[#111827]"}`}>
+    <div className={`flex min-h-screen overflow-x-hidden ${isDark ? "bg-udc-dark text-white" : "bg-[#F9FAFB] text-[#111827]"}`}>
       <Sidebar />
       <main id="main-content" className={`flex-1 ${sidebarClass} min-w-0 overflow-x-hidden`}>
         <Header />

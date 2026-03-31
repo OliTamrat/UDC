@@ -41,7 +41,12 @@
   --color-accent-teal: #2DD4BF;
 }
 
-/* ── Base Typography ── */
+/* ── Base Typography & Overflow Prevention ── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
