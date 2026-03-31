@@ -271,13 +271,13 @@ export default function StationDetailPage() {
   }
 
   const reading = station.lastReading;
-  const gridColor = isDark ? "#1E3A5F" : "#E2E8F0";
-  const tickColor = isDark ? "#64748B" : "#94A3B8";
+  const gridColor = isDark ? "#23262F" : "#E2E8F0";
+  const tickColor = isDark ? "#9CA3AF" : "#94A3B8";
   const tooltipStyle = {
-    backgroundColor: isDark ? "rgba(15, 29, 50, 0.95)" : "rgba(255, 255, 255, 0.98)",
-    border: isDark ? "1px solid rgba(30, 58, 95, 0.5)" : "1px solid #E2E8F0",
+    backgroundColor: isDark ? "rgba(19, 22, 31, 0.95)" : "rgba(255, 255, 255, 0.98)",
+    border: isDark ? "1px solid rgba(255, 255, 255, 0.06)" : "1px solid #E2E8F0",
     borderRadius: "8px", padding: "10px", fontSize: "12px",
-    color: isDark ? "#F8FAFC" : "#1E293B",
+    color: isDark ? "#F3F4F6" : "#111827",
   };
 
   const isGI = station.type === "green-infrastructure";
@@ -557,7 +557,7 @@ export default function StationDetailPage() {
                         <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                         <XAxis dataKey="month" tick={{ fontSize: 11, fill: tickColor }} />
                         <YAxis tick={{ fontSize: 11, fill: tickColor }} domain={[0, 14]} />
-                        <Tooltip contentStyle={tooltipStyle} />
+                        <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: isDark ? "#F3F4F6" : "#111827" }} itemStyle={{ color: isDark ? "#D1D5DB" : "#374151" }} />
                         <Area type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" fill={`url(#do-grad-${stationId})`} strokeWidth={2} name="DO (mg/L)" />
                         <Line type="monotone" dataKey={() => epaLimits.dissolvedOxygen.min} stroke="#EF4444" strokeWidth={1} strokeDasharray="5 5" name={epaLimits.dissolvedOxygen.label} dot={false} />
                       </AreaChart>
@@ -580,7 +580,7 @@ export default function StationDetailPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                       <XAxis dataKey="month" tick={{ fontSize: 11, fill: tickColor }} />
                       <YAxis tick={{ fontSize: 11, fill: tickColor }} />
-                      <Tooltip contentStyle={tooltipStyle} />
+                      <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: isDark ? "#F3F4F6" : "#111827" }} itemStyle={{ color: isDark ? "#D1D5DB" : "#374151" }} />
                       <Area type="monotone" dataKey="temperature" stroke="#22D3EE" fill={`url(#temp-grad-${stationId})`} strokeWidth={2} name="Temperature (°C)" />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -595,7 +595,7 @@ export default function StationDetailPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                       <XAxis dataKey="month" tick={{ fontSize: 11, fill: tickColor }} />
                       <YAxis tick={{ fontSize: 11, fill: tickColor }} />
-                      <Tooltip contentStyle={tooltipStyle} />
+                      <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: isDark ? "#F3F4F6" : "#111827" }} itemStyle={{ color: isDark ? "#D1D5DB" : "#374151" }} />
                       <Bar dataKey="eColiCount" name="E. coli (CFU/100mL)" radius={[4, 4, 0, 0]} fill="#EF4444" fillOpacity={0.7} />
                       <Line type="monotone" dataKey={() => epaLimits.eColiCount.max} stroke="#F59E0B" strokeWidth={1.5} strokeDasharray="5 5" name={epaLimits.eColiCount.label} dot={false} />
                     </BarChart>
@@ -617,7 +617,7 @@ export default function StationDetailPage() {
                       <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                       <XAxis dataKey="month" tick={{ fontSize: 11, fill: tickColor }} />
                       <YAxis tick={{ fontSize: 11, fill: tickColor }} />
-                      <Tooltip contentStyle={tooltipStyle} />
+                      <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: isDark ? "#F3F4F6" : "#111827" }} itemStyle={{ color: isDark ? "#D1D5DB" : "#374151" }} />
                       <Area type="monotone" dataKey="turbidity" stroke="#F59E0B" fill={`url(#turb-grad-${stationId})`} strokeWidth={2} name="Turbidity (NTU)" />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -635,7 +635,7 @@ export default function StationDetailPage() {
                       <XAxis dataKey="month" tick={{ fontSize: 11, fill: tickColor }} />
                       <YAxis yAxisId="left" tick={{ fontSize: 11, fill: tickColor }} />
                       <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: tickColor }} />
-                      <Tooltip contentStyle={tooltipStyle} />
+                      <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: isDark ? "#F3F4F6" : "#111827" }} itemStyle={{ color: isDark ? "#D1D5DB" : "#374151" }} />
                       <Legend wrapperStyle={{ fontSize: 11, color: isDark ? "#94A3B8" : "#64748B" }} />
                       <Line yAxisId="left" type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" strokeWidth={2} name="DO (mg/L)" dot={{ r: 2 }} />
                       <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#22D3EE" strokeWidth={2} name="Temp (°C)" dot={{ r: 2 }} />

@@ -66,6 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark overflow-x-hidden">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Preconnect to external origins for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />

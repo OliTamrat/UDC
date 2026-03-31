@@ -376,7 +376,7 @@ export default function ResearchAssistant() {
                 }
                 disabled={hasApiKey === false || isLoading}
                 rows={1}
-                className={`flex-1 resize-none rounded-xl px-3.5 py-2.5 text-sm border focus:outline-none transition-colors min-h-[40px] max-h-[100px] ${
+                className={`flex-1 resize-none rounded-xl px-3.5 py-2.5 text-sm border focus:outline-none transition-colors h-[40px] overflow-y-auto ${
                   isDark
                     ? "bg-[#0C0F17]/50 border-white/[0.06] text-[#E5E7EB] placeholder:text-[#9CA3AF] focus:border-udc-blue/50"
                     : "bg-[#F9FAFB] border-[#E5E7EB] text-[#374151] placeholder:text-[#9CA3AF] focus:border-blue-400"

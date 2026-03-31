@@ -79,7 +79,7 @@ export default function EnvironmentalJustice() {
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis dataKey="name" tick={{ fontSize: 10, fill: tickColor }} />
               <YAxis tick={{ fontSize: 10, fill: tickColor }} />
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: isDark ? "#F3F4F6" : "#111827" }} itemStyle={{ color: isDark ? "#D1D5DB" : "#374151" }} />
               <Bar dataKey="csoEvents" name="CSO Events" radius={[4, 4, 0, 0]}>
                 {wardData.map((entry, i) => (
                   <Cell key={`cell-${i}`} fill={riskColors[entry.floodRisk]} fillOpacity={0.7} />
@@ -95,7 +95,7 @@ export default function EnvironmentalJustice() {
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis dataKey="name" tick={{ fontSize: 10, fill: tickColor }} />
               <YAxis tick={{ fontSize: 10, fill: tickColor }} domain={[0, 100]} />
-              <Tooltip contentStyle={tooltipStyle} />
+              <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: isDark ? "#F3F4F6" : "#111827" }} itemStyle={{ color: isDark ? "#D1D5DB" : "#374151" }} />
               <Bar dataKey="greenSpaceAccess" name="Green Space %" radius={[4, 4, 0, 0]} fill="#22C55E" fillOpacity={0.7} />
             </BarChart>
           </ResponsiveContainer>

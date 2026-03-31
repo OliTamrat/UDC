@@ -192,7 +192,7 @@ export default function Sidebar() {
           />
           <aside
             aria-label="Main navigation"
-            className={`absolute left-0 top-0 h-full w-[280px] flex flex-col shadow-2xl animate-slide-in-left ${
+            className={`absolute left-0 top-0 h-full w-[calc(100vw-3rem)] max-w-[280px] flex flex-col shadow-2xl animate-slide-in-left ${
               isDark ? "bg-[#13161F] border-r border-white/[0.06]" : "bg-white border-r border-[#E5E7EB]"
             }`}
           >

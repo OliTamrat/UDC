@@ -152,6 +152,8 @@ function useChartTheme() {
       color: isDark ? "#F3F4F6" : "#111827",
       boxShadow: isDark ? "0 4px 12px rgba(0,0,0,0.3)" : "0 4px 12px rgba(0,0,0,0.08)",
     },
+    tooltipLabelStyle: { color: isDark ? "#F3F4F6" : "#111827" } as React.CSSProperties,
+    tooltipItemStyle: { color: isDark ? "#D1D5DB" : "#374151" } as React.CSSProperties,
     titleColor: isDark ? "text-white" : "text-[#111827]",
     subtitleColor: isDark ? "text-[#D1D5DB]" : "text-[#4B5563]",
   };
@@ -282,7 +284,7 @@ export function DOTrendChart() {
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} domain={[0, 14]} />
-          <Tooltip contentStyle={t.tooltipStyle} />
+          <Tooltip contentStyle={t.tooltipStyle} labelStyle={t.tooltipLabelStyle} itemStyle={t.tooltipItemStyle} />
           <Area type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" fill="url(#doGradient)" strokeWidth={2} name="DO (mg/L)" />
           <ReferenceLine y={5} stroke="#EF4444" strokeWidth={1} strokeDasharray="5 5" label={{ value: "EPA Min (5 mg/L)", fill: "#EF4444", fontSize: 10, position: "right" }} />
         </AreaChart>
@@ -325,7 +327,7 @@ export function TemperatureTrendChart() {
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
-          <Tooltip contentStyle={t.tooltipStyle} />
+          <Tooltip contentStyle={t.tooltipStyle} labelStyle={t.tooltipLabelStyle} itemStyle={t.tooltipItemStyle} />
           <Area type="monotone" dataKey="temperature" stroke="#22D3EE" fill="url(#tempGradient)" strokeWidth={2} name={`Temperature (${unitLabel})`} />
         </AreaChart>
       </ResponsiveContainer>
@@ -348,7 +350,7 @@ export function EColiChart() {
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
-          <Tooltip contentStyle={t.tooltipStyle} />
+          <Tooltip contentStyle={t.tooltipStyle} labelStyle={t.tooltipLabelStyle} itemStyle={t.tooltipItemStyle} />
           <Bar dataKey="eColiCount" name="E. coli (CFU/100mL)" radius={[4, 4, 0, 0]} fill="#EF4444" fillOpacity={0.7} />
           <ReferenceLine y={410} stroke="#F59E0B" strokeWidth={1.5} strokeDasharray="5 5" label={{ value: "EPA Limit (410)", fill: "#F59E0B", fontSize: 10, position: "right" }} />
         </BarChart>
@@ -369,7 +371,7 @@ export function StormwaterChart() {
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
-          <Tooltip contentStyle={t.tooltipStyle} />
+          <Tooltip contentStyle={t.tooltipStyle} labelStyle={t.tooltipLabelStyle} itemStyle={t.tooltipItemStyle} />
           <Bar dataKey="stormwaterRunoff" name="Runoff (M gal)" radius={[4, 4, 0, 0]} fill="#8B5CF6" fillOpacity={0.7} />
         </BarChart>
       </ResponsiveContainer>
@@ -400,7 +402,7 @@ export function MultiParameterChart() {
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
-          <Tooltip contentStyle={t.tooltipStyle} />
+          <Tooltip contentStyle={t.tooltipStyle} labelStyle={t.tooltipLabelStyle} itemStyle={t.tooltipItemStyle} />
           <Legend wrapperStyle={{ fontSize: 11, color: t.isDark ? "#9CA3AF" : "#64748B" }} />
           <Line type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" strokeWidth={2} name="DO (mg/L)" dot={{ r: 2 }} />
           <Line type="monotone" dataKey="temperature" stroke="#22D3EE" strokeWidth={2} name={`Temp (${unitLabel})`} dot={{ r: 2 }} />
@@ -480,7 +482,7 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
           <CartesianGrid strokeDasharray="3 3" stroke={t.gridColor} />
           <XAxis dataKey="time" tick={{ fontSize: 10, fill: t.tickColor }} />
           <YAxis tick={{ fontSize: 11, fill: t.tickColor }} />
-          <Tooltip contentStyle={t.tooltipStyle} />
+          <Tooltip contentStyle={t.tooltipStyle} labelStyle={t.tooltipLabelStyle} itemStyle={t.tooltipItemStyle} />
           <Legend wrapperStyle={{ fontSize: 11, color: t.isDark ? "#9CA3AF" : "#64748B" }} />
           <Line type="monotone" dataKey="dissolvedOxygen" stroke="#3B82F6" strokeWidth={2} name="DO (mg/L)" dot={{ r: 1.5 }} connectNulls />
           <Line type="monotone" dataKey="temperature" stroke="#22D3EE" strokeWidth={2} name={`Temp (${unitLabel})`} dot={{ r: 1.5 }} connectNulls />

@@ -184,7 +184,7 @@ export default function Header() {
         <button
           onClick={openMobile}
           aria-label={t("header.open_nav")}
-          className={`lg:hidden p-1.5 sm:p-2 rounded-lg transition-colors flex-shrink-0 ${
+          className={`lg:hidden p-2.5 rounded-lg transition-colors flex-shrink-0 ${
             isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
           }`}
         >
@@ -271,7 +271,7 @@ export default function Header() {
         <div className="relative" ref={langRef}>
           <button
             onClick={() => setShowLangMenu(!showLangMenu)}
-            className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
+            className={`p-2.5 rounded-lg transition-colors ${
               isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
             }`}
             title={t("header.language")}
@@ -320,7 +320,7 @@ export default function Header() {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setShowThemeMenu(!showThemeMenu)}
-            className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
+            className={`p-2.5 rounded-lg transition-colors ${
               isDark ? "hover:bg-white/[0.04] text-[#D1D5DB]" : "hover:bg-gray-100 text-[#4B5563]"
             }`}
             title={t("header.change_appearance")}
@@ -368,7 +368,7 @@ export default function Header() {
 
         {/* Notifications — hidden on very small screens */}
         <button
-          className={`hidden sm:block relative p-1.5 sm:p-2 rounded-lg transition-colors ${
+          className={`hidden sm:block relative p-2.5 rounded-lg transition-colors ${
             isDark ? "hover:bg-white/[0.04]" : "hover:bg-gray-100"
           }`}
           title={t("header.notifications")}
