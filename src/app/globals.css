@@ -249,15 +249,10 @@ html.light .metric-card:hover {
   animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-/* Ensure Leaflet map doesn't overlap modals */
-.leaflet-pane,
-.leaflet-top,
-.leaflet-bottom,
-.leaflet-control {
-  z-index: 1 !important;
-}
-.leaflet-popup-pane {
-  z-index: 2 !important;
+/* Contain Leaflet map within its parent — prevent overflow and z-index conflicts */
+.leaflet-container {
+  z-index: 0;
+  position: relative;
 }
 
 /* Water flow animation */
