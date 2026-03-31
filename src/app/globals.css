@@ -258,6 +258,16 @@ html.light .metric-card:hover {
   clip-path: inset(0);
 }
 
+/* Force Leaflet tile container to respect parent bounds */
+.leaflet-tile-container {
+  clip-path: inset(0) !important;
+}
+
+/* Force Recharts SVG to not extend beyond its container */
+.recharts-wrapper svg {
+  clip-path: inset(0);
+}
+
 /* Water flow animation */
 @keyframes water-flow {
   0% { stroke-dashoffset: 0; }
