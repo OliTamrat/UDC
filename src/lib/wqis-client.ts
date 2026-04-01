@@ -1,4 +1,4 @@
-﻿const WQIS_AGENT_URL = process.env.WQIS_AGENT_URL ?? 'http://localhost:8001';
+﻿const WQIS_AGENT_URL = process.env.WQIS_AGENT_URL ?? process.env.NEXT_PUBLIC_WQIS_AGENT_URL ?? 'http://localhost:8001';
 const WQIS_APP_ID    = process.env.WQIS_AGENT_APP_ID ?? 'wqis_agent';
 const WQIS_USER_ID   = process.env.WQIS_AGENT_USER_ID ?? 'dashboard-user';
 

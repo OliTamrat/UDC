@@ -15,8 +15,9 @@ import {
 import {
   ArrowLeft, MapPin, Activity, Droplets, Thermometer, Waves,
   AlertTriangle, CheckCircle2, Wrench, AlertCircle, Download, Share2,
-  FlaskConical, Clock,
+  FlaskConical, Clock, BrainCircuit,
 } from "lucide-react";
+import { WqisStationAnalysis } from "@/components/ai/WqisStationAnalysis";
 import { RealTimeStationChart } from "@/components/charts/WaterQualityCharts";
 import { useSidebarClass } from "@/hooks/useSidebarMargin";
 
@@ -123,6 +124,7 @@ export default function StationDetailPage() {
   const [allParamDefs, setAllParamDefs] = useState<ParameterDef[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [showAiAnalysis, setShowAiAnalysis] = useState(false);
 
   const fetchData = useCallback(async () => {
     const staticStation = monitoringStations.find((s) => s.id === stationId);
@@ -346,6 +348,16 @@ export default function StationDetailPage() {
                 isDark ? "border-white/[0.06] text-[#D1D5DB] hover:bg-white/[0.04]" : "border-[#D1D5DB] text-[#1F2937] hover:bg-[#E5E7EB]"
               }`}>
                 <Share2 className="w-3.5 h-3.5" aria-hidden="true" /> Share
+              </button>
+              <button
+                onClick={() => setShowAiAnalysis(true)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  isDark
+                    ? "bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20"
+                    : "bg-blue-100 text-blue-700 border border-blue-300 hover:bg-blue-200"
+                }`}
+              >
+                <BrainCircuit className="w-3.5 h-3.5" aria-hidden="true" /> AI Analysis
               </button>
             </div>
           </div>
@@ -663,6 +675,15 @@ export default function StationDetailPage() {
           )}
         </div>
       </main>
+
+      {/* AI Station Analysis Slide-out */}
+      {showAiAnalysis && station && (
+        <WqisStationAnalysis
+          stationId={station.id}
+          stationName={station.name}
+          onClose={() => setShowAiAnalysis(false)}
+        />
+      )}
     </div>
   );
 }

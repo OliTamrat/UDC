@@ -16,6 +16,7 @@ import {
   TempUnitProvider,
 } from "@/components/charts/WaterQualityCharts";
 import Footer from "@/components/layout/Footer";
+import { WqisInsightsPanel } from "@/components/ai/WqisInsightsPanel";
 import ParameterExplorer from "@/components/dashboard/ParameterExplorer";
 import TimeSlider, { type MonthlySnapshot } from "@/components/map/TimeSlider";
 import { Droplets, MapPin, TrendingUp, Shield, SlidersHorizontal } from "lucide-react";
@@ -124,6 +125,11 @@ export default function Dashboard() {
           {/* Metric Cards */}
           <section>
             <MetricCards />
+          </section>
+
+          {/* AI Insights */}
+          <section id="ai-insights">
+            <WqisInsightsPanel />
           </section>
 
           {/* Interactive Map */}

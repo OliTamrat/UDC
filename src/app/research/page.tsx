@@ -17,8 +17,10 @@ import {
   Download,
   Globe,
   ArrowRight,
+  BrainCircuit,
 } from "lucide-react";
 import { useState } from "react";
+import { WqisReportModal } from "@/components/ai/WqisReportModal";
 import { useTheme } from "@/context/ThemeContext";
 import Link from "next/link";
 import { useSidebarClass } from "@/hooks/useSidebarMargin";
@@ -45,6 +47,7 @@ const allTags = Array.from(new Set(researchProjects.flatMap((p) => p.tags)));
 export default function ResearchPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [showReport, setShowReport] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const sidebarClass = useSidebarClass();
@@ -81,14 +84,28 @@ export default function ResearchPage() {
               <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-[#111827]"}`}>
                 WRRI & CAUSES Research Projects
               </h1>
-              <p className={`text-sm max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
+              <p className={`text-sm max-w-2xl mb-4 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
                 Active research initiatives from UDC&apos;s Water Resources Research Institute and
                 the College of Agriculture, Urban Sustainability & Environmental Sciences.
                 Addressing critical water quality, stormwater management, and environmental justice
                 challenges in the District of Columbia.
               </p>
+              <button
+                onClick={() => setShowReport(true)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                  isDark
+                    ? "bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20"
+                    : "bg-purple-100 text-purple-700 border border-purple-300 hover:bg-purple-200"
+                }`}
+              >
+                <BrainCircuit className="w-4 h-4" />
+                Generate AI Report
+              </button>
             </div>
           </section>
+
+          {/* WQIS Report Modal */}
+          {showReport && <WqisReportModal onClose={() => setShowReport(false)} />}
 
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3">
