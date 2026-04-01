@@ -179,15 +179,35 @@ Every reading is tagged with its provenance:
 - [x] **Cron fix** — Removed mismatched CRON_SECRET, increased function timeout to 60s
 - [x] **Station statuses** — ANA-001/ANA-004/PB-001 set offline, HR-001 set active (verified against USGS API)
 
-### Phase 8: UI/UX Redesign — TODO
-User feedback: the dark blue navy background, card design, and fonts don't look good. Full visual redesign needed.
-- [ ] Theme system overhaul — new color palette, card styles, typography
-- [ ] All pages design audit (dashboard, station detail, stories, scenarios, admin, education, research, about)
-- [ ] Dark mode refinement — better contrast, card backgrounds, border treatments
-- [ ] Light mode polish
-- [ ] Font selection and sizing
-- [ ] Mobile responsive improvements
-- [ ] Component consistency across all pages
+### Phase 8: UI/UX Redesign — DONE
+- [x] **Dark mode overhaul** — warm charcoal (#090B11 base), card shadows with depth, glass-panel redesign
+- [x] **Light mode overhaul** — #F0F1F3 page bg, dark black text (#1F2937), visible borders (#D1D5DB), stronger shadows
+- [x] **Card system** — rounded-2xl with shadow-lg on dark, shadow-md on light, explicit card classes replacing old glass-panel
+- [x] **40+ component files updated** — all slate colors replaced with proper design tokens
+- [x] **Badge colors** — *-100 backgrounds instead of washed-out *-50 in light mode
+- [x] **Mobile responsive** — viewport-lock wrapper, touch targets 44px+, responsive sidebar drawer
+- [x] **SEO** — sitemap.ts, robots.ts, manifest.ts, OG tags, Twitter cards, favicon.svg
+- [x] **Chart tooltips** — labelStyle/itemStyle for readable text in dark mode
+- [x] **Admin login** — redesigned modal with gradient header, back-to-dashboard link
+- [x] **Horizontal scroll fixed** — viewport-lock wrapper in root layout
+
+### Phase 9: WQIS Agent Integration — DONE
+- [x] **ADK serialization fix** — monkey-patched JSON encoder for bytes/datetime in __init__.py
+- [x] **Dashboard insights panel** — WqisInsightsPanel with parsed markdown alert cards
+- [x] **Station AI analysis** — WqisStationAnalysis slide-out on station detail pages
+- [x] **Report generator** — WqisReportModal on research page
+- [x] **Sidebar nav link** — "AI Insights" under Research section
+- [x] **Env var fix** — WQIS_AGENT_URL added to Vercel production env
+- [x] **Cloud Run redeployed** — ADK 1.0.0 with JSON encoder patch, tools.py _fix function
+
+### Phase 10: Business Development — IN PROGRESS
+- [x] **Pitch deck created** — 8-slide Gamma presentation for stakeholders/investors
+- [ ] **White-label configuration system** — config.json for multi-watershed deployment
+  - Configurable: watershed name, station list, USGS site mappings, branding (logo, colors), map center/zoom
+  - Target: any state EPA or university can deploy their own instance
+  - Pricing model: $5K setup + $500/mo per watershed
+- [ ] **Demo video** — 2-minute screen recording for LinkedIn/website
+- [ ] **Grant applications** — EPA EJCPS ($500K), NSF Smart Communities ($1.5M)
 
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)
