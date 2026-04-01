@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { deployment } from "@/config/site.config";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/api/", "/demo"],
     },
-    sitemap: "https://udc-one.vercel.app/sitemap.xml",
+    sitemap: `${deployment.siteUrl}/sitemap.xml`,
   };
 }

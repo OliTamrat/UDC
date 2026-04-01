@@ -6,24 +6,25 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ResearchAssistantWrapper from "@/components/ai/ResearchAssistantWrapper";
 import "./globals.css";
 
-const siteUrl = "https://udc-one.vercel.app";
-const siteTitle = "UDC Water Resources Dashboard | Data Integration, Analysis & Visualization";
-const siteDescription =
-  "Real-time water quality monitoring, analysis, and visualization for the Anacostia River watershed. University of the District of Columbia CAUSES/WRRI research dashboard with USGS sensor data, EPA standards tracking, and environmental education.";
+import { deployment, institution, watershed, branding, getFullTitle, getDescription } from "@/config/site.config";
+
+const siteUrl = deployment.siteUrl;
+const siteTitle = getFullTitle();
+const siteDescription = getDescription();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: siteTitle,
-    template: "%s | UDC Water Resources",
+    template: `%s | ${institution.shortName} Water Resources`,
   },
   description: siteDescription,
   keywords: [
-    "UDC",
-    "University of the District of Columbia",
-    "CAUSES",
-    "WRRI",
-    "Anacostia River",
+    institution.shortName,
+    institution.name,
+    institution.departmentAcronym,
+    institution.instituteAcronym,
+    watershed.name,
     "water quality",
     "stormwater",
     "green infrastructure",
@@ -35,13 +36,13 @@ export const metadata: Metadata = {
     "dissolved oxygen",
     "environmental justice",
   ],
-  authors: [{ name: "UDC CAUSES / WRRI", url: "https://www.udc.edu/causes/" }],
+  authors: [{ name: `${institution.shortName} ${institution.departmentAcronym} / ${institution.instituteAcronym}`, url: institution.website }],
   openGraph: {
     type: "website",
     url: siteUrl,
     title: siteTitle,
     description: siteDescription,
-    siteName: "UDC Water Resources Dashboard",
+    siteName: `${institution.shortName} Water Resources Dashboard`,
     locale: "en_US",
   },
   twitter: {

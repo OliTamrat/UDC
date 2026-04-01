@@ -16,6 +16,7 @@ import {
 import { useTheme } from "@/context/ThemeContext";
 import MapLayerControls, { type MapLayerState } from "./MapLayerControls";
 import type { MonthlySnapshot } from "./TimeSlider";
+import { watershed } from "@/config/site.config";
 
 let L: typeof import("leaflet") | null = null;
 
@@ -97,8 +98,8 @@ export default function DCMap({
     }
 
     const map = leaflet.map("dc-map", {
-      center: [38.892, -76.970],
-      zoom: 12,
+      center: watershed.mapCenter,
+      zoom: watershed.mapZoom,
       zoomControl: true,
       attributionControl: true,
     });

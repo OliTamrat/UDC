@@ -29,6 +29,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useSidebar } from "@/context/SidebarContext";
 import { useLanguage } from "@/context/LanguageContext";
 import type { TranslationKey } from "@/lib/i18n";
+import { branding } from "@/config/site.config";
 
 const navItems: { href: string; labelKey: TranslationKey; icon: typeof LayoutDashboard; section: string }[] = [
   { href: "/", labelKey: "sidebar.dashboard", icon: LayoutDashboard, section: "overview" },
@@ -85,7 +86,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 py-5 border-b ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm flex-shrink-0 shadow-lg shadow-udc-gold/20">
-          UDC
+          {branding.logoText}
         </div>
         {!collapsed && (
           <div className="overflow-hidden flex-1 min-w-0">
