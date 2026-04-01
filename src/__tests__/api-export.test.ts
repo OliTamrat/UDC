@@ -27,7 +27,7 @@ describe("GET /api/export", () => {
     expect(body.data).toHaveLength(144);
     // Citation metadata
     expect(body.citation).toBeTruthy();
-    expect(body.citation.text).toContain("UDC Water Resources Research Institute");
+    expect(body.citation.text).toContain("Water Resources Research Institute");
     expect(body.citation.publisher).toContain("CAUSES");
     expect(body.sources).toBeInstanceOf(Array);
   });

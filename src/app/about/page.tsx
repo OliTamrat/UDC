@@ -1,5 +1,6 @@
 "use client";
 
+import { institution, watershed } from "@/config/site.config";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -48,7 +49,7 @@ export default function AboutPage() {
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-sm">
-                UDC
+                {institution.shortName}
               </div>
               <div>
                 <h1 className={`text-2xl lg:text-3xl font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>
@@ -70,16 +71,16 @@ export default function AboutPage() {
               <h2 className={headingClass}>Project Purpose</h2>
             </div>
             <p className={textClass}>
-              The UDC Water Resources Dashboard is a data integration and visualization platform
-              created to support teaching, learning, research, and public service within the
-              University of the District of Columbia (UDC). It is designed to benefit:
+              The {institution.shortName} Water Resources Dashboard is a data integration and visualization platform
+              created to support teaching, learning, research, and public service within the{" "}
+              {institution.name} ({institution.shortName}). It is designed to benefit:
             </p>
             <ul className={`mt-4 space-y-3 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
               {[
-                { icon: GraduationCap, text: "UDC CAUSES / WRRI faculty, staff, and students" },
+                { icon: GraduationCap, text: `${institution.shortName} ${institution.departmentAcronym} / ${institution.instituteAcronym} faculty, staff, and students` },
                 { icon: Users, text: "Researchers and environmental professionals" },
                 { icon: Landmark, text: "District of Columbia government agencies" },
-                { icon: BarChart3, text: "The general public seeking accessible water-resource information" },
+                { icon: BarChart3, text: `The general public seeking accessible ${watershed.name} water-resource information` },
               ].map((item) => (
                 <li key={item.text} className="flex items-start gap-3 text-sm">
                   <item.icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${isDark ? "text-udc-gold" : "text-amber-500"}`} />
@@ -100,9 +101,9 @@ export default function AboutPage() {
             <div className="space-y-3">
               <p className={textClass}>
                 This project was proposed and academically guided by{" "}
-                <strong className={isDark ? "text-white" : "text-[#111827]"}>Dr. Tolessa Deksissa</strong>,
-                Faculty Head of the Water Resources Research Institute (WRRI) at the University of the
-                District of Columbia.
+                <strong className={isDark ? "text-white" : "text-[#111827]"}>{institution.principalInvestigator}</strong>,
+                Faculty Head of the {institution.institute} ({institution.instituteAcronym}) at the{" "}
+                {institution.name}.
               </p>
               <div className={`flex items-start gap-3 p-4 rounded-lg ${isDark ? "bg-udc-gold/5 border border-udc-gold/20" : "bg-amber-100 border border-amber-100"}`}>
                 <Landmark className={`w-5 h-5 mt-0.5 flex-shrink-0 ${isDark ? "text-udc-gold" : "text-amber-600"}`} />
@@ -124,7 +125,7 @@ export default function AboutPage() {
               <h2 className={headingClass}>Design &amp; Development</h2>
             </div>
             <p className={`${textClass} mb-4`}>
-              Although the project was proposed by UDC WRRI and funded by the DC Government, the full
+              Although the project was proposed by {institution.shortName} {institution.instituteAcronym} and funded by the DC Government, the full
               design, engineering, and implementation of the platform were carried out by:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -135,7 +136,7 @@ export default function AboutPage() {
                     <Building2 className="w-4.5 h-4.5 text-blue-400" />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>Olink Technologies LLC</p>
+                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>{institution.partners[0].name}</p>
                     <p className={`text-[11px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Software Engineering &amp; Architecture</p>
                   </div>
                 </div>
@@ -148,14 +149,14 @@ export default function AboutPage() {
                     <BarChart3 className="w-4.5 h-4.5 text-emerald-400" />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>DAPS Analytics</p>
+                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>{institution.partners[1].name}</p>
                     <p className={`text-[11px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Data Analytics &amp; Visualization</p>
                   </div>
                 </div>
               </div>
             </div>
             <p className={textClass}>
-              These organizations collaborated closely with Dr. Tolessa Deksissa and the UDC WRRI team
+              These organizations collaborated closely with {institution.principalInvestigator} and the {institution.shortName} {institution.instituteAcronym} team
               to ensure the platform meets academic, research, and public-service needs.
             </p>
           </section>
@@ -176,11 +177,11 @@ export default function AboutPage() {
             </div>
             <div className={`space-y-3 text-sm leading-relaxed ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>
               <p>
-                This dashboard is a collaborative project. While UDC WRRI provides scientific guidance
+                This dashboard is a collaborative project. While {institution.shortName} {institution.instituteAcronym} provides scientific guidance
                 and project direction, the software, architecture, and technical development are the
                 intellectual work of{" "}
-                <strong className={isDark ? "text-white" : "text-[#111827]"}>Olink Technologies LLC</strong> and{" "}
-                <strong className={isDark ? "text-white" : "text-[#111827]"}>DAPS Analytics</strong>.
+                <strong className={isDark ? "text-white" : "text-[#111827]"}>{institution.partners[0].name}</strong> and{" "}
+                <strong className={isDark ? "text-white" : "text-[#111827]"}>{institution.partners[1].name}</strong>.
               </p>
               <p>
                 The platform is provided for educational, research, and public informational purposes.
@@ -212,16 +213,16 @@ export default function AboutPage() {
                   Academic &amp; Research
                 </p>
                 <p className={`text-sm font-medium ${isDark ? "text-white" : "text-[#111827]"}`}>
-                  Dr. Tolessa Deksissa
+                  {institution.principalInvestigator}
                 </p>
                 <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
-                  WRRI Director, UDC CAUSES
+                  {institution.instituteAcronym} Director, {institution.shortName} {institution.departmentAcronym}
                 </p>
                 <a
-                  href="mailto:wrri@udc.edu"
+                  href={`mailto:${institution.contact.email}`}
                   className={`inline-flex items-center gap-1.5 text-xs mt-2 transition-colors ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}
                 >
-                  <Mail className="w-3 h-3" /> wrri@udc.edu
+                  <Mail className="w-3 h-3" /> {institution.contact.email}
                 </a>
               </div>
               <div className={`rounded-lg p-4 ${isDark ? "bg-[#1F2937]/50" : "bg-[#F0F1F3]"}`}>
@@ -229,18 +230,18 @@ export default function AboutPage() {
                   Technical &amp; Development
                 </p>
                 <p className={`text-sm font-medium ${isDark ? "text-white" : "text-[#111827]"}`}>
-                  Olink Technologies LLC
+                  {institution.partners[0].name}
                 </p>
                 <p className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
                   Platform Design &amp; Engineering
                 </p>
                 <a
-                  href="https://www.udc.edu/causes/water-resources-research-institute/"
+                  href={institution.website}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`inline-flex items-center gap-1.5 text-xs mt-2 transition-colors ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}
                 >
-                  <ExternalLink className="w-3 h-3" /> UDC WRRI Website
+                  <ExternalLink className="w-3 h-3" /> {institution.shortName} {institution.instituteAcronym} Website
                 </a>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDbClient } from "@/lib/db";
+import { institution, watershed, deployment } from "@/config/site.config";
 
 export const dynamic = "force-dynamic";
 
@@ -12,18 +13,21 @@ function buildCitation(stationId: string | null, rowCount: number): {
 } {
   const now = new Date().toISOString();
   const dateStr = now.split("T")[0];
+  const baseExportUrl = `${deployment.siteUrl}/api/export`;
   return {
-    text: `UDC Water Resources Research Institute. (2026). ${
-      stationId ? `Station ${stationId} Water Quality Data` : "Anacostia Watershed Water Quality Data"
-    } [Dataset]. University of the District of Columbia CAUSES. Accessed ${dateStr}.`,
+    text: `${institution.name} ${institution.institute}. (2026). ${
+      stationId
+        ? `Station ${stationId} Water Quality Data`
+        : `${watershed.name} Watershed Water Quality Data`
+    } [Dataset]. ${institution.name} ${institution.departmentAcronym}. Accessed ${dateStr}.`,
     dataset: stationId
-      ? `UDC WRRI Station ${stationId} Water Quality Readings`
-      : "UDC WRRI Anacostia Watershed Water Quality Readings",
-    publisher: "University of the District of Columbia — College of Agriculture, Urban Sustainability and Environmental Sciences (CAUSES)",
+      ? `${institution.acronym} ${institution.instituteAcronym} Station ${stationId} Water Quality Readings`
+      : `${institution.acronym} ${institution.instituteAcronym} ${watershed.name} Watershed Water Quality Readings`,
+    publisher: `${institution.name} — ${institution.department} (${institution.departmentAcronym})`,
     accessed: now,
     url: stationId
-      ? `/api/export?format=json&station=${stationId}`
-      : "/api/export?format=json",
+      ? `${baseExportUrl}?format=json&station=${stationId}`
+      : `${baseExportUrl}?format=json`,
   };
 }
 
@@ -83,7 +87,7 @@ export async function GET(request: NextRequest) {
     return new NextResponse(csvLines.join("\n"), {
       headers: {
         "Content-Type": "text/csv",
-        "Content-Disposition": `attachment; filename=udc-water-data${stationId ? `-${stationId}` : ""}.csv`,
+        "Content-Disposition": `attachment; filename=${institution.acronym.toLowerCase()}-water-data${stationId ? `-${stationId}` : ""}.csv`,
       },
     });
   }

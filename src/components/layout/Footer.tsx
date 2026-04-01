@@ -1,5 +1,6 @@
 "use client";
 
+import { institution } from "@/config/site.config";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import {
@@ -38,7 +39,7 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-xs flex-shrink-0">
-                UDC
+                {institution.shortName}
               </div>
               <div>
                 <p
@@ -69,7 +70,7 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2 text-xs">
               <li className={isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}>
-                <span className="font-medium">{t("footer.wrri")}</span> (WRRI)
+                <span className="font-medium">{t("footer.wrri")}</span> ({institution.instituteAcronym})
               </li>
               <li className={isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}>
                 Center for Urban Resilience, Innovation &amp; Infrastructure (CURII)
@@ -80,19 +81,19 @@ export default function Footer() {
               <li className="pt-1">
                 <div className={`flex items-start gap-2 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                   <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0 text-udc-gold" />
-                  <span>4200 Connecticut Ave NW<br />Washington, DC 20008</span>
+                  <span>{institution.contact.address}<br />{institution.contact.city}, {institution.contact.state} {institution.contact.zip}</span>
                 </div>
               </li>
               <li>
-                <a href="mailto:wrri@udc.edu" className={`flex items-center gap-2 ${linkClass}`}>
+                <a href={`mailto:${institution.contact.email}`} className={`flex items-center gap-2 ${linkClass}`}>
                   <Mail className="w-3.5 h-3.5 shrink-0" />
-                  wrri@udc.edu
+                  {institution.contact.email}
                 </a>
               </li>
               <li>
-                <a href="tel:+12022746406" className={`flex items-center gap-2 ${linkClass}`}>
+                <a href={`tel:${institution.contact.phone.replace(/\D/g, "")}`} className={`flex items-center gap-2 ${linkClass}`}>
                   <Phone className="w-3.5 h-3.5 shrink-0" />
-                  (202) 274-6406
+                  {institution.contact.phone}
                 </a>
               </li>
             </ul>
@@ -186,22 +187,22 @@ export default function Footer() {
           <p className={`text-[11px] text-center sm:text-left leading-relaxed ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
             {t("footer.built_by")}{" "}
             <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
-              Olink Technologies Inc
+              {institution.partners[0].name}
             </span>{" "}
             {t("footer.and")}{" "}
             <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
-              DAPS Analytics
+              {institution.partners[1].name}
             </span>{" "}
             {t("footer.in_collaboration")}{" "}
             <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
-              Dr. Tolessa Deksissa
+              {institution.principalInvestigator}
             </span>
             {t("footer.director_title")}
           </p>
           <div className={`flex items-center gap-1.5 shrink-0 ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
             <Droplets className="w-3.5 h-3.5" />
             <span className="text-[10px]">
-              &copy; {new Date().getFullYear()} UDC CAUSES / WRRI
+              &copy; {new Date().getFullYear()} {institution.shortName} {institution.departmentAcronym} / {institution.instituteAcronym}
             </span>
           </div>
         </div>

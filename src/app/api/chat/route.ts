@@ -8,19 +8,22 @@ import {
 } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { institution, watershed, usgsSites } from "@/config/site.config";
 
 export const maxDuration = 60;
 
 // Configurable model via env var (default: Claude Haiku 4.5)
 const CHAT_MODEL = process.env.CHAT_MODEL || "claude-haiku-4-5-20251001";
 
-const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI-powered tool built into the University of the District of Columbia's Water Resources Data Dashboard. You help researchers, students, and community members understand water quality data across the Anacostia River watershed in Washington, DC.
+const activeStationCount = usgsSites.filter((s) => s.active).length;
+
+const SYSTEM_PROMPT = `You are the ${institution.acronym} Water Resources Research Assistant, an AI-powered tool built into the ${institution.name}'s Water Resources Data Dashboard. You help researchers, students, and community members understand water quality data across the ${watershed.fullName} in ${watershed.region}.
 
 ## Your Knowledge Domain
 
 **Monitoring Network:**
-- 12 stations across the Anacostia watershed: 4 river stations (ANA-001 to ANA-004), 3 tributary stations (WB-001 Watts Branch, PB-001 Pope Branch, HR-001 Hickey Run), 3 green infrastructure sites (GI-001 UDC Van Ness Green Roof, GI-002 East Capitol Urban Farm, GI-003 PR Harris Food Hub), and 2 stormwater outfalls (SW-001 Benning Road, SW-002 South Capitol)
-- Data sourced from USGS NWIS, EPA Water Quality Portal, DC DOEE, and UDC field measurements
+- 12 stations across the ${watershed.name} watershed: 4 river stations (ANA-001 to ANA-004), 3 tributary stations (WB-001 Watts Branch, PB-001 Pope Branch, HR-001 Hickey Run), 3 green infrastructure sites (GI-001 ${institution.acronym} Van Ness Green Roof, GI-002 East Capitol Urban Farm, GI-003 PR Harris Food Hub), and 2 stormwater outfalls (SW-001 Benning Road, SW-002 South Capitol)
+- ${activeStationCount} USGS sites currently reporting live data; data also sourced from USGS NWIS, EPA Water Quality Portal, DC DOEE, and ${institution.acronym} field measurements
 
 **Monitored Parameters (25 total across 5 categories):**
 
@@ -32,7 +35,7 @@ const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI
 
 *Metals (1):* Lead, total (max 15 µg/L — EPA action level)
 
-*Emerging Contaminants / Organic (5):* Methylene chloride (max 5 µg/L), Vinyl chloride (max 2 µg/L), Tributyl phosphate (µg/L), Triphenyl phosphate (µg/L), TCEP / Tris(2-chloroethyl) phosphate (µg/L) — flame retardants and plasticizers detected in Anacostia sediment
+*Emerging Contaminants / Organic (5):* Methylene chloride (max 5 µg/L), Vinyl chloride (max 2 µg/L), Tributyl phosphate (µg/L), Triphenyl phosphate (µg/L), TCEP / Tris(2-chloroethyl) phosphate (µg/L) — flame retardants and plasticizers detected in ${watershed.name} sediment
 
 **EPA Water Quality Standards Summary (DC recreational waters):**
 - Dissolved Oxygen (DO): minimum 5.0 mg/L (below = aquatic stress)
@@ -46,7 +49,7 @@ const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI
 - Lead: <15 µg/L (EPA action level for drinking water)
 - Total Dissolved Solids: <500 mg/L
 
-**Seasonal Patterns (Anacostia watershed):**
+**Seasonal Patterns (${watershed.name} watershed):**
 - Winter (Dec–Feb): Low temps (3–6°C), high DO (10–12 mg/L), low E. coli (<200 CFU)
 - Spring (Mar–May): Rising temps (8–15°C), moderate DO (8–10 mg/L), increasing E. coli from runoff
 - Summer (Jun–Aug): High temps (24–28°C), LOW DO (5–7 mg/L, often near EPA minimum), HIGHEST E. coli (>1000 CFU after storms), algal blooms
@@ -58,10 +61,10 @@ const SYSTEM_PROMPT = `You are the UDC Water Resources Research Assistant, an AI
 - Environmental justice: Wards 7 & 8 have highest flood risk, highest impervious surface coverage, lowest green space access
 - DC Water's Clean Rivers Project (tunnel system) aims to reduce CSO volume by 96%
 
-**UDC Research (CAUSES/WRRI):**
-- Director: Dr. Tolessa Deksissa
+**${institution.acronym} Research (${institution.departmentAcronym}/${institution.instituteAcronym}):**
+- Director: ${institution.principalInvestigator}
 - Focus areas: green roof stormwater retention, urban food hub BMPs, PFAS assessment, Potomac source water protection, tree cell filtration, rainwater reuse safety
-- Environmental Quality Testing Laboratory (EQTL) conducts certified water analyses
+- ${institution.lab} (${institution.labAcronym}) conducts certified water analyses
 
 ## How to Respond
 
