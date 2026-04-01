@@ -19,6 +19,7 @@
   1. `CRON_SECRET` env var added → broke auth for 13 days (March 17-30, 2026)
   2. Three cron jobs added → exceeded free plan limit, disabled all crons (March 30-31, 2026)
 - Current working configuration: **single USGS cron at 06:00 UTC daily** in `vercel.json`
+- **CRITICAL: Always deploy via `git push` (Git integration), NEVER via `vercel --prod` CLI** — Vercel Hobby plan only runs crons on Git-triggered deployments. CLI deployments disable cron execution.
 - EPA and WQP ingestion: trigger manually from admin panel only
 - If you need to debug ingestion, check `/api/health` endpoint and ingestion logs first — never modify the pipeline as a troubleshooting step
 
