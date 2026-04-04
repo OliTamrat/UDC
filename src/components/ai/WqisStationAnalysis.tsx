@@ -4,15 +4,35 @@ import { useState, useEffect, useCallback } from 'react';
 interface AnalysisData { stationId: string; analysis: string; analyzedAt: string; }
 interface Props { stationId: string; stationName?: string; onClose: () => void; }
 
+function InlineMarkdown({ text }: { text: string }) {
+  // Convert inline **bold**, *italic*, and ***bold italic*** to React elements
+  const parts: React.ReactNode[] = [];
+  let remaining = text;
+  let key = 0;
+  while (remaining.length > 0) {
+    // Match ***bold italic***, **bold**, or *italic* (in that priority order)
+    const match = remaining.match(/(\*{3})(.+?)\1|(\*{2})(.+?)\3|(\*{1})(.+?)\5/);
+    if (!match) { parts.push(remaining); break; }
+    const idx = match.index!;
+    if (idx > 0) parts.push(remaining.slice(0, idx));
+    if (match[1] === '***') parts.push(<strong key={key++} className="font-semibold italic">{match[2]}</strong>);
+    else if (match[3] === '**') parts.push(<strong key={key++} className="font-semibold">{match[4]}</strong>);
+    else parts.push(<em key={key++}>{match[6]}</em>);
+    remaining = remaining.slice(idx + match[0].length);
+  }
+  return <>{parts}</>;
+}
+
 function Lines({ text }: { text: string }) {
   return (
     <div className="space-y-2 text-sm text-[#374151] dark:text-[#E5E7EB]">
       {text.split('\n').map((line, i) => {
-        if (line.startsWith('# '))  return <h2 key={i} className="text-base font-semibold text-[#111827] dark:text-[#F3F4F6] mt-4 first:mt-0">{line.slice(2)}</h2>;
-        if (line.startsWith('## ')) return <h3 key={i} className="text-sm font-semibold text-[#1F2937] dark:text-[#E5E7EB] mt-3">{line.slice(3)}</h3>;
-        if (line.startsWith('- ') || line.startsWith('• ')) return <li key={i} className="ml-4 list-disc leading-relaxed">{line.slice(2)}</li>;
-        if (line.trim() === '') return <div key={i} className="h-1" />;
-        return <p key={i} className="leading-relaxed">{line}</p>;
+        const trimmed = line.trimStart();
+        if (trimmed.startsWith('# '))  return <h2 key={i} className="text-base font-semibold text-[#111827] dark:text-[#F3F4F6] mt-4 first:mt-0"><InlineMarkdown text={trimmed.slice(2)} /></h2>;
+        if (trimmed.startsWith('## ')) return <h3 key={i} className="text-sm font-semibold text-[#1F2937] dark:text-[#E5E7EB] mt-3"><InlineMarkdown text={trimmed.slice(3)} /></h3>;
+        if (trimmed.startsWith('- ') || trimmed.startsWith('• ') || trimmed.startsWith('* ')) return <li key={i} className="ml-4 list-disc leading-relaxed"><InlineMarkdown text={trimmed.slice(2)} /></li>;
+        if (trimmed === '') return <div key={i} className="h-1" />;
+        return <p key={i} className="leading-relaxed"><InlineMarkdown text={line} /></p>;
       })}
     </div>
   );
