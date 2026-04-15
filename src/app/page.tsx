@@ -26,6 +26,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSidebarClass } from "@/hooks/useSidebarMargin";
 import RadialGauge from "@/components/dashboard/RadialGauge";
+import RecreationSafety from "@/components/dashboard/RecreationSafety";
 
 const DCMap = dynamic(() => import("@/components/map/DCMap"), {
   ssr: false,
@@ -175,6 +176,17 @@ export default function Dashboard() {
             </div>
           </section>
 
+          {/* Recreation Safety — "Is It Safe Today?" */}
+          <section>
+            <div className="mb-3">
+              <h2 className={`text-lg font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>Recreation Safety</h2>
+              <p className={`text-xs max-w-3xl ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
+                Real-time assessment based on EPA recreational water quality criteria
+              </p>
+            </div>
+            <RecreationSafety />
+          </section>
+
           {/* Water Quality Gauges */}
           <section>
             <div className={`rounded-2xl border p-4 ${
@@ -188,7 +200,7 @@ export default function Dashboard() {
                   Compliance Overview
                 </h3>
               </div>
-              <div className="flex items-center justify-around gap-4 flex-wrap">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 justify-items-center">
                 <RadialGauge value={78} max={100} label="Water Quality Index" unit="WQI" color="#14B8A6" />
                 <RadialGauge value={85} max={100} label="DO Compliance" unit="EPA 5mg/L" color="#3B82F6" />
                 <RadialGauge value={92} max={100} label="pH Compliance" unit="EPA 6.5-9" color="#10B981" />
