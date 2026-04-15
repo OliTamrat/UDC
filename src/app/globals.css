@@ -39,6 +39,11 @@
 
   /* ── Accent for data/teal ── */
   --color-accent-teal: #2DD4BF;
+
+  /* ── UXP SCP Environmental Palette ── */
+  --color-env-teal: #14B8A6;
+  --color-env-teal-dim: #0D9488;
+  --color-hero-bg: #070A12;
 }
 
 /* ── Base Typography ── */
@@ -132,9 +137,10 @@ html.dark .glass-panel {
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
   border-radius: 16px;
+  backdrop-filter: blur(12px);
 }
 html.dark .glass-panel:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(20, 184, 166, 0.15);
   box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
 }
 
@@ -144,9 +150,12 @@ html.light .glass-panel {
   box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.06);
   border-radius: 16px;
 }
+html.light .glass-panel {
+  backdrop-filter: blur(12px);
+}
 html.light .glass-panel:hover {
   box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-  border-color: #9CA3AF;
+  border-color: #0D9488;
 }
 
 /* ── Theme-aware panels ── */
@@ -211,7 +220,7 @@ html.light .theme-input:focus {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #3B82F6, #2DD4BF, #22C55E);
+  background: linear-gradient(135deg, #14B8A6, #22C55E, #3B82F6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -223,11 +232,47 @@ html.light .theme-input:focus {
 }
 html.dark .metric-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(20, 184, 166, 0.05), 0 0 0 1px rgba(255,255,255,0.1);
 }
 html.light .metric-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 40px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* Hero map panel — prominent glassmorphism */
+html.dark .glass-panel-hero {
+  background: rgba(7, 10, 18, 0.6);
+  border: 1px solid rgba(20, 184, 166, 0.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+}
+html.light .glass-panel-hero {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(13, 148, 136, 0.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+}
+
+/* Large metric display numbers */
+.metric-number {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 640px) {
+  .metric-number { font-size: 2rem; }
+}
+
+/* Radial gauge animation */
+@keyframes gauge-fill {
+  from { stroke-dashoffset: var(--gauge-circumference); }
+  to { stroke-dashoffset: var(--gauge-offset); }
+}
+.radial-gauge-track {
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Station marker pulse */

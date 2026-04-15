@@ -151,6 +151,7 @@ function useChartTheme() {
       fontSize: "12px",
       color: isDark ? "#F3F4F6" : "#111827",
       boxShadow: isDark ? "0 4px 12px rgba(0,0,0,0.3)" : "0 4px 12px rgba(0,0,0,0.08)",
+      backdropFilter: "blur(8px)",
     },
     tooltipLabelStyle: { color: isDark ? "#F3F4F6" : "#111827" } as React.CSSProperties,
     tooltipItemStyle: { color: isDark ? "#D1D5DB" : "#374151" } as React.CSSProperties,
@@ -267,9 +268,9 @@ export function DOTrendChart() {
   const t = useChartTheme();
   const { data, measuredCount } = useTrendData();
   return (
-    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm" : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"}`}>
       <div className="flex items-center justify-between mb-1">
-        <h3 className={`text-sm font-semibold ${t.titleColor}`}>Dissolved Oxygen Trends</h3>
+        <h3 className={`text-sm font-semibold flex items-center gap-1.5 ${t.titleColor}`}><span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block" />Dissolved Oxygen Trends</h3>
         <DataSourceBadge count={measuredCount} isDark={t.isDark} />
       </div>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (mg/L) — {CURRENT_YEAR}</p>
@@ -307,9 +308,9 @@ export function TemperatureTrendChart() {
   }));
 
   return (
-    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm" : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"}`}>
       <div className="flex items-center justify-between mb-1">
-        <h3 className={`text-sm font-semibold ${t.titleColor}`}>Water Temperature</h3>
+        <h3 className={`text-sm font-semibold flex items-center gap-1.5 ${t.titleColor}`}><span className="w-1.5 h-1.5 rounded-full bg-cyan-400 inline-block" />Water Temperature</h3>
         <div className="flex items-center gap-2">
           <TempUnitToggle />
           <DataSourceBadge count={measuredCount} isDark={t.isDark} />
@@ -342,8 +343,8 @@ export function EColiChart() {
   const t = useChartTheme();
   const { data } = useTrendData();
   return (
-    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
-      <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>E. coli Levels</h3>
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm" : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"}`}>
+      <h3 className={`text-sm font-semibold mb-1 flex items-center gap-1.5 ${t.titleColor}`}><span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block" />E. coli Levels</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly average (CFU/100mL) — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data}>
@@ -363,8 +364,8 @@ export function StormwaterChart() {
   const t = useChartTheme();
   const { data } = useTrendData();
   return (
-    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
-      <h3 className={`text-sm font-semibold mb-1 ${t.titleColor}`}>Stormwater Runoff Volume</h3>
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm" : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"}`}>
+      <h3 className={`text-sm font-semibold mb-1 flex items-center gap-1.5 ${t.titleColor}`}><span className="w-1.5 h-1.5 rounded-full bg-purple-500 inline-block" />Stormwater Runoff Volume</h3>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Monthly totals (million gallons) — {CURRENT_YEAR}</p>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data}>
@@ -391,9 +392,9 @@ export function MultiParameterChart() {
   }));
 
   return (
-    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm" : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"}`}>
       <div className="flex items-center justify-between mb-1">
-        <h3 className={`text-sm font-semibold ${t.titleColor}`}>Multi-Parameter Overview</h3>
+        <h3 className={`text-sm font-semibold flex items-center gap-1.5 ${t.titleColor}`}><span className="w-1.5 h-1.5 rounded-full bg-env-teal inline-block" />Multi-Parameter Overview</h3>
         <DataSourceBadge count={measuredCount} isDark={t.isDark} />
       </div>
       <p className={`text-xs mb-4 ${t.subtitleColor}`}>Water quality trends — {CURRENT_YEAR}</p>
@@ -439,7 +440,7 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
 
   if (loading) {
     return (
-      <div className={`rounded-2xl p-4 sm:p-5 flex items-center justify-center h-[300px] ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
+      <div className={`rounded-2xl p-4 sm:p-5 flex items-center justify-center h-[300px] ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm" : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"}`}>
         <div className="w-6 h-6 border-2 border-water-blue border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -465,9 +466,9 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
   const sourceLabel = data[0]?.source === "usgs" ? "USGS NWIS" : data[0]?.source === "epa" ? "EPA WQP" : data[0]?.source;
 
   return (
-    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
+    <div className={`rounded-2xl p-4 sm:p-5 ${t.isDark ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm" : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"}`}>
       <div className="flex items-center justify-between mb-1">
-        <h3 className={`text-sm font-semibold ${t.titleColor}`}>Recent Readings</h3>
+        <h3 className={`text-sm font-semibold flex items-center gap-1.5 ${t.titleColor}`}><span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />Recent Readings</h3>
         <div className="flex items-center gap-2">
           <TempUnitToggle />
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium border text-green-400 bg-green-500/10 border-green-500/30">

@@ -43,8 +43,8 @@ export default function EnvironmentalJustice() {
   const tickColor = isDark ? "#9CA3AF" : "#94A3B8";
 
   return (
-    <div className={`rounded-2xl p-4 ${isDark ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20" : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"}`}>
-      <h3 className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-[#111827]"}`}>{t("ej.chart_title")}</h3>
+    <div className={`rounded-2xl p-4 ${isDark ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm" : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"}`}>
+      <h3 className={`text-sm font-semibold mb-1 flex items-center gap-1.5 ${isDark ? "text-white" : "text-[#111827]"}`}><span className="w-1.5 h-1.5 rounded-full bg-env-teal inline-block" />{t("ej.chart_title")}</h3>
       <p className={`text-xs mb-4 max-w-2xl ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
         {t("ej.chart_desc")}
       </p>
@@ -54,8 +54,8 @@ export default function EnvironmentalJustice() {
         {environmentalJusticeData.map((ward) => (
           <div
             key={ward.ward}
-            className={`rounded-lg border p-2 text-center ${
-              isDark ? "border-white/[0.06]" : "border-[#D1D5DB] bg-white"
+            className={`rounded-xl border p-2.5 text-center transition-all hover:scale-[1.02] ${
+              isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#D1D5DB] bg-white"
             }`}
           >
             <div className={`text-[10px] uppercase ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>Ward {ward.ward}</div>

@@ -106,16 +106,18 @@ export function WqisInsightsPanel() {
   const briefSummary = extractBriefSummary(data.summary);
 
   return (
-    <div className={`rounded-2xl border p-5 ${config.bg} ${config.border} shadow-md dark:shadow-lg dark:shadow-black/20`}>
+    <div className={`relative overflow-hidden rounded-2xl border p-5 backdrop-blur-sm ${config.bg} ${config.border} shadow-md dark:shadow-lg dark:shadow-black/20`}>
+      {/* Gradient header stripe */}
+      <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-env-teal via-cyan-400 to-blue-500 opacity-40" />
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-xl ${data.overallStatus === 'GOOD' ? 'bg-emerald-500/20' : data.overallStatus === 'CRITICAL' ? 'bg-red-500/20' : 'bg-amber-500/20'}`}>
+          <div className={`p-2 rounded-xl ring-1 ring-white/[0.06] ${data.overallStatus === 'GOOD' ? 'bg-emerald-500/20' : data.overallStatus === 'CRITICAL' ? 'bg-red-500/20' : 'bg-amber-500/20'}`}>
             <Icon className={`w-5 h-5 ${config.color}`} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-[#111827] dark:text-white">
-              Basin Status — {config.label}
+            <h3 className="text-sm font-semibold text-[#111827] dark:text-white flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-env-teal inline-block" />Basin Status — {config.label}
             </h3>
             <p className="text-[10px] text-[#6B7280] dark:text-[#9CA3AF]">
               Powered by WQIS AI Agent

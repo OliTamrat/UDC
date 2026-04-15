@@ -640,6 +640,34 @@ function ResearchModal({ isDark, router }: { isDark: boolean; router: ReturnType
 }
 
 // ---------------------------------------------------------------------------
+// Sparkline background for metric cards
+// ---------------------------------------------------------------------------
+function CardSparkline({ color, isDark }: { color: string; isDark: boolean }) {
+  // Simple 7-point pseudo-random wave based on color hash
+  const seed = color.charCodeAt(1) + color.charCodeAt(3);
+  const pts = Array.from({ length: 7 }, (_, i) => {
+    const base = Math.sin((i + seed) * 0.9) * 8 + 12;
+    return Math.max(2, Math.min(22, base + ((seed * (i + 1)) % 7) - 3));
+  });
+  const w = 80;
+  const h = 28;
+  const points = pts.map((v, i) => `${(i / 6) * w},${h - v}`).join(" ");
+  const areaPoints = `0,${h} ${points} ${w},${h}`;
+  return (
+    <svg
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      className="absolute bottom-2 right-2 z-0"
+      aria-hidden="true"
+    >
+      <polygon points={areaPoints} fill={color} opacity={isDark ? 0.06 : 0.08} />
+      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" opacity={isDark ? 0.2 : 0.25} />
+    </svg>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
 export default function MetricCards() {
@@ -670,9 +698,9 @@ export default function MetricCards() {
 
   if (loading || !metrics) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="glass-panel rounded-2xl border p-2 sm:p-4 h-24 sm:h-28 animate-pulse" />
+          <div key={i} className="glass-panel rounded-2xl border p-3 sm:p-4 h-28 sm:h-36 animate-pulse" />
         ))}
       </div>
     );
@@ -731,42 +759,53 @@ export default function MetricCards() {
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {cardConfigs.map((card) => {
           const Icon = card.icon;
           const trend = card.getTrend(metrics);
           const TrendIcon = trend.positive ? TrendingUp : TrendingDown;
+          // Extract hex color for sparkline and top border from Tailwind class
+          const accentHex = card.color.includes("green") ? "#22C55E" : card.color.includes("blue") ? "#3B82F6" : card.color.includes("cyan") ? "#22D3EE" : card.color.includes("emerald") ? "#10B981" : card.color.includes("amber") ? "#F59E0B" : card.color.includes("red") ? "#EF4444" : card.color.includes("purple") ? "#8B5CF6" : "#14B8A6";
           return (
             <button
               key={card.label}
               onClick={() => setActiveModal(card.modalKey)}
               aria-label={`View details for ${card.label}`}
-              className={`rounded-2xl p-3 sm:p-4 text-left transition-all duration-200 cursor-pointer group ${
+              className={`metric-card relative overflow-hidden rounded-2xl p-3 sm:p-4 text-left cursor-pointer group ${
                 isDark
-                  ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20 hover:border-white/[0.12] hover:shadow-xl hover:shadow-black/30"
-                  : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08] hover:shadow-lg hover:border-[#9CA3AF]"
+                  ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20"
+                  : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"
               }`}
+              style={{ borderTop: `2px solid ${accentHex}` }}
             >
-              <div className="flex items-start justify-between mb-1 sm:mb-2">
-                <div className={`p-1.5 sm:p-2 rounded-lg ${isDark ? card.bgColor : card.lightBgColor}`}>
-                  <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${card.color}`} />
+              {/* Background sparkline */}
+              <CardSparkline color={accentHex} isDark={isDark} />
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-2">
+                  <div className={`p-2 sm:p-2.5 rounded-xl ring-1 ${isDark ? `${card.bgColor} ring-white/[0.06]` : `${card.lightBgColor} ring-black/[0.04]`}`}>
+                    <Icon className={`w-4 h-4 ${card.color}`} />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {card.getTotal && (
+                      <span className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#9CA3AF]"}`}>/ {card.getTotal(metrics)}</span>
+                    )}
+                    <Info className={`w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity ${isDark ? "text-[#6B7280]" : "text-[#9CA3AF]"}`} />
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  {card.getTotal && (
-                    <span className={`text-[10px] sm:text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>/ {card.getTotal(metrics)}</span>
-                  )}
-                  <Info className={`w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`} />
+                <div className="flex items-baseline gap-1.5">
+                  <span className={`metric-number ${card.color}`}>{card.getValue(metrics)}</span>
+                  {card.unit && <span className={`text-xs ${isDark ? "text-[#6B7280]" : "text-[#9CA3AF]"}`}>{card.unit}</span>}
+                </div>
+                <p className={`text-[11px] mt-1.5 font-medium ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{card.label}</p>
+                <div className={`inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                  trend.positive
+                    ? isDark ? "bg-green-500/10 text-green-400" : "bg-green-100 text-green-700"
+                    : isDark ? "bg-amber-500/10 text-amber-400" : "bg-amber-100 text-amber-700"
+                }`}>
+                  <TrendIcon className="w-2.5 h-2.5" />
+                  {trend.text}
                 </div>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className={`text-lg sm:text-2xl font-bold ${card.color}`}>{card.getValue(metrics)}</span>
-                {card.unit && <span className={`text-xs ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>{card.unit}</span>}
-              </div>
-              <p className={`text-xs mt-1 ${isDark ? "text-[#E5E7EB]" : "text-[#1F2937]"}`}>{card.label}</p>
-              <p className={`text-[10px] mt-2 flex items-center gap-1 ${trend.positive ? "text-green-500" : "text-amber-500"}`}>
-                <TrendIcon className="w-3 h-3" />
-                {trend.text}
-              </p>
             </button>
           );
         })}

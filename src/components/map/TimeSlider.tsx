@@ -87,7 +87,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
           </div>
           <div className="flex items-center gap-3">
             <div className={`px-3 py-1 rounded-lg text-sm font-bold ${
-              isDark ? "bg-water-blue/20 text-blue-300" : "bg-blue-100 text-blue-700"
+              isDark ? "bg-env-teal/20 text-teal-300" : "bg-teal-100 text-teal-700"
             }`}>
               {MONTHS[monthIndex]} {CURRENT_YEAR}
             </div>
@@ -110,8 +110,8 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
               onClick={() => setPlaying(!playing)}
               className={`p-2 rounded-lg transition-colors ${
                 playing
-                  ? "bg-water-blue text-white"
-                  : isDark ? "bg-water-blue/20 text-blue-300 hover:bg-water-blue/30" : "bg-blue-100 text-blue-600 hover:bg-blue-100"
+                  ? "bg-env-teal text-white"
+                  : isDark ? "bg-env-teal/20 text-teal-300 hover:bg-env-teal/30" : "bg-teal-100 text-teal-600 hover:bg-teal-100"
               }`}
             >
               {playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -145,7 +145,7 @@ export default function TimeSlider({ onMonthChange, className = "" }: TimeSlider
             </div>
             {/* Active marker */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white border-2 border-water-blue shadow-md transition-all duration-300 pointer-events-none"
+              className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white border-2 border-env-teal shadow-md transition-all duration-300 pointer-events-none"
               style={{ left: `calc(${(monthIndex / 11) * 100}% - 7px)` }}
             />
           </div>

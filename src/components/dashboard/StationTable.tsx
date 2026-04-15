@@ -228,17 +228,17 @@ export default function StationTable({ onStationClick, selectedParams }: Station
   return (
     <div className={`rounded-2xl overflow-hidden ${
       isDark
-        ? "bg-[#13161F]/90 border border-white/[0.06] shadow-lg shadow-black/20"
-        : "bg-white border border-[#D1D5DB] shadow-md shadow-black/[0.08]"
+        ? "bg-[#13161F]/90 border border-white/[0.06] border-t-2 border-t-env-teal/20 shadow-lg shadow-black/20 backdrop-blur-sm"
+        : "bg-white border border-[#D1D5DB] border-t-2 border-t-teal-400/20 shadow-md shadow-black/[0.08] backdrop-blur-sm"
     }`}>
       <div className={`px-5 py-4 border-b ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
-        <h3 className={`text-sm font-semibold ${isDark ? "text-[#F3F4F6]" : "text-[#1F2937]"}`}>{t("table.title")}</h3>
+        <h3 className={`text-sm font-semibold flex items-center gap-1.5 ${isDark ? "text-[#F3F4F6]" : "text-[#1F2937]"}`}><span className="w-1.5 h-1.5 rounded-full bg-env-teal inline-block" />{t("table.title")}</h3>
         <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.subtitle")}</p>
       </div>
       <div className="station-table-wrap">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
           <thead>
-            <tr className={`border-b ${isDark ? "border-white/[0.06] bg-white/[0.02]" : "border-[#D1D5DB] bg-[#F0F1F3]"}`}>
+            <tr className={`border-b sticky top-0 z-10 backdrop-blur-md ${isDark ? "border-white/[0.06] bg-[#13161F]/95" : "border-[#D1D5DB] bg-[#F0F1F3]/95"}`}>
               <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.station")}</th>
               <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.type")}</th>
               <th scope="col" className={`text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.status")}</th>
@@ -327,7 +327,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                       if (!histData || histData.length < 2) return <span className={`text-xs ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>—</span>;
                       const doValues = histData.map((d) => d.dissolvedOxygen).filter((v): v is number => v != null);
                       if (doValues.length < 2) return <span className={`text-xs ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>—</span>;
-                      return <Sparkline data={doValues} color="#60A5FA" />;
+                      return <Sparkline data={doValues} color="#14B8A6" />;
                     })()}
                   </td>
                   <td className={`py-2.5 px-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
