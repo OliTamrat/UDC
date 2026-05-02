@@ -166,7 +166,7 @@ const LEVEL_CONFIG: Record<SafetyLevel, {
 };
 
 // Focus on EJ community stations (Wards 7 & 8 — Anacostia corridor)
-const EJ_STATIONS = ["ANA-002", "ANA-003", "WB-001"];
+const EJ_STATIONS = ["ANA-002", "ANA-003", "WB-001", "SW-001", "SW-002"];
 
 export default function RecreationSafety() {
   const { resolvedTheme } = useTheme();
@@ -180,7 +180,7 @@ export default function RecreationSafety() {
       if (res.ok) {
         const all: StationData[] = await res.json();
         // Focus on active river/stream stations near communities
-        setStations(all.filter((s) => s.status === "active" && (s.type === "river" || s.type === "stream")));
+        setStations(all.filter((s) => s.type === "river" || s.type === "stream" || s.type === "stormwater"));
       }
     } catch {
       // Fallback silently

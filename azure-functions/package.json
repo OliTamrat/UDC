@@ -1,0 +1,19 @@
+{
+  "name": "udc-wqis-cron",
+  "version": "1.0.0",
+  "description": "Timer triggers for UDC-WQIS data ingestion (USGS, EPA, WQP)",
+  "main": "src/functions/*.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "func start",
+    "prestart": "npm run build"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "azure-functions-core-tools": "^4.0.0"
+  }
+}

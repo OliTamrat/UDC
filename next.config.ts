@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: ".",
   },
-  // output: "standalone" is for Docker only; Vercel uses its own serverless build
+  // standalone output required for Docker/Azure Container Apps deployment
+  output: "standalone",
   async headers() {
     return [
       {

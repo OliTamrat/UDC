@@ -18,19 +18,37 @@ export interface DbClient {
 }
 
 // ---------------------------------------------------------------------------
-// PostgreSQL (Neon) implementation
+// PostgreSQL (standard pg) implementation — works with Azure, Neon, any PG
 // ---------------------------------------------------------------------------
-function createNeonClient(databaseUrl: string): DbClient {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { Pool, neonConfig } = require("@neondatabase/serverless") as typeof import("@neondatabase/serverless");
-  // In Node.js (local dev), we need a WebSocket polyfill; on Vercel it's built-in
-  if (typeof WebSocket === "undefined") {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      neonConfig.webSocketConstructor = require("ws");
-    } catch { /* ws not installed — running on Vercel */ }
+function createPgClient(databaseUrl: string): DbClient {
+  // Use Neon serverless driver for Neon URLs (WebSocket-based),
+  // standard pg driver for everything else (Azure, local PG, etc.)
+  const isNeon = databaseUrl.includes(".neon.tech");
+
+  let pool: { query: (q: string, p?: unknown[]) => Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> };
+
+  if (isNeon) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { Pool, neonConfig } = require("@neondatabase/serverless") as typeof import("@neondatabase/serverless");
+    if (typeof WebSocket === "undefined") {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        neonConfig.webSocketConstructor = require("ws");
+      } catch { /* ws not installed — running on Vercel */ }
+    }
+    pool = new Pool({ connectionString: databaseUrl });
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { Pool: PgPool } = require("pg") as typeof import("pg");
+    // max:5 — PGBouncer (port 6432) multiplexes app connections; keep pool small per replica.
+    // allowExitOnIdle: true — lets the process exit cleanly in cron/job contexts.
+    pool = new PgPool({
+      connectionString: databaseUrl,
+      ssl: { rejectUnauthorized: false },
+      max: 5,
+      allowExitOnIdle: true,
+    });
   }
-  const pool = new Pool({ connectionString: databaseUrl });
 
   return {
     async query(query: string, params: unknown[] = []): Promise<DbResult> {
@@ -308,7 +326,7 @@ async function initSchema(db: DbClient): Promise<void> {
 export async function getDbClient(): Promise<DbClient> {
   if (!client) {
     const databaseUrl = process.env.DATABASE_URL;
-    client = databaseUrl ? createNeonClient(databaseUrl) : createSqliteClient();
+    client = databaseUrl ? createPgClient(databaseUrl) : createSqliteClient();
     await initSchema(client);
   }
   return client;

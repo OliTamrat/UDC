@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "APP_URL": "https://udc-wqis.happycoast-d9b0bcde.centralus.azurecontainerapps.io",
+    "INGEST_API_KEY": "LOCAL_TESTING_ONLY"
+  }
+}
