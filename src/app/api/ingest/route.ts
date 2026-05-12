@@ -323,14 +323,55 @@ const EPA_STATION_MAP: Record<string, string> = {
   "21DCDOEE-HR01":   "HR-001",
 };
 
-interface EPAResult {
-  OrganizationIdentifier?: string;
-  MonitoringLocationIdentifier?: string;
-  ActivityStartDate?: string;
-  ActivityStartTime?: { Time?: string };
-  CharacteristicName?: string;
-  ResultMeasureValue?: string;
-  ResultMeasure?: { MeasureUnitCode?: string };
+// ---------------------------------------------------------------------------
+// WQX3 CSV helpers (waterqualitydata.us migrated from /data/ to /wqx3/ in 2024)
+// ---------------------------------------------------------------------------
+
+// Minimal CSV parser that handles quoted fields with embedded commas/newlines.
+function parseWQPCsv(text: string): Record<string, string>[] {
+  const rows: Record<string, string>[] = [];
+
+  function parseLine(line: string): string[] {
+    const fields: string[] = [];
+    let field = "";
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuotes && line[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = !inQuotes;
+      } else if (ch === "," && !inQuotes) {
+        fields.push(field); field = "";
+      } else {
+        field += ch;
+      }
+    }
+    fields.push(field);
+    return fields;
+  }
+
+  const lines = text.split("\n");
+  if (lines.length < 2) return rows;
+  const headers = parseLine(lines[0]);
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const values = parseLine(line);
+    const row: Record<string, string> = {};
+    headers.forEach((h, idx) => { row[h] = values[idx] ?? ""; });
+    rows.push(row);
+  }
+  return rows;
+}
+
+// Read a field from a WQX3 CSV row, falling back through candidate names.
+// WQX3 renames fields: e.g. MonitoringLocationIdentifier → Location_Identifier
+function getWQXField(row: Record<string, string>, ...candidates: string[]): string {
+  for (const key of candidates) {
+    const val = row[key];
+    if (val !== undefined && val !== "") return val;
+  }
+  return "";
 }
 
 async function ingestEPA(): Promise<{ count: number; measurementCount: number; errors: string[]; validationWarnings: string[] }> {
@@ -341,12 +382,12 @@ async function ingestEPA(): Promise<{ count: number; measurementCount: number; e
   let totalMeasurements = 0;
 
   const characteristics = Object.keys(EPA_CHARACTERISTICS).map(encodeURIComponent).join(";");
-  const url = `https://www.waterqualitydata.us/data/Result/search?huc=${EPA_HUC}&characteristicName=${characteristics}&startDateLo=01-01-2020&mimeType=application/json&sorted=no&zip=no`;
+  // WQX3 endpoint (replaced deprecated /data/ which returns HTTP 406)
+  const url = `https://www.waterqualitydata.us/wqx3/Result/search?huc=${EPA_HUC}&characteristicName=${characteristics}&startDateLo=01-01-2020&mimeType=text%2Fcsv`;
 
   try {
     const response = await fetch(url, {
-      headers: { Accept: "application/json" },
-      signal: AbortSignal.timeout(60000),
+      signal: AbortSignal.timeout(90000),
     });
 
     if (!response.ok) {
@@ -354,8 +395,15 @@ async function ingestEPA(): Promise<{ count: number; measurementCount: number; e
       return { count: 0, measurementCount: 0, errors, validationWarnings };
     }
 
-    const results: EPAResult[] = await response.json();
-    if (!Array.isArray(results) || results.length === 0) {
+    const csvText = await response.text();
+    // WQX3 returns a plain-text server error when overloaded (not an HTTP error code)
+    if (csvText.startsWith("Server Error")) {
+      errors.push(`EPA WQP: WQX3 server overloaded — ${csvText.slice(0, 120)}`);
+      return { count: 0, measurementCount: 0, errors, validationWarnings };
+    }
+
+    const results = parseWQPCsv(csvText);
+    if (results.length === 0) {
       logger.info("EPA WQP: no results returned for Anacostia watershed");
       return { count: 0, measurementCount: 0, errors, validationWarnings };
     }
@@ -363,29 +411,25 @@ async function ingestEPA(): Promise<{ count: number; measurementCount: number; e
     const grouped: Record<string, Record<string, ReadingValues & { stationId: string }>> = {};
 
     for (const result of results) {
-      const monLocId = result.MonitoringLocationIdentifier || "";
+      const monLocId = getWQXField(result, "Location_Identifier", "MonitoringLocationIdentifier");
       const stationId = EPA_STATION_MAP[monLocId];
       if (!stationId) continue;
 
-      const charName = result.CharacteristicName || "";
+      const charName = getWQXField(result, "Result_CharacteristicName", "CharacteristicName");
       const dbField = EPA_CHARACTERISTICS[charName];
       if (!dbField) continue;
 
-      const date = result.ActivityStartDate || "";
-      const time = result.ActivityStartTime?.Time || "12:00:00";
+      const date = getWQXField(result, "Activity_StartDate", "ActivityStartDate");
+      const time = getWQXField(result, "Activity_StartTime", "ActivityStartTime") || "12:00:00";
       const timestamp = `${date}T${time}`;
       if (!date) continue;
 
-      const value = parseFloat(result.ResultMeasureValue || "");
+      const value = parseFloat(getWQXField(result, "Result_MeasureValue", "ResultMeasureValue"));
       if (isNaN(value)) continue;
 
       const key = `${stationId}::${timestamp}`;
-      if (!grouped[key]) {
-        grouped[key] = {} as Record<string, ReadingValues & { stationId: string }>;
-      }
-      if (!grouped[key][stationId]) {
-        grouped[key][stationId] = { stationId } as ReadingValues & { stationId: string };
-      }
+      if (!grouped[key]) grouped[key] = {} as Record<string, ReadingValues & { stationId: string }>;
+      if (!grouped[key][stationId]) grouped[key][stationId] = { stationId } as ReadingValues & { stationId: string };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (grouped[key][stationId] as any)[dbField] = value;
     }
@@ -408,16 +452,10 @@ async function ingestEPA(): Promise<{ count: number; measurementCount: number; e
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'epa')
            ${epaConflict}`,
           [
-            reading.stationId,
-            timestamp,
-            valid.temperature ?? null,
-            valid.dissolved_oxygen ?? null,
-            valid.ph ?? null,
-            valid.turbidity ?? null,
-            valid.conductivity ?? null,
-            valid.ecoli_count ?? null,
-            valid.nitrate_n ?? null,
-            valid.phosphorus ?? null,
+            reading.stationId, timestamp,
+            valid.temperature ?? null, valid.dissolved_oxygen ?? null, valid.ph ?? null,
+            valid.turbidity ?? null, valid.conductivity ?? null, valid.ecoli_count ?? null,
+            valid.nitrate_n ?? null, valid.phosphorus ?? null,
           ]
         );
         totalCount++;
@@ -472,12 +510,12 @@ async function ingestWQP(): Promise<{ count: number; measurementCount: number; e
   let totalMeasurements = 0;
 
   // Use DC state FIPS code for broader coverage (DC DOEE + USGS + EPA sites)
+  // WQX3 endpoint (replaced deprecated /data/ which returns HTTP 406)
   const characteristics = Object.keys(WQP_CHARACTERISTICS).map(encodeURIComponent).join(";");
-  const url = `https://www.waterqualitydata.us/data/Result/search?statecode=US:11&characteristicName=${characteristics}&startDateLo=01-01-2020&mimeType=application/json&sorted=no&zip=no`;
+  const url = `https://www.waterqualitydata.us/wqx3/Result/search?statecode=US%3A11&characteristicName=${characteristics}&startDateLo=01-01-2020&mimeType=text%2Fcsv`;
 
   try {
     const response = await fetch(url, {
-      headers: { Accept: "application/json" },
       signal: AbortSignal.timeout(120000), // 2 min timeout for large WQP datasets
     });
 
@@ -486,31 +524,36 @@ async function ingestWQP(): Promise<{ count: number; measurementCount: number; e
       return { count: 0, measurementCount: 0, errors, validationWarnings };
     }
 
-    const results: EPAResult[] = await response.json();
-    if (!Array.isArray(results) || results.length === 0) {
+    const csvText = await response.text();
+    // WQX3 returns a plain-text server error when overloaded (not an HTTP error code)
+    if (csvText.startsWith("Server Error")) {
+      errors.push(`WQP: WQX3 server overloaded — ${csvText.slice(0, 120)}`);
+      return { count: 0, measurementCount: 0, errors, validationWarnings };
+    }
+
+    const results = parseWQPCsv(csvText);
+    if (results.length === 0) {
       logger.info("WQP: no results returned for DC");
       return { count: 0, measurementCount: 0, errors, validationWarnings };
     }
 
-    // Group by station + timestamp + characteristic
     for (const result of results) {
-      const monLocId = result.MonitoringLocationIdentifier || "";
+      const monLocId = getWQXField(result, "Location_Identifier", "MonitoringLocationIdentifier");
       const stationId = EPA_STATION_MAP[monLocId];
-      if (!stationId) continue; // Skip stations we don't track
+      if (!stationId) continue;
 
-      const charName = result.CharacteristicName || "";
+      const charName = getWQXField(result, "Result_CharacteristicName", "CharacteristicName");
       const paramId = WQP_CHARACTERISTICS[charName];
       if (!paramId) continue;
 
-      const date = result.ActivityStartDate || "";
-      const time = result.ActivityStartTime?.Time || "12:00:00";
+      const date = getWQXField(result, "Activity_StartDate", "ActivityStartDate");
+      const time = getWQXField(result, "Activity_StartTime", "ActivityStartTime") || "12:00:00";
       const timestamp = `${date}T${time}`;
       if (!date) continue;
 
-      const value = parseFloat(result.ResultMeasureValue || "");
+      const value = parseFloat(getWQXField(result, "Result_MeasureValue", "ResultMeasureValue"));
       if (isNaN(value)) continue;
 
-      // Validate
       if (!validateMeasurement(paramId, value)) {
         validationWarnings.push(`WQP ${stationId} @ ${timestamp}: ${charName} = ${value} out of range — rejected`);
         continue;
