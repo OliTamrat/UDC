@@ -42,8 +42,7 @@ export const institution = {
     label: "UDC Van Ness Campus",
   },
   partners: [
-    { name: "Olink Technologies Inc", role: "Platform Engineering" },
-    { name: "DAPS Analytics", role: "Data Analytics & Visualization" },
+    { name: "DAPS Analytics", role: "Platform Engineering & Data Analytics" },
   ],
   funding: "Funded by DC Government. Data provided by DOEE, EPA WQP, USGS NWIS, and Anacostia Riverkeeper.",
 };

@@ -189,10 +189,6 @@ export default function Footer() {
             <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
               {institution.partners[0].name}
             </span>{" "}
-            {t("footer.and")}{" "}
-            <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
-              {institution.partners[1].name}
-            </span>{" "}
             {t("footer.in_collaboration")}{" "}
             <span className={`font-semibold ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`}>
               {institution.principalInvestigator}
@@ -208,16 +204,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Funding line */}
-      <div
-        className={`border-t text-center px-4 py-2 ${
-          isDark ? "border-white/[0.06]" : "border-[#D1D5DB]/50"
-        }`}
-      >
-        <p className={`text-[10px] ${isDark ? "text-[#6B7280]" : "text-[#D1D5DB]"}`}>
-          {t("footer.funded")}
-        </p>
-      </div>
     </footer>
   );
 }
