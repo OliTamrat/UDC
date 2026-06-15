@@ -128,20 +128,7 @@ export default function AboutPage() {
               Although the project was proposed by {institution.shortName} {institution.instituteAcronym} and funded by the DC Government, the full
               design, engineering, and implementation of the platform were carried out by:
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              {/* Olink Technologies */}
-              <div className={`rounded-xl border p-5 ${isDark ? "bg-[#1F2937]/50 border-white/[0.06]" : "bg-[#F0F1F3] border-[#D1D5DB]"}`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isDark ? "bg-blue-500/15" : "bg-blue-100"}`}>
-                    <Building2 className="w-4.5 h-4.5 text-blue-400" />
-                  </div>
-                  <div>
-                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>{institution.partners[0].name}</p>
-                    <p className={`text-[11px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Software Engineering &amp; Architecture</p>
-                  </div>
-                </div>
-              </div>
-
+            <div className="mb-4">
               {/* DAPS Analytics */}
               <div className={`rounded-xl border p-5 ${isDark ? "bg-[#1F2937]/50 border-white/[0.06]" : "bg-[#F0F1F3] border-[#D1D5DB]"}`}>
                 <div className="flex items-center gap-3 mb-2">
@@ -149,14 +136,14 @@ export default function AboutPage() {
                     <BarChart3 className="w-4.5 h-4.5 text-emerald-400" />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>{institution.partners[1].name}</p>
-                    <p className={`text-[11px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Data Analytics &amp; Visualization</p>
+                    <p className={`text-sm font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>{institution.partners[0].name}</p>
+                    <p className={`text-[11px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>Platform Engineering &amp; Data Analytics</p>
                   </div>
                 </div>
               </div>
             </div>
             <p className={textClass}>
-              These organizations collaborated closely with {institution.principalInvestigator} and the {institution.shortName} {institution.instituteAcronym} team
+              {institution.partners[0].name} collaborated closely with {institution.principalInvestigator} and the {institution.shortName} {institution.instituteAcronym} team
               to ensure the platform meets academic, research, and public-service needs.
             </p>
           </section>
@@ -180,8 +167,7 @@ export default function AboutPage() {
                 This dashboard is a collaborative project. While {institution.shortName} {institution.instituteAcronym} provides scientific guidance
                 and project direction, the software, architecture, and technical development are the
                 intellectual work of{" "}
-                <strong className={isDark ? "text-white" : "text-[#111827]"}>{institution.partners[0].name}</strong> and{" "}
-                <strong className={isDark ? "text-white" : "text-[#111827]"}>{institution.partners[1].name}</strong>.
+                <strong className={isDark ? "text-white" : "text-[#111827]"}>{institution.partners[0].name}</strong>.
               </p>
               <p>
                 The platform is provided for educational, research, and public informational purposes.
