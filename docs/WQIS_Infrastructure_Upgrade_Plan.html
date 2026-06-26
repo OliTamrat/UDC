@@ -510,8 +510,8 @@ az containerapp job update \
         <tr><td>Azure infrastructure (all services)</td><td><strong>$0</strong></td><td>Covered by Azure for Education ($100&ndash;200/student, $200+/faculty)</td></tr>
         <tr><td>Vercel (marketing site)</td><td>$0</td><td>Free Hobby plan</td></tr>
         <tr><td>Domain (wqis-app.com)</td><td>$15</td><td>GoDaddy renewal</td></tr>
-        <tr><td>Anthropic API (AI assistant)</td><td>$60&ndash;120</td><td>Claude Haiku, ~5K queries/year</td></tr>
-        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$75&ndash;135</strong></td><td>Remaining for development: $4,865&ndash;4,925</td></tr>
+        <tr><td>Anthropic API (AI assistant)</td><td>$155&ndash;775</td><td>Claude Haiku 4.5 &mdash; see AI Cost Detail below</td></tr>
+        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$170&ndash;790</strong></td><td>Remaining for development: $4,210&ndash;4,830</td></tr>
       </tbody>
     </table>
 
@@ -522,8 +522,8 @@ az containerapp job update \
         <tr><td>Azure Container Apps + Jobs (hourly cron)</td><td>$192&ndash;204</td><td>Hosting + hourly ingestion</td></tr>
         <tr><td>Azure PostgreSQL B1ms</td><td>$156</td><td>32 GB storage</td></tr>
         <tr><td>ACR + Key Vault + App Insights</td><td>$96</td><td>Basic tiers</td></tr>
-        <tr><td>Vercel + Domain + AI API</td><td>$75&ndash;135</td><td>Same as Scenario A</td></tr>
-        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$519&ndash;591</strong></td><td>Remaining for development: $4,409&ndash;4,481</td></tr>
+        <tr><td>Vercel + Domain + AI API</td><td>$170&ndash;790</td><td>See AI Cost Detail below</td></tr>
+        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$614&ndash;1,246</strong></td><td>Remaining for development: $3,754&ndash;4,386</td></tr>
       </tbody>
     </table>
 
@@ -531,21 +531,51 @@ az containerapp job update \
     <table>
       <thead><tr><th>Item</th><th>Budget</th><th>Category</th><th>Timeline</th></tr></thead>
       <tbody>
-        <tr><td>Annual infrastructure</td><td>$520&ndash;590</td><td><span class="badge badge-req">Required</span></td><td>Ongoing</td></tr>
-        <tr><td>DC GeoJSON map overhaul + NHD integration</td><td>$800&ndash;1,000</td><td><span class="badge badge-req">Required</span></td><td>Jul&ndash;Aug 2026</td></tr>
-        <tr><td>Hourly cron upgrade</td><td>$200&ndash;300</td><td><span class="badge badge-req">Required</span></td><td>Jul 2026</td></tr>
+        <tr><td>Annual infrastructure (incl. AI API)</td><td>$614&ndash;1,246</td><td><span class="badge badge-req">Required</span></td><td>Ongoing</td></tr>
+        <tr><td><s>DC GeoJSON map overhaul + NHD integration</s></td><td><s>$800&ndash;1,000</s></td><td><span class="badge badge-live">Done</span></td><td><s>Jul&ndash;Aug 2026</s> Jun 26</td></tr>
+        <tr><td><s>Hourly cron upgrade</s></td><td><s>$200&ndash;300</s></td><td><span class="badge badge-live">Done</span></td><td><s>Jul 2026</s> Jun 26</td></tr>
         <tr><td>DNS cutover + domain finalization</td><td>$150&ndash;200</td><td><span class="badge badge-req">Required</span></td><td>Jul 2026</td></tr>
         <tr><td>Student Mode UI for K-12</td><td>$1,200&ndash;1,500</td><td><span class="badge badge-k12">K-12</span></td><td>Aug&ndash;Sep 2026</td></tr>
         <tr><td>Bicep &ldquo;Deploy to Azure&rdquo; template</td><td>$500&ndash;700</td><td><span class="badge badge-k12">Handover</span></td><td>Aug 2026</td></tr>
         <tr><td>Contingency / expansion reserve</td><td>$700&ndash;1,000</td><td><span class="badge badge-rsv">Reserve</span></td><td>As needed</td></tr>
-        <tr class="row-total"><td>Total</td><td><strong>$4,070&ndash;5,290</strong></td><td></td><td></td></tr>
+        <tr class="row-total"><td>Total</td><td><strong>$3,464&ndash;4,946</strong></td><td></td><td></td></tr>
       </tbody>
     </table>
 
-    <div class="callout callout-green">
-      <div class="ct">$5,000/year comfortably covers everything.</div>
-      Infrastructure runs ~$520&ndash;590/year (or ~$75 with Education credits). The remaining $4,400+ funds the DC Map overhaul, hourly cron upgrade, Student Mode, sovereign deployment template, and a contingency reserve.
+    <div class="callout callout-gold">
+      <div class="ct">$5,000/year covers infrastructure + remaining development &mdash; but AI costs scale with usage.</div>
+      With the hourly cron and DC GeoJSON map overhaul already complete (Jun 26, 2026), the remaining $5,000 budget covers infrastructure ($614&ndash;1,246/yr depending on AI usage tier) plus Student Mode, sovereign deploy, and contingency. If K-12 scales beyond pilot, AI API costs become the largest variable &mdash; see detail below.
     </div>
+
+    <h3>AI API Cost Detail (Anthropic Claude Haiku 4.5)</h3>
+    <p>The WQIS AI Research Assistant uses Claude Haiku 4.5 (<code>claude-haiku-4-5-20251001</code>) with a 3,848-token system prompt sent with every query. Each query involves tool calls to fetch live station data, adding ~4,000&ndash;12,000 tokens of context.</p>
+
+    <table>
+      <thead><tr><th></th><th>Input</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Claude Haiku 4.5 pricing</strong></td><td>$1.00 / MTok</td><td>$5.00 / MTok</td></tr>
+        <tr><td>System prompt (per query)</td><td>~3,848 tokens</td><td>&mdash;</td></tr>
+        <tr><td>Avg query with 1 tool call</td><td>~8,000 tokens</td><td>~1,500 tokens</td></tr>
+        <tr style="font-weight:600;"><td>Avg cost per query</td><td colspan="2">$0.0155</td></tr>
+      </tbody>
+    </table>
+
+    <table>
+      <thead><tr><th>Usage Scenario</th><th>Queries/Year</th><th>Annual Cost</th><th>Monthly</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Research team only</strong> (10 users, UDC faculty/students)</td><td>2,000</td><td>$31</td><td>$3</td></tr>
+        <tr><td><strong>Pilot</strong> (5&ndash;8 schools, ~100 students)</td><td>10,000</td><td>$155</td><td>$13</td></tr>
+        <tr><td><strong>District</strong> (20+ schools, ~500 students)</td><td>50,000</td><td>$775</td><td>$65</td></tr>
+        <tr><td><strong>Full DCPS + MCPS</strong> (2,000 students)</td><td>200,000</td><td>$3,100</td><td>$258</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-red">
+      <div class="ct">AI costs are the primary variable in the budget.</div>
+      At pilot scale (100 students), AI costs ~$155/year &mdash; manageable within $5,000. At full district scale (2,000 students), AI alone could reach $3,100/year &mdash; exceeding the $5,000 budget when combined with infrastructure. <strong>Mitigation options:</strong> (1) Rate-limit student queries (e.g., 10/day per student), (2) Cache common questions to avoid API calls, (3) Use the AI assistant only for teacher/researcher accounts, (4) Fund AI costs from EPA/NOAA grant budgets which allow technology line items.
+    </div>
+
+    <p>If Claude Sonnet 4 were used instead of Haiku (3&times; input, 3&times; output pricing), costs would be ~3&times; higher at every tier: pilot $465/yr, district $2,325/yr, full DCPS+MCPS $9,300/yr. <strong>Recommendation: Stay on Haiku 4.5</strong> for cost efficiency &mdash; it handles water quality Q&amp;A well.</p>
   </section>
 
   <!-- 6. K-12 TECHNICAL REQUIREMENTS -->
@@ -577,18 +607,18 @@ az containerapp job update \
       <thead><tr><th>Phase</th><th>Period</th><th>Deliverables</th><th>Hours</th><th>Budget</th></tr></thead>
       <tbody>
         <tr>
-          <td><strong>A</strong><br><span style="color:var(--blue); font-size:10px;">INFRASTRUCTURE</span></td>
-          <td>Jul 2026</td>
-          <td>Hourly cron upgrade &bull; Data freshness threshold update &bull; DNS cutover for udc.wqis-app.com &bull; Disable Vercel legacy cron</td>
-          <td>5</td>
-          <td>$350&ndash;500</td>
+          <td><strong>A</strong><br><span style="color:var(--green); font-size:10px;">COMPLETE</span></td>
+          <td><s>Jul 2026</s><br>Jun 26</td>
+          <td><strong style="color:var(--green);">&check;</strong> Hourly cron upgrade &bull; Data freshness threshold update &bull; Disable Vercel legacy cron<br><em style="font-size:11px;color:var(--muted);">DNS cutover still pending UDC IT</em></td>
+          <td>3</td>
+          <td>$0 (done)</td>
         </tr>
         <tr>
-          <td><strong>B</strong><br><span style="color:var(--green); font-size:10px;">MAP OVERHAUL</span></td>
-          <td>Jul&ndash;Aug 2026</td>
-          <td>Download official DC GeoJSON + NHD flowlines &bull; Replace all hand-coded data &bull; Add Zoning layer &bull; TopoJSON optimization &bull; Regression testing</td>
-          <td>13</td>
-          <td>$800&ndash;1,000</td>
+          <td><strong>B</strong><br><span style="color:var(--green); font-size:10px;">COMPLETE</span></td>
+          <td><s>Jul&ndash;Aug</s><br>Jun 26</td>
+          <td><strong style="color:var(--green);">&check;</strong> 6 official DC GIS GeoJSON layers downloaded &bull; NHD waterways (1,273 centerlines) &bull; 188 sub-watersheds &bull; 402 FEMA flood zones &bull; Click-to-zoom on all boundary layers &bull; 18MB &rarr; 1.25MB optimized</td>
+          <td>8</td>
+          <td>$0 (done)</td>
         </tr>
         <tr>
           <td><strong>C</strong><br><span style="color:var(--purple); font-size:10px;">SOVEREIGN DEPLOY</span></td>
@@ -651,8 +681,8 @@ az containerapp job update \
 
     <h3>DAPS Analytics (Engineering Team)</h3>
     <ol>
-      <li>Phase A: Hourly cron upgrade &mdash; target: July 7, 2026</li>
-      <li>Phase B: DC GeoJSON + NHD overhaul &mdash; target: August 1, 2026</li>
+      <li><s>Phase A: Hourly cron upgrade</s> &mdash; <strong style="color:var(--green);">COMPLETE Jun 26, 2026</strong></li>
+      <li><s>Phase B: DC GeoJSON + NHD overhaul</s> &mdash; <strong style="color:var(--green);">COMPLETE Jun 26, 2026</strong></li>
       <li>Phase C: Bicep template + standalone deployment &mdash; target: August 15, 2026</li>
       <li>Phase D: Student Mode + Investigation Guides &mdash; target: September 15, 2026</li>
       <li>Support Dr. Deksissa&rsquo;s DCPS/MCPS outreach with live demo environment</li>
