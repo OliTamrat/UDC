@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
-  anacostiaRiver,
-  dcStreams,
   monitoringStations,
   type MonitoringStation,
 } from "@/data/dc-waterways";
 import {
-  dcWardBoundaries,
-  anacostiaWatershed,
-  floodZones,
-  imperviousZones,
-} from "@/data/dc-boundaries";
+  loadWards,
+  loadWatersheds,
+  loadSubwatersheds,
+  loadWaterways,
+  loadWaterbodies,
+  loadFloodplains,
+  type GeoJSONData,
+} from "@/data/dc-geojson";
 import { useTheme } from "@/context/ThemeContext";
 import MapLayerControls, { type MapLayerState } from "./MapLayerControls";
 import type { MonthlySnapshot } from "./TimeSlider";
@@ -34,12 +35,6 @@ function getStationColor(station: MonitoringStation, ecoliMultiplier?: number): 
   return "#22C55E";
 }
 
-function getHealthColor(healthIndex: number): string {
-  if (healthIndex >= 60) return "#22C55E";
-  if (healthIndex >= 40) return "#F59E0B";
-  return "#EF4444";
-}
-
 const TILE_LAYERS = {
   dark: {
     url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
@@ -50,6 +45,15 @@ const TILE_LAYERS = {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
   },
 };
+
+// Flood zone color by FEMA designation
+function floodZoneColor(zone: string): string {
+  if (zone === "AE" || zone === "A") return "#EF4444";
+  if (zone === "AO" || zone === "AH") return "#F97316";
+  if (zone === "VE" || zone === "V") return "#DC2626";
+  if (zone === "X") return "#F59E0B";
+  return "#F59E0B";
+}
 
 export default function DCMap({
   onStationSelect,
@@ -65,11 +69,13 @@ export default function DCMap({
   const [layers, setLayers] = useState<MapLayerState>({
     wardBoundaries: false,
     watershedBoundary: false,
+    subwatersheds: false,
     floodZones: false,
-    imperviousSurfaces: false,
-    monitoringStations: true,
     waterways: true,
+    waterbodies: false,
+    monitoringStations: true,
   });
+  const geoJsonCache = useRef<Record<string, GeoJSONData>>({});
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
@@ -84,6 +90,23 @@ export default function DCMap({
       setMapReady(true);
     });
   }, []);
+
+  // Pre-load GeoJSON data when layers are toggled on
+  useEffect(() => {
+    const toLoad: Array<[string, () => Promise<GeoJSONData>]> = [];
+    if (layers.wardBoundaries && !geoJsonCache.current.wards) toLoad.push(["wards", loadWards]);
+    if (layers.watershedBoundary && !geoJsonCache.current.watersheds) toLoad.push(["watersheds", loadWatersheds]);
+    if (layers.subwatersheds && !geoJsonCache.current.subwatersheds) toLoad.push(["subwatersheds", loadSubwatersheds]);
+    if (layers.waterways && !geoJsonCache.current.waterways) toLoad.push(["waterways", loadWaterways]);
+    if (layers.waterbodies && !geoJsonCache.current.waterbodies) toLoad.push(["waterbodies", loadWaterbodies]);
+    if (layers.floodZones && !geoJsonCache.current.floodplains) toLoad.push(["floodplains", loadFloodplains]);
+
+    if (toLoad.length > 0) {
+      Promise.all(toLoad.map(async ([key, loader]) => {
+        geoJsonCache.current[key] = await loader();
+      }));
+    }
+  }, [layers]);
 
   useEffect(() => {
     if (!mapReady || !L) return;
@@ -104,7 +127,6 @@ export default function DCMap({
       attributionControl: true,
     });
 
-    // Theme-aware tiles
     const tileConfig = isDark ? TILE_LAYERS.dark : TILE_LAYERS.light;
     leaflet.tileLayer(tileConfig.url, {
       attribution: tileConfig.attribution,
@@ -112,168 +134,179 @@ export default function DCMap({
       maxZoom: 19,
     }).addTo(map);
 
-    const waterColor = "#2563EB";
-    const waterColorLight = "#3B82F6";
-
     // =============================================
-    // WATERSHED BOUNDARY
+    // WATERSHED BOUNDARIES (Official DC GIS)
     // =============================================
-    if (layers.watershedBoundary) {
-      leaflet.polygon(anacostiaWatershed.coordinates, {
-        color: "#06B6D4",
-        weight: 2,
-        opacity: 0.6,
-        fillColor: "#06B6D4",
-        fillOpacity: isDark ? 0.06 : 0.04,
-        dashArray: "10 6",
-      })
-        .bindTooltip(`${anacostiaWatershed.name} (${anacostiaWatershed.area})`, { direction: "center" })
-        .addTo(map);
+    if (layers.watershedBoundary && geoJsonCache.current.watersheds) {
+      leaflet.geoJSON(geoJsonCache.current.watersheds as never, {
+        style: (feature) => {
+          const name = feature?.properties?.NAME || "";
+          const isAnacostia = name.toLowerCase().includes("anacostia");
+          return {
+            color: isAnacostia ? "#06B6D4" : "#94A3B8",
+            weight: isAnacostia ? 2.5 : 1.5,
+            opacity: isAnacostia ? 0.7 : 0.4,
+            fillColor: isAnacostia ? "#06B6D4" : "#94A3B8",
+            fillOpacity: isDark ? (isAnacostia ? 0.08 : 0.03) : (isAnacostia ? 0.06 : 0.02),
+            dashArray: isAnacostia ? "10 6" : "6 4",
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const name = feature.properties?.NAME || "Watershed";
+          layer.bindTooltip(name, { direction: "center" });
+          layer.on("click", () => {
+            map.flyToBounds((layer as L.Polygon).getBounds(), { padding: [40, 40], duration: 0.8 });
+          });
+        },
+      }).addTo(map);
     }
 
     // =============================================
-    // WARD BOUNDARIES
+    // SUB-WATERSHEDS (Official DC GIS — 188 sub-watersheds)
     // =============================================
-    if (layers.wardBoundaries) {
-      const riskColors: Record<string, string> = { Low: "#22C55E", Medium: "#F59E0B", High: "#EF4444" };
-      dcWardBoundaries.forEach((ward) => {
-        const fillColor = riskColors[ward.floodRisk] || "#FDB927";
-        leaflet.polygon(ward.coordinates, {
+    if (layers.subwatersheds && geoJsonCache.current.subwatersheds) {
+      leaflet.geoJSON(geoJsonCache.current.subwatersheds as never, {
+        style: (feature) => {
+          const ws = (feature?.properties?.WATERSHED || "").toLowerCase();
+          const color = ws.includes("anacostia") ? "#06B6D4"
+            : ws.includes("rock") ? "#8B5CF6"
+            : ws.includes("potomac") ? "#3B82F6"
+            : "#64748B";
+          return {
+            color,
+            weight: 1,
+            opacity: 0.5,
+            fillColor: color,
+            fillOpacity: isDark ? 0.06 : 0.04,
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const p = feature.properties;
+          layer.bindTooltip(
+            `${p?.SUBSHED || "Sub-watershed"}<br><span style="font-size:10px;opacity:0.7">${p?.WATERSHED || ""} · ${p?.ACRES ? Math.round(Number(p.ACRES)) + " acres" : ""}</span>`,
+            { direction: "top" }
+          );
+          layer.on("click", () => {
+            map.flyToBounds((layer as L.Polygon).getBounds(), { padding: [40, 40], duration: 0.8 });
+          });
+        },
+      }).addTo(map);
+    }
+
+    // =============================================
+    // WARD BOUNDARIES (Official DC GIS — 8 wards)
+    // =============================================
+    if (layers.wardBoundaries && geoJsonCache.current.wards) {
+      leaflet.geoJSON(geoJsonCache.current.wards as never, {
+        style: () => ({
           color: "#FDB927",
           weight: 2,
           opacity: isDark ? 0.7 : 0.6,
-          fillColor: fillColor,
-          fillOpacity: isDark ? 0.08 : 0.06,
-        })
-          .bindTooltip(`Ward ${ward.ward}`, {
+          fillColor: "#FDB927",
+          fillOpacity: isDark ? 0.06 : 0.04,
+        }),
+        onEachFeature: (feature, layer) => {
+          const p = feature.properties;
+          const ward = p?.WARD || p?.NAME || "";
+          layer.bindTooltip(`Ward ${ward}`, {
             permanent: true,
             direction: "center",
             className: "ward-label",
-          })
-          .bindPopup(`
-            <div style="font-family:Inter,system-ui,sans-serif;min-width:180px;">
-              <h3 style="font-weight:700;font-size:14px;color:${isDark ? "#F3F4F6" : "#111827"};margin:0 0 6px;">Ward ${ward.ward}</h3>
-              <div style="display:grid;gap:4px;font-size:11px;color:${isDark ? "#9CA3AF" : "#64748B"};">
-                <div>Population: <strong style="color:${isDark ? "#E5E7EB" : "#334155"}">${ward.population != null ? ward.population.toLocaleString() : "N/A"}</strong></div>
-                <div>Council: <strong style="color:${isDark ? "#E5E7EB" : "#334155"}">${ward.councilMember}</strong></div>
-                <div>Flood Risk: <strong style="color:${riskColors[ward.floodRisk]}">${ward.floodRisk}</strong></div>
-                <div>Impervious: <strong style="color:${isDark ? "#E5E7EB" : "#334155"}">${ward.impervious}%</strong></div>
+          });
+          const popupBg = isDark ? "rgba(19,22,31,0.95)" : "rgba(255,255,255,0.98)";
+          const popupText = isDark ? "#F3F4F6" : "#111827";
+          const popupSec = isDark ? "#9CA3AF" : "#64748B";
+          layer.bindPopup(`
+            <div style="font-family:Inter,system-ui,sans-serif;min-width:180px;background:${popupBg};color:${popupText};">
+              <h3 style="font-weight:700;font-size:14px;margin:0 0 6px;">Ward ${ward}</h3>
+              <div style="display:grid;gap:4px;font-size:11px;color:${popupSec};">
+                ${p?.REP_NAME ? `<div>Council: <strong style="color:${popupText}">${p.REP_NAME}</strong></div>` : ""}
+                ${p?.REP_PHONE ? `<div>Phone: ${p.REP_PHONE}</div>` : ""}
               </div>
             </div>
-          `, { maxWidth: 250, className: "station-popup" })
-          .addTo(map);
-      });
-    }
-
-    // =============================================
-    // FLOOD ZONES
-    // =============================================
-    if (layers.floodZones) {
-      floodZones.forEach((zone) => {
-        const color = zone.riskLevel === "AE" ? "#EF4444" : "#F59E0B";
-        leaflet.polygon(zone.coordinates, {
-          color: color,
-          weight: 1.5,
-          opacity: 0.7,
-          fillColor: color,
-          fillOpacity: isDark ? 0.2 : 0.15,
-          dashArray: zone.riskLevel === "AE" ? undefined : "4 4",
-        })
-          .bindTooltip(`${zone.name} (Zone ${zone.riskLevel})`, { direction: "top" })
-          .addTo(map);
-      });
-    }
-
-    // =============================================
-    // IMPERVIOUS SURFACES
-    // =============================================
-    if (layers.imperviousSurfaces) {
-      imperviousZones.forEach((zone) => {
-        const opacity = zone.percentage / 100;
-        leaflet.polygon(zone.coordinates, {
-          color: "#8B5CF6",
-          weight: 1.5,
-          opacity: 0.6,
-          fillColor: "#8B5CF6",
-          fillOpacity: isDark ? opacity * 0.3 : opacity * 0.2,
-        })
-          .bindTooltip(`${zone.name} (${zone.percentage}% impervious)`, { direction: "top" })
-          .addTo(map);
-      });
-    }
-
-    // =============================================
-    // WATERWAYS
-    // =============================================
-    if (layers.waterways) {
-      // Anacostia River — multi-layer realistic rendering
-      leaflet.polyline(anacostiaRiver.coordinates, {
-        color: waterColor, weight: 28, opacity: isDark ? 0.08 : 0.06,
-        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
+          `, { maxWidth: 250, className: "station-popup" });
+          // Click to zoom into ward
+          layer.on("click", () => {
+            map.flyToBounds((layer as L.Polygon).getBounds(), { padding: [40, 40], duration: 0.8 });
+          });
+        },
       }).addTo(map);
-      leaflet.polyline(anacostiaRiver.coordinates, {
-        color: waterColorLight, weight: 16, opacity: isDark ? 0.15 : 0.1,
-        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-      }).addTo(map);
-      leaflet.polyline(anacostiaRiver.coordinates, {
-        color: waterColor, weight: 6, opacity: 0.85,
-        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-      }).addTo(map);
-      leaflet.polyline(anacostiaRiver.coordinates, {
-        color: "#60A5FA", weight: 2, opacity: isDark ? 0.5 : 0.35,
-        smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-      })
-        .bindTooltip("Anacostia River", { permanent: false, direction: "top" })
-        .addTo(map);
-
-      // Potomac River
-      const potomac = dcStreams.find(s => s.id === "potomac-river");
-      if (potomac) {
-        leaflet.polyline(potomac.coordinates, {
-          color: waterColor, weight: 32, opacity: isDark ? 0.07 : 0.05,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(potomac.coordinates, {
-          color: waterColorLight, weight: 18, opacity: isDark ? 0.12 : 0.08,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(potomac.coordinates, {
-          color: waterColor, weight: 7, opacity: 0.8,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(potomac.coordinates, {
-          color: "#60A5FA", weight: 2.5, opacity: isDark ? 0.45 : 0.3,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        })
-          .bindTooltip(`Potomac River (Health: ${potomac.healthIndex}/100)`, { direction: "top" })
-          .addTo(map);
-      }
-
-      // Streams & tributaries
-      dcStreams.forEach((stream) => {
-        if (stream.id === "potomac-river") return;
-        const healthColor = getHealthColor(stream.healthIndex);
-        const baseWeight = stream.type === "river" ? 5 : 3;
-
-        leaflet.polyline(stream.coordinates, {
-          color: healthColor, weight: baseWeight + 8, opacity: isDark ? 0.08 : 0.05,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(stream.coordinates, {
-          color: healthColor, weight: baseWeight, opacity: 0.75,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        }).addTo(map);
-        leaflet.polyline(stream.coordinates, {
-          color: isDark ? "#93C5FD" : "#60A5FA", weight: 1, opacity: isDark ? 0.35 : 0.25,
-          smoothFactor: 1.5, lineCap: "round", lineJoin: "round",
-        })
-          .bindTooltip(`${stream.name} (Health: ${stream.healthIndex}/100)`, { direction: "top" })
-          .addTo(map);
-      });
     }
 
     // =============================================
-    // MONITORING STATIONS
+    // FLOOD ZONES (Official FEMA NFHL 2023 — 402 zones)
+    // =============================================
+    if (layers.floodZones && geoJsonCache.current.floodplains) {
+      leaflet.geoJSON(geoJsonCache.current.floodplains as never, {
+        style: (feature) => {
+          const zone = feature?.properties?.FLD_ZONE || "X";
+          const color = floodZoneColor(zone);
+          const isHighRisk = zone === "AE" || zone === "A" || zone === "VE";
+          return {
+            color,
+            weight: isHighRisk ? 1.5 : 1,
+            opacity: 0.6,
+            fillColor: color,
+            fillOpacity: isDark ? (isHighRisk ? 0.2 : 0.1) : (isHighRisk ? 0.15 : 0.08),
+            dashArray: isHighRisk ? undefined : "4 4",
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const p = feature.properties;
+          const zone = p?.FLD_ZONE || "Unknown";
+          const subtype = p?.ZONE_SUBTY ? ` (${p.ZONE_SUBTY})` : "";
+          layer.bindTooltip(`FEMA Zone ${zone}${subtype}`, { direction: "top" });
+          layer.on("click", () => {
+            map.flyToBounds((layer as L.Polygon).getBounds(), { padding: [40, 40], duration: 0.8 });
+          });
+        },
+      }).addTo(map);
+    }
+
+    // =============================================
+    // WATERBODIES (Official DC GIS — river/lake polygons)
+    // =============================================
+    if (layers.waterbodies && geoJsonCache.current.waterbodies) {
+      leaflet.geoJSON(geoJsonCache.current.waterbodies as never, {
+        style: () => ({
+          color: "#2563EB",
+          weight: 0.5,
+          opacity: 0.4,
+          fillColor: isDark ? "#1D4ED8" : "#3B82F6",
+          fillOpacity: isDark ? 0.25 : 0.2,
+        }),
+      }).addTo(map);
+    }
+
+    // =============================================
+    // WATERWAYS (Official DC GIS — 1,273 centerlines)
+    // =============================================
+    if (layers.waterways && geoJsonCache.current.waterways) {
+      leaflet.geoJSON(geoJsonCache.current.waterways as never, {
+        style: (feature) => {
+          const name = (feature?.properties?.NAME || "").toLowerCase();
+          const isAnacostia = name.includes("anacostia");
+          const isPotomac = name.includes("potomac");
+          const isMajor = isAnacostia || isPotomac;
+          return {
+            color: isMajor ? "#2563EB" : (isDark ? "#60A5FA" : "#3B82F6"),
+            weight: isMajor ? 4 : (name ? 2.5 : 1.5),
+            opacity: isMajor ? 0.85 : (name ? 0.7 : 0.4),
+            lineCap: "round" as const,
+            lineJoin: "round" as const,
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const name = feature.properties?.NAME;
+          if (name) {
+            layer.bindTooltip(name, { direction: "top", sticky: true });
+          }
+        },
+      }).addTo(map);
+    }
+
+    // =============================================
+    // MONITORING STATIONS (from dc-waterways.ts — unchanged)
     // =============================================
     if (layers.monitoringStations) {
       const popupBg = isDark ? "rgba(19, 22, 31, 0.95)" : "rgba(255, 255, 255, 0.98)";
@@ -359,7 +392,7 @@ export default function DCMap({
     }
 
     // =============================================
-    // UDC CAMPUS
+    // UDC CAMPUS MARKER
     // =============================================
     const udcIcon = leaflet.divIcon({
       className: "udc-campus-marker",
@@ -367,68 +400,11 @@ export default function DCMap({
       iconSize: [22, 22],
       iconAnchor: [11, 11],
     });
-    const popupText = isDark ? "#F3F4F6" : "#111827";
-    const popupSecondary = isDark ? "#9CA3AF" : "#64748B";
+    const campusPopupText = isDark ? "#F3F4F6" : "#111827";
+    const campusPopupSec = isDark ? "#9CA3AF" : "#64748B";
     leaflet.marker([38.9436, -77.0631], { icon: udcIcon })
-      .bindPopup(`<div style="font-family:Inter,system-ui,sans-serif;"><h3 style="font-weight:700;font-size:14px;color:${popupText};margin:0 0 4px;">University of the District of Columbia</h3><p style="font-size:11px;color:${popupSecondary};margin:0 0 6px;">CAUSES / WRRI Research Hub</p><p style="font-size:11px;color:${isDark ? "#D1D5DB" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p></div>`)
+      .bindPopup(`<div style="font-family:Inter,system-ui,sans-serif;"><h3 style="font-weight:700;font-size:14px;color:${campusPopupText};margin:0 0 4px;">University of the District of Columbia</h3><p style="font-size:11px;color:${campusPopupSec};margin:0 0 6px;">CAUSES / WRRI Research Hub</p><p style="font-size:11px;color:${isDark ? "#D1D5DB" : "#475569"};margin:0;">4200 Connecticut Ave NW, Washington, DC</p></div>`)
       .addTo(map);
-
-    // DC Boundary — accurate outline from US Districts GeoJSON (119 points)
-    // Traces NW diagonal → north vertex → NE diagonal → east vertex → SE diagonal → Potomac River
-    const dcBoundary: [number, number][] = [
-      // NW diagonal border (Maryland line)
-      [38.93435, -77.119751], [38.935356, -77.118861], [38.949699, -77.099914],
-      // North vertex of diamond
-      [38.995548, -77.041018],
-      // NE diagonal border
-      [38.974781, -77.013763],
-      // East vertex of diamond
-      [38.892852, -76.909393],
-      // South vertex → start of Potomac River border
-      [38.791645, -77.039006],
-      // Potomac River — western/southern border (detailed)
-      [38.800496, -77.039191], [38.810527, -77.037288], [38.814635, -77.037343],
-      [38.81609, -77.038412], [38.818885, -77.03912], [38.819504, -77.038923],
-      [38.820254, -77.039972], [38.821656, -77.039496], [38.82209, -77.040758],
-      [38.82294, -77.041107], [38.823604, -77.040618], [38.823751, -77.039769],
-      [38.824473, -77.038784], [38.830138, -77.037755], [38.8321, -77.039116],
-      [38.83371, -77.041889], [38.833332, -77.042579], [38.831484, -77.041984],
-      [38.83119, -77.042805], [38.83143, -77.043207], [38.833361, -77.043774],
-      [38.833819, -77.044442], [38.835928, -77.045218], [38.838476, -77.045273],
-      [38.839894, -77.046513], [38.840148, -77.04587], [38.840632, -77.046736],
-      [38.840655, -77.047489], [38.841259, -77.048025], [38.841183, -77.046146],
-      [38.840214, -77.044739], [38.840198, -77.043904], [38.840558, -77.043406],
-      [38.839795, -77.043065], [38.839516, -77.041784], [38.839248, -77.038935],
-      [38.839405, -77.036804], [38.840101, -77.034593], [38.84281, -77.033902],
-      [38.844549, -77.033066], [38.848016, -77.032267], [38.851672, -77.032211],
-      [38.855027, -77.032843], [38.85768, -77.03417], [38.859749, -77.035387],
-      [38.861111, -77.036805], [38.861265, -77.037585], [38.863293, -77.038082],
-      [38.863241, -77.039738], [38.86269, -77.039858], [38.862375, -77.04037],
-      [38.863236, -77.041725], [38.863372, -77.042763], [38.863945, -77.042452],
-      [38.863684, -77.042505], [38.86366, -77.040787], [38.864284, -77.037924],
-      [38.865106, -77.037735], [38.866664, -77.037998], [38.869732, -77.039464],
-      [38.871441, -77.040684], [38.87411, -77.043334], [38.875613, -77.045869],
-      [38.874958, -77.047219], [38.873966, -77.046394], [38.873046, -77.04654],
-      [38.872455, -77.04624], [38.872057, -77.046517], [38.871314, -77.049154],
-      [38.871647, -77.050155], [38.873906, -77.051682], [38.876564, -77.051531],
-      [38.879006, -77.05354], [38.878876, -77.053751], [38.879712, -77.054141],
-      [38.880342, -77.055581], [38.880262, -77.057931], [38.880914, -77.059141],
-      [38.888956, -77.064251], [38.889598, -77.064409], [38.89019, -77.063773],
-      [38.890944, -77.06399], [38.891715, -77.064643], [38.893557, -77.065133],
-      [38.89453, -77.066005], [38.894833, -77.065905], [38.897161, -77.067224],
-      [38.898094, -77.067595], [38.899229, -77.067572], [38.900288, -77.068641],
-      [38.901195, -77.070657], [38.901123, -77.073373], [38.902368, -77.078248],
-      [38.902274, -77.082656], [38.905767, -77.093216], [38.911916, -77.102032],
-      [38.913281, -77.103415], [38.915923, -77.104134], [38.91763, -77.105587],
-      [38.920026, -77.106801], [38.921636, -77.108513], [38.924657, -77.112659],
-      [38.927376, -77.114903], [38.928165, -77.115957], [38.929631, -77.116466],
-      // Close polygon back to start
-      [38.93435, -77.119751],
-    ];
-    leaflet.polygon(dcBoundary, {
-      color: "#FDB927", weight: 1.5, opacity: isDark ? 0.4 : 0.5,
-      fillColor: "#FDB927", fillOpacity: isDark ? 0.02 : 0.03, dashArray: "6 4",
-    }).addTo(map);
 
     // =============================================
     // LEGEND
@@ -448,21 +424,17 @@ export default function DCMap({
       content.style.cssText = `background:${legendBg};backdrop-filter:blur(12px);border:1px solid ${legendBorder};border-radius:10px;padding:${isMobile ? "8px 10px" : "12px"};font-family:Inter,system-ui,sans-serif;color:${legendText};font-size:${isMobile ? "10px" : "11px"};min-width:${isMobile ? "140px" : "170px"};box-shadow:0 4px 12px rgba(0,0,0,${isDark ? "0.3" : "0.1"});max-height:${isMobile ? "50vh" : "none"};overflow-y:auto;display:${isMobile ? "none" : "block"};`;
       content.innerHTML = `
         <div style="display:flex;flex-direction:column;gap:5px;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:4px;background:linear-gradient(90deg,#2563EB,#60A5FA);border-radius:2px;"></div><span>Rivers</span></div>
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#22C55E;border-radius:2px;"></div><span style="color:${legendMuted}">Healthy (&ge;60)</span></div>
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#F59E0B;border-radius:2px;"></div><span style="color:${legendMuted}">Moderate (40-59)</span></div>
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:3px;background:#EF4444;border-radius:2px;"></div><span style="color:${legendMuted}">Poor (&lt;40)</span></div>
-          <div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:24px;height:4px;background:linear-gradient(90deg,#2563EB,#60A5FA);border-radius:2px;"></div><span>Rivers & Streams</span></div>
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:#3B82F6;border-radius:50%;border:1.5px solid white;"></div><span>River Station</span></div>
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:linear-gradient(135deg,#22C55E,#16A34A);border-radius:2px;border:1.5px solid white;transform:rotate(45deg);"></div><span>Green Infra.</span></div>
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:linear-gradient(135deg,#8B5CF6,#7C3AED);border-radius:2px;border:1.5px solid white;"></div><span>Stormwater</span></div>
-          ${layers.floodZones ? `<div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#EF444433;border:1px solid #EF4444;border-radius:2px;"></div><span>Flood Zone</span></div>` : ""}
-          ${layers.imperviousSurfaces ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#8B5CF633;border:1px solid #8B5CF6;border-radius:2px;"></div><span>Impervious</span></div>` : ""}
+          ${layers.floodZones ? `<div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#EF444433;border:1px solid #EF4444;border-radius:2px;"></div><span>FEMA Flood Zone</span></div>` : ""}
           ${layers.watershedBoundary ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;border:1.5px dashed #06B6D4;border-radius:2px;"></div><span>Watershed</span></div>` : ""}
+          ${layers.subwatersheds ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#06B6D420;border:1px solid #06B6D4;border-radius:2px;"></div><span>Sub-watershed</span></div>` : ""}
+          ${layers.waterbodies ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#3B82F633;border:1px solid #3B82F6;border-radius:2px;"></div><span>Waterbody</span></div>` : ""}
         </div>
       `;
 
-      // Toggle button for mobile — always-visible compact button
       const toggle = document.createElement("button");
       toggle.style.cssText = `background:${legendBg};backdrop-filter:blur(12px);border:1px solid ${legendBorder};border-radius:8px;padding:6px 10px;font-family:Inter,system-ui,sans-serif;color:${legendText};font-size:10px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,${isDark ? "0.3" : "0.1"});display:${isMobile ? "block" : "none"};margin-bottom:4px;`;
       toggle.textContent = "Legend ▲";
@@ -474,7 +446,6 @@ export default function DCMap({
         toggle.textContent = legendOpen ? "Legend ▼" : "Legend ▲";
       });
 
-      // Prevent map interactions when touching legend
       wrapper.addEventListener("mousedown", (e) => e.stopPropagation());
       wrapper.addEventListener("touchstart", (e) => e.stopPropagation());
 

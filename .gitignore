@@ -38,3 +38,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+src/data/geojson/*-raw.geojson
+src/data/geojson/*.geojson

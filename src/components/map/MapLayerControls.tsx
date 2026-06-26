@@ -7,10 +7,11 @@ import { useTheme } from "@/context/ThemeContext";
 export interface MapLayerState {
   wardBoundaries: boolean;
   watershedBoundary: boolean;
+  subwatersheds: boolean;
   floodZones: boolean;
-  imperviousSurfaces: boolean;
-  monitoringStations: boolean;
   waterways: boolean;
+  waterbodies: boolean;
+  monitoringStations: boolean;
 }
 
 interface MapLayerControlsProps {
@@ -19,12 +20,13 @@ interface MapLayerControlsProps {
 }
 
 const LAYER_CONFIG: { key: keyof MapLayerState; label: string; color: string; group: string }[] = [
-  { key: "waterways", label: "Rivers & Streams", color: "#3B82F6", group: "Base" },
-  { key: "monitoringStations", label: "Monitoring Stations", color: "#22C55E", group: "Base" },
+  { key: "waterways", label: "Rivers & Streams", color: "#3B82F6", group: "Hydrology" },
+  { key: "waterbodies", label: "Waterbodies", color: "#1D4ED8", group: "Hydrology" },
+  { key: "monitoringStations", label: "Monitoring Stations", color: "#22C55E", group: "Stations" },
   { key: "wardBoundaries", label: "DC Ward Boundaries", color: "#FDB927", group: "Boundaries" },
-  { key: "watershedBoundary", label: "Anacostia Watershed", color: "#06B6D4", group: "Boundaries" },
+  { key: "watershedBoundary", label: "Watersheds", color: "#06B6D4", group: "Boundaries" },
+  { key: "subwatersheds", label: "Sub-Watersheds", color: "#0EA5E9", group: "Boundaries" },
   { key: "floodZones", label: "FEMA Flood Zones", color: "#EF4444", group: "Overlays" },
-  { key: "imperviousSurfaces", label: "Impervious Surfaces", color: "#8B5CF6", group: "Overlays" },
 ];
 
 export default function MapLayerControls({ layers, onLayerToggle }: MapLayerControlsProps) {
