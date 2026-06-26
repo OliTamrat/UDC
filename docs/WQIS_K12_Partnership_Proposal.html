@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WQIS K-12 Environmental Literacy Partnership Proposal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --udc-gold: #C8A951;
+    --udc-gold-bright: #FDB927;
+    --udc-red: #CE1141;
+    --udc-navy: #002B5C;
+    --udc-navy-deep: #001A3A;
+    --water: #1D7EB7;
+    --water-light: #4BA3D9;
+    --water-vivid: #0EA5E9;
+    --teal: #0D9488;
+    --green: #16A34A;
+    --bg: #FFFFFF;
+    --bg-warm: #FAFAF8;
+    --text: #1A1A2E;
+    --text-body: #374151;
+    --muted: #6B7280;
+    --border: #E5E7EB;
+    --border-light: #F3F4F6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page { margin: 0.75in; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text-body);
+    background: var(--bg);
+    line-height: 1.75;
+    font-size: 14.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 820px; margin: 0 auto; padding: 0 40px; }
+
+  /* =========================================
+     COVER PAGE
+     ========================================= */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--udc-navy-deep);
+    color: white;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(160deg, rgba(0,26,58,0.97) 0%, rgba(0,43,92,0.92) 40%, rgba(13,148,136,0.15) 100%),
+      radial-gradient(ellipse at 80% 20%, rgba(29,126,183,0.2) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(200,169,81,0.08) 0%, transparent 50%);
+  }
+
+  .cover-top {
+    position: relative;
+    z-index: 1;
+    padding: 48px 56px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .cover-org {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--udc-gold);
+    border-left: 3px solid var(--udc-gold);
+    padding-left: 12px;
+    line-height: 1.6;
+  }
+
+  .cover-doc-type {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    padding: 6px 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 4px;
+  }
+
+  .cover-center {
+    position: relative;
+    z-index: 1;
+    padding: 0 56px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cover-accent-line {
+    width: 64px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--udc-gold), var(--water-light));
+    border-radius: 2px;
+    margin-bottom: 28px;
+  }
+
+  .cover h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(34px, 4.8vw, 52px);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+    max-width: 680px;
+  }
+
+  .cover h1 em {
+    font-style: normal;
+    color: var(--water-light);
+  }
+
+  .cover .subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 36px;
+  }
+
+  .cover-stats {
+    display: flex;
+    gap: 40px;
+  }
+
+  .cover-stat .num {
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.5px;
+  }
+
+  .cover-stat .lbl {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  .cover-bottom {
+    position: relative;
+    z-index: 1;
+    padding: 32px 56px 40px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 24px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .cover-bottom strong {
+    display: block;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  /* =========================================
+     SECTION STYLES
+     ========================================= */
+  section {
+    padding: 52px 0 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section:last-of-type { border-bottom: none; }
+
+  .section-header {
+    margin-bottom: 28px;
+  }
+
+  .section-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--water);
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+
+  .section-lead {
+    font-size: 15px;
+    color: var(--muted);
+    margin-top: 8px;
+    max-width: 640px;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 32px 0 10px;
+    letter-spacing: -0.2px;
+  }
+
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 20px 0 6px;
+  }
+
+  p { margin-bottom: 14px; color: var(--text-body); }
+  ul, ol { margin: 10px 0 16px 22px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--text); }
+
+  /* =========================================
+     CALLOUTS
+     ========================================= */
+  .callout {
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .callout-water {
+    background: linear-gradient(135deg, #EFF8FF 0%, #F0F9FF 100%);
+    border-left: 4px solid var(--water);
+  }
+
+  .callout-gold {
+    background: linear-gradient(135deg, #FFFDF5 0%, #FFF8E1 100%);
+    border-left: 4px solid var(--udc-gold);
+  }
+
+  .callout-green {
+    background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+    border-left: 4px solid var(--green);
+  }
+
+  .callout-alert {
+    background: linear-gradient(135deg, #FFF5F5 0%, #FEF2F2 100%);
+    border-left: 4px solid var(--udc-red);
+  }
+
+  .callout-title {
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  /* =========================================
+     TABLES
+     ========================================= */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  thead th {
+    background: var(--udc-navy);
+    color: white;
+    font-weight: 600;
+    text-align: left;
+    padding: 11px 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: none;
+  }
+
+  tbody td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+    color: var(--text-body);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #FAFBFC; }
+
+  /* =========================================
+     STAT CARDS
+     ========================================= */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 24px 0;
+  }
+
+  .metric {
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .metric .val {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--udc-navy);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  .metric .val.gold { color: var(--udc-gold); }
+  .metric .val.water { color: var(--water); }
+  .metric .val.green { color: var(--green); }
+
+  .metric .desc {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+  }
+
+  /* =========================================
+     TIER CARDS
+     ========================================= */
+  .tiers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .tier {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 22px;
+    position: relative;
+  }
+
+  .tier.recommended {
+    border-color: var(--water);
+    box-shadow: 0 0 0 1px var(--water), 0 8px 32px rgba(29,126,183,0.12);
+  }
+
+  .tier.recommended::before {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--water);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 3px 14px;
+    border-radius: 100px;
+  }
+
+  .tier-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .tier h4 {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 10px;
+    color: var(--text);
+  }
+
+  .tier .price {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--udc-navy);
+    margin-bottom: 16px;
+  }
+
+  .tier .price span {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .tier ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tier ul li {
+    font-size: 13px;
+    padding: 5px 0 5px 22px;
+    position: relative;
+    color: var(--text-body);
+  }
+
+  .tier ul li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* =========================================
+     TIMELINE
+     ========================================= */
+  .timeline {
+    position: relative;
+    margin: 24px 0;
+    padding-left: 40px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--water), var(--udc-gold));
+    border-radius: 1px;
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 28px;
+    padding-bottom: 4px;
+  }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--water);
+  }
+
+  .tl-item:nth-child(even)::before { border-color: var(--udc-gold); }
+
+  .tl-phase {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--water);
+  }
+
+  .tl-item:nth-child(even) .tl-phase { color: var(--udc-gold); }
+
+  .tl-item h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 2px 0 4px;
+    color: var(--text);
+  }
+
+  .tl-item p {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* =========================================
+     CREDENTIAL BANNER
+     ========================================= */
+  .credential-banner {
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  .credential-banner .initials {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    background: var(--udc-navy);
+    color: var(--udc-gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .credential-banner .cred-info h4 {
+    font-size: 16px;
+    margin: 0 0 2px;
+    color: var(--text);
+  }
+
+  .credential-banner .cred-info .role {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .credential-banner .cred-info .awards {
+    font-size: 12px;
+    color: var(--water);
+    font-weight: 500;
+  }
+
+  /* =========================================
+     FOOTER
+     ========================================= */
+  .doc-footer {
+    text-align: center;
+    padding: 36px 0;
+    color: var(--muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+  }
+
+  .doc-footer .divider {
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--udc-gold), var(--water));
+    border-radius: 1px;
+    margin: 0 auto 16px;
+  }
+
+  /* =========================================
+     PRINT
+     ========================================= */
+  @media print {
+    .cover { min-height: auto; padding: 40px; page-break-after: always; }
+    section { page-break-inside: avoid; }
+    body { font-size: 12px; background: white; }
+    .page { max-width: 100%; padding: 0 16px; }
+  }
+
+  @media (max-width: 700px) {
+    .tiers { grid-template-columns: 1fr; }
+    .cover-bottom { grid-template-columns: 1fr 1fr; }
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .cover-top, .cover-center, .cover-bottom { padding-left: 28px; padding-right: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     COVER PAGE
+     ============================================ -->
+<div class="cover">
+  <div class="cover-bg"></div>
+
+  <div class="cover-top">
+    <div class="cover-org">
+      University of the District of Columbia<br>
+      Water Resources Research Institute
+    </div>
+    <div class="cover-doc-type">Partnership Proposal</div>
+  </div>
+
+  <div class="cover-center">
+    <div class="cover-accent-line"></div>
+    <h1>Real-Time Water Quality<br>Intelligence for <em>DC&nbsp;&amp;&nbsp;Maryland K&#8209;12&nbsp;Classrooms</em></h1>
+    <p class="subtitle">
+      A proposal to bring live Anacostia watershed monitoring data into DCPS and MCPS environmental science curricula &mdash; transforming how students learn about the river that defines their community.
+    </p>
+    <div class="cover-stats">
+      <div class="cover-stat"><div class="num">12</div><div class="lbl">Monitoring Stations</div></div>
+      <div class="cover-stat"><div class="num">176 mi&sup2;</div><div class="lbl">Watershed Coverage</div></div>
+      <div class="cover-stat"><div class="num">11,329+</div><div class="lbl">Daily Sensor Records</div></div>
+      <div class="cover-stat"><div class="num">$0</div><div class="lbl">Cost to Schools</div></div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div><strong>Prepared By</strong>Tolessa Deksissa, Ph.D.<br>Director, WRRI &mdash; UDC CAUSES</div>
+    <div><strong>Technology Partner</strong>DAPS Analytics PLC</div>
+    <div><strong>Date</strong>June 25, 2026</div>
+    <div><strong>Reference</strong>WQIS-PROP-K12-2026-001</div>
+  </div>
+</div>
+
+<!-- ============================================
+     CONTENT
+     ============================================ -->
+<div class="page">
+
+  <!-- PRINCIPAL INVESTIGATOR -->
+  <section>
+    <div class="credential-banner">
+      <div class="initials">TD</div>
+      <div class="cred-info">
+        <h4>Tolessa Deksissa, Ph.D.</h4>
+        <div class="role">Director, Water Resources Research Institute &amp; Environmental Quality Testing Laboratory<br>College of Agriculture, Urban Sustainability &amp; Environmental Sciences (CAUSES)<br>University of the District of Columbia &bull; Van Ness Campus</div>
+        <div class="awards">National Black Engineer of the Year &mdash; Research Leadership (2022) &bull; Marquis Who&rsquo;s Who (2024)</div>
+        <div style="font-size: 12px; color: #6B7280; margin-top: 6px;">
+          Ph.D. Applied Biological Sciences: Environmental Technology, Ghent University<br>
+          M.S. Environmental Science, Ghent University &bull; B.S. Arid Land Crop Sciences, Haramaya University
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 EXECUTIVE SUMMARY -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 01</div>
+      <h2>Executive Summary</h2>
+      <p class="section-lead">A live, hyperlocal water quality platform &mdash; purpose-built for research and education, ready for DC and Maryland classrooms today.</p>
+    </div>
+
+    <p>
+      The University of the District of Columbia&rsquo;s Water Resources Research Institute (WRRI), directed by Dr.&nbsp;Tolessa Deksissa within the College of Agriculture, Urban Sustainability and Environmental Sciences (CAUSES), has developed the <strong>Water Quality Intelligence Service (WQIS)</strong> &mdash; a production-grade, real-time environmental monitoring dashboard that ingests live sensor data from USGS and EPA stations across the 176-square-mile Anacostia watershed.
+    </p>
+    <p>
+      This proposal outlines a partnership with <strong>DC Public Schools (DCPS)</strong> and <strong>Montgomery County Public Schools (MCPS)</strong> to integrate WQIS into middle and high school environmental science, biology, and chemistry curricula. The platform transforms abstract environmental concepts into tangible, data-driven investigations using water quality readings from the 8.7-mile river and its tributaries &mdash; waterways that students in Wards 5, 6, 7, and 8, and in Silver Spring and Burtonsville, pass every day.
+    </p>
+
+    <div class="callout callout-water">
+      <div class="callout-title">Why This Matters Now</div>
+      DC&rsquo;s Healthy Schools Act (2014) and Maryland&rsquo;s Environmental Literacy Standards (2011) both mandate environmental literacy for graduation. Yet no existing educational tool connects students to <em>real-time, local</em> water quality data from their own watershed. Meanwhile, the Anacostia is undergoing its most significant ecological transformation in decades: DC Water completed its 23-mile tunnel system in September 2023 to eliminate combined sewer overflows, and DOEE&rsquo;s restoration programs &mdash; including 35,000 deployed mussels and multiple green infrastructure sites &mdash; are producing measurable improvements. Students should be witnessing and analyzing this recovery in real time.
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="val water">12</div><div class="desc">USGS/EPA Stations</div></div>
+      <div class="metric"><div class="val">25</div><div class="desc">Water Parameters</div></div>
+      <div class="metric"><div class="val gold">11,329+</div><div class="desc">Records / Day</div></div>
+      <div class="metric"><div class="val green">$0</div><div class="desc">Cost to Schools</div></div>
+    </div>
+  </section>
+
+  <!-- 02 THE PROBLEM -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 02</div>
+      <h2>The Problem</h2>
+      <p class="section-lead">Environmental science curricula teach water quality from textbooks &mdash; not from the river outside the classroom window.</p>
+    </div>
+
+    <p>Current environmental science instruction in DC and Maryland relies on:</p>
+    <ul>
+      <li><strong>Distant case studies</strong> &mdash; the Great Lakes, Mississippi Delta, or Chesapeake Bay at basin scale &mdash; disconnected from students&rsquo; daily experience</li>
+      <li><strong>Static, aged datasets</strong> that are months or years old by the time they reach a worksheet</li>
+      <li><strong>No spatial connection</strong> between classroom learning and the specific streams, stormwater outfalls, and green infrastructure sites in students&rsquo; own neighborhoods</li>
+      <li><strong>No access</strong> to the professional-grade monitoring tools and visualization software that working hydrologists use</li>
+    </ul>
+
+    <div class="callout callout-alert">
+      <div class="callout-title">The Anacostia Gap</div>
+      The Anacostia River &mdash; the 8.7-mile waterway that flows from Prince George&rsquo;s and Montgomery counties through the heart of eastern DC before joining the Potomac at Buzzard Point &mdash; drains a 176-square-mile watershed that encompasses the neighborhoods where over 60% of DCPS students live. Its major tributaries &mdash; Northwest Branch, Northeast Branch, Watts Branch, Hickey Run, Pope Branch, and Sligo Creek &mdash; run through school grounds and neighborhood parks. Despite being one of the most monitored urban rivers in the mid-Atlantic, no educational platform connects its real-time USGS and EPA data to K-12 curricula.
+    </div>
+  </section>
+
+  <!-- 03 THE SOLUTION -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 03</div>
+      <h2>The Solution: WQIS as a Living Classroom</h2>
+      <p class="section-lead">A production-grade dashboard &mdash; already live, already ingesting federal sensor data, purpose-built for both university research and K-12 education.</p>
+    </div>
+
+    <h3>Platform Capabilities (Built and Operational)</h3>
+    <table>
+      <thead>
+        <tr><th>Feature</th><th>Educational Application</th><th>NGSS Alignment</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Interactive Watershed Map</strong><br>12 stations, DC ward overlays, flood zones, waterway layers, zoning</td>
+          <td>Spatial reasoning, understanding monitoring networks, urban-environmental interaction</td>
+          <td>ESS2.C, ESS3.C</td>
+        </tr>
+        <tr>
+          <td><strong>&ldquo;When It Rains in DC&rdquo;</strong><br>Interactive rainfall vs. turbidity visualization with animated stormwater simulation</td>
+          <td>Water cycle, urban runoff, combined sewer overflow impact on the Anacostia</td>
+          <td>ESS2.C, ESS3.C</td>
+        </tr>
+        <tr>
+          <td><strong>&ldquo;What&rsquo;s in the Water&rdquo;</strong><br>Six parameter explainer cards with DC-specific context and EPA threshold indicators</td>
+          <td>Chemistry (pH, dissolved oxygen, conductivity), biology (E.&nbsp;coli, nutrient loading)</td>
+          <td>PS1.B, LS2.C</td>
+        </tr>
+        <tr>
+          <td><strong>&ldquo;A Year in the Anacostia&rdquo;</strong><br>Seasonal water quality heatmap with month-by-month narratives</td>
+          <td>Seasonal ecosystem dynamics, climate-water quality relationships</td>
+          <td>ESS2.D, LS2.C</td>
+        </tr>
+        <tr>
+          <td><strong>Pollution Scenario Simulator</strong><br>Five scenarios: storm surge, CSO overflow, construction runoff, industrial discharge, green infrastructure response</td>
+          <td>Cause-effect analysis, evaluating engineering solutions to human impact</td>
+          <td>ESS3.C, ETS1.B</td>
+        </tr>
+        <tr>
+          <td><strong>Recreation Safety Index</strong><br>Real-time swimming, fishing, and kayaking risk assessment based on E.&nbsp;coli and DO levels</td>
+          <td>Public health literacy, community decision-making with quantitative evidence</td>
+          <td>LS2.C, ETS1.B</td>
+        </tr>
+        <tr>
+          <td><strong>Data Export (CSV / JSON)</strong><br>Filtered by station, parameter, date range &mdash; real USGS/EPA data for student analysis</td>
+          <td>Data literacy, spreadsheet skills, statistical reasoning, lab report preparation</td>
+          <td>SEP: Analyzing Data</td>
+        </tr>
+        <tr>
+          <td><strong>AI Research Assistant</strong><br>Natural language Q&amp;A powered by Claude, querying live station data via tool augmentation</td>
+          <td>Computational thinking, formulating scientific questions, interpreting complex datasets</td>
+          <td>SEP: Asking Questions</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Data Sources (All Free Federal APIs &mdash; No Cost, No Quota)</h3>
+    <ul>
+      <li><strong>USGS National Water Information System (NWIS)</strong> &mdash; Real-time sensor data from 7 active gauging stations: temperature, dissolved oxygen, pH, turbidity, specific conductance, E.&nbsp;coli. Updated every 15&ndash;60 minutes.</li>
+      <li><strong>EPA Water Quality Portal (WQP / WQX3)</strong> &mdash; Lab-analyzed results for nutrients (nitrate, phosphorus), heavy metals (lead, mercury, arsenic), and biological indicators across the Anacostia HUC-10 (02070010).</li>
+    </ul>
+
+    <div class="callout callout-green">
+      <div class="callout-title">Not a Mockup &mdash; Real Federal Data</div>
+      Every data point on the WQIS dashboard is traceable to a USGS or EPA source record. Students work with the same data that professional hydrologists, DC&rsquo;s Department of Energy &amp; Environment (DOEE), and EPA scientists use for regulatory compliance and watershed management. The platform ingests 11,329+ records per day via automated cron jobs.
+    </div>
+  </section>
+
+  <!-- 04 PARTNERSHIP MODEL -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 04</div>
+      <h2>Partnership Model</h2>
+      <p class="section-lead">Three tiers of engagement &mdash; from immediate free access to a full citizen science pipeline.</p>
+    </div>
+
+    <div class="tiers">
+      <div class="tier">
+        <div class="tier-label" style="color: var(--green);">Tier 1</div>
+        <h4>Public Access</h4>
+        <div class="price">Free</div>
+        <ul>
+          <li>Full dashboard and map access</li>
+          <li>All interactive stories and scenarios</li>
+          <li>Data export (CSV / JSON)</li>
+          <li>AI research assistant</li>
+          <li>No registration required</li>
+          <li>Available immediately</li>
+        </ul>
+      </div>
+
+      <div class="tier recommended">
+        <div class="tier-label" style="color: var(--water);">Tier 2</div>
+        <h4>Curriculum Integration</h4>
+        <div class="price">$0 <span>to schools</span></div>
+        <ul>
+          <li>Everything in Tier 1</li>
+          <li>6&ndash;8 NGSS-aligned lesson plans</li>
+          <li>Teacher PD workshops (2&times;/year at UDC)</li>
+          <li>Branded school portal</li>
+          <li>Student investigation accounts</li>
+          <li>UDC WRRI faculty mentorship</li>
+          <li>Co-publication on research findings</li>
+        </ul>
+      </div>
+
+      <div class="tier">
+        <div class="tier-label" style="color: var(--udc-gold);">Tier 3</div>
+        <h4>Field Station Program</h4>
+        <div class="price">~$500 <span>per school</span></div>
+        <ul>
+          <li>Everything in Tier 2</li>
+          <li>&ldquo;Adopt a Station&rdquo; program</li>
+          <li>Handheld water testing kits</li>
+          <li>Student field data uploaded to dashboard</li>
+          <li>Citizen science certification</li>
+          <li>Annual Watershed Summit at UDC</li>
+          <li>Published student research</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Mutual Commitments</h3>
+    <table>
+      <thead>
+        <tr><th>UDC WRRI Provides</th><th>DCPS / MCPS Provides</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Live dashboard platform &mdash; hosting, data pipeline, ongoing maintenance</td><td>Student and teacher engagement metrics</td></tr>
+        <tr><td>NGSS-aligned investigation guides authored by WRRI faculty</td><td>Curriculum integration time and classroom adoption</td></tr>
+        <tr><td>Teacher professional development workshops at Van Ness campus</td><td>Teacher participation and pedagogical feedback</td></tr>
+        <tr><td>Faculty mentorship for student environmental research projects</td><td>Letters of support for federal grant applications</td></tr>
+        <tr><td>Water testing kits and field logistics for Tier 3 schools</td><td>Field trip coordination and parental consent</td></tr>
+        <tr><td>Student data accounts and school-branded portal</td><td>Co-authorship on published environmental findings</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 05 TARGET SCHOOLS -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 05</div>
+      <h2>Target Schools &amp; Geographic Alignment</h2>
+      <p class="section-lead">Each school is matched to a nearby monitoring station &mdash; students investigate the water quality of the specific stream in their own neighborhood.</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Monitoring Station</th><th>Waterway</th><th>Nearby Schools</th><th>District</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>WB-001</strong></td>
+          <td>Watts Branch at Washington (USGS 01651770)</td>
+          <td>Kelly Miller MS, H.D. Woodson HS, Ron Brown College Prep</td>
+          <td>DCPS &mdash; Ward 7</td>
+        </tr>
+        <tr>
+          <td><strong>HR-001</strong></td>
+          <td>Hickey Run at National Arboretum (USGS 01651827)</td>
+          <td>Langdon ES, Brookland MS, McKinley Technology HS</td>
+          <td>DCPS &mdash; Ward 5</td>
+        </tr>
+        <tr>
+          <td><strong>ANA-002</strong></td>
+          <td>Anacostia River at Anacostia Park</td>
+          <td>Anacostia HS, Ketcham ES, Savoy ES</td>
+          <td>DCPS &mdash; Ward 8</td>
+        </tr>
+        <tr>
+          <td><strong>PB-001</strong></td>
+          <td>Pope Branch at Fort Dupont</td>
+          <td>Nalle ES, Kimball ES, Sousa MS</td>
+          <td>DCPS &mdash; Ward 7</td>
+        </tr>
+        <tr>
+          <td><strong>NW Branch</strong></td>
+          <td>NW Branch Anacostia at Riverdale (USGS 01651000)</td>
+          <td>Northwestern HS, Col. E. Brooke Lee MS, Takoma Park MS</td>
+          <td>MCPS &mdash; Silver Spring</td>
+        </tr>
+        <tr>
+          <td><strong>NE Branch</strong></td>
+          <td>NE Branch near Riverdale (USGS 01649500)</td>
+          <td>Paint Branch HS, Buck Lodge MS, Fairland ES</td>
+          <td>MCPS &mdash; Burtonsville</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-gold">
+      <div class="callout-title">Environmental Justice Alignment</div>
+      Wards 7 and 8 &mdash; where four of our twelve monitoring stations are located &mdash; are historically underserved communities with the highest flood risk and lowest per-capita green space in DC. The Anacostia has been called &ldquo;DC&rsquo;s forgotten river&rdquo; precisely because the communities along its banks have been overlooked. This partnership places professional-grade environmental data tools directly into the hands of students in these neighborhoods &mdash; not as charity, but as scientific training that builds real analytical skills.
+    </div>
+  </section>
+
+  <!-- 06 STANDARDS ALIGNMENT -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 06</div>
+      <h2>Standards Alignment</h2>
+      <p class="section-lead">Every WQIS feature maps to specific Next Generation Science Standards and DC/Maryland graduation requirements.</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Standard</th><th>Performance Expectation</th><th>WQIS Feature</th><th>Grades</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>MS-ESS2-4</strong></td><td>Develop a model to describe the cycling of water through Earth&rsquo;s systems driven by energy from the sun and gravity</td><td>Rain Story, Watershed Map, seasonal heatmap</td><td>6&ndash;8</td></tr>
+        <tr><td><strong>MS-ESS3-3</strong></td><td>Apply scientific principles to design a method for monitoring and minimizing human impact on the environment</td><td>Pollution Scenarios, Station Monitoring, Green Infrastructure stations</td><td>6&ndash;8</td></tr>
+        <tr><td><strong>MS-LS2-4</strong></td><td>Construct an argument supported by evidence that changes to physical or biological components of an ecosystem affect populations</td><td>E.&nbsp;coli trends, Recreation Safety, dissolved oxygen data</td><td>6&ndash;8</td></tr>
+        <tr><td><strong>HS-ESS3-4</strong></td><td>Evaluate or refine a technological solution that reduces impacts of human activities on natural systems</td><td>Green Infrastructure BMP stations, Scenario Simulator, CSO tunnel impact analysis</td><td>9&ndash;12</td></tr>
+        <tr><td><strong>HS-ESS3-6</strong></td><td>Use a computational representation to illustrate relationships among Earth systems and how those relationships are being modified</td><td>Data Export + spreadsheet analysis, AI Research Assistant, trend visualization</td><td>9&ndash;12</td></tr>
+        <tr><td><strong>HS-PS1-7</strong></td><td>Use mathematical representations to support the claim that atoms, and therefore mass, are conserved during a chemical reaction</td><td>pH chemistry, dissolved oxygen saturation, nutrient cycle data</td><td>9&ndash;12 (Chem)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Jurisdiction-Specific Requirements</h3>
+    <ul>
+      <li><strong>DC Healthy Schools Act (2014)</strong> &mdash; Mandates environmental literacy as a DCPS graduation requirement. WQIS provides the only real-time, DC-specific water quality data platform for classroom use.</li>
+      <li><strong>Maryland Environmental Literacy Standards (2011)</strong> &mdash; Requires students to investigate <em>local</em> environmental issues and propose evidence-based solutions. The Anacostia&rsquo;s Northwest and Northeast branches flow through Montgomery County &mdash; our upstream USGS stations provide direct relevance.</li>
+      <li><strong>AP Environmental Science</strong> &mdash; WQIS&rsquo;s scenario simulator, data export, and parameter explorer align with AP Exam topics: water pollution, ecosystem services, human impact assessment, and evidence-based policy analysis.</li>
+    </ul>
+  </section>
+
+  <!-- 07 GRANT FUNDING -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 07</div>
+      <h2>Grant Funding Unlocked by This Partnership</h2>
+      <p class="section-lead">A formal university-school district partnership qualifies WQIS for federal and regional grants that a standalone research tool cannot access.</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Grant Program</th><th>Amount</th><th>Why This Partnership Qualifies</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>EPA Environmental Education Grants</strong></td><td>$50K&ndash;$100K</td><td>Requires documented K-12 component with measurable community impact</td></tr>
+        <tr><td><strong>NOAA Environmental Literacy Grants</strong></td><td>$50K&ndash;$500K</td><td>Requires formal education partner, watershed-focused curriculum, and evaluation plan</td></tr>
+        <tr><td><strong>NSF ITEST</strong> (Innovative Technology Experiences for Students &amp; Teachers)</td><td>$400K&ndash;$2M</td><td>Requires university-school partnership; STEM + data literacy + underserved populations focus</td></tr>
+        <tr><td><strong>Chesapeake Bay Trust</strong></td><td>$25K&ndash;$200K</td><td>Anacostia is a priority Chesapeake Bay tributary; education component required</td></tr>
+        <tr><td><strong>DC OSSE Environmental Literacy Grants</strong></td><td>$10K&ndash;$50K</td><td>DC-specific; requires alignment with DCPS standards and documented school participation</td></tr>
+        <tr><td><strong>MWCOG</strong> (Metropolitan Washington Council of Governments)</td><td>Varies</td><td>Regional watershed education and cross-jurisdiction collaboration</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-green">
+      <div class="callout-title">Combined Eligibility: $535K &ndash; $2.85M</div>
+      Letters of support from DCPS and MCPS are the single most important factor in competitive federal grant applications. A signed MOU transforms this from a university research project into a regional education initiative &mdash; the category that NSF, EPA, and NOAA prioritize for funding.
+    </div>
+  </section>
+
+  <!-- 08 IMPLEMENTATION TIMELINE -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 08</div>
+      <h2>Implementation Timeline</h2>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-phase">Phase 1 &mdash; Summer 2026</div>
+        <h4>Platform Preparation</h4>
+        <p>Upgrade data ingestion to hourly (true real-time). Integrate official DC GeoJSON map layers and USGS NHD waterway data. Build Student Mode UI with guided investigation tours. Develop first four NGSS-aligned lesson plans.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Phase 2 &mdash; Fall 2026</div>
+        <h4>Pilot Program (5&ndash;8 Schools)</h4>
+        <p>Launch Tier 2 partnership with 3&ndash;4 DCPS schools (Wards 5, 7, 8) and 2&ndash;3 MCPS schools (Silver Spring, Burtonsville). Host teacher professional development workshop at UDC Van Ness campus. Collect usage data and pedagogical feedback.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Phase 3 &mdash; Spring 2027</div>
+        <h4>Expand, Refine, Apply for Funding</h4>
+        <p>Refine curriculum based on pilot teacher feedback. Expand to 15&ndash;20 schools. Launch Tier 3 Field Station Program at 4&ndash;5 pilot schools with water testing kits. Submit first grant applications (EPA, NOAA, Chesapeake Bay Trust) with school district letters of support.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">Phase 4 &mdash; Fall 2027</div>
+        <h4>Regional Scale &amp; Publication</h4>
+        <p>Full DCPS/MCPS district adoption. Annual Anacostia Watershed Summit at UDC. Publish student research findings in UDC and Chesapeake Bay journals. Apply for NSF ITEST ($400K&ndash;$2M) with pilot data as evidence of measurable impact.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 BUDGET -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 09</div>
+      <h2>Budget Summary</h2>
+      <p class="section-lead">Platform infrastructure is lean and already operational. The partnership investment is in curriculum development, teacher training, and field equipment.</p>
+    </div>
+
+    <h3>Annual Platform Infrastructure</h3>
+    <table>
+      <thead>
+        <tr><th>Item</th><th>Monthly</th><th>Annual</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Azure Container Apps (dashboard hosting, auto-scaling)</td><td>$13</td><td>$156</td></tr>
+        <tr><td>Azure PostgreSQL (database, 32GB)</td><td>$13</td><td>$156</td></tr>
+        <tr><td>Container Registry, Key Vault, Monitoring, Alerts</td><td>$8</td><td>$96</td></tr>
+        <tr><td>Hourly data ingestion (USGS + EPA + WQP cron jobs)</td><td>$3&ndash;4</td><td>$36&ndash;48</td></tr>
+        <tr><td>AI Research Assistant (Anthropic Claude API)</td><td>$5&ndash;10</td><td>$60&ndash;120</td></tr>
+        <tr><td>Domain renewal (wqis-app.com)</td><td>&mdash;</td><td>$15</td></tr>
+        <tr><td>Data sources (USGS, EPA, WQP federal APIs)</td><td>$0</td><td>$0</td></tr>
+        <tr style="font-weight: 700; background: #F0F9FF;"><td>Total Infrastructure</td><td>~$42&ndash;48</td><td>~$519&ndash;591</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 13px; color: var(--muted);">Note: If UDC utilizes Azure for Education credits, infrastructure costs may be reduced to near $0.</p>
+
+    <h3>Year 1 Partnership Investment</h3>
+    <table>
+      <thead>
+        <tr><th>Item</th><th>Cost</th><th>Funded By</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Student Mode UI and investigation guide development</td><td>$2,000&ndash;$3,000</td><td>UDC WRRI / DAPS Analytics</td></tr>
+        <tr><td>Lesson plan authoring (6&ndash;8 NGSS-aligned guides)</td><td>$1,500&ndash;$2,500</td><td>UDC WRRI + Education faculty</td></tr>
+        <tr><td>Teacher PD workshops (2&times; at Van Ness)</td><td>$500&ndash;$1,000</td><td>UDC CAUSES</td></tr>
+        <tr><td>Water testing kits for Tier 3 schools (5 schools &times; ~$500)</td><td>$2,000&ndash;$2,500</td><td>Grant-funded (CBT or EPA EE)</td></tr>
+        <tr style="font-weight: 700; background: #F0F9FF;"><td>Total Year 1</td><td>$6,000&ndash;$9,000</td><td></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-water">
+      <div class="callout-title">Cost to Participating Schools: $0</div>
+      Platform access, curriculum materials, and teacher professional development are provided at no cost to DCPS and MCPS schools. The only per-school cost is for Tier 3 field testing kits (~$500/school), which are eligible for Chesapeake Bay Trust and EPA Environmental Education grant funding.
+    </div>
+  </section>
+
+  <!-- 10 NEXT STEPS -->
+  <section>
+    <div class="section-header">
+      <div class="section-num">Section 10</div>
+      <h2>Requested Next Steps</h2>
+    </div>
+
+    <p>We invite DCPS and MCPS leadership to explore this partnership through the following actions:</p>
+
+    <ol>
+      <li><strong>Live Platform Demonstration</strong> &mdash; Schedule a 30-minute walkthrough of the WQIS dashboard for curriculum coordinators and environmental science department leads. Contact Dr.&nbsp;Tolessa Deksissa at <a href="mailto:tolessa.deksissa@udc.edu" style="color: var(--water);">tolessa.deksissa@udc.edu</a> or (202)&nbsp;642-0421.</li>
+      <li><strong>Identify Pilot Schools</strong> &mdash; Select 3&ndash;5 schools per district for the Fall 2026 pilot, prioritizing schools near active monitoring stations (Wards 5, 7, 8 for DCPS; Silver Spring / Burtonsville for MCPS).</li>
+      <li><strong>Letter of Support</strong> &mdash; Provide a letter of intent for UDC&rsquo;s federal grant applications. This single document significantly strengthens competitiveness for EPA, NOAA, and NSF funding.</li>
+      <li><strong>Teacher PD Coordination</strong> &mdash; Co-schedule one to two professional development sessions before the Fall 2026 semester.</li>
+      <li><strong>Memorandum of Understanding</strong> &mdash; Formalize the partnership structure, data access terms, curriculum use rights, and co-publication agreements.</li>
+    </ol>
+
+    <div style="background: var(--udc-navy); color: white; border-radius: 12px; padding: 36px; margin: 32px 0; text-align: center;">
+      <div style="font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 800; margin-bottom: 12px;">Contact</div>
+      <div style="font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.85);">
+        <strong style="color: white;">Tolessa Deksissa, Ph.D.</strong><br>
+        Director, Water Resources Research Institute &amp; Environmental Quality Testing Laboratory<br>
+        College of Agriculture, Urban Sustainability &amp; Environmental Sciences (CAUSES)<br>
+        University of the District of Columbia &bull; Van Ness Campus<br>
+        <a href="mailto:tolessa.deksissa@udc.edu" style="color: var(--udc-gold-bright);">tolessa.deksissa@udc.edu</a> &nbsp;&bull;&nbsp; (202) 642-0421
+      </div>
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: rgba(255,255,255,0.5);">
+        Technology Partner: DAPS Analytics PLC
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <div class="divider"></div>
+    <p>&copy; 2026 University of the District of Columbia &mdash; Water Resources Research Institute (WRRI)</p>
+    <p>Developed in partnership with DAPS Analytics PLC</p>
+    <p style="margin-top: 8px;">WQIS-PROP-K12-2026-001 &nbsp;&bull;&nbsp; Classification: Public</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WQIS Infrastructure Upgrade &amp; Enhancement Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --navy: #002B5C;
+    --navy-deep: #001A3A;
+    --blue: #1D7EB7;
+    --blue-light: #4BA3D9;
+    --teal: #0D9488;
+    --gold: #C8A951;
+    --gold-bright: #FDB927;
+    --green: #16A34A;
+    --red: #DC2626;
+    --amber: #D97706;
+    --purple: #7C3AED;
+    --bg: #FFFFFF;
+    --bg-warm: #FAFAF8;
+    --text: #1A1A2E;
+    --text-body: #374151;
+    --muted: #6B7280;
+    --border: #E5E7EB;
+    --border-light: #F3F4F6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @page { margin: 0.75in; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-body);
+    background: var(--bg);
+    line-height: 1.75;
+    font-size: 14.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; padding: 0 40px; }
+
+  /* Cover */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #080C14;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 70% 30%, rgba(29,126,183,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 30% 70%, rgba(13,148,136,0.08) 0%, transparent 50%),
+      linear-gradient(160deg, #0a1020 0%, #0d1929 50%, #091428 100%);
+  }
+
+  .cover-top {
+    position: relative;
+    z-index: 1;
+    padding: 44px 52px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .cover-org {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    border-left: 3px solid var(--blue);
+    padding-left: 12px;
+    line-height: 1.6;
+  }
+
+  .cover-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    padding: 5px 14px;
+    border: 1px solid rgba(13,148,136,0.3);
+    border-radius: 4px;
+  }
+
+  .cover-body {
+    position: relative;
+    z-index: 1;
+    padding: 0 52px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .cover-body .accent {
+    width: 56px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue), var(--teal));
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+
+  .cover h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(30px, 4.5vw, 46px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    max-width: 640px;
+  }
+
+  .cover h1 em { font-style: normal; color: var(--blue-light); }
+
+  .cover .sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    max-width: 580px;
+    line-height: 1.7;
+  }
+
+  .cover-footer {
+    position: relative;
+    z-index: 1;
+    padding: 28px 52px 36px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .cover-footer strong { display: block; color: rgba(255,255,255,0.7); font-weight: 600; margin-bottom: 2px; }
+
+  /* Sections */
+  section { padding: 48px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+
+  .stag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stag::before { content: ''; width: 20px; height: 2px; background: var(--blue); border-radius: 1px; }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+
+  h3 { font-size: 17px; font-weight: 700; color: var(--text); margin: 28px 0 10px; }
+  h4 { font-size: 15px; font-weight: 600; color: var(--text); margin: 18px 0 6px; }
+  .lead { font-size: 15px; color: var(--muted); margin-top: 8px; max-width: 640px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 10px 0 14px 22px; }
+  li { margin-bottom: 5px; }
+  strong { color: var(--text); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 14px 0; font-size: 13px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  thead th { background: var(--navy); color: white; font-weight: 600; text-align: left; padding: 10px 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #FAFBFC; }
+  .row-total td { font-weight: 700; background: #F0F9FF; border-top: 2px solid var(--blue); }
+
+  /* Callouts */
+  .callout { border-radius: 10px; padding: 18px 22px; margin: 18px 0; font-size: 14px; line-height: 1.7; }
+  .callout-blue { background: linear-gradient(135deg, #EFF8FF, #F0F9FF); border-left: 4px solid var(--blue); }
+  .callout-gold { background: linear-gradient(135deg, #FFFDF5, #FFF8E1); border-left: 4px solid var(--gold); }
+  .callout-green { background: linear-gradient(135deg, #F0FDF4, #ECFDF5); border-left: 4px solid var(--green); }
+  .callout-red { background: linear-gradient(135deg, #FFF5F5, #FEF2F2); border-left: 4px solid var(--red); }
+  .callout-teal { background: linear-gradient(135deg, #F0FDFA, #ECFDF5); border-left: 4px solid var(--teal); }
+  .ct { font-weight: 700; color: var(--text); margin-bottom: 4px; }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 18px 0; }
+  .card { background: var(--bg-warm); border: 1px solid var(--border); border-radius: 10px; padding: 20px 18px; }
+  .card-icon { width: 32px; height: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-bottom: 10px; }
+  .card h5 { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+  .card p { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+  /* Priority pills */
+  .p0 { color: #991B1B; font-weight: 700; font-size: 11px; }
+  .p1 { color: #92400E; font-weight: 600; font-size: 11px; }
+  .p2 { color: #1E40AF; font-weight: 500; font-size: 11px; }
+
+  /* Badges */
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; letter-spacing: 0.3px; }
+  .badge-live { background: #DCFCE7; color: #166534; }
+  .badge-req { background: #FEE2E2; color: #991B1B; }
+  .badge-k12 { background: #DBEAFE; color: #1E40AF; }
+  .badge-rsv { background: #FEF3C7; color: #92400E; }
+
+  /* Code */
+  code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #F1F5F9; padding: 2px 6px; border-radius: 4px; }
+  pre { background: #0F172A; color: #E2E8F0; border-radius: 10px; padding: 16px 20px; overflow-x: auto; margin: 14px 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; }
+  pre code { background: none; padding: 0; color: inherit; }
+
+  .doc-footer { text-align: center; padding: 32px 0; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 16px; }
+  .doc-footer .divider { width: 40px; height: 2px; background: linear-gradient(90deg, var(--blue), var(--teal)); border-radius: 1px; margin: 0 auto 14px; }
+
+  @media print { .cover { min-height: auto; page-break-after: always; } section { page-break-inside: avoid; } pre { white-space: pre-wrap; } }
+  @media (max-width: 700px) { .cards { grid-template-columns: 1fr; } .cover-footer { grid-template-columns: 1fr 1fr; } .cover-top, .cover-body, .cover-footer { padding-left: 24px; padding-right: 24px; } }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-top">
+    <div class="cover-org">DAPS Analytics PLC<br>UDC Water Resources Research Institute</div>
+    <div class="cover-badge">Internal &bull; Technical</div>
+  </div>
+  <div class="cover-body">
+    <div class="accent"></div>
+    <h1>Infrastructure Upgrade<br>&amp; <em>Enhancement Plan</em></h1>
+    <p class="sub">
+      DC Map GeoJSON overhaul &bull; NHD waterway integration &bull; Real-time hourly ingestion &bull; Scalability roadmap &bull; Cost analysis &bull; K-12 technical requirements
+    </p>
+  </div>
+  <div class="cover-footer">
+    <div><strong>Prepared For</strong>Dr. Tolessa Deksissa, Ph.D.<br>WRRI Director &amp; DAPS Founders</div>
+    <div><strong>Prepared By</strong>DAPS Analytics PLC<br>Engineering Team</div>
+    <div><strong>Date</strong>June 25, 2026</div>
+    <div><strong>Document</strong>WQIS-INFRA-2026-001<br>Version 2.0</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- 1. CURRENT STATE -->
+  <section>
+    <div class="stag">Section 1</div>
+    <h2>Current Infrastructure Assessment</h2>
+    <p class="lead">Production architecture, operational costs, and identified gaps requiring action.</p>
+
+    <h3>Production Architecture (All Services Live)</h3>
+    <table>
+      <thead><tr><th>Component</th><th>Service</th><th>Region</th><th>Status</th><th>$/mo</th></tr></thead>
+      <tbody>
+        <tr><td>Dashboard App</td><td>Azure Container Apps (0.5 vCPU, 1 GB, min-replicas=1)</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>$13</td></tr>
+        <tr><td>Database</td><td>Azure PostgreSQL Flexible Server (B1ms, 32 GB)</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>$13</td></tr>
+        <tr><td>Container Registry</td><td>Azure Container Registry (Basic)</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>$5</td></tr>
+        <tr><td>Secrets</td><td>Azure Key Vault (4 secrets)</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>$1</td></tr>
+        <tr><td>Monitoring</td><td>App Insights + 3 Alert Rules + 5-min availability test</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>$2</td></tr>
+        <tr><td>USGS Cron</td><td>Container Apps Job &mdash; daily 06:00 UTC</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
+        <tr><td>EPA Cron</td><td>Container Apps Job &mdash; daily 07:00 UTC</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
+        <tr><td>WQP Cron</td><td>Container Apps Job &mdash; weekly Mon 08:00 UTC</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
+        <tr><td>Marketing Site</td><td>Vercel (Hobby free plan) &mdash; wqis-app.com</td><td>Global CDN</td><td><span class="badge badge-live">Live</span></td><td>$0</td></tr>
+        <tr><td>AI Agent</td><td>Google Cloud Run (ADK 1.0)</td><td>US East 1</td><td><span class="badge badge-live">Live</span></td><td>&lt;$2</td></tr>
+        <tr class="row-total"><td colspan="4">Total Current Monthly Cost</td><td>~$35&ndash;38</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 13px; color: var(--muted);">All data sources (USGS NWIS, EPA WQP, WQX3) are free federal APIs. The entire cost is compute + storage.</p>
+
+    <h3>Critical Issues Identified</h3>
+    <table>
+      <thead><tr><th>Issue</th><th>Priority</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>DC Map uses hand-coded approximate polygons</strong><br>Ward boundaries, watershed perimeter, and waterways are simplified ~15&ndash;20 point arrays, not official geospatial data. Zoning layer does not exist.</td>
+          <td><span class="p0">P0 &mdash; Critical</span></td>
+          <td>Boundaries visually inaccurate; undermines credibility with environmental scientists and DOEE stakeholders</td>
+        </tr>
+        <tr>
+          <td><strong>Daily cron does not deliver &ldquo;real-time&rdquo;</strong><br>USGS sensors update every 15&ndash;60 min, but we ingest once at 06:00 UTC. Dashboard data can be 24 hours stale.</td>
+          <td><span class="p0">P0 &mdash; Critical</span></td>
+          <td>Contradicts the platform&rsquo;s &ldquo;real-time&rdquo; positioning; stale data reduces educational and research value</td>
+        </tr>
+        <tr>
+          <td><strong>NHD flowlines not integrated</strong><br>Waterways manually traced with ~30&ndash;50 points per stream. Minor tributaries (Sligo Creek, Indian Creek, Lower Beaverdam Creek) and drainage channels are invisible.</td>
+          <td><span class="p1">P1 &mdash; High</span></td>
+          <td>Incomplete watershed picture; students cannot see full tributary network contributing to Anacostia pollution</td>
+        </tr>
+        <tr>
+          <td><strong>DNS cutover incomplete</strong><br><code>udc.wqis-app.com</code> CNAME still pending UDC IT confirmation.</td>
+          <td><span class="p1">P1 &mdash; High</span></td>
+          <td>Professional URL not active; still using Azure default hostname</td>
+        </tr>
+        <tr>
+          <td><strong>No user authentication</strong><br>Dashboard is open to anyone with the URL.</td>
+          <td><span class="p2">P2 &mdash; Medium</span></td>
+          <td>Cannot differentiate student/teacher/researcher access for K-12 partnership tracking</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 2. DC MAP GEOJSON OVERHAUL -->
+  <section>
+    <div class="stag">Section 2</div>
+    <h2>Upgrade 1: DC Map GeoJSON &amp; NHD Overhaul</h2>
+    <p class="lead">Replace all hand-coded polygon approximations with authoritative government geospatial data.</p>
+
+    <h3>Current Problem</h3>
+    <p>The files <code>dc-boundaries.ts</code> and <code>dc-waterways.ts</code> contain manually plotted coordinate arrays. Ward polygons use ~16 points each (the actual legal boundaries have thousands). The &ldquo;Anacostia watershed&rdquo; is a single rough polygon, not the USGS HUC-10 delineation. Waterways trace approximate paths &mdash; missing the full tributary network including Sligo Creek, Indian Creek, Paint Branch, and Lower Beaverdam Creek, all of which are significant pollution contributors to the Anacostia.</p>
+
+    <h3>Solution: Official Government Data Sources</h3>
+    <table>
+      <thead><tr><th>Layer</th><th>Authoritative Source</th><th>Precision</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Ward Boundaries</strong></td><td>DC OCTO &mdash; Ward from 2022 (opendata.dc.gov)</td><td>Legal boundary precision, thousands of vertices per polygon</td><td>Free</td></tr>
+        <tr><td><strong>DC Zoning</strong> (NEW)</td><td>DC Office of Zoning &mdash; ZoningPln (opendata.dc.gov)</td><td>Parcel-level: R, C, M, W, CR, PDR zones</td><td>Free</td></tr>
+        <tr><td><strong>Watershed Boundaries</strong></td><td>USGS Watershed Boundary Dataset &mdash; HUC-10: 02070010 (apps.nationalmap.gov)</td><td>USGS hydrologic unit delineation</td><td>Free</td></tr>
+        <tr><td><strong>DC Watersheds (local)</strong></td><td>DOEE Watershed Boundaries (opendata.dc.gov)</td><td>DOEE sub-watershed delineation within DC</td><td>Free</td></tr>
+        <tr><td><strong>NHD Flowlines</strong></td><td>USGS National Hydrography Dataset &mdash; NHDFlowline (apps.nationalmap.gov)</td><td>All streams, rivers, canals with flow direction, stream order, reach codes</td><td>Free</td></tr>
+        <tr><td><strong>NHD Waterbodies</strong></td><td>USGS NHD &mdash; NHDWaterbody (apps.nationalmap.gov)</td><td>River polygon extents showing actual width of Anacostia and Potomac</td><td>Free</td></tr>
+        <tr><td><strong>Flood Zones</strong></td><td>FEMA National Flood Hazard Layer (msc.fema.gov)</td><td>FEMA-certified flood risk areas with zone designations</td><td>Free</td></tr>
+        <tr><td><strong>Impervious Surfaces</strong></td><td>NLCD Impervious Surface 2021 (mrlc.gov)</td><td>30m resolution raster / vector polygons</td><td>Free</td></tr>
+      </tbody>
+    </table>
+
+    <h3>NHD Waterways: What Gets Added</h3>
+    <p>The National Hydrography Dataset for HUC 02070010 (Anacostia) will replace hand-traced waterways with the complete tributary network. Key additions beyond what currently exists:</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon" style="background: #DBEAFE; color: var(--blue);">NW</div>
+        <h5>NW Branch + Sligo Creek</h5>
+        <p>Full flowline from Layhill through Wheaton, Silver Spring, Hyattsville to confluence. Currently only partially traced.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background: #D1FAE5; color: var(--green);">NE</div>
+        <h5>NE Branch + Paint Branch + Indian Creek</h5>
+        <p>Complete upstream network through Fairland, Burtonsville, College Park. Connects MCPS schools to the watershed story.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background: #E0E7FF; color: var(--purple);">LB</div>
+        <h5>Lower Beaverdam Creek</h5>
+        <p>Major tributary in PG County currently absent from map. Significant urban runoff contributor.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background: #FEF3C7; color: var(--amber);">DR</div>
+        <h5>Drainage Channels &amp; Wetlands</h5>
+        <p>NHD Areas layer shows wetland/marsh zones along the Anacostia corridor &mdash; Kenilworth Marsh, Kingman Island.</p>
+      </div>
+    </div>
+
+    <h3>Implementation Steps</h3>
+    <table>
+      <thead><tr><th>#</th><th>Task</th><th>Hours</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Download official GeoJSON from opendata.dc.gov (wards, zoning, DOEE watersheds, FEMA flood)</td><td>1</td><td>Raw GeoJSON in <code>src/data/geojson/</code></td></tr>
+        <tr><td>2</td><td>Download NHD flowlines + waterbodies for HUC 02070010 from USGS National Map</td><td>1</td><td>NHD GeoJSON with stream order, names, flow direction</td></tr>
+        <tr><td>3</td><td>Simplify via TopoJSON + <code>@mapbox/geojson-rewind</code> for web performance (reduce vertices, preserve shape)</td><td>2</td><td>Optimized files &lt;500KB per layer</td></tr>
+        <tr><td>4</td><td>Replace <code>dc-boundaries.ts</code> hand-coded arrays with real GeoJSON imports</td><td>2</td><td>Accurate ward, watershed, flood layers</td></tr>
+        <tr><td>5</td><td>Replace <code>dc-waterways.ts</code> hand-traced streams with NHD flowlines</td><td>2</td><td>Complete tributary network visible</td></tr>
+        <tr><td>6</td><td>Add DC Zoning layer toggle to <code>MapLayerControls.tsx</code> (R/C/M/W color coding)</td><td>2</td><td>New &ldquo;Zoning&rdquo; toggle in layer controls</td></tr>
+        <tr><td>7</td><td>Refactor <code>DCMap.tsx</code> to use Leaflet <code>L.geoJSON()</code> with style functions instead of manual <code>L.polygon()</code></td><td>2</td><td>Clean, maintainable GeoJSON rendering</td></tr>
+        <tr><td>8</td><td>Testing: all layers toggle correctly, popups functional, mobile performance, no regressions</td><td>1</td><td>All tests passing, visual QA complete</td></tr>
+        <tr class="row-total"><td></td><td>Total</td><td><strong>13 hrs</strong></td><td>Data cost: $0</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Before vs. After Comparison</h3>
+    <table>
+      <thead><tr><th>Aspect</th><th>Current (Hand-Coded)</th><th>After (Official GeoJSON + NHD)</th></tr></thead>
+      <tbody>
+        <tr><td>Ward boundaries</td><td>~16 points per ward</td><td>Thousands of points &mdash; legally precise, follows actual streets</td></tr>
+        <tr><td>Watershed</td><td>Single rough polygon</td><td>USGS HUC-10 delineation + DOEE sub-watershed detail</td></tr>
+        <tr><td>Waterways</td><td>5 hand-traced streams + 2 rivers</td><td>20+ named streams, all tributaries, drainage channels, wetland areas</td></tr>
+        <tr><td>Zoning</td><td>Does not exist</td><td>Full DC zoning (residential, commercial, mixed-use, waterfront)</td></tr>
+        <tr><td>Flood zones</td><td>3 approximate polygons</td><td>FEMA-certified NFHL boundaries with zone designations</td></tr>
+        <tr><td>Data provenance</td><td>&ldquo;Simplified from DC GIS&rdquo; (manual approximation)</td><td>Direct import from opendata.dc.gov + USGS NHD + FEMA NFHL</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-green">
+      <div class="ct">Impact: 13 hours development | $0 data cost | No infrastructure changes</div>
+      GeoJSON files add ~1&ndash;2 MB to the build but are lazy-loaded per layer toggle. No database, API, or infrastructure changes required. Pure frontend improvement with major credibility impact.
+    </div>
+  </section>
+
+  <!-- 3. HOURLY CRON -->
+  <section>
+    <div class="stag">Section 3</div>
+    <h2>Upgrade 2: Real-Time Hourly Ingestion</h2>
+    <p class="lead">Move from once-daily to hourly data ingestion to deliver on the &ldquo;real-time&rdquo; promise.</p>
+
+    <h3>Current vs. Proposed Schedule</h3>
+    <table>
+      <thead><tr><th>Source</th><th>Current</th><th>Proposed</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td><strong>USGS NWIS</strong><br>(real-time sensors)</td><td>Daily 06:00 UTC</td><td><strong>Hourly</strong> (:00 every hour)</td><td>USGS sensors update every 15&ndash;60 min. Hourly matches their refresh cadence perfectly.</td></tr>
+        <tr><td><strong>EPA WQP</strong><br>(lab results)</td><td>Daily 07:00 UTC</td><td><strong>Every 6 hours</strong> (00, 06, 12, 18)</td><td>Lab data updates less frequently. 6-hourly catches same-day results without excess API calls.</td></tr>
+        <tr><td><strong>WQP Extended</strong><br>(emerging contaminants)</td><td>Weekly (Mon 08:00)</td><td><strong>Daily</strong> (08:00 UTC)</td><td>Weekly too infrequent for classroom use. Daily ensures fresh data for student activities.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cost Impact</h3>
+    <table>
+      <thead><tr><th>Metric</th><th>Current (Daily)</th><th>Proposed (Hourly+)</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>Total runs per month</td><td>~62</td><td>~870</td><td>+808</td></tr>
+        <tr><td>Avg. runtime per run</td><td colspan="3">30&ndash;60 seconds (API fetch + DB upsert + deduplication)</td></tr>
+        <tr><td>Azure Jobs pricing</td><td colspan="3">$0.000024/vCPU-second + $0.000003/GiB-second</td></tr>
+        <tr class="row-total"><td>Additional monthly cost</td><td>$0</td><td>$2&ndash;4</td><td><strong>+$2&ndash;4/mo ($24&ndash;48/yr)</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Implementation</h3>
+    <h4>Step 1: Update Azure Container Apps Job Schedules</h4>
+    <pre><code># USGS: hourly
+az containerapp job update \
+  --name usgs-ingest-cron \
+  --resource-group rg-udc-wqis-cu \
+  --cron-expression "0 * * * *"
+
+# EPA: every 6 hours
+az containerapp job update \
+  --name epa-ingest-cron \
+  --resource-group rg-udc-wqis-cu \
+  --cron-expression "0 */6 * * *"
+
+# WQP: daily 8am UTC
+az containerapp job update \
+  --name wqp-ingest-cron \
+  --resource-group rg-udc-wqis-cu \
+  --cron-expression "0 8 * * *"</code></pre>
+
+    <h4>Step 2: Update Data Freshness Thresholds</h4>
+    <table>
+      <thead><tr><th>Status</th><th>Current Threshold</th><th>Proposed Threshold</th></tr></thead>
+      <tbody>
+        <tr><td style="color: var(--green); font-weight: 600;">Fresh</td><td>&lt; 24 hours</td><td>&lt; 2 hours</td></tr>
+        <tr><td style="color: var(--amber); font-weight: 600;">Warning</td><td>24&ndash;48 hours</td><td>2&ndash;6 hours</td></tr>
+        <tr><td style="color: var(--red); font-weight: 600;">Stale</td><td>&gt; 48 hours</td><td>&gt; 6 hours</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-gold">
+      <div class="ct">Vercel Cron Note</div>
+      Vercel Hobby plan only allows 1 cron per day. Since production is now on Azure, disable the Vercel cron entirely and rely on Azure Container Apps Jobs, which have no frequency limit. This avoids needing a Vercel Pro upgrade ($20/mo).
+    </div>
+
+    <div class="callout callout-green">
+      <div class="ct">Impact: 3 hours development | +$2&ndash;4/month | True real-time data</div>
+    </div>
+  </section>
+
+  <!-- 4. SCALABILITY -->
+  <section>
+    <div class="stag">Section 4</div>
+    <h2>Scalability Analysis</h2>
+    <p class="lead">How the platform handles growth from current academic use to district-wide school deployment.</p>
+
+    <table>
+      <thead><tr><th>Scenario</th><th>Concurrent Users</th><th>Infrastructure Change</th><th>Monthly</th><th>Annual</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Current</strong> (UDC research team)</td><td>5&ndash;10</td><td>None</td><td>$35&ndash;38</td><td>$420&ndash;456</td></tr>
+        <tr><td><strong>Pilot</strong> (5&ndash;8 schools)</td><td>50&ndash;100</td><td>None &mdash; current config handles this</td><td>$38&ndash;42</td><td>$456&ndash;504</td></tr>
+        <tr><td><strong>District</strong> (20+ schools)</td><td>200&ndash;500</td><td>Container App: 1 vCPU / 2 GB, min-replicas=2</td><td>$52&ndash;60</td><td>$624&ndash;720</td></tr>
+        <tr><td><strong>Regional</strong> (DCPS + MCPS full)</td><td>500&ndash;2,000</td><td>1 vCPU / 2 GB, replicas=3, Azure CDN, PostgreSQL B2ms</td><td>$85&ndash;110</td><td>$1,020&ndash;1,320</td></tr>
+        <tr><td><strong>Multi-Watershed</strong> (Potomac, Rock Creek)</td><td>2,000&ndash;10,000</td><td>2 vCPU / 4 GB, B4ms, Azure Front Door, read replicas</td><td>$180&ndash;250</td><td>$2,160&ndash;3,000</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-blue">
+      <div class="ct">Key Insight: The architecture scales by turning knobs, not by rebuilding.</div>
+      Bigger container, bigger database, add CDN. The EAV schema, CI/CD pipeline, monitoring, and cron jobs work identically from 10 to 10,000 users. No code changes needed until multi-watershed expansion (which requires new station mappings and watershed configuration).
+    </div>
+
+    <h3>Robustness Improvements</h3>
+    <table>
+      <thead><tr><th>Improvement</th><th>Effort</th><th>Cost</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Automated weekly DB backup</strong> &mdash; <code>pg_dump</code> to Azure Blob Storage with 90-day retention</td><td>3 hrs</td><td>$1/mo</td><td><span class="p1">P1</span></td></tr>
+        <tr><td><strong>Rate limiting</strong> &mdash; Protect API endpoints from abuse or accidental load</td><td>3 hrs</td><td>$0</td><td><span class="p1">P1</span></td></tr>
+        <tr><td><strong>Health-check failover</strong> &mdash; If Azure down, DNS redirect to Vercel static fallback</td><td>2 hrs</td><td>$0</td><td><span class="p2">P2</span></td></tr>
+        <tr><td><strong>User authentication</strong> &mdash; UDC Entra ID SSO or role-based login (teacher/student/researcher)</td><td>12&ndash;16 hrs</td><td>$0</td><td><span class="p2">P2 (P1 for K-12)</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 5. COST BREAKDOWN -->
+  <section>
+    <div class="stag">Section 5</div>
+    <h2>$5,000 Annual Budget Allocation</h2>
+    <p class="lead">How Dr. Tolessa&rsquo;s proposed $5,000/year budget covers infrastructure, improvements, and partnership development.</p>
+
+    <h3>Scenario A: With Azure for Education Credits</h3>
+    <table>
+      <thead><tr><th>Category</th><th>Annual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Azure infrastructure (all services)</td><td><strong>$0</strong></td><td>Covered by Azure for Education ($100&ndash;200/student, $200+/faculty)</td></tr>
+        <tr><td>Vercel (marketing site)</td><td>$0</td><td>Free Hobby plan</td></tr>
+        <tr><td>Domain (wqis-app.com)</td><td>$15</td><td>GoDaddy renewal</td></tr>
+        <tr><td>Anthropic API (AI assistant)</td><td>$60&ndash;120</td><td>Claude Haiku, ~5K queries/year</td></tr>
+        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$75&ndash;135</strong></td><td>Remaining for development: $4,865&ndash;4,925</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Scenario B: Full Azure Pay-As-You-Go</h3>
+    <table>
+      <thead><tr><th>Category</th><th>Annual</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Azure Container Apps + Jobs (hourly cron)</td><td>$192&ndash;204</td><td>Hosting + hourly ingestion</td></tr>
+        <tr><td>Azure PostgreSQL B1ms</td><td>$156</td><td>32 GB storage</td></tr>
+        <tr><td>ACR + Key Vault + App Insights</td><td>$96</td><td>Basic tiers</td></tr>
+        <tr><td>Vercel + Domain + AI API</td><td>$75&ndash;135</td><td>Same as Scenario A</td></tr>
+        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$519&ndash;591</strong></td><td>Remaining for development: $4,409&ndash;4,481</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Recommended Budget Allocation</h3>
+    <table>
+      <thead><tr><th>Item</th><th>Budget</th><th>Category</th><th>Timeline</th></tr></thead>
+      <tbody>
+        <tr><td>Annual infrastructure</td><td>$520&ndash;590</td><td><span class="badge badge-req">Required</span></td><td>Ongoing</td></tr>
+        <tr><td>DC GeoJSON map overhaul + NHD integration</td><td>$800&ndash;1,000</td><td><span class="badge badge-req">Required</span></td><td>Jul&ndash;Aug 2026</td></tr>
+        <tr><td>Hourly cron upgrade</td><td>$200&ndash;300</td><td><span class="badge badge-req">Required</span></td><td>Jul 2026</td></tr>
+        <tr><td>DNS cutover + domain finalization</td><td>$150&ndash;200</td><td><span class="badge badge-req">Required</span></td><td>Jul 2026</td></tr>
+        <tr><td>Student Mode UI for K-12</td><td>$1,200&ndash;1,500</td><td><span class="badge badge-k12">K-12</span></td><td>Aug&ndash;Sep 2026</td></tr>
+        <tr><td>Bicep &ldquo;Deploy to Azure&rdquo; template</td><td>$500&ndash;700</td><td><span class="badge badge-k12">Handover</span></td><td>Aug 2026</td></tr>
+        <tr><td>Contingency / expansion reserve</td><td>$700&ndash;1,000</td><td><span class="badge badge-rsv">Reserve</span></td><td>As needed</td></tr>
+        <tr class="row-total"><td>Total</td><td><strong>$4,070&ndash;5,290</strong></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-green">
+      <div class="ct">$5,000/year comfortably covers everything.</div>
+      Infrastructure runs ~$520&ndash;590/year (or ~$75 with Education credits). The remaining $4,400+ funds the DC Map overhaul, hourly cron upgrade, Student Mode, sovereign deployment template, and a contingency reserve.
+    </div>
+  </section>
+
+  <!-- 6. K-12 TECHNICAL REQUIREMENTS -->
+  <section>
+    <div class="stag">Section 6</div>
+    <h2>K-12 Partnership: Technical Build Requirements</h2>
+    <p class="lead">Features needed for DCPS/MCPS classroom integration.</p>
+
+    <table>
+      <thead><tr><th>Feature</th><th>Description</th><th>Hours</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Student Mode UI</strong></td><td>Simplified interface with guided tours, larger text, tooltips explaining scientific terms. Age-appropriate for grades 6&ndash;12. Toggle between Student and Researcher mode.</td><td>12&ndash;16</td><td><span class="p0">P0</span></td></tr>
+        <tr><td><strong>Investigation Guides</strong></td><td>In-app step-by-step lesson walkthroughs embedded in stories, scenarios, and map pages. &ldquo;Now observe...&rdquo; and &ldquo;Record your findings...&rdquo; prompts.</td><td>8&ndash;10</td><td><span class="p0">P0</span></td></tr>
+        <tr><td><strong>&ldquo;My Station&rdquo; Portal</strong></td><td>School-specific station page for adopt-a-station. Shows adopted station data, field data upload form, comparison with nearby stations.</td><td>8&ndash;10</td><td><span class="p1">P1</span></td></tr>
+        <tr><td><strong>Classroom Dashboard</strong></td><td>Teacher view: which students completed which investigation activities. Usage analytics by school.</td><td>16&ndash;20</td><td><span class="p1">P1</span></td></tr>
+        <tr><td><strong>Printable Lab Reports</strong></td><td>PDF export formatted as lab worksheets &mdash; hypothesis, data table, chart, and conclusion sections pre-filled from live data.</td><td>4&ndash;6</td><td><span class="p1">P1</span></td></tr>
+        <tr><td><strong>Spanish / Amharic i18n</strong></td><td>DCPS is ~35% Hispanic with a significant Ethiopian/Eritrean community. i18n framework + translations for all student-facing text.</td><td>8&ndash;12</td><td><span class="p2">P2</span></td></tr>
+        <tr><td><strong>PWA + Mobile</strong></td><td>Progressive Web App with manifest.json, service worker, offline caching. Optimized for student Chromebooks and phones.</td><td>8&ndash;10</td><td><span class="p2">P2</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 7. MASTER TIMELINE -->
+  <section>
+    <div class="stag">Section 7</div>
+    <h2>Master Implementation Timeline</h2>
+
+    <table>
+      <thead><tr><th>Phase</th><th>Period</th><th>Deliverables</th><th>Hours</th><th>Budget</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>A</strong><br><span style="color:var(--blue); font-size:10px;">INFRASTRUCTURE</span></td>
+          <td>Jul 2026</td>
+          <td>Hourly cron upgrade &bull; Data freshness threshold update &bull; DNS cutover for udc.wqis-app.com &bull; Disable Vercel legacy cron</td>
+          <td>5</td>
+          <td>$350&ndash;500</td>
+        </tr>
+        <tr>
+          <td><strong>B</strong><br><span style="color:var(--green); font-size:10px;">MAP OVERHAUL</span></td>
+          <td>Jul&ndash;Aug 2026</td>
+          <td>Download official DC GeoJSON + NHD flowlines &bull; Replace all hand-coded data &bull; Add Zoning layer &bull; TopoJSON optimization &bull; Regression testing</td>
+          <td>13</td>
+          <td>$800&ndash;1,000</td>
+        </tr>
+        <tr>
+          <td><strong>C</strong><br><span style="color:var(--purple); font-size:10px;">SOVEREIGN DEPLOY</span></td>
+          <td>Aug 2026</td>
+          <td>Bicep/ARM deployment template &bull; Built-in node-cron scheduler &bull; Email alerting on ingest failure &bull; Seed-on-first-boot &bull; Complete .env.example</td>
+          <td>18</td>
+          <td>$1,000&ndash;1,500</td>
+        </tr>
+        <tr>
+          <td><strong>D</strong><br><span style="color:var(--gold); font-size:10px;">K-12 READINESS</span></td>
+          <td>Aug&ndash;Sep 2026</td>
+          <td>Student Mode UI &bull; Investigation Guides (4 initial) &bull; User authentication (teacher/student roles) &bull; Printable lab reports</td>
+          <td>30&ndash;40</td>
+          <td>$2,000&ndash;3,000</td>
+        </tr>
+        <tr>
+          <td><strong>E</strong><br><span style="color:var(--teal); font-size:10px;">PILOT LAUNCH</span></td>
+          <td>Oct 2026</td>
+          <td>Onboard 5&ndash;8 pilot schools &bull; Teacher PD at UDC Van Ness &bull; Usage analytics &bull; Grant application prep with pilot data</td>
+          <td>10</td>
+          <td>$500&ndash;800</td>
+        </tr>
+        <tr class="row-total"><td colspan="3">Total</td><td>76&ndash;86</td><td>$4,650&ndash;6,800</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 8. RISK REGISTER -->
+  <section>
+    <div class="stag">Section 8</div>
+    <h2>Risk Register</h2>
+
+    <table>
+      <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>USGS API rate limiting on hourly calls</td><td>Low</td><td>Medium</td><td>USGS public APIs are designed for automated access with no documented limits. Implement exponential backoff as safety net.</td></tr>
+        <tr><td>GeoJSON file size slows page load</td><td>Medium</td><td>Low</td><td>TopoJSON simplification reduces file size 60&ndash;80%. Layers lazy-load on toggle. Canvas renderer for high vertex counts.</td></tr>
+        <tr><td>Azure Education credits insufficient</td><td>Low</td><td>Low</td><td>Full Azure cost is only ~$520&ndash;590/year &mdash; easily within $5,000 budget even without credits.</td></tr>
+        <tr><td>DCPS/MCPS slow to formalize MOU</td><td>Medium</td><td>Medium</td><td>Start with Tier 1 (free public access, no MOU needed). Individual teachers can use the platform immediately while district-level paperwork proceeds.</td></tr>
+        <tr><td>Ingestion pipeline disruption during cron change</td><td>Low</td><td>High</td><td>Keep daily cron active in parallel for 2 weeks. Test new schedule on staging. ingestion_log table captures all failures with full error detail.</td></tr>
+        <tr><td>NHD data too complex for Leaflet</td><td>Low</td><td>Low</td><td>Filter to stream orders &ge;2 (exclude minor ditches). Use Leaflet Canvas renderer instead of SVG for large polyline counts.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 9. ACTION ITEMS -->
+  <section>
+    <div class="stag">Section 9</div>
+    <h2>Action Items by Stakeholder</h2>
+
+    <h3>Dr. Tolessa Deksissa (UDC WRRI)</h3>
+    <ol>
+      <li>Confirm UDC&rsquo;s Azure subscription type (Education or Enterprise) &mdash; determines if hosting is $0 or ~$520/year</li>
+      <li>Confirm preferred deployment path: ACR pull token (Option A) or Docker Hub (Option B)</li>
+      <li>Provide UDC IT contact person for DNS cutover and sovereign deployment onboarding</li>
+      <li>Identify 2&ndash;3 UDC Education faculty for curriculum co-development</li>
+      <li>Schedule demo sessions with DCPS Office of Teaching &amp; Learning and MCPS Curriculum &amp; Instruction</li>
+      <li>Approve $5,000 annual budget allocation</li>
+    </ol>
+
+    <h3>DAPS Analytics (Engineering Team)</h3>
+    <ol>
+      <li>Phase A: Hourly cron upgrade &mdash; target: July 7, 2026</li>
+      <li>Phase B: DC GeoJSON + NHD overhaul &mdash; target: August 1, 2026</li>
+      <li>Phase C: Bicep template + standalone deployment &mdash; target: August 15, 2026</li>
+      <li>Phase D: Student Mode + Investigation Guides &mdash; target: September 15, 2026</li>
+      <li>Support Dr. Deksissa&rsquo;s DCPS/MCPS outreach with live demo environment</li>
+    </ol>
+
+    <h3>UDC IT Department</h3>
+    <ol>
+      <li>Confirm Azure subscription type and available Education credits</li>
+      <li>Set up CNAME for <code>udc.wqis-app.com</code> &rarr; Azure Container Apps</li>
+      <li>Review Bicep deployment template when ready</li>
+      <li>Provide Entra ID app registration if SSO desired</li>
+    </ol>
+  </section>
+
+  <div class="doc-footer">
+    <div class="divider"></div>
+    <p>&copy; 2026 DAPS Analytics PLC &mdash; Water Quality Intelligence Service</p>
+    <p>Prepared for University of the District of Columbia &mdash; WRRI / CAUSES</p>
+    <p style="margin-top: 6px;">WQIS-INFRA-2026-001 v2.0 &nbsp;&bull;&nbsp; Classification: Internal / Founders</p>
+  </div>
+
+</div>
+</body>
+</html>

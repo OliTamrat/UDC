@@ -7,10 +7,5 @@
       "maxDuration": 60
     }
   },
-  "crons": [
-    {
-      "path": "/api/ingest?source=usgs",
-      "schedule": "0 6 * * *"
-    }
-  ]
+  "crons": []
 }

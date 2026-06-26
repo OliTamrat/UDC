@@ -368,7 +368,7 @@ export default function StationDetailPage() {
             const isSeed = source === "seed";
             const readingTime = new Date(reading.timestamp).getTime();
             const hoursAgo = Math.floor((Date.now() - readingTime) / 3600000);
-            const isStale = !isSeed && hoursAgo > 24;
+            const isStale = !isSeed && hoursAgo > 6;
             const isFresh = !isSeed && hoursAgo < 2;
 
             const bannerColor = isSeed
@@ -383,9 +383,9 @@ export default function StationDetailPage() {
               ? "Baseline/modeled data — no live sensor readings available"
               : hoursAgo < 1
               ? `Live data — updated ${Math.floor((Date.now() - readingTime) / 60000)} minutes ago`
-              : hoursAgo < 24
+              : hoursAgo < 6
               ? `Last reading ${hoursAgo} hours ago`
-              : `Last reading ${Math.floor(hoursAgo / 24)} days ago — sensor may be offline`;
+              : `Last reading ${hoursAgo} hours ago — sensor may be offline`;
 
             const sourceLabel = SOURCE_CONFIG[source || "seed"]?.label || source || "Unknown";
 
