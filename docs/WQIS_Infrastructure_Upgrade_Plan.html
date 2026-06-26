@@ -510,8 +510,8 @@ az containerapp job update \
         <tr><td>Azure infrastructure (all services)</td><td><strong>$0</strong></td><td>Covered by Azure for Education ($100&ndash;200/student, $200+/faculty)</td></tr>
         <tr><td>Vercel (marketing site)</td><td>$0</td><td>Free Hobby plan</td></tr>
         <tr><td>Domain (wqis-app.com)</td><td>$15</td><td>GoDaddy renewal</td></tr>
-        <tr><td>Anthropic API (AI assistant)</td><td>$155&ndash;775</td><td>Claude Haiku 4.5 &mdash; see AI Cost Detail below</td></tr>
-        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$170&ndash;790</strong></td><td>Remaining for development: $4,210&ndash;4,830</td></tr>
+        <tr><td>Anthropic API (AI assistant)</td><td>$47&ndash;985</td><td>Claude Haiku 4.5 at $0.0182/query &mdash; see AI Cost Detail below</td></tr>
+        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$62&ndash;1,000</strong></td><td>Research-only: $62/yr. Pilot (100 students): ~$1,000/yr</td></tr>
       </tbody>
     </table>
 
@@ -522,8 +522,8 @@ az containerapp job update \
         <tr><td>Azure Container Apps + Jobs (hourly cron)</td><td>$192&ndash;204</td><td>Hosting + hourly ingestion</td></tr>
         <tr><td>Azure PostgreSQL B1ms</td><td>$156</td><td>32 GB storage</td></tr>
         <tr><td>ACR + Key Vault + App Insights</td><td>$96</td><td>Basic tiers</td></tr>
-        <tr><td>Vercel + Domain + AI API</td><td>$170&ndash;790</td><td>See AI Cost Detail below</td></tr>
-        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$614&ndash;1,246</strong></td><td>Remaining for development: $3,754&ndash;4,386</td></tr>
+        <tr><td>Vercel + Domain + AI API</td><td>$62&ndash;1,000</td><td>Scales with usage &mdash; see AI Cost Detail below</td></tr>
+        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$506&ndash;1,456</strong></td><td>Research: $506/yr. Pilot: ~$1,456/yr. District: ~$3,727/yr</td></tr>
       </tbody>
     </table>
 
@@ -531,7 +531,7 @@ az containerapp job update \
     <table>
       <thead><tr><th>Item</th><th>Budget</th><th>Category</th><th>Timeline</th></tr></thead>
       <tbody>
-        <tr><td>Annual infrastructure (incl. AI API)</td><td>$614&ndash;1,246</td><td><span class="badge badge-req">Required</span></td><td>Ongoing</td></tr>
+        <tr><td>Annual infrastructure (incl. AI API at pilot)</td><td>$506&ndash;1,456</td><td><span class="badge badge-req">Required</span></td><td>Ongoing</td></tr>
         <tr><td><s>DC GeoJSON map overhaul + NHD integration</s></td><td><s>$800&ndash;1,000</s></td><td><span class="badge badge-live">Done</span></td><td><s>Jul&ndash;Aug 2026</s> Jun 26</td></tr>
         <tr><td><s>Hourly cron upgrade</s></td><td><s>$200&ndash;300</s></td><td><span class="badge badge-live">Done</span></td><td><s>Jul 2026</s> Jun 26</td></tr>
         <tr><td>DNS cutover + domain finalization</td><td>$150&ndash;200</td><td><span class="badge badge-req">Required</span></td><td>Jul 2026</td></tr>
@@ -548,34 +548,52 @@ az containerapp job update \
     </div>
 
     <h3>AI API Cost Detail (Anthropic Claude Haiku 4.5)</h3>
-    <p>The WQIS AI Research Assistant uses Claude Haiku 4.5 (<code>claude-haiku-4-5-20251001</code>) with a 3,848-token system prompt sent with every query. Each query involves tool calls to fetch live station data, adding ~4,000&ndash;12,000 tokens of context.</p>
+    <p>The WQIS AI Research Assistant uses Claude Haiku 4.5 (<code>claude-haiku-4-5-20251001</code>) via the Anthropic API. The 3,848-token system prompt is sent with <em>every API round-trip</em>. Tool-use queries (fetching live station data) involve 2&ndash;3 round-trips, meaning the system prompt is billed multiple times per user question.</p>
 
+    <h4>Verified Anthropic Pricing (June 2026)</h4>
     <table>
-      <thead><tr><th></th><th>Input</th><th>Output</th></tr></thead>
+      <thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td><strong>Claude Haiku 4.5 pricing</strong></td><td>$1.00 / MTok</td><td>$5.00 / MTok</td></tr>
-        <tr><td>System prompt (per query)</td><td>~3,848 tokens</td><td>&mdash;</td></tr>
-        <tr><td>Avg query with 1 tool call</td><td>~8,000 tokens</td><td>~1,500 tokens</td></tr>
-        <tr style="font-weight:600;"><td>Avg cost per query</td><td colspan="2">$0.0155</td></tr>
+        <tr><td><strong>Claude Haiku 4.5</strong> (current)</td><td>$1.00 / MTok</td><td>$5.00 / MTok</td><td>Fastest, used for WQIS</td></tr>
+        <tr><td>Claude Sonnet 4.6</td><td>$3.00 / MTok</td><td>$15.00 / MTok</td><td>3&times; Haiku cost</td></tr>
+        <tr><td>Claude Opus 4.8</td><td>$5.00 / MTok</td><td>$25.00 / MTok</td><td>5&times; Haiku cost</td></tr>
       </tbody>
     </table>
 
+    <h4>Per-Query Token Breakdown</h4>
     <table>
-      <thead><tr><th>Usage Scenario</th><th>Queries/Year</th><th>Annual Cost</th><th>Monthly</th></tr></thead>
+      <thead><tr><th>Query Type</th><th>% of Queries</th><th>Input Tokens</th><th>Output Tokens</th><th>Cost (Haiku)</th></tr></thead>
       <tbody>
-        <tr><td><strong>Research team only</strong> (10 users, UDC faculty/students)</td><td>2,000</td><td>$31</td><td>$3</td></tr>
-        <tr><td><strong>Pilot</strong> (5&ndash;8 schools, ~100 students)</td><td>10,000</td><td>$155</td><td>$13</td></tr>
-        <tr><td><strong>District</strong> (20+ schools, ~500 students)</td><td>50,000</td><td>$775</td><td>$65</td></tr>
-        <tr><td><strong>Full DCPS + MCPS</strong> (2,000 students)</td><td>200,000</td><td>$3,100</td><td>$258</td></tr>
+        <tr><td>Simple Q&amp;A (no tools)</td><td>30%</td><td>~4,348</td><td>~800</td><td>$0.0083</td></tr>
+        <tr><td>1 tool call (station data) &mdash; 2 API round-trips</td><td>50%</td><td>~11,896</td><td>~1,400</td><td>$0.0190</td></tr>
+        <tr><td>2+ tool calls (complex analysis) &mdash; 3 round-trips</td><td>20%</td><td>~19,444</td><td>~2,400</td><td>$0.0314</td></tr>
+        <tr style="font-weight:700; background:#F0F9FF;"><td>Weighted Average</td><td>100%</td><td>~11,141</td><td>~1,420</td><td><strong>$0.0182</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h4>Annual Cost by Usage Tier</h4>
+    <table>
+      <thead><tr><th>Usage Scenario</th><th>Queries/Year</th><th>Haiku 4.5</th><th>Sonnet 4.6</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Research only</strong> (10 users, 5 queries/wk, 52 wks)</td><td>2,600</td><td>$47/yr ($4/mo)</td><td>$142/yr ($12/mo)</td></tr>
+        <tr><td><strong>Pilot</strong> (100 students, 15 queries/wk, 36 wks)</td><td>54,000</td><td>$985/yr ($82/mo)</td><td>$2,955/yr ($246/mo)</td></tr>
+        <tr><td><strong>District</strong> (500 students, 10 queries/wk, 36 wks)</td><td>180,000</td><td>$3,283/yr ($274/mo)</td><td>$9,850/yr ($821/mo)</td></tr>
+        <tr><td><strong>Full DCPS+MCPS</strong> (2,000 students, 8 queries/wk, 36 wks)</td><td>576,000</td><td>$10,507/yr ($876/mo)</td><td>$31,521/yr ($2,627/mo)</td></tr>
       </tbody>
     </table>
 
     <div class="callout callout-red">
-      <div class="ct">AI costs are the primary variable in the budget.</div>
-      At pilot scale (100 students), AI costs ~$155/year &mdash; manageable within $5,000. At full district scale (2,000 students), AI alone could reach $3,100/year &mdash; exceeding the $5,000 budget when combined with infrastructure. <strong>Mitigation options:</strong> (1) Rate-limit student queries (e.g., 10/day per student), (2) Cache common questions to avoid API calls, (3) Use the AI assistant only for teacher/researcher accounts, (4) Fund AI costs from EPA/NOAA grant budgets which allow technology line items.
+      <div class="ct">AI is the dominant cost at scale &mdash; it exceeds all other infrastructure combined.</div>
+      At pilot scale (100 students), Haiku AI costs ~$985/year &mdash; within a $5,000 budget but not trivial. At district scale (500+ students), AI alone reaches $3,283/year, consuming most of the budget. At full DCPS+MCPS, Haiku costs $10,507/year &mdash; far exceeding any $5,000 allocation.<br><br>
+      <strong>Cost control strategies (implement before pilot):</strong><br>
+      (1) Rate-limit students to 5&ndash;10 queries/day<br>
+      (2) Cache frequent questions (e.g., &ldquo;what is pH?&rdquo;) to avoid API calls<br>
+      (3) Restrict AI assistant to teacher/researcher accounts only; students use pre-built stories and scenarios instead<br>
+      (4) Fund AI costs from EPA/NOAA/NSF grant technology line items, not from the $5,000 operating budget<br>
+      (5) Implement prompt caching (Anthropic offers cached prompt discounts for repeated system prompts)
     </div>
 
-    <p>If Claude Sonnet 4 were used instead of Haiku (3&times; input, 3&times; output pricing), costs would be ~3&times; higher at every tier: pilot $465/yr, district $2,325/yr, full DCPS+MCPS $9,300/yr. <strong>Recommendation: Stay on Haiku 4.5</strong> for cost efficiency &mdash; it handles water quality Q&amp;A well.</p>
+    <p><strong>Recommendation:</strong> Stay on Haiku 4.5. Never use Sonnet or Opus for student-facing queries &mdash; the 3&ndash;5&times; cost multiplier is unjustifiable at scale. For research-only use ($47/yr), any model is affordable. For K-12 pilot, budget $1,000&ndash;1,200/yr for AI and implement rate limiting from day one.</p>
   </section>
 
   <!-- 6. K-12 TECHNICAL REQUIREMENTS -->
