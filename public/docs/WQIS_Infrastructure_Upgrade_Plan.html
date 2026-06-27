@@ -212,9 +212,11 @@
   /* Badges */
   .badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; letter-spacing: 0.3px; }
   .badge-live { background: #DCFCE7; color: #166534; }
+  .badge-done { background: #DCFCE7; color: #166534; }
   .badge-req { background: #FEE2E2; color: #991B1B; }
   .badge-k12 { background: #DBEAFE; color: #1E40AF; }
   .badge-rsv { background: #FEF3C7; color: #92400E; }
+  .badge-hold { background: #F3F4F6; color: #6B7280; }
 
   /* Code */
   code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #F1F5F9; padding: 2px 6px; border-radius: 4px; }
@@ -241,14 +243,14 @@
     <div class="accent"></div>
     <h1>Infrastructure Upgrade<br>&amp; <em>Enhancement Plan</em></h1>
     <p class="sub">
-      DC Map GeoJSON overhaul &bull; NHD waterway integration &bull; Real-time hourly ingestion &bull; Scalability roadmap &bull; Cost analysis &bull; K-12 technical requirements
+      Current production status &bull; Completed upgrades &bull; AI cost analysis (Gemini 2.5 Flash) &bull; Scalability roadmap &bull; Sovereign deployment plan
     </p>
   </div>
   <div class="cover-footer">
     <div><strong>Prepared For</strong>Dr. Tolessa Deksissa, Ph.D.<br>WRRI Director &amp; DAPS Founders</div>
     <div><strong>Prepared By</strong>DAPS Analytics PLC<br>Engineering Team</div>
-    <div><strong>Date</strong>June 25, 2026</div>
-    <div><strong>Document</strong>WQIS-INFRA-2026-001<br>Version 2.0</div>
+    <div><strong>Date</strong>June 27, 2026</div>
+    <div><strong>Document</strong>WQIS-INFRA-2026-001<br>Version 3.0</div>
   </div>
 </div>
 
@@ -258,7 +260,7 @@
   <section>
     <div class="stag">Section 1</div>
     <h2>Current Infrastructure Assessment</h2>
-    <p class="lead">Production architecture, operational costs, and identified gaps requiring action.</p>
+    <p class="lead">Production architecture as of June 27, 2026. All critical upgrades from v2.0 have been completed.</p>
 
     <h3>Production Architecture (All Services Live)</h3>
     <table>
@@ -269,447 +271,531 @@
         <tr><td>Container Registry</td><td>Azure Container Registry (Basic)</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>$5</td></tr>
         <tr><td>Secrets</td><td>Azure Key Vault (4 secrets)</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>$1</td></tr>
         <tr><td>Monitoring</td><td>App Insights + 3 Alert Rules + 5-min availability test</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>$2</td></tr>
-        <tr><td>USGS Cron</td><td>Container Apps Job &mdash; daily 06:00 UTC</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
-        <tr><td>EPA Cron</td><td>Container Apps Job &mdash; daily 07:00 UTC</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
-        <tr><td>WQP Cron</td><td>Container Apps Job &mdash; weekly Mon 08:00 UTC</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
+        <tr><td>USGS Cron</td><td>Container Apps Job &mdash; <strong>hourly</strong> (<code>0 * * * *</code>)</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
+        <tr><td>EPA Cron</td><td>Container Apps Job &mdash; every 6 hours (<code>0 */6 * * *</code>)</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
+        <tr><td>WQP Cron</td><td>Container Apps Job &mdash; daily 08:00 UTC</td><td>Central US</td><td><span class="badge badge-live">Live</span></td><td>&lt;$1</td></tr>
         <tr><td>Marketing Site</td><td>Vercel (Hobby free plan) &mdash; wqis-app.com</td><td>Global CDN</td><td><span class="badge badge-live">Live</span></td><td>$0</td></tr>
         <tr><td>AI Agent</td><td>Google Cloud Run (ADK 1.0)</td><td>US East 1</td><td><span class="badge badge-live">Live</span></td><td>&lt;$2</td></tr>
-        <tr class="row-total"><td colspan="4">Total Current Monthly Cost</td><td>~$35&ndash;38</td></tr>
+        <tr class="row-total"><td colspan="4">Total Current Monthly Cost</td><td>~$37&ndash;40</td></tr>
       </tbody>
     </table>
-    <p style="font-size: 13px; color: var(--muted);">All data sources (USGS NWIS, EPA WQP, WQX3) are free federal APIs. The entire cost is compute + storage.</p>
+    <p style="font-size: 13px; color: var(--muted);">All data sources (USGS NWIS, EPA WQP, WQX3) are free federal APIs. The entire cost is compute + storage + AI tokens.</p>
 
-    <h3>Critical Issues Identified</h3>
+    <h3>Domain &amp; DNS (Finalized)</h3>
     <table>
-      <thead><tr><th>Issue</th><th>Priority</th><th>Impact</th></tr></thead>
+      <thead><tr><th>URL</th><th>Points To</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><code>udc.wqis-app.com</code></td><td>Azure Container Apps (CNAME &rarr; <code>udc-wqis.happycoast-d9b0bcde.centralus.azurecontainerapps.io</code>)</td><td><span class="badge badge-live">Live</span></td></tr>
+        <tr><td><code>wqis-app.com</code></td><td>Vercel (marketing site)</td><td><span class="badge badge-live">Live</span></td></tr>
+        <tr><td><s><code>udc-one.vercel.app</code></s></td><td>Decommissioned June 27, 2026</td><td><span class="badge badge-done">Removed</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Completed Upgrades (Since v2.0)</h3>
+    <p>The following items were listed as critical or high-priority issues in v2.0. All have been resolved.</p>
+    <table>
+      <thead><tr><th>Issue (from v2.0)</th><th>Resolution</th><th>Date</th></tr></thead>
       <tbody>
         <tr>
-          <td><strong>DC Map uses hand-coded approximate polygons</strong><br>Ward boundaries, watershed perimeter, and waterways are simplified ~15&ndash;20 point arrays, not official geospatial data. Zoning layer does not exist.</td>
-          <td><span class="p0">P0 &mdash; Critical</span></td>
-          <td>Boundaries visually inaccurate; undermines credibility with environmental scientists and DOEE stakeholders</td>
+          <td><strong>DC Map hand-coded polygons</strong><br>Ward boundaries, watersheds, and waterways were approximate arrays</td>
+          <td>Replaced with 9 official DC GIS GeoJSON layers: wards (8), watersheds (3), sub-watersheds (188), waterways (1,273 centerlines), waterbodies (340), floodplains (402 FEMA zones), green infrastructure (881 DDOT sites), CSO sewersheds, MS4 sewersheds. All simplified from 18 MB to 1.25 MB.</td>
+          <td>Jun 26</td>
         </tr>
         <tr>
-          <td><strong>Daily cron does not deliver &ldquo;real-time&rdquo;</strong><br>USGS sensors update every 15&ndash;60 min, but we ingest once at 06:00 UTC. Dashboard data can be 24 hours stale.</td>
-          <td><span class="p0">P0 &mdash; Critical</span></td>
-          <td>Contradicts the platform&rsquo;s &ldquo;real-time&rdquo; positioning; stale data reduces educational and research value</td>
+          <td><strong>Daily cron not real-time</strong><br>USGS data up to 24 hours stale</td>
+          <td>Upgraded to hourly USGS (<code>0 * * * *</code>), 6-hourly EPA, daily WQP. Freshness thresholds updated: Fresh &lt;2hr, Warning 2&ndash;6hr, Stale &gt;6hr. Vercel legacy cron disabled.</td>
+          <td>Jun 26</td>
         </tr>
         <tr>
-          <td><strong>NHD flowlines not integrated</strong><br>Waterways manually traced with ~30&ndash;50 points per stream. Minor tributaries (Sligo Creek, Indian Creek, Lower Beaverdam Creek) and drainage channels are invisible.</td>
-          <td><span class="p1">P1 &mdash; High</span></td>
-          <td>Incomplete watershed picture; students cannot see full tributary network contributing to Anacostia pollution</td>
+          <td><strong>DNS cutover incomplete</strong><br><code>udc.wqis-app.com</code> not pointing to Azure</td>
+          <td>CNAME configured and verified. Old Vercel project (<code>udc-one.vercel.app</code>) fully decommissioned &mdash; project deleted, no orphan deployments.</td>
+          <td>Jun 27</td>
         </tr>
         <tr>
-          <td><strong>DNS cutover incomplete</strong><br><code>udc.wqis-app.com</code> CNAME still pending UDC IT confirmation.</td>
-          <td><span class="p1">P1 &mdash; High</span></td>
-          <td>Professional URL not active; still using Azure default hostname</td>
-        </tr>
-        <tr>
-          <td><strong>No user authentication</strong><br>Dashboard is open to anyone with the URL.</td>
-          <td><span class="p2">P2 &mdash; Medium</span></td>
-          <td>Cannot differentiate student/teacher/researcher access for K-12 partnership tracking</td>
+          <td><strong>AI model optimization</strong><br>Switched to cost-efficient model</td>
+          <td>Running Gemini 2.5 Flash at $0.30/$2.50 per MTok. See AI Cost Analysis section for detailed breakdown.</td>
+          <td>Jun 2026</td>
         </tr>
       </tbody>
     </table>
+
   </section>
 
-  <!-- 2. DC MAP GEOJSON OVERHAUL -->
+  <!-- 2. COMPLETED UPGRADES SUMMARY -->
   <section>
     <div class="stag">Section 2</div>
-    <h2>Upgrade 1: DC Map GeoJSON &amp; NHD Overhaul</h2>
-    <p class="lead">Replace all hand-coded polygon approximations with authoritative government geospatial data.</p>
+    <h2>Completed: DC Map GeoJSON Overhaul</h2>
+    <p class="lead">All hand-coded polygon approximations replaced with authoritative government geospatial data.</p>
 
-    <h3>Current Problem</h3>
-    <p>The files <code>dc-boundaries.ts</code> and <code>dc-waterways.ts</code> contain manually plotted coordinate arrays. Ward polygons use ~16 points each (the actual legal boundaries have thousands). The &ldquo;Anacostia watershed&rdquo; is a single rough polygon, not the USGS HUC-10 delineation. Waterways trace approximate paths &mdash; missing the full tributary network including Sligo Creek, Indian Creek, Paint Branch, and Lower Beaverdam Creek, all of which are significant pollution contributors to the Anacostia.</p>
-
-    <h3>Solution: Official Government Data Sources</h3>
+    <h3>GeoJSON Layers Deployed</h3>
     <table>
-      <thead><tr><th>Layer</th><th>Authoritative Source</th><th>Precision</th><th>Cost</th></tr></thead>
+      <thead><tr><th>Layer</th><th>Source</th><th>Features</th><th>Raw</th><th>Optimized</th></tr></thead>
       <tbody>
-        <tr><td><strong>Ward Boundaries</strong></td><td>DC OCTO &mdash; Ward from 2022 (opendata.dc.gov)</td><td>Legal boundary precision, thousands of vertices per polygon</td><td>Free</td></tr>
-        <tr><td><strong>DC Zoning</strong> (NEW)</td><td>DC Office of Zoning &mdash; ZoningPln (opendata.dc.gov)</td><td>Parcel-level: R, C, M, W, CR, PDR zones</td><td>Free</td></tr>
-        <tr><td><strong>Watershed Boundaries</strong></td><td>USGS Watershed Boundary Dataset &mdash; HUC-10: 02070010 (apps.nationalmap.gov)</td><td>USGS hydrologic unit delineation</td><td>Free</td></tr>
-        <tr><td><strong>DC Watersheds (local)</strong></td><td>DOEE Watershed Boundaries (opendata.dc.gov)</td><td>DOEE sub-watershed delineation within DC</td><td>Free</td></tr>
-        <tr><td><strong>NHD Flowlines</strong></td><td>USGS National Hydrography Dataset &mdash; NHDFlowline (apps.nationalmap.gov)</td><td>All streams, rivers, canals with flow direction, stream order, reach codes</td><td>Free</td></tr>
-        <tr><td><strong>NHD Waterbodies</strong></td><td>USGS NHD &mdash; NHDWaterbody (apps.nationalmap.gov)</td><td>River polygon extents showing actual width of Anacostia and Potomac</td><td>Free</td></tr>
-        <tr><td><strong>Flood Zones</strong></td><td>FEMA National Flood Hazard Layer (msc.fema.gov)</td><td>FEMA-certified flood risk areas with zone designations</td><td>Free</td></tr>
-        <tr><td><strong>Impervious Surfaces</strong></td><td>NLCD Impervious Surface 2021 (mrlc.gov)</td><td>30m resolution raster / vector polygons</td><td>Free</td></tr>
+        <tr><td><strong>DC Ward Boundaries</strong></td><td>DC OCTO (opendata.dc.gov)</td><td>8 wards (22,386 &rarr; 866 pts)</td><td>917 KB</td><td>20 KB</td></tr>
+        <tr><td><strong>Watersheds</strong></td><td>DOEE (maps2.dcgis.dc.gov)</td><td>3 (Rock Creek, Anacostia, Potomac)</td><td>531 KB</td><td>13 KB</td></tr>
+        <tr><td><strong>Sub-Watersheds</strong></td><td>DOEE (maps2.dcgis.dc.gov)</td><td>188 sub-watersheds</td><td>2.8 MB</td><td>202 KB</td></tr>
+        <tr><td><strong>Waterways</strong></td><td>DC GIS Hydrography Centerline</td><td>1,273 centerlines (12 named streams)</td><td>2.2 MB</td><td>288 KB</td></tr>
+        <tr><td><strong>Waterbodies</strong></td><td>DC GIS (maps2.dcgis.dc.gov)</td><td>340 river/lake polygons</td><td>5.2 MB</td><td>404 KB</td></tr>
+        <tr><td><strong>FEMA Flood Zones</strong></td><td>FEMA NFHL 2023</td><td>402 flood zone polygons</td><td>7.2 MB</td><td>328 KB</td></tr>
+        <tr><td><strong>Green Infrastructure</strong></td><td>DDOT (maps2.dcgis.dc.gov)</td><td>881 sites (bioretention, permeable pavement, green roof, etc.)</td><td>&mdash;</td><td>Optimized</td></tr>
+        <tr><td><strong>CSO Sewersheds</strong></td><td>DC Water (maps2.dcgis.dc.gov)</td><td>Combined sewer overflow areas</td><td>&mdash;</td><td>Optimized</td></tr>
+        <tr><td><strong>MS4 Sewersheds</strong></td><td>DC Water (maps2.dcgis.dc.gov)</td><td>Separated storm sewer areas with susceptibility ratings</td><td>&mdash;</td><td>Optimized</td></tr>
+        <tr class="row-total"><td colspan="3">Total (9 layers)</td><td>~18 MB</td><td>~1.25 MB</td></tr>
       </tbody>
     </table>
 
-    <h3>NHD Waterways: What Gets Added</h3>
-    <p>The National Hydrography Dataset for HUC 02070010 (Anacostia) will replace hand-traced waterways with the complete tributary network. Key additions beyond what currently exists:</p>
-    <div class="cards">
-      <div class="card">
-        <div class="card-icon" style="background: #DBEAFE; color: var(--blue);">NW</div>
-        <h5>NW Branch + Sligo Creek</h5>
-        <p>Full flowline from Layhill through Wheaton, Silver Spring, Hyattsville to confluence. Currently only partially traced.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background: #D1FAE5; color: var(--green);">NE</div>
-        <h5>NE Branch + Paint Branch + Indian Creek</h5>
-        <p>Complete upstream network through Fairland, Burtonsville, College Park. Connects MCPS schools to the watershed story.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background: #E0E7FF; color: var(--purple);">LB</div>
-        <h5>Lower Beaverdam Creek</h5>
-        <p>Major tributary in PG County currently absent from map. Significant urban runoff contributor.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon" style="background: #FEF3C7; color: var(--amber);">DR</div>
-        <h5>Drainage Channels &amp; Wetlands</h5>
-        <p>NHD Areas layer shows wetland/marsh zones along the Anacostia corridor &mdash; Kenilworth Marsh, Kingman Island.</p>
-      </div>
-    </div>
-
-    <h3>Implementation Steps</h3>
-    <table>
-      <thead><tr><th>#</th><th>Task</th><th>Hours</th><th>Output</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td>Download official GeoJSON from opendata.dc.gov (wards, zoning, DOEE watersheds, FEMA flood)</td><td>1</td><td>Raw GeoJSON in <code>src/data/geojson/</code></td></tr>
-        <tr><td>2</td><td>Download NHD flowlines + waterbodies for HUC 02070010 from USGS National Map</td><td>1</td><td>NHD GeoJSON with stream order, names, flow direction</td></tr>
-        <tr><td>3</td><td>Simplify via TopoJSON + <code>@mapbox/geojson-rewind</code> for web performance (reduce vertices, preserve shape)</td><td>2</td><td>Optimized files &lt;500KB per layer</td></tr>
-        <tr><td>4</td><td>Replace <code>dc-boundaries.ts</code> hand-coded arrays with real GeoJSON imports</td><td>2</td><td>Accurate ward, watershed, flood layers</td></tr>
-        <tr><td>5</td><td>Replace <code>dc-waterways.ts</code> hand-traced streams with NHD flowlines</td><td>2</td><td>Complete tributary network visible</td></tr>
-        <tr><td>6</td><td>Add DC Zoning layer toggle to <code>MapLayerControls.tsx</code> (R/C/M/W color coding)</td><td>2</td><td>New &ldquo;Zoning&rdquo; toggle in layer controls</td></tr>
-        <tr><td>7</td><td>Refactor <code>DCMap.tsx</code> to use Leaflet <code>L.geoJSON()</code> with style functions instead of manual <code>L.polygon()</code></td><td>2</td><td>Clean, maintainable GeoJSON rendering</td></tr>
-        <tr><td>8</td><td>Testing: all layers toggle correctly, popups functional, mobile performance, no regressions</td><td>1</td><td>All tests passing, visual QA complete</td></tr>
-        <tr class="row-total"><td></td><td>Total</td><td><strong>13 hrs</strong></td><td>Data cost: $0</td></tr>
-      </tbody>
-    </table>
-
-    <h3>Before vs. After Comparison</h3>
-    <table>
-      <thead><tr><th>Aspect</th><th>Current (Hand-Coded)</th><th>After (Official GeoJSON + NHD)</th></tr></thead>
-      <tbody>
-        <tr><td>Ward boundaries</td><td>~16 points per ward</td><td>Thousands of points &mdash; legally precise, follows actual streets</td></tr>
-        <tr><td>Watershed</td><td>Single rough polygon</td><td>USGS HUC-10 delineation + DOEE sub-watershed detail</td></tr>
-        <tr><td>Waterways</td><td>5 hand-traced streams + 2 rivers</td><td>20+ named streams, all tributaries, drainage channels, wetland areas</td></tr>
-        <tr><td>Zoning</td><td>Does not exist</td><td>Full DC zoning (residential, commercial, mixed-use, waterfront)</td></tr>
-        <tr><td>Flood zones</td><td>3 approximate polygons</td><td>FEMA-certified NFHL boundaries with zone designations</td></tr>
-        <tr><td>Data provenance</td><td>&ldquo;Simplified from DC GIS&rdquo; (manual approximation)</td><td>Direct import from opendata.dc.gov + USGS NHD + FEMA NFHL</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-green">
-      <div class="ct">Impact: 13 hours development | $0 data cost | No infrastructure changes</div>
-      GeoJSON files add ~1&ndash;2 MB to the build but are lazy-loaded per layer toggle. No database, API, or infrastructure changes required. Pure frontend improvement with major credibility impact.
-    </div>
+    <p>All layers are lazy-loaded on toggle from the Map Layers control panel. Default view shows waterways + monitoring stations only. Douglas-Peucker simplification via <code>scripts/simplify-geojson.mjs</code> reduced total payload by 93% with no visible loss of boundary accuracy.</p>
   </section>
 
-  <!-- 3. HOURLY CRON -->
+  <!-- 3. COMPLETED: HOURLY CRON -->
   <section>
     <div class="stag">Section 3</div>
-    <h2>Upgrade 2: Real-Time Hourly Ingestion</h2>
-    <p class="lead">Move from once-daily to hourly data ingestion to deliver on the &ldquo;real-time&rdquo; promise.</p>
+    <h2>Completed: Real-Time Hourly Ingestion</h2>
+    <p class="lead">Upgraded from once-daily to hourly ingestion. Data freshness thresholds tightened accordingly.</p>
 
-    <h3>Current vs. Proposed Schedule</h3>
+    <h3>Current Schedule (Live)</h3>
     <table>
-      <thead><tr><th>Source</th><th>Current</th><th>Proposed</th><th>Rationale</th></tr></thead>
+      <thead><tr><th>Source</th><th>Previous</th><th>Current (Live)</th><th>Rationale</th></tr></thead>
       <tbody>
-        <tr><td><strong>USGS NWIS</strong><br>(real-time sensors)</td><td>Daily 06:00 UTC</td><td><strong>Hourly</strong> (:00 every hour)</td><td>USGS sensors update every 15&ndash;60 min. Hourly matches their refresh cadence perfectly.</td></tr>
-        <tr><td><strong>EPA WQP</strong><br>(lab results)</td><td>Daily 07:00 UTC</td><td><strong>Every 6 hours</strong> (00, 06, 12, 18)</td><td>Lab data updates less frequently. 6-hourly catches same-day results without excess API calls.</td></tr>
-        <tr><td><strong>WQP Extended</strong><br>(emerging contaminants)</td><td>Weekly (Mon 08:00)</td><td><strong>Daily</strong> (08:00 UTC)</td><td>Weekly too infrequent for classroom use. Daily ensures fresh data for student activities.</td></tr>
+        <tr><td><strong>USGS NWIS</strong><br>(real-time sensors)</td><td>Daily 06:00 UTC</td><td><strong>Hourly</strong> (<code>0 * * * *</code>)</td><td>USGS sensors update every 15&ndash;60 min. Hourly matches their refresh cadence.</td></tr>
+        <tr><td><strong>EPA WQP</strong><br>(lab results)</td><td>Daily 07:00 UTC</td><td><strong>Every 6 hours</strong> (<code>0 */6 * * *</code>)</td><td>Lab data updates less frequently. 6-hourly catches same-day results.</td></tr>
+        <tr><td><strong>WQP Extended</strong><br>(emerging contaminants)</td><td>Weekly (Mon 08:00)</td><td><strong>Daily</strong> (<code>0 8 * * *</code>)</td><td>Weekly too infrequent for active use. Daily ensures fresh data.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Data Freshness Thresholds (Updated)</h3>
+    <table>
+      <thead><tr><th>Status</th><th>Previous</th><th>Current</th></tr></thead>
+      <tbody>
+        <tr><td style="color: var(--green); font-weight: 600;">Fresh</td><td>&lt; 24 hours</td><td><strong>&lt; 2 hours</strong></td></tr>
+        <tr><td style="color: var(--amber); font-weight: 600;">Warning</td><td>24&ndash;48 hours</td><td><strong>2&ndash;6 hours</strong></td></tr>
+        <tr><td style="color: var(--red); font-weight: 600;">Stale</td><td>&gt; 48 hours</td><td><strong>&gt; 6 hours</strong></td></tr>
       </tbody>
     </table>
 
     <h3>Cost Impact</h3>
     <table>
-      <thead><tr><th>Metric</th><th>Current (Daily)</th><th>Proposed (Hourly+)</th><th>Change</th></tr></thead>
+      <thead><tr><th>Metric</th><th>Previous (Daily)</th><th>Current (Hourly+)</th><th>Change</th></tr></thead>
       <tbody>
-        <tr><td>Total runs per month</td><td>~62</td><td>~870</td><td>+808</td></tr>
+        <tr><td>Total cron runs per month</td><td>~62</td><td>~870</td><td>+808</td></tr>
         <tr><td>Avg. runtime per run</td><td colspan="3">30&ndash;60 seconds (API fetch + DB upsert + deduplication)</td></tr>
         <tr><td>Azure Jobs pricing</td><td colspan="3">$0.000024/vCPU-second + $0.000003/GiB-second</td></tr>
-        <tr class="row-total"><td>Additional monthly cost</td><td>$0</td><td>$2&ndash;4</td><td><strong>+$2&ndash;4/mo ($24&ndash;48/yr)</strong></td></tr>
+        <tr class="row-total"><td>Additional monthly cost</td><td>$0</td><td>$2&ndash;4</td><td><strong>+$2&ndash;4/mo</strong></td></tr>
       </tbody>
     </table>
-
-    <h3>Implementation</h3>
-    <h4>Step 1: Update Azure Container Apps Job Schedules</h4>
-    <pre><code># USGS: hourly
-az containerapp job update \
-  --name usgs-ingest-cron \
-  --resource-group rg-udc-wqis-cu \
-  --cron-expression "0 * * * *"
-
-# EPA: every 6 hours
-az containerapp job update \
-  --name epa-ingest-cron \
-  --resource-group rg-udc-wqis-cu \
-  --cron-expression "0 */6 * * *"
-
-# WQP: daily 8am UTC
-az containerapp job update \
-  --name wqp-ingest-cron \
-  --resource-group rg-udc-wqis-cu \
-  --cron-expression "0 8 * * *"</code></pre>
-
-    <h4>Step 2: Update Data Freshness Thresholds</h4>
-    <table>
-      <thead><tr><th>Status</th><th>Current Threshold</th><th>Proposed Threshold</th></tr></thead>
-      <tbody>
-        <tr><td style="color: var(--green); font-weight: 600;">Fresh</td><td>&lt; 24 hours</td><td>&lt; 2 hours</td></tr>
-        <tr><td style="color: var(--amber); font-weight: 600;">Warning</td><td>24&ndash;48 hours</td><td>2&ndash;6 hours</td></tr>
-        <tr><td style="color: var(--red); font-weight: 600;">Stale</td><td>&gt; 48 hours</td><td>&gt; 6 hours</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-gold">
-      <div class="ct">Vercel Cron Note</div>
-      Vercel Hobby plan only allows 1 cron per day. Since production is now on Azure, disable the Vercel cron entirely and rely on Azure Container Apps Jobs, which have no frequency limit. This avoids needing a Vercel Pro upgrade ($20/mo).
-    </div>
-
-    <div class="callout callout-green">
-      <div class="ct">Impact: 3 hours development | +$2&ndash;4/month | True real-time data</div>
-    </div>
+    <p style="font-size: 13px; color: var(--muted);">Vercel legacy cron fully disabled (<code>vercel.json</code> crons set to empty array). Old Vercel dashboard project decommissioned June 27, 2026.</p>
   </section>
 
-  <!-- 4. SCALABILITY -->
+  <!-- 4. AI COST ANALYSIS -->
   <section>
     <div class="stag">Section 4</div>
-    <h2>Scalability Analysis</h2>
-    <p class="lead">How the platform handles growth from current academic use to district-wide school deployment.</p>
+    <h2>AI Cost Analysis: Gemini 2.5 Flash</h2>
+    <p class="lead">The WQIS AI Research Assistant uses Google Gemini 2.5 Flash via the Google AI Developer API. This section provides exact cost calculations based on verified pricing.</p>
+
+    <h3>Model &amp; Pricing</h3>
+    <table>
+      <thead><tr><th>Model</th><th>Input ($/MTok)</th><th>Output ($/MTok)</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Gemini 2.5 Flash</strong></td><td>$0.30</td><td>$2.50</td><td><span class="badge badge-live">In Use</span></td></tr>
+      </tbody>
+    </table>
+    <p>Source: <a href="https://ai.google.dev/gemini-api/docs/pricing" style="color: var(--blue);">ai.google.dev/gemini-api/docs/pricing</a> (Standard tier, verified June 27, 2026).</p>
+
+    <div class="callout callout-blue">
+      <div class="ct">Gemini 2.5 Flash output pricing includes thinking tokens.</div>
+      Gemini 2.5 Flash is a reasoning model. The $2.50/MTok output rate covers both the visible response <em>and</em> internal reasoning tokens. The per-query estimates below include a conservative thinking token overhead of ~50% of visible output, based on the domain-specific nature of water quality Q&amp;A.
+    </div>
+
+    <h3>System Prompt</h3>
+    <p>The AI Research Assistant sends a ~3,848-token system prompt with <em>every API round-trip</em>. This prompt includes: 12 monitoring stations, 25 water quality parameters with EPA thresholds, seasonal patterns, CSO/environmental justice context, and UDC research focus areas. Tool-use queries (fetching live station data) involve 2&ndash;3 round-trips, meaning the system prompt is billed multiple times per user question.</p>
+
+    <h3>Per-Query Token Breakdown</h3>
+    <table>
+      <thead><tr><th>Query Type</th><th>% of Queries</th><th>Input Tokens</th><th>Output Tokens (incl. thinking)</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Simple Q&amp;A (no tools)</td>
+          <td>30%</td>
+          <td>~4,348</td>
+          <td>~1,200 (800 visible + ~400 thinking)</td>
+          <td>$0.0043</td>
+        </tr>
+        <tr>
+          <td>1 tool call (station data) &mdash; 2 API round-trips</td>
+          <td>50%</td>
+          <td>~11,896</td>
+          <td>~2,100 (1,400 visible + ~700 thinking)</td>
+          <td>$0.0088</td>
+        </tr>
+        <tr>
+          <td>2+ tool calls (complex analysis) &mdash; 3 round-trips</td>
+          <td>20%</td>
+          <td>~19,444</td>
+          <td>~3,600 (2,400 visible + ~1,200 thinking)</td>
+          <td>$0.0148</td>
+        </tr>
+        <tr style="font-weight:700; background:#F0F9FF;">
+          <td>Weighted Average</td>
+          <td>100%</td>
+          <td>~11,141</td>
+          <td>~2,190</td>
+          <td><strong>$0.0088</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Calculation Detail (Weighted Average)</h4>
+    <pre><code>Input cost:   11,141 tokens x $0.30 / 1,000,000 = $0.003342
+Output cost:   2,190 tokens x $2.50 / 1,000,000 = $0.005475
+Total per query:                                  = $0.008817
+
+Breakdown by type:
+  Simple  (30%): (4,348 x $0.30 + 1,200 x $2.50) / 1M = $0.0043
+  1 tool  (50%): (11,896 x $0.30 + 2,100 x $2.50) / 1M = $0.0088
+  2+ tools(20%): (19,444 x $0.30 + 3,600 x $2.50) / 1M = $0.0148
+  Weighted avg:  0.30 x 0.0043 + 0.50 x 0.0088 + 0.20 x 0.0148 = $0.0088</code></pre>
+
+    <h3>Annual AI Cost by Usage Tier</h3>
+    <table>
+      <thead><tr><th>Usage Scenario</th><th>Queries/Year</th><th>Annual Cost</th><th>Monthly</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Research only</strong><br>10 users, 5 queries/week, 52 weeks</td>
+          <td>2,600</td>
+          <td><strong>$23</strong></td>
+          <td>$1.90</td>
+        </tr>
+        <tr>
+          <td><strong>Pilot</strong><br>100 students, 15 queries/week, 36 weeks</td>
+          <td>54,000</td>
+          <td><strong>$476</strong></td>
+          <td>$40</td>
+        </tr>
+        <tr>
+          <td><strong>District</strong><br>500 students, 10 queries/week, 36 weeks</td>
+          <td>180,000</td>
+          <td><strong>$1,587</strong></td>
+          <td>$132</td>
+        </tr>
+        <tr>
+          <td><strong>Full DCPS+MCPS</strong><br>2,000 students, 8 queries/week, 36 weeks</td>
+          <td>576,000</td>
+          <td><strong>$5,079</strong></td>
+          <td>$423</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-green">
+      <div class="ct">AI costs are negligible at research scale and manageable through pilot.</div>
+      At current usage (0&ndash;5 researchers), AI costs just $23/year. At pilot scale (100 students), $476/year. AI only becomes the dominant cost driver at district scale (500+ students).
+    </div>
+
+    <h3>Cost Control Strategies (for future K-12 scaling)</h3>
+    <ol>
+      <li><strong>Rate-limit students to 5&ndash;10 queries/day</strong> &mdash; already implemented via <code>checkRateLimit()</code> in the chat API</li>
+      <li><strong>Cache frequent questions</strong> (e.g., "what is pH?", "what is E. coli?") to avoid API calls entirely</li>
+      <li><strong>Context caching</strong> &mdash; Gemini offers cached prompt pricing at $0.03/MTok input (90% discount). The 3,848-token system prompt is identical across all requests, making it an ideal caching candidate. Estimated savings: 30&ndash;40% on input costs.</li>
+      <li><strong>Restrict AI to teacher/researcher accounts</strong>; students use pre-built stories and scenarios instead</li>
+      <li><strong>Fund AI costs from grant technology line items</strong> at scale</li>
+    </ol>
+
+    <h4>Potential Savings with Context Caching</h4>
+    <table>
+      <thead><tr><th>Scenario</th><th>Without Cache</th><th>With Context Cache</th><th>Savings</th></tr></thead>
+      <tbody>
+        <tr><td>Research (2,600 queries/yr)</td><td>$23</td><td>$17</td><td>$6 (26%)</td></tr>
+        <tr><td>Pilot (54,000 queries/yr)</td><td>$476</td><td>$347</td><td>$129 (27%)</td></tr>
+        <tr><td>District (180,000 queries/yr)</td><td>$1,587</td><td>$1,157</td><td>$430 (27%)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 12px; color: var(--muted);">Context cache estimate: system prompt tokens (3,848 per round-trip) billed at $0.03/MTok instead of $0.30/MTok. Storage cost ($1.00/MTok/hr) negligible for a 3.8K-token prompt kept warm during business hours.</p>
+  </section>
+
+  <!-- 5. TOTAL COST OF OWNERSHIP BY SCALE -->
+  <section>
+    <div class="stag">Section 5</div>
+    <h2>Total Cost of Ownership by Scale</h2>
+    <p class="lead">All-in annual cost (infrastructure + AI) from current state through 10,000 concurrent users. No guesswork &mdash; every number derived from verified Azure and Gemini pricing.</p>
+
+    <h3>Infrastructure Cost Breakdown</h3>
+    <table>
+      <thead><tr><th>Component</th><th>Current Config</th><th>$/month</th><th>$/year</th></tr></thead>
+      <tbody>
+        <tr><td>Azure Container Apps (0.5 vCPU, 1 GB, min-replicas=1)</td><td>Dashboard hosting</td><td>$13</td><td>$156</td></tr>
+        <tr><td>Azure PostgreSQL Flexible (B1ms, 32 GB)</td><td>Database</td><td>$13</td><td>$156</td></tr>
+        <tr><td>Container Registry (Basic)</td><td>Docker images</td><td>$5</td><td>$60</td></tr>
+        <tr><td>Key Vault (4 secrets)</td><td>Secrets management</td><td>$1</td><td>$12</td></tr>
+        <tr><td>App Insights + Alerts + Availability</td><td>Monitoring</td><td>$2</td><td>$24</td></tr>
+        <tr><td>3 Container Apps Jobs (hourly/6hr/daily cron)</td><td>Data ingestion</td><td>$3</td><td>$36</td></tr>
+        <tr><td>Vercel (marketing site) + Domain renewal</td><td>wqis-app.com</td><td>$1.25</td><td>$15</td></tr>
+        <tr><td>Cloud Run (WQIS AI Agent, ADK 1.0)</td><td>AI agent backend</td><td>$2</td><td>$24</td></tr>
+        <tr class="row-total"><td colspan="2">Current Infrastructure Total</td><td><strong>$40</strong></td><td><strong>$483</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Scaling Scenarios: Infrastructure + AI Combined</h3>
+    <table>
+      <thead><tr><th>Tier</th><th>Users</th><th>AI Queries/yr</th><th>Infra $/yr</th><th>AI $/yr</th><th>Total $/yr</th><th>$/mo</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Current</strong><br>UDC research team</td>
+          <td>0&ndash;5</td>
+          <td>1,300</td>
+          <td>$483</td>
+          <td>$11</td>
+          <td><strong>$494</strong></td>
+          <td>$41</td>
+        </tr>
+        <tr>
+          <td><strong>Active Research</strong><br>WRRI + grad students</td>
+          <td>5&ndash;20</td>
+          <td>5,200</td>
+          <td>$483</td>
+          <td>$46</td>
+          <td><strong>$529</strong></td>
+          <td>$44</td>
+        </tr>
+        <tr>
+          <td><strong>Small Pilot</strong><br>3&ndash;5 schools</td>
+          <td>50&ndash;100</td>
+          <td>27,000</td>
+          <td>$483</td>
+          <td>$238</td>
+          <td><strong>$721</strong></td>
+          <td>$60</td>
+        </tr>
+        <tr>
+          <td><strong>Full Pilot</strong><br>5&ndash;8 schools</td>
+          <td>100&ndash;200</td>
+          <td>54,000</td>
+          <td>$540</td>
+          <td>$476</td>
+          <td><strong>$1,016</strong></td>
+          <td>$85</td>
+        </tr>
+        <tr>
+          <td><strong>District</strong><br>20+ schools (DCPS)</td>
+          <td>200&ndash;500</td>
+          <td>180,000</td>
+          <td>$720</td>
+          <td>$1,587</td>
+          <td><strong>$2,307</strong></td>
+          <td>$192</td>
+        </tr>
+        <tr>
+          <td><strong>Regional</strong><br>DCPS + MCPS</td>
+          <td>500&ndash;2,000</td>
+          <td>576,000</td>
+          <td>$1,320</td>
+          <td>$5,079</td>
+          <td><strong>$6,399</strong></td>
+          <td>$533</td>
+        </tr>
+        <tr>
+          <td><strong>Multi-Watershed</strong><br>Potomac + Rock Creek expansion</td>
+          <td>2,000&ndash;10,000</td>
+          <td>1,440,000</td>
+          <td>$3,000</td>
+          <td>$12,697</td>
+          <td><strong>$15,697</strong></td>
+          <td>$1,308</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Assumptions Behind Each Tier</h4>
+    <table>
+      <thead><tr><th>Tier</th><th>AI Usage Assumption</th><th>Infrastructure Changes</th></tr></thead>
+      <tbody>
+        <tr><td>Current / Active Research</td><td>5&ndash;10 queries/user/week, 52 weeks</td><td>None &mdash; current config</td></tr>
+        <tr><td>Small / Full Pilot</td><td>15 queries/student/week, 36 school weeks</td><td>Full Pilot: Container App &rarr; 1 vCPU / 2 GB</td></tr>
+        <tr><td>District</td><td>10 queries/student/week, 36 school weeks</td><td>1 vCPU / 2 GB, min-replicas=2, PostgreSQL B2ms</td></tr>
+        <tr><td>Regional</td><td>8 queries/student/week, 36 school weeks</td><td>1 vCPU / 2 GB, replicas=3, Azure CDN, PostgreSQL B2ms</td></tr>
+        <tr><td>Multi-Watershed</td><td>8 queries/student/week, 36 school weeks</td><td>2 vCPU / 4 GB, PostgreSQL B4ms, Azure Front Door, read replicas</td></tr>
+      </tbody>
+    </table>
+
+    <h4>AI Query Cost: $0.0088 per query (Gemini 2.5 Flash)</h4>
+    <pre><code>Per query weighted average:
+  Input:  11,141 tokens x $0.30 / 1M = $0.003342
+  Output:  2,190 tokens x $2.50 / 1M = $0.005475  (incl. ~50% thinking overhead)
+  Total:                               $0.008817
+
+Annual AI cost = queries/year x $0.0088
+  Current (1,300 q):      1,300 x $0.0088 =     $11
+  Active (5,200 q):       5,200 x $0.0088 =     $46
+  Small Pilot (27K q):   27,000 x $0.0088 =    $238
+  Full Pilot (54K q):    54,000 x $0.0088 =    $476
+  District (180K q):    180,000 x $0.0088 =  $1,587
+  Regional (576K q):    576,000 x $0.0088 =  $5,079
+  Multi-WS (1.44M q): 1,440,000 x $0.0088 = $12,697</code></pre>
+
+    <div class="callout callout-green">
+      <div class="ct">At current usage (0&ndash;5 users), the platform costs $494/year all-in.</div>
+      Infrastructure is the dominant cost through pilot scale. AI only overtakes infrastructure at 200+ concurrent users (District tier). The architecture scales by configuration changes &mdash; bigger container, bigger database, add CDN &mdash; not by rebuilding. No code changes needed until multi-watershed expansion.
+    </div>
+
+    <div class="callout callout-teal">
+      <div class="ct">Context caching can reduce AI costs by 27% at scale.</div>
+      Gemini 2.5 Flash supports context caching at $0.03/MTok input (90% discount on the $0.30 standard rate). The 3,848-token system prompt is identical across all requests, making it an ideal caching candidate. At District tier, this would save ~$430/year; at Regional, ~$1,370/year. Implementation: 2&ndash;3 hours of engineering work.
+    </div>
+
+    <h3>Cost Control Strategies (for K-12 scaling)</h3>
+    <ol>
+      <li><strong>Rate-limit students to 5&ndash;10 queries/day</strong> &mdash; already implemented via <code>checkRateLimit()</code></li>
+      <li><strong>Enable context caching</strong> &mdash; 90% discount on system prompt input tokens ($0.03 vs $0.30/MTok)</li>
+      <li><strong>Cache frequent questions</strong> (e.g., "what is pH?") to avoid API calls entirely</li>
+      <li><strong>Restrict AI to teacher/researcher accounts</strong>; students use pre-built stories and scenarios</li>
+      <li><strong>Fund scaled AI costs from grants</strong> (EPA EJCPS, NOAA, NSF technology line items)</li>
+    </ol>
+  </section>
+
+  <!-- 6. SOVEREIGN DEPLOYMENT -->
+  <section>
+    <div class="stag">Section 6</div>
+    <h2>Phase C: Sovereign Deployment Plan</h2>
+    <p class="lead">Self-hosted deployment package for UDC to run WQIS on their own Azure subscription.</p>
+
+    <h3>Delivery Model</h3>
+    <p>DAPS Analytics builds and publishes a pre-built Docker image to our private Azure Container Registry (<code>udcwqisacr</code>). UDC receives a scoped pull token (read-only) that serves as a license key. Token renewal = subscription renewal. Source code never leaves DAPS.</p>
+
+    <h3>Build Requirements</h3>
+    <table>
+      <thead><tr><th>Component</th><th>Description</th><th>Hours</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bicep/ARM template</strong></td><td>"Deploy to Azure" one-click button. Creates Container App, PostgreSQL, Key Vault, cron jobs.</td><td>6</td></tr>
+        <tr><td><strong>Built-in node-cron</strong></td><td>Replace external Azure Container Apps Jobs with internal scheduler for standalone Docker.</td><td>4</td></tr>
+        <tr><td><strong>Email alerting</strong></td><td>Notify on ingestion failure via SMTP (replaces Azure Monitor dependency).</td><td>3</td></tr>
+        <tr><td><strong>Seed-on-first-boot</strong></td><td>Auto-run DB schema + seed if tables missing on container startup.</td><td>2</td></tr>
+        <tr><td><strong>.env.example</strong></td><td>Complete documented list of all env vars UDC needs to configure.</td><td>1</td></tr>
+        <tr><td><strong>Testing &amp; docs</strong></td><td>End-to-end test on fresh Azure subscription. Deployment guide.</td><td>2</td></tr>
+        <tr class="row-total"><td colspan="2">Total</td><td><strong>18 hrs</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Pending from UDC</h3>
+    <ol>
+      <li>Azure subscription type (Education or Enterprise) &mdash; determines if hosting is $0 or ~$500/yr</li>
+      <li>Preferred delivery path: ACR pull token or Docker Hub private repo</li>
+      <li>UDC IT contact person for deployment onboarding</li>
+    </ol>
+  </section>
+
+  <!-- 7. K-12 FEATURES -->
+  <section>
+    <div class="stag">Section 7</div>
+    <h2>K-12 Partnership Features</h2>
+    <p class="lead">These features are scoped and ready to build when grant funding or a school partnership is secured.</p>
 
     <table>
-      <thead><tr><th>Scenario</th><th>Concurrent Users</th><th>Infrastructure Change</th><th>Monthly</th><th>Annual</th></tr></thead>
+      <thead><tr><th>Feature</th><th>Description</th><th>Hours</th><th>Est. Cost</th></tr></thead>
       <tbody>
-        <tr><td><strong>Current</strong> (UDC research team)</td><td>5&ndash;10</td><td>None</td><td>$35&ndash;38</td><td>$420&ndash;456</td></tr>
-        <tr><td><strong>Pilot</strong> (5&ndash;8 schools)</td><td>50&ndash;100</td><td>None &mdash; current config handles this</td><td>$38&ndash;42</td><td>$456&ndash;504</td></tr>
-        <tr><td><strong>District</strong> (20+ schools)</td><td>200&ndash;500</td><td>Container App: 1 vCPU / 2 GB, min-replicas=2</td><td>$52&ndash;60</td><td>$624&ndash;720</td></tr>
-        <tr><td><strong>Regional</strong> (DCPS + MCPS full)</td><td>500&ndash;2,000</td><td>1 vCPU / 2 GB, replicas=3, Azure CDN, PostgreSQL B2ms</td><td>$85&ndash;110</td><td>$1,020&ndash;1,320</td></tr>
-        <tr><td><strong>Multi-Watershed</strong> (Potomac, Rock Creek)</td><td>2,000&ndash;10,000</td><td>2 vCPU / 4 GB, B4ms, Azure Front Door, read replicas</td><td>$180&ndash;250</td><td>$2,160&ndash;3,000</td></tr>
+        <tr><td><strong>Student Mode UI</strong></td><td>Simplified interface with guided tours, larger text, tooltips. Grades 6&ndash;12.</td><td>12&ndash;16</td><td>$800&ndash;1,000</td></tr>
+        <tr><td><strong>Investigation Guides</strong></td><td>In-app step-by-step lesson walkthroughs. 4 initial guides.</td><td>8&ndash;10</td><td>$500&ndash;650</td></tr>
+        <tr><td><strong>User authentication</strong></td><td>Teacher/student/researcher roles. UDC Entra ID SSO or email login.</td><td>12&ndash;16</td><td>$800&ndash;1,000</td></tr>
+        <tr><td><strong>Printable Lab Reports</strong></td><td>PDF export as lab worksheets with live data.</td><td>4&ndash;6</td><td>$250&ndash;400</td></tr>
+        <tr class="row-total"><td colspan="2">Total K-12 Build</td><td>36&ndash;48</td><td>$2,350&ndash;3,050</td></tr>
       </tbody>
     </table>
 
     <div class="callout callout-blue">
-      <div class="ct">Key Insight: The architecture scales by turning knobs, not by rebuilding.</div>
-      Bigger container, bigger database, add CDN. The EAV schema, CI/CD pipeline, monitoring, and cron jobs work identically from 10 to 10,000 users. No code changes needed until multi-watershed expansion (which requires new station mappings and watershed configuration).
+      <div class="ct">K-12 features will resume when one of these triggers occurs:</div>
+      (1) EPA EJCPS, NOAA, or NSF grant awarded with technology development line item<br>
+      (2) DCPS or MCPS formalizes a partnership or MOU with UDC WRRI<br>
+      (3) Dr. Deksissa secures dedicated K-12 budget allocation
     </div>
-
-    <h3>Robustness Improvements</h3>
-    <table>
-      <thead><tr><th>Improvement</th><th>Effort</th><th>Cost</th><th>Priority</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Automated weekly DB backup</strong> &mdash; <code>pg_dump</code> to Azure Blob Storage with 90-day retention</td><td>3 hrs</td><td>$1/mo</td><td><span class="p1">P1</span></td></tr>
-        <tr><td><strong>Rate limiting</strong> &mdash; Protect API endpoints from abuse or accidental load</td><td>3 hrs</td><td>$0</td><td><span class="p1">P1</span></td></tr>
-        <tr><td><strong>Health-check failover</strong> &mdash; If Azure down, DNS redirect to Vercel static fallback</td><td>2 hrs</td><td>$0</td><td><span class="p2">P2</span></td></tr>
-        <tr><td><strong>User authentication</strong> &mdash; UDC Entra ID SSO or role-based login (teacher/student/researcher)</td><td>12&ndash;16 hrs</td><td>$0</td><td><span class="p2">P2 (P1 for K-12)</span></td></tr>
-      </tbody>
-    </table>
   </section>
 
-  <!-- 5. COST BREAKDOWN -->
-  <section>
-    <div class="stag">Section 5</div>
-    <h2>$5,000 Annual Budget Allocation</h2>
-    <p class="lead">How Dr. Tolessa&rsquo;s proposed $5,000/year budget covers infrastructure, improvements, and partnership development.</p>
-
-    <h3>Scenario A: With Azure for Education Credits</h3>
-    <table>
-      <thead><tr><th>Category</th><th>Annual</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td>Azure infrastructure (all services)</td><td><strong>$0</strong></td><td>Covered by Azure for Education ($100&ndash;200/student, $200+/faculty)</td></tr>
-        <tr><td>Vercel (marketing site)</td><td>$0</td><td>Free Hobby plan</td></tr>
-        <tr><td>Domain (wqis-app.com)</td><td>$15</td><td>GoDaddy renewal</td></tr>
-        <tr><td>Anthropic API (AI assistant)</td><td>$47&ndash;985</td><td>Claude Haiku 4.5 at $0.0182/query &mdash; see AI Cost Detail below</td></tr>
-        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$62&ndash;1,000</strong></td><td>Research-only: $62/yr. Pilot (100 students): ~$1,000/yr</td></tr>
-      </tbody>
-    </table>
-
-    <h3>Scenario B: Full Azure Pay-As-You-Go</h3>
-    <table>
-      <thead><tr><th>Category</th><th>Annual</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td>Azure Container Apps + Jobs (hourly cron)</td><td>$192&ndash;204</td><td>Hosting + hourly ingestion</td></tr>
-        <tr><td>Azure PostgreSQL B1ms</td><td>$156</td><td>32 GB storage</td></tr>
-        <tr><td>ACR + Key Vault + App Insights</td><td>$96</td><td>Basic tiers</td></tr>
-        <tr><td>Vercel + Domain + AI API</td><td>$62&ndash;1,000</td><td>Scales with usage &mdash; see AI Cost Detail below</td></tr>
-        <tr class="row-total"><td>Infrastructure Total</td><td><strong>$506&ndash;1,456</strong></td><td>Research: $506/yr. Pilot: ~$1,456/yr. District: ~$3,727/yr</td></tr>
-      </tbody>
-    </table>
-
-    <h3>Recommended Budget Allocation</h3>
-    <table>
-      <thead><tr><th>Item</th><th>Budget</th><th>Category</th><th>Timeline</th></tr></thead>
-      <tbody>
-        <tr><td>Annual infrastructure (incl. AI API at pilot)</td><td>$506&ndash;1,456</td><td><span class="badge badge-req">Required</span></td><td>Ongoing</td></tr>
-        <tr><td><s>DC GeoJSON map overhaul + NHD integration</s></td><td><s>$800&ndash;1,000</s></td><td><span class="badge badge-live">Done</span></td><td><s>Jul&ndash;Aug 2026</s> Jun 26</td></tr>
-        <tr><td><s>Hourly cron upgrade</s></td><td><s>$200&ndash;300</s></td><td><span class="badge badge-live">Done</span></td><td><s>Jul 2026</s> Jun 26</td></tr>
-        <tr><td>DNS cutover + domain finalization</td><td>$150&ndash;200</td><td><span class="badge badge-req">Required</span></td><td>Jul 2026</td></tr>
-        <tr><td>Student Mode UI for K-12</td><td>$1,200&ndash;1,500</td><td><span class="badge badge-k12">K-12</span></td><td>Aug&ndash;Sep 2026</td></tr>
-        <tr><td>Bicep &ldquo;Deploy to Azure&rdquo; template</td><td>$500&ndash;700</td><td><span class="badge badge-k12">Handover</span></td><td>Aug 2026</td></tr>
-        <tr><td>Contingency / expansion reserve</td><td>$700&ndash;1,000</td><td><span class="badge badge-rsv">Reserve</span></td><td>As needed</td></tr>
-        <tr class="row-total"><td>Total</td><td><strong>$3,464&ndash;4,946</strong></td><td></td><td></td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-gold">
-      <div class="ct">$5,000/year covers infrastructure + remaining development &mdash; but AI costs scale with usage.</div>
-      With the hourly cron and DC GeoJSON map overhaul already complete (Jun 26, 2026), the remaining $5,000 budget covers infrastructure ($614&ndash;1,246/yr depending on AI usage tier) plus Student Mode, sovereign deploy, and contingency. If K-12 scales beyond pilot, AI API costs become the largest variable &mdash; see detail below.
-    </div>
-
-    <h3>AI API Cost Detail (Anthropic Claude Haiku 4.5)</h3>
-    <p>The WQIS AI Research Assistant uses Claude Haiku 4.5 (<code>claude-haiku-4-5-20251001</code>) via the Anthropic API. The 3,848-token system prompt is sent with <em>every API round-trip</em>. Tool-use queries (fetching live station data) involve 2&ndash;3 round-trips, meaning the system prompt is billed multiple times per user question.</p>
-
-    <h4>Verified Anthropic Pricing (June 2026)</h4>
-    <table>
-      <thead><tr><th>Model</th><th>Input</th><th>Output</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Claude Haiku 4.5</strong> (current)</td><td>$1.00 / MTok</td><td>$5.00 / MTok</td><td>Fastest, used for WQIS</td></tr>
-        <tr><td>Claude Sonnet 4.6</td><td>$3.00 / MTok</td><td>$15.00 / MTok</td><td>3&times; Haiku cost</td></tr>
-        <tr><td>Claude Opus 4.8</td><td>$5.00 / MTok</td><td>$25.00 / MTok</td><td>5&times; Haiku cost</td></tr>
-      </tbody>
-    </table>
-
-    <h4>Per-Query Token Breakdown</h4>
-    <table>
-      <thead><tr><th>Query Type</th><th>% of Queries</th><th>Input Tokens</th><th>Output Tokens</th><th>Cost (Haiku)</th></tr></thead>
-      <tbody>
-        <tr><td>Simple Q&amp;A (no tools)</td><td>30%</td><td>~4,348</td><td>~800</td><td>$0.0083</td></tr>
-        <tr><td>1 tool call (station data) &mdash; 2 API round-trips</td><td>50%</td><td>~11,896</td><td>~1,400</td><td>$0.0190</td></tr>
-        <tr><td>2+ tool calls (complex analysis) &mdash; 3 round-trips</td><td>20%</td><td>~19,444</td><td>~2,400</td><td>$0.0314</td></tr>
-        <tr style="font-weight:700; background:#F0F9FF;"><td>Weighted Average</td><td>100%</td><td>~11,141</td><td>~1,420</td><td><strong>$0.0182</strong></td></tr>
-      </tbody>
-    </table>
-
-    <h4>Annual Cost by Usage Tier</h4>
-    <table>
-      <thead><tr><th>Usage Scenario</th><th>Queries/Year</th><th>Haiku 4.5</th><th>Sonnet 4.6</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Research only</strong> (10 users, 5 queries/wk, 52 wks)</td><td>2,600</td><td>$47/yr ($4/mo)</td><td>$142/yr ($12/mo)</td></tr>
-        <tr><td><strong>Pilot</strong> (100 students, 15 queries/wk, 36 wks)</td><td>54,000</td><td>$985/yr ($82/mo)</td><td>$2,955/yr ($246/mo)</td></tr>
-        <tr><td><strong>District</strong> (500 students, 10 queries/wk, 36 wks)</td><td>180,000</td><td>$3,283/yr ($274/mo)</td><td>$9,850/yr ($821/mo)</td></tr>
-        <tr><td><strong>Full DCPS+MCPS</strong> (2,000 students, 8 queries/wk, 36 wks)</td><td>576,000</td><td>$10,507/yr ($876/mo)</td><td>$31,521/yr ($2,627/mo)</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-red">
-      <div class="ct">AI is the dominant cost at scale &mdash; it exceeds all other infrastructure combined.</div>
-      At pilot scale (100 students), Haiku AI costs ~$985/year &mdash; within a $5,000 budget but not trivial. At district scale (500+ students), AI alone reaches $3,283/year, consuming most of the budget. At full DCPS+MCPS, Haiku costs $10,507/year &mdash; far exceeding any $5,000 allocation.<br><br>
-      <strong>Cost control strategies (implement before pilot):</strong><br>
-      (1) Rate-limit students to 5&ndash;10 queries/day<br>
-      (2) Cache frequent questions (e.g., &ldquo;what is pH?&rdquo;) to avoid API calls<br>
-      (3) Restrict AI assistant to teacher/researcher accounts only; students use pre-built stories and scenarios instead<br>
-      (4) Fund AI costs from EPA/NOAA/NSF grant technology line items, not from the $5,000 operating budget<br>
-      (5) Implement prompt caching (Anthropic offers cached prompt discounts for repeated system prompts)
-    </div>
-
-    <p><strong>Recommendation:</strong> Stay on Haiku 4.5. Never use Sonnet or Opus for student-facing queries &mdash; the 3&ndash;5&times; cost multiplier is unjustifiable at scale. For research-only use ($47/yr), any model is affordable. For K-12 pilot, budget $1,000&ndash;1,200/yr for AI and implement rate limiting from day one.</p>
-  </section>
-
-  <!-- 6. K-12 TECHNICAL REQUIREMENTS -->
-  <section>
-    <div class="stag">Section 6</div>
-    <h2>K-12 Partnership: Technical Build Requirements</h2>
-    <p class="lead">Features needed for DCPS/MCPS classroom integration.</p>
-
-    <table>
-      <thead><tr><th>Feature</th><th>Description</th><th>Hours</th><th>Priority</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Student Mode UI</strong></td><td>Simplified interface with guided tours, larger text, tooltips explaining scientific terms. Age-appropriate for grades 6&ndash;12. Toggle between Student and Researcher mode.</td><td>12&ndash;16</td><td><span class="p0">P0</span></td></tr>
-        <tr><td><strong>Investigation Guides</strong></td><td>In-app step-by-step lesson walkthroughs embedded in stories, scenarios, and map pages. &ldquo;Now observe...&rdquo; and &ldquo;Record your findings...&rdquo; prompts.</td><td>8&ndash;10</td><td><span class="p0">P0</span></td></tr>
-        <tr><td><strong>&ldquo;My Station&rdquo; Portal</strong></td><td>School-specific station page for adopt-a-station. Shows adopted station data, field data upload form, comparison with nearby stations.</td><td>8&ndash;10</td><td><span class="p1">P1</span></td></tr>
-        <tr><td><strong>Classroom Dashboard</strong></td><td>Teacher view: which students completed which investigation activities. Usage analytics by school.</td><td>16&ndash;20</td><td><span class="p1">P1</span></td></tr>
-        <tr><td><strong>Printable Lab Reports</strong></td><td>PDF export formatted as lab worksheets &mdash; hypothesis, data table, chart, and conclusion sections pre-filled from live data.</td><td>4&ndash;6</td><td><span class="p1">P1</span></td></tr>
-        <tr><td><strong>Spanish / Amharic i18n</strong></td><td>DCPS is ~35% Hispanic with a significant Ethiopian/Eritrean community. i18n framework + translations for all student-facing text.</td><td>8&ndash;12</td><td><span class="p2">P2</span></td></tr>
-        <tr><td><strong>PWA + Mobile</strong></td><td>Progressive Web App with manifest.json, service worker, offline caching. Optimized for student Chromebooks and phones.</td><td>8&ndash;10</td><td><span class="p2">P2</span></td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 7. MASTER TIMELINE -->
-  <section>
-    <div class="stag">Section 7</div>
-    <h2>Master Implementation Timeline</h2>
-
-    <table>
-      <thead><tr><th>Phase</th><th>Period</th><th>Deliverables</th><th>Hours</th><th>Budget</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><strong>A</strong><br><span style="color:var(--green); font-size:10px;">COMPLETE</span></td>
-          <td><s>Jul 2026</s><br>Jun 26</td>
-          <td><strong style="color:var(--green);">&check;</strong> Hourly cron upgrade &bull; Data freshness threshold update &bull; Disable Vercel legacy cron<br><em style="font-size:11px;color:var(--muted);">DNS cutover still pending UDC IT</em></td>
-          <td>3</td>
-          <td>$0 (done)</td>
-        </tr>
-        <tr>
-          <td><strong>B</strong><br><span style="color:var(--green); font-size:10px;">COMPLETE</span></td>
-          <td><s>Jul&ndash;Aug</s><br>Jun 26</td>
-          <td><strong style="color:var(--green);">&check;</strong> 6 official DC GIS GeoJSON layers downloaded &bull; NHD waterways (1,273 centerlines) &bull; 188 sub-watersheds &bull; 402 FEMA flood zones &bull; Click-to-zoom on all boundary layers &bull; 18MB &rarr; 1.25MB optimized</td>
-          <td>8</td>
-          <td>$0 (done)</td>
-        </tr>
-        <tr>
-          <td><strong>C</strong><br><span style="color:var(--purple); font-size:10px;">SOVEREIGN DEPLOY</span></td>
-          <td>Aug 2026</td>
-          <td>Bicep/ARM deployment template &bull; Built-in node-cron scheduler &bull; Email alerting on ingest failure &bull; Seed-on-first-boot &bull; Complete .env.example</td>
-          <td>18</td>
-          <td>$1,000&ndash;1,500</td>
-        </tr>
-        <tr>
-          <td><strong>D</strong><br><span style="color:var(--gold); font-size:10px;">K-12 READINESS</span></td>
-          <td>Aug&ndash;Sep 2026</td>
-          <td>Student Mode UI &bull; Investigation Guides (4 initial) &bull; User authentication (teacher/student roles) &bull; Printable lab reports</td>
-          <td>30&ndash;40</td>
-          <td>$2,000&ndash;3,000</td>
-        </tr>
-        <tr>
-          <td><strong>E</strong><br><span style="color:var(--teal); font-size:10px;">PILOT LAUNCH</span></td>
-          <td>Oct 2026</td>
-          <td>Onboard 5&ndash;8 pilot schools &bull; Teacher PD at UDC Van Ness &bull; Usage analytics &bull; Grant application prep with pilot data</td>
-          <td>10</td>
-          <td>$500&ndash;800</td>
-        </tr>
-        <tr class="row-total"><td colspan="3">Total</td><td>76&ndash;86</td><td>$4,650&ndash;6,800</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 8. RISK REGISTER -->
+  <!-- 8. TIMELINE -->
   <section>
     <div class="stag">Section 8</div>
+    <h2>Master Timeline</h2>
+
+    <table>
+      <thead><tr><th>Phase</th><th>Period</th><th>Deliverables</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>A</strong></td>
+          <td>Jun 26</td>
+          <td>Hourly cron upgrade, data freshness thresholds, Vercel legacy cron disabled</td>
+          <td><span class="badge badge-done">Complete</span></td>
+        </tr>
+        <tr>
+          <td><strong>B</strong></td>
+          <td>Jun 26</td>
+          <td>9 official DC GIS GeoJSON layers (wards, watersheds, sub-watersheds, waterways, waterbodies, floodplains, green infrastructure, CSO, MS4) downloaded, simplified, and wired into map</td>
+          <td><span class="badge badge-done">Complete</span></td>
+        </tr>
+        <tr>
+          <td><strong>DNS</strong></td>
+          <td>Jun 27</td>
+          <td><code>udc.wqis-app.com</code> CNAME live, old Vercel project decommissioned</td>
+          <td><span class="badge badge-done">Complete</span></td>
+        </tr>
+        <tr>
+          <td><strong>AI</strong></td>
+          <td>Jun 2026</td>
+          <td>AI Research Assistant running on Gemini 2.5 Flash ($0.30/$2.50 per MTok)</td>
+          <td><span class="badge badge-done">Complete</span></td>
+        </tr>
+        <tr>
+          <td><strong>C</strong></td>
+          <td>&mdash;</td>
+          <td>Sovereign deployment: Bicep template, built-in cron, email alerts, seed-on-boot</td>
+          <td><span class="badge badge-rsv">Available when UDC IT ready</span></td>
+        </tr>
+        <tr>
+          <td><strong>D</strong></td>
+          <td>&mdash;</td>
+          <td>K-12: Student Mode, Investigation Guides, authentication, lab reports</td>
+          <td><span class="badge badge-rsv">Available when funded</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 9. RISK REGISTER -->
+  <section>
+    <div class="stag">Section 9</div>
     <h2>Risk Register</h2>
 
     <table>
       <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead>
       <tbody>
-        <tr><td>USGS API rate limiting on hourly calls</td><td>Low</td><td>Medium</td><td>USGS public APIs are designed for automated access with no documented limits. Implement exponential backoff as safety net.</td></tr>
-        <tr><td>GeoJSON file size slows page load</td><td>Medium</td><td>Low</td><td>TopoJSON simplification reduces file size 60&ndash;80%. Layers lazy-load on toggle. Canvas renderer for high vertex counts.</td></tr>
-        <tr><td>Azure Education credits insufficient</td><td>Low</td><td>Low</td><td>Full Azure cost is only ~$520&ndash;590/year &mdash; easily within $5,000 budget even without credits.</td></tr>
-        <tr><td>DCPS/MCPS slow to formalize MOU</td><td>Medium</td><td>Medium</td><td>Start with Tier 1 (free public access, no MOU needed). Individual teachers can use the platform immediately while district-level paperwork proceeds.</td></tr>
-        <tr><td>Ingestion pipeline disruption during cron change</td><td>Low</td><td>High</td><td>Keep daily cron active in parallel for 2 weeks. Test new schedule on staging. ingestion_log table captures all failures with full error detail.</td></tr>
-        <tr><td>NHD data too complex for Leaflet</td><td>Low</td><td>Low</td><td>Filter to stream orders &ge;2 (exclude minor ditches). Use Leaflet Canvas renderer instead of SVG for large polyline counts.</td></tr>
+        <tr><td>USGS API rate limiting on hourly calls</td><td>Low</td><td>Medium</td><td>USGS public APIs are designed for automated access. Exponential backoff implemented as safety net.</td></tr>
+        <tr><td>Gemini 2.5 Flash pricing changes</td><td>Low</td><td>Medium</td><td>Google AI pricing has trended downward. Model is configurable via <code>CHAT_MODEL</code> env var &mdash; can switch to Flash-Lite ($0.10/$0.40) or another provider with a single env var change.</td></tr>
+        <tr><td>Azure Education credits insufficient</td><td>Low</td><td>Low</td><td>Full Azure cost is only ~$482/year even without credits.</td></tr>
+        <tr><td>Thinking token overhead higher than estimated</td><td>Low</td><td>Low</td><td>Current estimates use 50% thinking overhead. Even at 100% overhead, costs increase only ~25%. Can disable thinking via <code>thinkingBudget: 0</code> if needed.</td></tr>
+        <tr><td>Ingestion pipeline disruption</td><td>Low</td><td>High</td><td>Azure Monitor alerts on container restarts and DB CPU. <code>ingestion_log</code> table captures all failures. Deduplication via UNIQUE indexes prevents data corruption.</td></tr>
       </tbody>
     </table>
   </section>
 
-  <!-- 9. ACTION ITEMS -->
+  <!-- 10. ACTION ITEMS -->
   <section>
-    <div class="stag">Section 9</div>
+    <div class="stag">Section 10</div>
     <h2>Action Items by Stakeholder</h2>
 
     <h3>Dr. Tolessa Deksissa (UDC WRRI)</h3>
     <ol>
-      <li>Confirm UDC&rsquo;s Azure subscription type (Education or Enterprise) &mdash; determines if hosting is $0 or ~$520/year</li>
-      <li>Confirm preferred deployment path: ACR pull token (Option A) or Docker Hub (Option B)</li>
-      <li>Provide UDC IT contact person for DNS cutover and sovereign deployment onboarding</li>
-      <li>Identify 2&ndash;3 UDC Education faculty for curriculum co-development</li>
-      <li>Schedule demo sessions with DCPS Office of Teaching &amp; Learning and MCPS Curriculum &amp; Instruction</li>
-      <li>Approve $5,000 annual budget allocation</li>
+      <li>Confirm UDC's Azure subscription type (Education or Enterprise)</li>
+      <li>Confirm preferred deployment path: ACR pull token or Docker Hub</li>
+      <li>Provide UDC IT contact person for sovereign deployment onboarding</li>
     </ol>
 
     <h3>DAPS Analytics (Engineering Team)</h3>
     <ol>
-      <li><s>Phase A: Hourly cron upgrade</s> &mdash; <strong style="color:var(--green);">COMPLETE Jun 26, 2026</strong></li>
-      <li><s>Phase B: DC GeoJSON + NHD overhaul</s> &mdash; <strong style="color:var(--green);">COMPLETE Jun 26, 2026</strong></li>
-      <li>Phase C: Bicep template + standalone deployment &mdash; target: August 15, 2026</li>
-      <li>Phase D: Student Mode + Investigation Guides &mdash; target: September 15, 2026</li>
-      <li>Support Dr. Deksissa&rsquo;s DCPS/MCPS outreach with live demo environment</li>
+      <li><s>Phase A: Hourly cron upgrade</s> &mdash; <strong style="color:var(--green);">COMPLETE Jun 26</strong></li>
+      <li><s>Phase B: DC GeoJSON overhaul (9 layers)</s> &mdash; <strong style="color:var(--green);">COMPLETE Jun 26</strong></li>
+      <li><s>DNS cutover + Vercel decommission</s> &mdash; <strong style="color:var(--green);">COMPLETE Jun 27</strong></li>
+      <li><s>AI migration to Gemini 2.5 Flash</s> &mdash; <strong style="color:var(--green);">COMPLETE Jun 2026</strong></li>
+      <li>Phase C: Bicep template + standalone deployment &mdash; <strong>start when UDC IT confirms</strong></li>
     </ol>
 
     <h3>UDC IT Department</h3>
     <ol>
       <li>Confirm Azure subscription type and available Education credits</li>
-      <li>Set up CNAME for <code>udc.wqis-app.com</code> &rarr; Azure Container Apps</li>
       <li>Review Bicep deployment template when ready</li>
       <li>Provide Entra ID app registration if SSO desired</li>
     </ol>
@@ -719,7 +805,7 @@ az containerapp job update \
     <div class="divider"></div>
     <p>&copy; 2026 DAPS Analytics PLC &mdash; Water Quality Intelligence Service</p>
     <p>Prepared for University of the District of Columbia &mdash; WRRI / CAUSES</p>
-    <p style="margin-top: 6px;">WQIS-INFRA-2026-001 v2.0 &nbsp;&bull;&nbsp; Classification: Internal / Founders</p>
+    <p style="margin-top: 6px;">WQIS-INFRA-2026-001 v3.0 &nbsp;&bull;&nbsp; Classification: Internal / Founders</p>
   </div>
 
 </div>
