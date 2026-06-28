@@ -96,7 +96,8 @@ export default function DCMap({
     });
   }, []);
 
-  // Pre-load GeoJSON data when layers are toggled on
+  // Pre-load GeoJSON data when layers are toggled on, then trigger re-render
+  const [geoJsonReady, setGeoJsonReady] = useState(0);
   useEffect(() => {
     const toLoad: Array<[string, () => Promise<GeoJSONData>]> = [];
     if (layers.wardBoundaries && !geoJsonCache.current.wards) toLoad.push(["wards", loadWards]);
@@ -112,7 +113,7 @@ export default function DCMap({
     if (toLoad.length > 0) {
       Promise.all(toLoad.map(async ([key, loader]) => {
         geoJsonCache.current[key] = await loader();
-      }));
+      })).then(() => setGeoJsonReady(n => n + 1));
     }
   }, [layers]);
 
@@ -559,14 +560,14 @@ export default function DCMap({
         delete (window as unknown as Record<string, unknown>).__navigateStation;
       }
     };
-  }, [mapReady, onStationSelect, onStationNavigate, isDark, layers, monthSnapshot]);
+  }, [mapReady, onStationSelect, onStationNavigate, isDark, layers, monthSnapshot, geoJsonReady]);
 
   return (
     <div className={`relative w-full h-full rounded-xl overflow-hidden border transition-colors duration-300 ${
       isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
     }`}>
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
-      <div id="dc-map" className="w-full h-full min-h-[650px]" />
+      <div id="dc-map" className="w-full h-full min-h-[85vh] sm:min-h-[650px]" />
       {!mapReady && (
         <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
           <div className="flex flex-col items-center gap-3">
