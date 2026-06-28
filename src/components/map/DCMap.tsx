@@ -563,11 +563,11 @@ export default function DCMap({
   }, [mapReady, onStationSelect, onStationNavigate, isDark, layers, monthSnapshot, geoJsonReady]);
 
   return (
-    <div className={`relative w-full h-full rounded-xl overflow-hidden border transition-colors duration-300 ${
+    <div className={`relative w-full h-full rounded-xl border transition-colors duration-300 ${
       isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
     }`}>
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
-      <div id="dc-map" className="w-full h-full min-h-[85vh] sm:min-h-[650px]" />
+      <div id="dc-map" className="w-full h-full min-h-[100vh] sm:min-h-[700px] rounded-xl overflow-hidden" />
       {!mapReady && (
         <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
           <div className="flex flex-col items-center gap-3">
