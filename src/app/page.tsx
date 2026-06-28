@@ -135,7 +135,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="relative">
-              <div className="h-[300px] sm:h-[420px] md:h-[600px] overflow-hidden rounded-2xl clip-contents glass-panel-hero" aria-label="Interactive watershed map">
+              <div className="h-[520px] sm:h-[520px] md:h-[650px] rounded-2xl clip-contents glass-panel-hero" aria-label="Interactive watershed map">
                 <DCMap
                   onStationSelect={setSelectedStation}
                   selectedStation={selectedStation}
