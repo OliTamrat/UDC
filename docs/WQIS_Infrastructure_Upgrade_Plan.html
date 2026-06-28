@@ -455,49 +455,60 @@ Breakdown by type:
   2+ tools(20%): (19,444 x $0.30 + 3,600 x $2.50) / 1M = $0.0148
   Weighted avg:  0.30 x 0.0043 + 0.50 x 0.0088 + 0.20 x 0.0148 = $0.0088</code></pre>
 
-    <h3>Annual AI Cost by Usage Tier</h3>
+    <h3>Access Policy</h3>
+    <div class="callout callout-green">
+      <div class="ct">Unlimited daily access for all users &mdash; researchers, teachers, and students.</div>
+      There is no daily query cap. All users have unlimited access to the AI Research Assistant. A burst limit of 5 queries per minute prevents automated abuse while allowing natural conversation pace (a user reads each response for 15&ndash;30 seconds before asking a follow-up). This policy maximizes educational value without restricting genuine use.
+    </div>
+
+    <h3>Annual AI Cost by Usage Tier (Unlimited Access)</h3>
     <table>
       <thead><tr><th>Usage Scenario</th><th>Queries/Year</th><th>Annual Cost</th><th>Monthly</th></tr></thead>
       <tbody>
         <tr>
-          <td><strong>Research only</strong><br>10 users, 5 queries/week, 52 weeks</td>
-          <td>2,600</td>
-          <td><strong>$23</strong></td>
-          <td>$1.90</td>
+          <td><strong>Research only</strong><br>10 users, ~10 queries/user/week, 52 weeks</td>
+          <td>5,200</td>
+          <td><strong>$46</strong></td>
+          <td>$3.80</td>
         </tr>
         <tr>
-          <td><strong>Pilot</strong><br>100 students, 15 queries/week, 36 weeks</td>
-          <td>54,000</td>
-          <td><strong>$476</strong></td>
-          <td>$40</td>
+          <td><strong>Pilot</strong><br>100 students, ~10 queries/session, 2 sessions/week, 36 weeks</td>
+          <td>72,000</td>
+          <td><strong>$634</strong></td>
+          <td>$53</td>
         </tr>
         <tr>
-          <td><strong>District</strong><br>500 students, 10 queries/week, 36 weeks</td>
-          <td>180,000</td>
-          <td><strong>$1,587</strong></td>
-          <td>$132</td>
+          <td><strong>Pilot (heavy use)</strong><br>100 students, ~15 queries/session, 3 sessions/week, 36 weeks</td>
+          <td>162,000</td>
+          <td><strong>$1,426</strong></td>
+          <td>$119</td>
         </tr>
         <tr>
-          <td><strong>Full DCPS+MCPS</strong><br>2,000 students, 8 queries/week, 36 weeks</td>
-          <td>576,000</td>
-          <td><strong>$5,079</strong></td>
-          <td>$423</td>
+          <td><strong>District</strong><br>500 students, ~10 queries/session, 2 sessions/week, 36 weeks</td>
+          <td>360,000</td>
+          <td><strong>$3,173</strong></td>
+          <td>$264</td>
+        </tr>
+        <tr>
+          <td><strong>Full DCPS+MCPS</strong><br>2,000 students, ~8 queries/session, 2 sessions/week, 36 weeks</td>
+          <td>1,152,000</td>
+          <td><strong>$10,138</strong></td>
+          <td>$845</td>
         </tr>
       </tbody>
     </table>
 
-    <div class="callout callout-green">
-      <div class="ct">AI costs are negligible at research scale and manageable through pilot.</div>
-      At current usage (0&ndash;5 researchers), AI costs just $23/year. At pilot scale (100 students), $476/year. AI only becomes the dominant cost driver at district scale (500+ students).
+    <div class="callout callout-blue">
+      <div class="ct">Per student cost: $6&ndash;14/year at pilot scale.</div>
+      Each AI query costs $0.0088 (less than one cent). A student asking 10 questions per class session, twice a week, for a 36-week school year generates ~720 queries &mdash; costing $6.34/student/year. Even at heavy use (15 questions, 3 sessions/week), cost is $14.26/student/year.
     </div>
 
-    <h3>Cost Control Strategies (for future K-12 scaling)</h3>
+    <h3>Cost Optimization Strategies (for future scaling)</h3>
     <ol>
-      <li><strong>Rate-limit students to 5&ndash;10 queries/day</strong> &mdash; already implemented via <code>checkRateLimit()</code> in the chat API</li>
+      <li><strong>Burst limit: 5 queries/minute</strong> &mdash; prevents automated abuse while allowing natural conversation pace</li>
       <li><strong>Cache frequent questions</strong> (e.g., "what is pH?", "what is E. coli?") to avoid API calls entirely</li>
-      <li><strong>Context caching</strong> &mdash; Gemini offers cached prompt pricing at $0.03/MTok input (90% discount). The 3,848-token system prompt is identical across all requests, making it an ideal caching candidate. Estimated savings: 30&ndash;40% on input costs.</li>
-      <li><strong>Restrict AI to teacher/researcher accounts</strong>; students use pre-built stories and scenarios instead</li>
-      <li><strong>Fund AI costs from grant technology line items</strong> at scale</li>
+      <li><strong>Context caching</strong> &mdash; Gemini offers cached prompt pricing at $0.03/MTok input (90% discount). The 3,848-token system prompt is identical across all requests, making it an ideal caching candidate. Estimated savings: 27% on total costs.</li>
+      <li><strong>Fund AI costs from grant technology line items</strong> at scale (EPA EJCPS, NOAA, NSF)</li>
     </ol>
 
     <h4>Potential Savings with Context Caching</h4>
@@ -529,77 +540,76 @@ Breakdown by type:
         <tr><td>App Insights + Alerts + Availability</td><td>Monitoring</td><td>$2</td><td>$24</td></tr>
         <tr><td>3 Container Apps Jobs (hourly/6hr/daily cron)</td><td>Data ingestion</td><td>$3</td><td>$36</td></tr>
         <tr><td>Vercel (marketing site) + Domain renewal</td><td>wqis-app.com</td><td>$1.25</td><td>$15</td></tr>
-        <tr><td>Cloud Run (WQIS AI Agent, ADK 1.0)</td><td>AI agent backend</td><td>$2</td><td>$24</td></tr>
-        <tr class="row-total"><td colspan="2">Current Infrastructure Total</td><td><strong>$40</strong></td><td><strong>$483</strong></td></tr>
+        <tr class="row-total"><td colspan="2">Current Infrastructure Total</td><td><strong>$38</strong></td><td><strong>$459</strong></td></tr>
       </tbody>
     </table>
 
-    <h3>Scaling Scenarios: Infrastructure + AI Combined</h3>
+    <h3>Scaling Scenarios: Infrastructure + AI Combined (Unlimited Access)</h3>
     <table>
       <thead><tr><th>Tier</th><th>Users</th><th>AI Queries/yr</th><th>Infra $/yr</th><th>AI $/yr</th><th>Total $/yr</th><th>$/mo</th></tr></thead>
       <tbody>
         <tr>
           <td><strong>Current</strong><br>UDC research team</td>
           <td>0&ndash;5</td>
-          <td>1,300</td>
-          <td>$483</td>
-          <td>$11</td>
-          <td><strong>$494</strong></td>
-          <td>$41</td>
+          <td>2,600</td>
+          <td>$459</td>
+          <td>$23</td>
+          <td><strong>$482</strong></td>
+          <td>$40</td>
         </tr>
         <tr>
           <td><strong>Active Research</strong><br>WRRI + grad students</td>
           <td>5&ndash;20</td>
-          <td>5,200</td>
-          <td>$483</td>
+          <td>10,400</td>
+          <td>$459</td>
+          <td>$92</td>
+          <td><strong>$551</strong></td>
           <td>$46</td>
-          <td><strong>$529</strong></td>
-          <td>$44</td>
         </tr>
         <tr>
-          <td><strong>Small Pilot</strong><br>3&ndash;5 schools</td>
+          <td><strong>Pilot</strong><br>100 students, 2 sessions/week</td>
           <td>50&ndash;100</td>
-          <td>27,000</td>
-          <td>$483</td>
-          <td>$238</td>
-          <td><strong>$721</strong></td>
-          <td>$60</td>
+          <td>72,000</td>
+          <td>$459</td>
+          <td>$634</td>
+          <td><strong>$1,093</strong></td>
+          <td>$91</td>
         </tr>
         <tr>
-          <td><strong>Full Pilot</strong><br>5&ndash;8 schools</td>
+          <td><strong>Pilot (heavy use)</strong><br>100 students, 3 sessions/week</td>
           <td>100&ndash;200</td>
-          <td>54,000</td>
+          <td>162,000</td>
           <td>$540</td>
-          <td>$476</td>
-          <td><strong>$1,016</strong></td>
-          <td>$85</td>
+          <td>$1,426</td>
+          <td><strong>$1,966</strong></td>
+          <td>$164</td>
         </tr>
         <tr>
-          <td><strong>District</strong><br>20+ schools (DCPS)</td>
+          <td><strong>District</strong><br>500 students (DCPS)</td>
           <td>200&ndash;500</td>
-          <td>180,000</td>
+          <td>360,000</td>
           <td>$720</td>
-          <td>$1,587</td>
-          <td><strong>$2,307</strong></td>
-          <td>$192</td>
+          <td>$3,173</td>
+          <td><strong>$3,893</strong></td>
+          <td>$324</td>
         </tr>
         <tr>
           <td><strong>Regional</strong><br>DCPS + MCPS</td>
           <td>500&ndash;2,000</td>
-          <td>576,000</td>
+          <td>1,152,000</td>
           <td>$1,320</td>
-          <td>$5,079</td>
-          <td><strong>$6,399</strong></td>
-          <td>$533</td>
+          <td>$10,138</td>
+          <td><strong>$11,458</strong></td>
+          <td>$955</td>
         </tr>
         <tr>
           <td><strong>Multi-Watershed</strong><br>Potomac + Rock Creek expansion</td>
           <td>2,000&ndash;10,000</td>
-          <td>1,440,000</td>
+          <td>2,880,000</td>
           <td>$3,000</td>
-          <td>$12,697</td>
-          <td><strong>$15,697</strong></td>
-          <td>$1,308</td>
+          <td>$25,344</td>
+          <td><strong>$28,344</strong></td>
+          <td>$2,362</td>
         </tr>
       </tbody>
     </table>
@@ -608,11 +618,12 @@ Breakdown by type:
     <table>
       <thead><tr><th>Tier</th><th>AI Usage Assumption</th><th>Infrastructure Changes</th></tr></thead>
       <tbody>
-        <tr><td>Current / Active Research</td><td>5&ndash;10 queries/user/week, 52 weeks</td><td>None &mdash; current config</td></tr>
-        <tr><td>Small / Full Pilot</td><td>15 queries/student/week, 36 school weeks</td><td>Full Pilot: Container App &rarr; 1 vCPU / 2 GB</td></tr>
-        <tr><td>District</td><td>10 queries/student/week, 36 school weeks</td><td>1 vCPU / 2 GB, min-replicas=2, PostgreSQL B2ms</td></tr>
-        <tr><td>Regional</td><td>8 queries/student/week, 36 school weeks</td><td>1 vCPU / 2 GB, replicas=3, Azure CDN, PostgreSQL B2ms</td></tr>
-        <tr><td>Multi-Watershed</td><td>8 queries/student/week, 36 school weeks</td><td>2 vCPU / 4 GB, PostgreSQL B4ms, Azure Front Door, read replicas</td></tr>
+        <tr><td>Current / Active Research</td><td>~10 queries/user/week, unlimited, 52 weeks</td><td>None &mdash; current config</td></tr>
+        <tr><td>Pilot</td><td>~10 queries/session, 2 sessions/week, 36 school weeks, unlimited</td><td>None &mdash; current config handles this</td></tr>
+        <tr><td>Pilot (heavy use)</td><td>~15 queries/session, 3 sessions/week, 36 school weeks, unlimited</td><td>Container App &rarr; 1 vCPU / 2 GB</td></tr>
+        <tr><td>District</td><td>~10 queries/session, 2 sessions/week, 36 school weeks, unlimited</td><td>1 vCPU / 2 GB, min-replicas=2, PostgreSQL B2ms</td></tr>
+        <tr><td>Regional</td><td>~8 queries/session, 2 sessions/week, 36 school weeks, unlimited</td><td>1 vCPU / 2 GB, replicas=3, Azure CDN, PostgreSQL B2ms</td></tr>
+        <tr><td>Multi-Watershed</td><td>~8 queries/session, 2 sessions/week, 36 school weeks, unlimited</td><td>2 vCPU / 4 GB, PostgreSQL B4ms, Azure Front Door, read replicas</td></tr>
       </tbody>
     </table>
 
@@ -622,18 +633,21 @@ Breakdown by type:
   Output:  2,190 tokens x $2.50 / 1M = $0.005475  (incl. ~50% thinking overhead)
   Total:                               $0.008817
 
+Per student cost (pilot, 2 sessions/week, 36 weeks):
+  720 queries/student/year x $0.0088 = $6.34/student/year
+
 Annual AI cost = queries/year x $0.0088
-  Current (1,300 q):      1,300 x $0.0088 =     $11
-  Active (5,200 q):       5,200 x $0.0088 =     $46
-  Small Pilot (27K q):   27,000 x $0.0088 =    $238
-  Full Pilot (54K q):    54,000 x $0.0088 =    $476
-  District (180K q):    180,000 x $0.0088 =  $1,587
-  Regional (576K q):    576,000 x $0.0088 =  $5,079
-  Multi-WS (1.44M q): 1,440,000 x $0.0088 = $12,697</code></pre>
+  Current (2.6K q):       2,600 x $0.0088 =      $23
+  Active (10.4K q):      10,400 x $0.0088 =      $92
+  Pilot (72K q):         72,000 x $0.0088 =     $634
+  Pilot heavy (162K q): 162,000 x $0.0088 =   $1,426
+  District (360K q):    360,000 x $0.0088 =   $3,173
+  Regional (1.15M q): 1,152,000 x $0.0088 =  $10,138
+  Multi-WS (2.88M q): 2,880,000 x $0.0088 =  $25,344</code></pre>
 
     <div class="callout callout-green">
-      <div class="ct">At current usage (0&ndash;5 users), the platform costs $494/year all-in.</div>
-      Infrastructure is the dominant cost through pilot scale. AI only overtakes infrastructure at 200+ concurrent users (District tier). The architecture scales by configuration changes &mdash; bigger container, bigger database, add CDN &mdash; not by rebuilding. No code changes needed until multi-watershed expansion.
+      <div class="ct">At current usage (0&ndash;5 users), the platform costs $482/year all-in. Per student: $6&ndash;14/year.</div>
+      All users &mdash; researchers, teachers, and students &mdash; have unlimited daily AI access with a 5 queries/minute burst limit. Infrastructure is the dominant cost through pilot scale. AI only overtakes infrastructure at 200+ concurrent users. The architecture scales by configuration changes, not rebuilding.
     </div>
 
     <div class="callout callout-teal">
