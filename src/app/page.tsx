@@ -25,7 +25,7 @@ import type { MonitoringStation } from "@/data/dc-waterways";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSidebarClass } from "@/hooks/useSidebarMargin";
-import RadialGauge from "@/components/dashboard/RadialGauge";
+import LiveComplianceGauges from "@/components/dashboard/LiveComplianceGauges";
 import RecreationSafety from "@/components/dashboard/RecreationSafety";
 
 const DCMap = dynamic(() => import("@/components/map/DCMap"), {
@@ -200,12 +200,7 @@ export default function Dashboard() {
                   Compliance Overview
                 </h3>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 justify-items-center">
-                <RadialGauge value={78} max={100} label="Water Quality Index" unit="WQI" color="#14B8A6" />
-                <RadialGauge value={85} max={100} label="DO Compliance" unit="EPA 5mg/L" color="#3B82F6" />
-                <RadialGauge value={92} max={100} label="pH Compliance" unit="EPA 6.5-9" color="#10B981" />
-                <RadialGauge value={67} max={100} label="E. coli Safety" unit="EPA 410" color="#EF4444" />
-              </div>
+              <LiveComplianceGauges />
             </div>
           </section>
 
