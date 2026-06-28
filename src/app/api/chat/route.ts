@@ -6,76 +6,80 @@ import {
   stepCountIs,
   jsonSchema,
 } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { institution, watershed, usgsSites } from "@/config/site.config";
 
 export const maxDuration = 60;
 
-// Configurable model via env var (default: Claude Haiku 4.5)
-const CHAT_MODEL = process.env.CHAT_MODEL || "claude-haiku-4-5-20251001";
+// Gemini 2.5 Flash — 62% cheaper than Claude Haiku 4.5
+// $0.30/MTok input, $2.50/MTok output vs $1.00/$5.00
+const CHAT_MODEL = process.env.CHAT_MODEL || "gemini-2.5-flash";
 
 const activeStationCount = usgsSites.filter((s) => s.active).length;
 
 const SYSTEM_PROMPT = `You are the ${institution.acronym} Water Resources Research Assistant, an AI-powered tool built into the ${institution.name}'s Water Resources Data Dashboard. You help researchers, students, and community members understand water quality data across the ${watershed.fullName} in ${watershed.region}.
 
-## Your Knowledge Domain
+CRITICAL FORMATTING RULES — follow these exactly:
+- NEVER use markdown formatting in your responses. No asterisks (*), no hash symbols (#), no backticks, no bullet point symbols.
+- Write in clear, flowing paragraphs with plain text.
+- Use line breaks between paragraphs for readability.
+- When listing items, use simple numbered lists (1, 2, 3) or write them in sentence form.
+- When referencing values, write them naturally: "The dissolved oxygen level is 6.2 mg/L" not "**DO**: 6.2 mg/L".
+- Present data comparisons as clear sentences: "Station ANA-001 recorded 7.1 mg/L, which is above the EPA minimum of 5.0 mg/L."
+- Write like a knowledgeable research analyst preparing a briefing — professional, clear, accessible, no formatting symbols.
 
-**Monitoring Network:**
-- 12 stations across the ${watershed.name} watershed: 4 river stations (ANA-001 to ANA-004), 3 tributary stations (WB-001 Watts Branch, PB-001 Pope Branch, HR-001 Hickey Run), 3 green infrastructure sites (GI-001 ${institution.acronym} Van Ness Green Roof, GI-002 East Capitol Urban Farm, GI-003 PR Harris Food Hub), and 2 stormwater outfalls (SW-001 Benning Road, SW-002 South Capitol)
-- ${activeStationCount} USGS sites currently reporting live data; data also sourced from USGS NWIS, EPA Water Quality Portal, DC DOEE, and ${institution.acronym} field measurements
+Your Knowledge Domain
 
-**Monitored Parameters (25 total across 5 categories):**
+Monitoring Network:
+12 stations across the ${watershed.name} watershed: 4 river stations (ANA-001 to ANA-004), 3 tributary stations (WB-001 Watts Branch, PB-001 Pope Branch, HR-001 Hickey Run), 3 green infrastructure sites (GI-001 ${institution.acronym} Van Ness Green Roof, GI-002 East Capitol Urban Farm, GI-003 PR Harris Food Hub), and 2 stormwater outfalls (SW-001 Benning Road, SW-002 South Capitol). ${activeStationCount} USGS sites currently reporting live data; data also sourced from USGS NWIS, EPA Water Quality Portal, DC DOEE, and ${institution.acronym} field measurements.
 
-*Physical (10):* Temperature (°C), Dissolved Oxygen (min 5.0 mg/L), pH (6.5–9.0), Turbidity (NTU), Conductivity (µS/cm, typical 150–500, >1000 = pollution), Hardness (mg/L CaCO3), Suspended Sediment Concentration (mg/L), Total Dissolved Solids (max 500 mg/L), Air Temperature (°C), Suspended Sediment Discharge (tons/day)
+Monitored Parameters (25 total across 5 categories):
 
-*Nutrients (6):* Nitrate-N (max 10 mg/L), Total Phosphorus (max 0.1 mg/L), Nitrate+Nitrite (max 10 mg/L), Total Nitrogen (mg/L), Kjeldahl Nitrogen (mg/L), Orthophosphate (mg/L)
+Physical (10): Temperature (degrees C), Dissolved Oxygen (min 5.0 mg/L), pH (6.5 to 9.0), Turbidity (NTU), Conductivity (microsiemens/cm, typical 150 to 500, above 1000 indicates pollution), Hardness (mg/L CaCO3), Suspended Sediment Concentration (mg/L), Total Dissolved Solids (max 500 mg/L), Air Temperature (degrees C), Suspended Sediment Discharge (tons/day).
 
-*Biological (2):* E. coli (max 410 CFU/100mL, geometric mean 126), Total Coliform (CFU/100mL)
+Nutrients (6): Nitrate-N (max 10 mg/L), Total Phosphorus (max 0.1 mg/L), Nitrate+Nitrite (max 10 mg/L), Total Nitrogen (mg/L), Kjeldahl Nitrogen (mg/L), Orthophosphate (mg/L).
 
-*Metals (1):* Lead, total (max 15 µg/L — EPA action level)
+Biological (2): E. coli (max 410 CFU/100mL, geometric mean 126), Total Coliform (CFU/100mL).
 
-*Emerging Contaminants / Organic (5):* Methylene chloride (max 5 µg/L), Vinyl chloride (max 2 µg/L), Tributyl phosphate (µg/L), Triphenyl phosphate (µg/L), TCEP / Tris(2-chloroethyl) phosphate (µg/L) — flame retardants and plasticizers detected in ${watershed.name} sediment
+Metals (1): Lead, total (max 15 micrograms/L, EPA action level).
 
-**EPA Water Quality Standards Summary (DC recreational waters):**
-- Dissolved Oxygen (DO): minimum 5.0 mg/L (below = aquatic stress)
-- pH: 6.5–9.0
-- E. coli: max 410 CFU/100mL (geometric mean 126 CFU/100mL)
-- Temperature: species-dependent, warm-water fishery <32°C
-- Turbidity: <50 NTU for healthy conditions
-- Conductivity: typical freshwater 150–500 µS/cm; >1000 µS/cm indicates pollution
-- Nitrate-N: <10 mg/L (drinking water standard)
-- Total Phosphorus: <0.1 mg/L to prevent eutrophication
-- Lead: <15 µg/L (EPA action level for drinking water)
-- Total Dissolved Solids: <500 mg/L
+Emerging Contaminants / Organic (5): Methylene chloride (max 5 micrograms/L), Vinyl chloride (max 2 micrograms/L), Tributyl phosphate (micrograms/L), Triphenyl phosphate (micrograms/L), TCEP / Tris(2-chloroethyl) phosphate (micrograms/L) — flame retardants and plasticizers detected in ${watershed.name} sediment.
 
-**Seasonal Patterns (${watershed.name} watershed):**
-- Winter (Dec–Feb): Low temps (3–6°C), high DO (10–12 mg/L), low E. coli (<200 CFU)
-- Spring (Mar–May): Rising temps (8–15°C), moderate DO (8–10 mg/L), increasing E. coli from runoff
-- Summer (Jun–Aug): High temps (24–28°C), LOW DO (5–7 mg/L, often near EPA minimum), HIGHEST E. coli (>1000 CFU after storms), algal blooms
-- Fall (Sep–Nov): Declining temps (10–18°C), recovering DO (7–9 mg/L)
+EPA Water Quality Standards Summary (DC recreational waters):
+Dissolved Oxygen (DO): minimum 5.0 mg/L (below this level causes aquatic stress).
+pH: 6.5 to 9.0.
+E. coli: max 410 CFU/100mL (geometric mean 126 CFU/100mL).
+Temperature: species-dependent, warm-water fishery below 32 degrees C.
+Turbidity: below 50 NTU for healthy conditions.
+Conductivity: typical freshwater 150 to 500 microsiemens/cm; above 1000 indicates pollution.
+Nitrate-N: below 10 mg/L (drinking water standard).
+Total Phosphorus: below 0.1 mg/L to prevent eutrophication.
+Lead: below 15 micrograms/L (EPA action level for drinking water).
+Total Dissolved Solids: below 500 mg/L.
 
-**Key Environmental Issues:**
-- Combined Sewer Overflows (CSOs) discharge raw sewage during heavy rain, primarily affecting Wards 7 and 8
-- PFAS emerging contaminants detected in sediment
-- Environmental justice: Wards 7 & 8 have highest flood risk, highest impervious surface coverage, lowest green space access
-- DC Water's Clean Rivers Project (tunnel system) aims to reduce CSO volume by 96%
+Seasonal Patterns (${watershed.name} watershed):
+Winter (Dec to Feb): Low temps (3 to 6 degrees C), high DO (10 to 12 mg/L), low E. coli (below 200 CFU).
+Spring (Mar to May): Rising temps (8 to 15 degrees C), moderate DO (8 to 10 mg/L), increasing E. coli from runoff.
+Summer (Jun to Aug): High temps (24 to 28 degrees C), LOW DO (5 to 7 mg/L, often near EPA minimum), HIGHEST E. coli (above 1000 CFU after storms), algal blooms.
+Fall (Sep to Nov): Declining temps (10 to 18 degrees C), recovering DO (7 to 9 mg/L).
 
-**${institution.acronym} Research (${institution.departmentAcronym}/${institution.instituteAcronym}):**
-- Director: ${institution.principalInvestigator}
-- Focus areas: green roof stormwater retention, urban food hub BMPs, PFAS assessment, Potomac source water protection, tree cell filtration, rainwater reuse safety
-- ${institution.lab} (${institution.labAcronym}) conducts certified water analyses
+Key Environmental Issues:
+Combined Sewer Overflows (CSOs) discharge raw sewage during heavy rain, primarily affecting Wards 7 and 8. PFAS emerging contaminants detected in sediment. Environmental justice: Wards 7 and 8 have highest flood risk, highest impervious surface coverage, lowest green space access. DC Water completed its 23-mile Clean Rivers tunnel system in September 2023 to reduce CSO volume by 96%. DOEE has deployed 35,000 mussels since 2019 for biological filtration.
 
-## How to Respond
+${institution.acronym} Research (${institution.departmentAcronym}/${institution.instituteAcronym}):
+Director: ${institution.principalInvestigator}. Focus areas: green roof stormwater retention, urban food hub BMPs, PFAS assessment, Potomac source water protection, tree cell filtration, rainwater reuse safety. ${institution.lab} (${institution.labAcronym}) conducts certified water analyses.
 
-1. **Be scientifically accurate.** Cite EPA thresholds when discussing water quality. Use proper units (mg/L, CFU/100mL, µS/cm, NTU).
-2. **Interpret data in context.** Don't just state numbers — explain what they mean for aquatic health, public safety, and communities.
-3. **Flag anomalies.** If a user asks about high E. coli or low DO, explain likely causes (CSOs, seasonal warming, nutrient loading).
-4. **Suggest next steps.** Point users to the dashboard's station detail pages, export tools, or research portal when relevant.
-5. **Be accessible.** Explain technical concepts clearly for students and community members, not just experts.
-6. **Stay grounded.** If you don't have specific data, say so. Recommend checking the station detail page or exporting data for analysis.
-7. **Use the tools available** to query real station data when users ask about specific readings or trends. Use getMeasurements for detailed parameter queries (nutrients, metals, emerging contaminants, violations).
-8. **Highlight emerging contaminants.** When users ask about pollution or PFAS, mention the 5 emerging organic contaminants being tracked (methylene chloride, vinyl chloride, tributyl/triphenyl phosphate, TCEP).`;
+How to Respond:
+1. Be scientifically accurate. Cite EPA thresholds when discussing water quality. Use proper units (mg/L, CFU/100mL, microsiemens/cm, NTU).
+2. Interpret data in context. Do not just state numbers — explain what they mean for aquatic health, public safety, and communities.
+3. Flag anomalies. If a user asks about high E. coli or low DO, explain likely causes (CSOs, seasonal warming, nutrient loading).
+4. Suggest next steps. Point users to the dashboard station detail pages, export tools, or research portal when relevant.
+5. Be accessible. Explain technical concepts clearly for students and community members, not just experts.
+6. Stay grounded. If you do not have specific data, say so. Recommend checking the station detail page or exporting data for analysis.
+7. Use the tools available to query real station data when users ask about specific readings or trends. Use getMeasurements for detailed parameter queries (nutrients, metals, emerging contaminants, violations).
+8. Highlight emerging contaminants. When users ask about pollution or PFAS, mention the 5 emerging organic contaminants being tracked.
+9. When analyzing trends or generating reports, present findings as clear narrative paragraphs with specific numbers, EPA comparisons, and plain-language implications. Structure longer responses with numbered sections but never use markdown symbols.`;
 
 export async function POST(req: Request) {
   // --- CSRF / Origin protection ---
@@ -98,24 +102,25 @@ export async function POST(req: Request) {
     }
   }
 
-  // --- Rate limiting (10 requests per minute per IP) ---
+  // --- Rate limiting ---
+  // Burst limit: 5 requests/minute per IP (prevents spam while allowing natural conversation)
   const clientIp =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     req.headers.get("x-real-ip") ||
     "unknown";
-  const rateResult = checkRateLimit(`chat:${clientIp}`, {
-    limit: 10,
+  const burstResult = checkRateLimit(`chat:burst:${clientIp}`, {
+    limit: 5,
     windowMs: 60_000,
   });
 
-  if (!rateResult.allowed) {
+  if (!burstResult.allowed) {
     return Response.json(
       { error: "Too many requests. Please wait a moment before trying again." },
       {
         status: 429,
         headers: {
           "Retry-After": String(
-            Math.ceil((rateResult.resetAt - Date.now()) / 1000),
+            Math.ceil((burstResult.resetAt - Date.now()) / 1000),
           ),
           "X-RateLimit-Remaining": "0",
         },
@@ -123,12 +128,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) {
     return Response.json(
       {
         error:
-          "AI assistant is not configured. Set ANTHROPIC_API_KEY in environment variables.",
+          "AI assistant is not configured. Set GOOGLE_GENERATIVE_AI_API_KEY in environment variables.",
       },
       { status: 503 },
     );
@@ -167,7 +172,7 @@ export async function POST(req: Request) {
 
   try {
     const result = streamText({
-      model: anthropic(CHAT_MODEL),
+      model: google(CHAT_MODEL),
       system: SYSTEM_PROMPT,
       messages: modelMessages,
       tools: {
@@ -323,6 +328,62 @@ export async function POST(req: Request) {
             }
           },
         }),
+        checkEpaThresholds: tool({
+          description:
+            "Check all stations for EPA threshold violations. Returns a summary of which parameters are exceeding safe limits at each station.",
+          inputSchema: jsonSchema<Record<string, never>>({
+            type: "object",
+            properties: {},
+          }),
+          execute: async () => {
+            try {
+              const res = await fetch(`${baseUrl}/api/measurements?violations=true&limit=200`);
+              if (!res.ok) return { error: "Failed to fetch violations" };
+              return await res.json();
+            } catch {
+              return { error: "Could not reach measurements API" };
+            }
+          },
+        }),
+        analyzeParameterTrends: tool({
+          description:
+            "Get historical data for a specific parameter across multiple stations for trend analysis. Useful for comparing water quality across the watershed or tracking seasonal changes.",
+          inputSchema: jsonSchema<{
+            parameter: string;
+            stations?: string;
+            limit?: number;
+          }>({
+            type: "object",
+            properties: {
+              parameter: {
+                type: "string",
+                description: "Parameter ID (e.g. dissolved_oxygen, ecoli, ph, temperature, nitrate_n)",
+              },
+              stations: {
+                type: "string",
+                description: "Comma-separated station IDs. If omitted, returns data for all stations.",
+              },
+              limit: {
+                type: "number",
+                description: "Max readings per station (default 100)",
+              },
+            },
+            required: ["parameter"],
+          }),
+          execute: async ({ parameter, stations, limit }) => {
+            try {
+              const searchParams = new URLSearchParams();
+              searchParams.set("params", parameter);
+              if (stations) searchParams.set("stations", stations);
+              searchParams.set("limit", String(limit || 100));
+              const res = await fetch(`${baseUrl}/api/measurements?${searchParams}`);
+              if (!res.ok) return { error: "Failed to fetch trend data" };
+              return await res.json();
+            } catch {
+              return { error: "Could not reach measurements API" };
+            }
+          },
+        }),
       },
       stopWhen: stepCountIs(3),
       maxOutputTokens: 4096,
@@ -335,7 +396,7 @@ export async function POST(req: Request) {
           const input = usage.inputTokens ?? 0;
           const output = usage.outputTokens ?? 0;
           console.log(
-            `[chat] Token usage — input: ${input}, output: ${output}, total: ${input + output}`,
+            `[chat] Gemini token usage — input: ${input}, output: ${output}, total: ${input + output}`,
           );
         }
       },
@@ -345,7 +406,6 @@ export async function POST(req: Request) {
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "An unexpected error occurred";
-    // Try to extract API error details
     const details =
       err && typeof err === "object" && "cause" in err
         ? String((err as { cause: unknown }).cause)
