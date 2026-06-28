@@ -313,7 +313,7 @@ const EPA_STATION_MAP: Record<string, string> = {
   "USGS-01651760": "PB-001",  // Anacostia at Kenilworth — closest active gauge to Pope Branch
   "USGS-01651730": "SW-001",  // NW Branch trib — nearest to Benning Road stormwater BMP
   "USGS-01651830": "SW-002",  // Blue Plains outfall — nearest to South Capitol stormwater
-  // DC DOEE monitoring locations (Water Quality Portal)
+  // DC DOEE monitoring locations (Water Quality Portal — legacy format)
   "21DCDOEE-ANA01":  "ANA-001",
   "21DCDOEE-ANA02":  "ANA-002",
   "21DCDOEE-ANA03":  "ANA-003",
@@ -321,6 +321,26 @@ const EPA_STATION_MAP: Record<string, string> = {
   "21DCDOEE-WB01":   "WB-001",
   "21DCDOEE-POPE01": "PB-001",
   "21DCDOEE-HR01":   "HR-001",
+  // DC DOEE monitoring locations (WQP/WQX3 current format)
+  "DOEE-ANA01":      "ANA-001",
+  "DOEE-ANA05":      "ANA-001",  // Anacostia River near ANA-001
+  "DOEE-ANA08":      "ANA-002",  // Anacostia River near Kenilworth
+  "DOEE-ANA11":      "ANA-002",  // Anacostia River at Kingman area
+  "DOEE-ANA14":      "ANA-003",  // Anacostia River downstream
+  "DOEE-ANA19":      "ANA-003",  // Anacostia River mid-section
+  "DOEE-ANA21":      "ANA-004",  // Anacostia River near Buzzard Point
+  "DOEE-ANA29":      "ANA-004",  // Anacostia River downstream
+  "DOEE-TWB01":      "WB-001",   // Watts Branch 1
+  "DOEE-TWB05":      "WB-001",   // Watts Branch 5
+  "DOEE-TWB06":      "WB-001",   // Watts Branch 6
+  "DOEE-TPB01":      "PB-001",   // Popes Branch
+  "DOEE-THR01":      "HR-001",   // Hickey Run
+  "DOEE-KNG01":      "GI-002",   // Kingman Lake 1 → East Capitol Urban Farm (nearest)
+  "DOEE-KNG02":      "GI-002",   // Kingman Lake 2
+  // Additional USGS E. coli sampling locations
+  "USGS-01651812":   "ANA-003",  // Anacostia at Anacostia Park Boat Ramp
+  "USGS-385348076574501": "ANA-002", // Anacostia at Benning
+  "USGS-385218077001801": "ANA-004", // Anacostia at Diamond Teague Park
 };
 
 // ---------------------------------------------------------------------------
