@@ -12,6 +12,9 @@ import {
   loadWaterways,
   loadWaterbodies,
   loadFloodplains,
+  loadGreenInfrastructure,
+  loadCsoSewershed,
+  loadMs4Sewersheds,
   type GeoJSONData,
 } from "@/data/dc-geojson";
 import { useTheme } from "@/context/ThemeContext";
@@ -74,6 +77,8 @@ export default function DCMap({
     waterways: true,
     waterbodies: false,
     monitoringStations: true,
+    greenInfrastructure: false,
+    sewerSystem: false,
   });
   const geoJsonCache = useRef<Record<string, GeoJSONData>>({});
   const { resolvedTheme } = useTheme();
@@ -100,6 +105,9 @@ export default function DCMap({
     if (layers.waterways && !geoJsonCache.current.waterways) toLoad.push(["waterways", loadWaterways]);
     if (layers.waterbodies && !geoJsonCache.current.waterbodies) toLoad.push(["waterbodies", loadWaterbodies]);
     if (layers.floodZones && !geoJsonCache.current.floodplains) toLoad.push(["floodplains", loadFloodplains]);
+    if (layers.greenInfrastructure && !geoJsonCache.current.greenInfra) toLoad.push(["greenInfra", loadGreenInfrastructure]);
+    if (layers.sewerSystem && !geoJsonCache.current.csoSewershed) toLoad.push(["csoSewershed", loadCsoSewershed]);
+    if (layers.sewerSystem && !geoJsonCache.current.ms4Sewersheds) toLoad.push(["ms4Sewersheds", loadMs4Sewersheds]);
 
     if (toLoad.length > 0) {
       Promise.all(toLoad.map(async ([key, loader]) => {
@@ -306,6 +314,89 @@ export default function DCMap({
     }
 
     // =============================================
+    // SEWER SYSTEM — CSO (Combined Sewer) + MS4 (Separated Storm)
+    // =============================================
+    if (layers.sewerSystem && geoJsonCache.current.csoSewershed) {
+      leaflet.geoJSON(geoJsonCache.current.csoSewershed as never, {
+        style: () => ({
+          color: "#A855F7",
+          weight: 2,
+          opacity: 0.7,
+          fillColor: "#A855F7",
+          fillOpacity: isDark ? 0.15 : 0.1,
+        }),
+        onEachFeature: (feature, layer) => {
+          const name = feature.properties?.NAME || "Combined Sewer System";
+          layer.bindTooltip(`<strong>CSO Area</strong><br><span style="font-size:10px;opacity:0.7">${name}</span>`, { direction: "center" });
+        },
+      }).addTo(map);
+    }
+
+    if (layers.sewerSystem && geoJsonCache.current.ms4Sewersheds) {
+      leaflet.geoJSON(geoJsonCache.current.ms4Sewersheds as never, {
+        style: (feature) => {
+          const susc = (feature?.properties?.SUSCEPTIBILITY || "").toLowerCase();
+          const color = susc === "high" ? "#DC2626" : susc === "medium" ? "#F59E0B" : "#6366F1";
+          return {
+            color,
+            weight: 1,
+            opacity: 0.5,
+            fillColor: color,
+            fillOpacity: isDark ? 0.1 : 0.07,
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const p = feature.properties;
+          const susc = p?.SUSCEPTIBILITY || "Unknown";
+          const acres = p?.ACRES ? Math.round(Number(p.ACRES)) : "";
+          layer.bindTooltip(
+            `<strong>MS4 Sewershed</strong><br>${p?.SUBSHED || ""}<br><span style="font-size:10px;opacity:0.7">${p?.WATERSHED || ""} · ${acres ? acres + " acres" : ""} · ${susc} susceptibility</span>`,
+            { direction: "top" }
+          );
+        },
+      }).addTo(map);
+    }
+
+    // =============================================
+    // GREEN INFRASTRUCTURE (DDOT — 881 sites)
+    // =============================================
+    if (layers.greenInfrastructure && geoJsonCache.current.greenInfra) {
+      const GI_TYPES: Record<string, string> = {
+        "1": "Bioretention", "2": "Permeable Pavement", "3": "Green Roof",
+        "4": "Rain Garden", "5": "Tree Box Filter", "6": "Infiltration",
+        "7": "Swale", "8": "Planter", "9": "Cistern",
+      };
+      const GI_COLORS: Record<string, string> = {
+        "1": "#10B981", "2": "#0EA5E9", "3": "#22C55E",
+        "4": "#34D399", "5": "#6EE7B7", "6": "#14B8A6",
+        "7": "#2DD4BF", "8": "#A7F3D0", "9": "#67E8F9",
+      };
+      leaflet.geoJSON(geoJsonCache.current.greenInfra as never, {
+        style: (feature) => {
+          const giType = String(feature?.properties?.GI_TYPE || "1");
+          const color = GI_COLORS[giType] || "#10B981";
+          return {
+            color,
+            weight: 1.5,
+            opacity: 0.8,
+            fillColor: color,
+            fillOpacity: isDark ? 0.35 : 0.3,
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const p = feature.properties;
+          const typeName = GI_TYPES[String(p?.GI_TYPE)] || "Green Infrastructure";
+          const ward = p?.WARD ? `Ward ${p.WARD}` : "";
+          const vicinity = p?.VICINITY || "";
+          layer.bindTooltip(
+            `<strong>${typeName}</strong><br><span style="font-size:10px;opacity:0.7">${vicinity}${ward ? " · " + ward : ""}</span>`,
+            { direction: "top" }
+          );
+        },
+      }).addTo(map);
+    }
+
+    // =============================================
     // MONITORING STATIONS (from dc-waterways.ts — unchanged)
     // =============================================
     if (layers.monitoringStations) {
@@ -428,6 +519,8 @@ export default function DCMap({
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:#3B82F6;border-radius:50%;border:1.5px solid white;"></div><span>River Station</span></div>
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:linear-gradient(135deg,#22C55E,#16A34A);border-radius:2px;border:1.5px solid white;transform:rotate(45deg);"></div><span>Green Infra.</span></div>
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;background:linear-gradient(135deg,#8B5CF6,#7C3AED);border-radius:2px;border:1.5px solid white;"></div><span>Stormwater</span></div>
+          ${layers.greenInfrastructure ? `<div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#10B98155;border:1px solid #10B981;border-radius:2px;"></div><span>Green Infra. (DDOT)</span></div>` : ""}
+          ${layers.sewerSystem ? `${!layers.greenInfrastructure ? `<div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div>` : ""}<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#A855F733;border:1px solid #A855F7;border-radius:2px;"></div><span>CSO Sewershed</span></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#6366F133;border:1px solid #6366F1;border-radius:2px;"></div><span>MS4 Sewershed</span></div>` : ""}
           ${layers.floodZones ? `<div style="border-top:1px solid ${legendBorder};padding-top:5px;margin-top:3px;"></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#EF444433;border:1px solid #EF4444;border-radius:2px;"></div><span>FEMA Flood Zone</span></div>` : ""}
           ${layers.watershedBoundary ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;border:1.5px dashed #06B6D4;border-radius:2px;"></div><span>Watershed</span></div>` : ""}
           ${layers.subwatersheds ? `<div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:8px;background:#06B6D420;border:1px solid #06B6D4;border-radius:2px;"></div><span>Sub-watershed</span></div>` : ""}
@@ -473,7 +566,7 @@ export default function DCMap({
       isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
     }`}>
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
-      <div id="dc-map" className="w-full h-full min-h-[500px]" />
+      <div id="dc-map" className="w-full h-full min-h-[650px]" />
       {!mapReady && (
         <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
           <div className="flex flex-col items-center gap-3">
