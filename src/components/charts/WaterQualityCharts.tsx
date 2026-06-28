@@ -161,9 +161,27 @@ function useChartTheme() {
 }
 
 // ─── Data Hook ──────────────────────────────────────────────────────────────
-// Starts with baseline data (12 months). Fetches real USGS readings from API
-// and replaces baseline values with measured averages for months that have data.
-// Result: always a full 12-month chart, with measured data overlaid where available.
+// Fetches pre-computed monthly averages from /api/stations/monthly-averages.
+// The server aggregates all non-seed USGS/EPA readings by month using SQL,
+// so we always get all months regardless of how many readings exist.
+// Falls back to research baseline for months with no measured data.
+
+interface MonthlyAvgResponse {
+  totalReadings: number;
+  measuredMonths: number;
+  months: Array<{
+    month: string;
+    monthNum: number;
+    measured: boolean;
+    readingCount: number;
+    dissolvedOxygen?: number | null;
+    temperature?: number | null;
+    pH?: number | null;
+    turbidity?: number | null;
+    conductivity?: number | null;
+    eColiCount?: number | null;
+  }>;
+}
 
 function useTrendData() {
   const [data, setData] = useState<TrendPoint[]>(() =>
@@ -182,60 +200,24 @@ function useTrendData() {
 
   const fetchData = useCallback(async () => {
     try {
-      const fromDate = new Date();
-      fromDate.setMonth(fromDate.getMonth() - 13);
-      const fromStr = fromDate.toISOString().slice(0, 10);
-      const promises = DASHBOARD_STATIONS.map((id) =>
-        fetch(`/api/stations/${id}/history?limit=10000&from=${fromStr}`)
-          .then((r) => (r.ok ? r.json() as Promise<StationHistory> : null))
-          .catch(() => null)
-      );
-      const results = await Promise.all(promises);
+      const res = await fetch("/api/stations/monthly-averages?months=13");
+      if (!res.ok) return;
+      const result: MonthlyAvgResponse = await res.json();
 
-      // Collect all non-seed readings
-      const allReadings: ReadingRecord[] = [];
-      for (const r of results) {
-        if (!r?.data) continue;
-        for (const reading of r.data) {
-          if (reading.source !== "seed") allReadings.push(reading);
-        }
-      }
+      if (result.totalReadings === 0) return;
+      setMeasuredCount(result.totalReadings);
 
-      if (allReadings.length === 0) return;
-      setMeasuredCount(allReadings.length);
-
-      // Group by month index (0-11) and average
-      const buckets: Record<number, {
-        do_sum: number; do_n: number; temp_sum: number; temp_n: number;
-        ph_sum: number; ph_n: number; turb_sum: number; turb_n: number;
-        ecoli_sum: number; ecoli_n: number;
-      }> = {};
-
-      for (const r of allReadings) {
-        const m = new Date(r.timestamp).getMonth();
-        if (!buckets[m]) {
-          buckets[m] = { do_sum:0, do_n:0, temp_sum:0, temp_n:0, ph_sum:0, ph_n:0, turb_sum:0, turb_n:0, ecoli_sum:0, ecoli_n:0 };
-        }
-        const b = buckets[m];
-        if (r.dissolvedOxygen != null) { b.do_sum += r.dissolvedOxygen; b.do_n++; }
-        if (r.temperature != null) { b.temp_sum += r.temperature; b.temp_n++; }
-        if (r.pH != null) { b.ph_sum += r.pH; b.ph_n++; }
-        if (r.turbidity != null) { b.turb_sum += r.turbidity; b.turb_n++; }
-        if (r.eColiCount != null) { b.ecoli_sum += r.eColiCount; b.ecoli_n++; }
-      }
-
-      // Replace baseline values with measured averages where available
       setData((prev) =>
         prev.map((point, i) => {
-          const b = buckets[i];
-          if (!b) return point;
+          const m = result.months[i];
+          if (!m?.measured) return point;
           return {
             ...point,
-            dissolvedOxygen: b.do_n > 0 ? Math.round((b.do_sum / b.do_n) * 10) / 10 : point.dissolvedOxygen,
-            temperature: b.temp_n > 0 ? Math.round((b.temp_sum / b.temp_n) * 10) / 10 : point.temperature,
-            pH: b.ph_n > 0 ? Math.round((b.ph_sum / b.ph_n) * 10) / 10 : point.pH,
-            turbidity: b.turb_n > 0 ? Math.round((b.turb_sum / b.turb_n) * 10) / 10 : point.turbidity,
-            eColiCount: b.ecoli_n > 0 ? Math.round(b.ecoli_sum / b.ecoli_n) : point.eColiCount,
+            dissolvedOxygen: m.dissolvedOxygen ?? point.dissolvedOxygen,
+            temperature: m.temperature ?? point.temperature,
+            pH: m.pH ?? point.pH,
+            turbidity: m.turbidity ?? point.turbidity,
+            eColiCount: m.eColiCount ?? point.eColiCount,
             measured: true,
           };
         })
