@@ -748,7 +748,7 @@
           <td>SEP: Analyzing Data</td>
         </tr>
         <tr>
-          <td><strong>AI Research Assistant</strong><br>Natural language Q&amp;A powered by Claude, querying live station data via tool augmentation</td>
+          <td><strong>AI Research Assistant</strong><br>Natural language Q&amp;A powered by Gemini 2.5 Flash, querying live station data with unlimited daily access</td>
           <td>Computational thinking, formulating scientific questions, interpreting complex datasets</td>
           <td>SEP: Asking Questions</td>
         </tr>
@@ -962,9 +962,9 @@
 
     <div class="timeline">
       <div class="tl-item">
-        <div class="tl-phase">Phase 1 &mdash; Summer 2026</div>
+        <div class="tl-phase">Phase 1 &mdash; Summer 2026 (Complete)</div>
         <h4>Platform Preparation</h4>
-        <p>Upgrade data ingestion to hourly (true real-time). Integrate official DC GeoJSON map layers and USGS NHD waterway data. Build Student Mode UI with guided investigation tours. Develop first four NGSS-aligned lesson plans.</p>
+        <p>Hourly real-time data ingestion operational. 9 official DC GIS GeoJSON map layers integrated (wards, watersheds, sub-watersheds, waterways, waterbodies, floodplains, green infrastructure, CSO sewersheds, MS4 sewersheds). AI Research Assistant upgraded to Gemini 2.5 Flash with unlimited access. Real-time charts and compliance gauges computing from 210,000+ USGS sensor readings. Student Mode UI and lesson plans pending K-12 partnership confirmation.</p>
       </div>
       <div class="tl-item">
         <div class="tl-phase">Phase 2 &mdash; Fall 2026</div>
@@ -1002,13 +1002,13 @@
         <tr><td>Azure PostgreSQL (database, 32GB)</td><td>$13</td><td>$156</td></tr>
         <tr><td>Container Registry, Key Vault, Monitoring, Alerts</td><td>$8</td><td>$96</td></tr>
         <tr><td>Hourly data ingestion (USGS + EPA + WQP cron jobs)</td><td>$3&ndash;4</td><td>$36&ndash;48</td></tr>
-        <tr><td>AI Research Assistant (Anthropic Claude Haiku 4.5)</td><td>$4&ndash;82</td><td>$47&ndash;985</td></tr>
+        <tr><td>AI Research Assistant (Google Gemini 2.5 Flash, unlimited daily access)</td><td>$2&ndash;53</td><td>$23&ndash;634</td></tr>
         <tr><td>Domain renewal (wqis-app.com)</td><td>&mdash;</td><td>$15</td></tr>
         <tr><td>Data sources (USGS, EPA, WQP federal APIs)</td><td>$0</td><td>$0</td></tr>
-        <tr style="font-weight: 700; background: #F0F9FF;"><td>Total Infrastructure</td><td>~$41&ndash;119</td><td>~$506&ndash;1,456</td></tr>
+        <tr style="font-weight: 700; background: #F0F9FF;"><td>Total Infrastructure</td><td>~$40&ndash;91</td><td>~$482&ndash;1,093</td></tr>
       </tbody>
     </table>
-    <p style="font-size: 13px; color: var(--muted);">AI costs at $0.0182/query avg (Claude Haiku 4.5, includes multi-round tool calls). Research only (10 users): $47/yr. Pilot (100 students, 15 queries/wk, 36 wks): $985/yr. District (500 students): $3,283/yr. Full DCPS+MCPS (2,000 students): $10,507/yr &mdash; requires grant funding. If UDC utilizes Azure for Education credits, Azure infrastructure costs may be reduced to near $0. Rate limiting recommended at K-12 scale.</p>
+    <p style="font-size: 13px; color: var(--muted);">AI costs at $0.0088/query (Gemini 2.5 Flash, includes thinking tokens and multi-round tool calls). All users &mdash; researchers, teachers, and students &mdash; have unlimited daily access with a 5 queries/minute burst limit. Research only (10 users): $46/yr. Pilot (100 students, ~10 queries/session, 2 sessions/week, 36 weeks): $634/yr. Per student cost: $6&ndash;14/year. District (500 students): $3,173/yr. If UDC utilizes Azure for Education credits, Azure infrastructure costs may be reduced to near $0.</p>
 
     <h3>Year 1 Partnership Investment</h3>
     <table>
