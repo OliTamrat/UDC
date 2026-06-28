@@ -29,3 +29,6 @@ export const loadSubwatersheds = () => load("dc-subwatersheds");
 export const loadWaterways = () => load("dc-waterways");
 export const loadWaterbodies = () => load("dc-waterbodies");
 export const loadFloodplains = () => load("dc-floodplains");
+export const loadGreenInfrastructure = () => load("dc-green-infrastructure");
+export const loadCsoSewershed = () => load("dc-cso-sewershed");
+export const loadMs4Sewersheds = () => load("dc-ms4-sewershed");
