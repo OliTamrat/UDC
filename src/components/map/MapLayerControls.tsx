@@ -12,6 +12,8 @@ export interface MapLayerState {
   waterways: boolean;
   waterbodies: boolean;
   monitoringStations: boolean;
+  greenInfrastructure: boolean;
+  sewerSystem: boolean;
 }
 
 interface MapLayerControlsProps {
@@ -26,6 +28,8 @@ const LAYER_CONFIG: { key: keyof MapLayerState; label: string; color: string; gr
   { key: "wardBoundaries", label: "DC Ward Boundaries", color: "#FDB927", group: "Boundaries" },
   { key: "watershedBoundary", label: "Watersheds", color: "#06B6D4", group: "Boundaries" },
   { key: "subwatersheds", label: "Sub-Watersheds", color: "#0EA5E9", group: "Boundaries" },
+  { key: "greenInfrastructure", label: "Green Infrastructure", color: "#10B981", group: "Infrastructure" },
+  { key: "sewerSystem", label: "Sewer System (CSO/MS4)", color: "#A855F7", group: "Infrastructure" },
   { key: "floodZones", label: "FEMA Flood Zones", color: "#EF4444", group: "Overlays" },
 ];
 
@@ -63,7 +67,7 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
               <ChevronUp className={`w-3.5 h-3.5 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`} />
             </button>
           </div>
-          <div className="py-1.5">
+          <div className="py-1.5 max-h-[60vh] overflow-y-auto">
             {groups.map((group) => (
               <div key={group}>
                 <div className={`px-3 py-1 text-[9px] font-semibold uppercase tracking-wider ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
