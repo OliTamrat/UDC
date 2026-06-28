@@ -194,8 +194,9 @@ export async function POST(req: Request) {
             try {
               const res = await fetch(`${baseUrl}/api/stations`);
               if (!res.ok) return { error: "Failed to fetch stations" };
-              const data = await res.json();
-              const station = data.stations?.find(
+              const stations = await res.json();
+              const list = Array.isArray(stations) ? stations : stations.stations || [];
+              const station = list.find(
                 (s: Record<string, unknown>) =>
                   (s.id as string).toUpperCase() === stationId.toUpperCase(),
               );
