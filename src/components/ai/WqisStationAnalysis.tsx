@@ -28,8 +28,14 @@ function Lines({ text }: { text: string }) {
     <div className="space-y-2 text-sm text-[#374151] dark:text-[#E5E7EB]">
       {text.split('\n').map((line, i) => {
         const trimmed = line.trimStart();
-        if (trimmed.startsWith('# '))  return <h2 key={i} className="text-base font-semibold text-[#111827] dark:text-[#F3F4F6] mt-4 first:mt-0"><InlineMarkdown text={trimmed.slice(2)} /></h2>;
-        if (trimmed.startsWith('## ')) return <h3 key={i} className="text-sm font-semibold text-[#1F2937] dark:text-[#E5E7EB] mt-3"><InlineMarkdown text={trimmed.slice(3)} /></h3>;
+        // Handle heading levels #### → # (strip all leading #s)
+        const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)/);
+        if (headingMatch) {
+          const level = headingMatch[1].length;
+          const content = headingMatch[2];
+          if (level <= 2) return <h2 key={i} className="text-base font-semibold text-[#111827] dark:text-[#F3F4F6] mt-4 first:mt-0"><InlineMarkdown text={content} /></h2>;
+          return <h3 key={i} className="text-sm font-semibold text-[#1F2937] dark:text-[#E5E7EB] mt-3"><InlineMarkdown text={content} /></h3>;
+        }
         if (trimmed.startsWith('- ') || trimmed.startsWith('• ') || trimmed.startsWith('* ')) return <li key={i} className="ml-4 list-disc leading-relaxed"><InlineMarkdown text={trimmed.slice(2)} /></li>;
         if (trimmed === '') return <div key={i} className="h-1" />;
         return <p key={i} className="leading-relaxed"><InlineMarkdown text={line} /></p>;

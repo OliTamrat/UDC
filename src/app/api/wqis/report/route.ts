@@ -12,8 +12,9 @@ export async function POST(req: NextRequest) {
   let period: Period = '7d';
   try { const b = await req.json(); if (['7d','30d','90d'].includes(b.period)) period = b.period; } catch { /* use default */ }
   try {
+    const now = new Date().toISOString();
     const { text } = await sendWqisMessage(
-      `Generate a comprehensive ${LABELS[period]} water quality report for the Anacostia River Basin. Include: executive summary, overall basin health status, active EPA threshold violations, parameter trends per station, recommendations, and next steps.`
+      `Current date and time: ${now}. Generate a comprehensive ${LABELS[period]} water quality report for the Anacostia River Basin using the MOST RECENT data available. Include: executive summary, overall basin health status, active EPA threshold violations, parameter trends per station, recommendations, and next steps. Do NOT use markdown formatting — write in plain flowing paragraphs with numbered lists.`
     );
     return NextResponse.json({ period, report: text, generatedAt: new Date().toISOString() });
   } catch (err) {

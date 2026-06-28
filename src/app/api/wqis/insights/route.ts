@@ -36,8 +36,9 @@ export async function GET() {
   if (!isWqisConfigured()) return NextResponse.json({ error: 'WQIS agent not configured.' }, { status: 503 });
   if (cachedInsights && Date.now() < cacheExpiry) return NextResponse.json(cachedInsights);
   try {
+    const now = new Date().toISOString();
     const { text } = await sendWqisMessage(
-      'Check EPA thresholds for all stations and provide a structured summary of current water quality alerts. Include overall status (GOOD/WARNING/POOR/CRITICAL), active threshold violations, and a brief summary.'
+      `Current date and time: ${now}. Check EPA thresholds for all stations using the MOST RECENT readings and provide a structured summary of current water quality alerts. Include overall status (GOOD/WARNING/POOR/CRITICAL), active threshold violations, and a brief summary. Do NOT use markdown formatting.`
     );
     const insights = parseInsights(text);
     cachedInsights = insights;
