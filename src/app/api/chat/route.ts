@@ -210,7 +210,7 @@ export async function POST(req: Request) {
         }),
         getStationHistory: tool({
           description:
-            "Get historical water quality readings for a station. Returns time-series data for trend analysis.",
+            "Get the most recent water quality readings for a station. Returns newest readings first for trend analysis. Always use this to get current/recent data.",
           inputSchema: jsonSchema<{ stationId: string; limit?: number }>({
             type: "object",
             properties: {
@@ -228,7 +228,7 @@ export async function POST(req: Request) {
           }),
           execute: async ({ stationId, limit }) => {
             try {
-              const url = `${baseUrl}/api/stations/${stationId}/history?limit=${limit || 50}`;
+              const url = `${baseUrl}/api/stations/${stationId}/history?limit=${limit || 50}&sort=desc`;
               const res = await fetch(url);
               if (!res.ok) return { error: "Failed to fetch history" };
               return await res.json();

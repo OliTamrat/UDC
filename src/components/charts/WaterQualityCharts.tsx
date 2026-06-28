@@ -408,12 +408,14 @@ export function RealTimeStationChart({ stationId }: { stationId: string }) {
   const { unit } = useTempUnit();
 
   useEffect(() => {
-    fetch(`/api/stations/${stationId}/history?limit=100`)
+    // Fetch newest 100 readings (DESC), then reverse to display chronologically
+    fetch(`/api/stations/${stationId}/history?limit=100&sort=desc`)
       .then((r) => r.ok ? r.json() as Promise<StationHistory> : null)
       .then((result) => {
         if (result?.data) {
           const realData = result.data.filter((r) => r.source !== "seed");
-          setData(realData.length > 0 ? realData : result.data);
+          const readings = realData.length > 0 ? realData : result.data;
+          setData(readings.reverse());
         }
       })
       .catch(() => {})

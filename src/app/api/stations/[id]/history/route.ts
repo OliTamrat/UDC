@@ -40,7 +40,8 @@ export async function GET(
     queryParams.push(to);
   }
 
-  query += " ORDER BY timestamp ASC LIMIT ?";
+  const sort = searchParams.get("sort") === "desc" ? "DESC" : "ASC";
+  query += ` ORDER BY timestamp ${sort} LIMIT ?`;
   queryParams.push(limit);
 
   const { rows: readings } = await db.query(query, queryParams);
