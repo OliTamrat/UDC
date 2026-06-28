@@ -67,7 +67,7 @@ export default function MapLayerControls({ layers, onLayerToggle }: MapLayerCont
               <ChevronUp className={`w-3.5 h-3.5 ${isDark ? "text-[#E5E7EB]" : "text-[#374151]"}`} />
             </button>
           </div>
-          <div className="py-1.5 max-h-[60vh] overflow-y-auto">
+          <div className="py-1.5 max-h-[80vh] overflow-y-auto">
             {groups.map((group) => (
               <div key={group}>
                 <div className={`px-3 py-1 text-[9px] font-semibold uppercase tracking-wider ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
