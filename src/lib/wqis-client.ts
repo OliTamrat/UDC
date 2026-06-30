@@ -117,5 +117,5 @@ export function extractTextFromEvents(events: WqisEvent[]): string {
 }
 
 export function isWqisConfigured(): boolean {
-  return Boolean(process.env.WQIS_AGENT_URL);
+  return Boolean(process.env.WQIS_AGENT_URL ?? process.env.NEXT_PUBLIC_WQIS_AGENT_URL);
 }

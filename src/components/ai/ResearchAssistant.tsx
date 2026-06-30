@@ -196,7 +196,7 @@ export default function ResearchAssistant() {
                 <div>
                   <p className="font-semibold mb-1">AI Assistant Not Configured</p>
                   <p>
-                    Set <code className="font-mono">ANTHROPIC_API_KEY</code> in your
+                    Set <code className="font-mono">GOOGLE_GENERATIVE_AI_API_KEY</code> in your
                     environment variables to enable the research assistant.
                   </p>
                 </div>

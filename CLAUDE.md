@@ -38,19 +38,20 @@
 Interactive water quality monitoring dashboard for UDC's Water Resources Research Institute (WRRI) and CAUSES.
 Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Recharts, React 19.
 
-## Current State (as of March 30, 2026)
-- **Full-stack Next.js application** with SQLite (local) / Neon PostgreSQL (production) database
-- **Real data ingestion pipeline** — pulls live sensor data from USGS NWIS, EPA WQP, and Water Quality Portal
-- **12 monitoring stations** (4 active USGS + 3 offline + 3 green infrastructure + 2 stormwater) with 12,500+ real USGS readings
-- **Automated cron ingestion** — USGS daily 06:00 UTC, EPA daily 07:00 UTC, WQP weekly Monday 08:00 UTC
+## Current State (as of May 12, 2026)
+- **Full-stack Next.js application** with SQLite (local) / Azure PostgreSQL (production) database
+- **Real data ingestion pipeline** — pulls live sensor data from USGS NWIS, EPA WQP (WQX3), and Water Quality Portal
+- **12 monitoring stations** (4 active USGS + 3 offline + 3 green infrastructure + 2 stormwater) with 11,329+ records/day
+- **Automated cron ingestion** — USGS daily 06:00 UTC via Azure Container Apps Job (working); EPA daily 07:00 UTC (fixed May 12); WQP weekly Monday 08:00 UTC (fixed May 12)
 - **Deduplication** — UNIQUE indexes + ON CONFLICT upserts prevent duplicate rows
-- **5 real-time USGS parameters** — temperature, dissolved_oxygen, pH, turbidity, conductivity
-- **25 total parameters** in EAV schema (lab params from WQP accumulate over time)
+- **25 total parameters** in EAV schema — real-time USGS + lab data from EPA/WQP
 - **52 tests** across 11 suites, all passing
 - **Geospatial data** derived from official DC GIS government sources (verified)
 - **Theme system** working (dark/light/system) with localStorage persistence
 - **7 app pages** — Dashboard, Station Detail, Stories, Scenarios, Admin, About, API routes
-- **Production URL**: https://udc-one.vercel.app
+- **Production URL (Azure)**: https://udc-wqis.happycoast-d9b0bcde.centralus.azurecontainerapps.io/
+- **Old Vercel URL**: https://udc-one.vercel.app (still active — Phase 6 DNS cutover + decommission still pending)
+- **Brand name**: Water Quality **Intelligent** Service (not "Information System")
 
 ## Data Ingestion Pipeline — REAL SENSOR DATA
 **IMPORTANT FOR AUDITORS**: This dashboard ingests real data from public government APIs. It is NOT a static mockup.
@@ -65,10 +66,13 @@ Built with Next.js 16.1.6 (App Router), TypeScript, Tailwind CSS 4, Leaflet, Rec
 2. **EPA Water Quality Portal (WQP)** — Lab-analyzed results for Anacostia watershed
    - HUC 02070010 (Anacostia watershed), DC FIPS US:11
    - Parameters: Nutrients (nitrate, phosphorus), metals (lead, mercury), biological indicators
-   - Frequency: Daily (`0 7 * * *`)
+   - Frequency: Daily (Azure Container Apps Job 07:00 UTC)
+   - **WQX3 migration (May 12, 2026):** The old `/data/Result/search` endpoint was retired (returns HTTP 406 for all requests). Migrated to `/wqx3/Result/search`. Uses CSV parsing via `parseWQPCsv()` + `getWQXField()` with WQX2 field name fallbacks. Commit: `f7bdc9b`.
 
 3. **Broad WQP Parameters** — Extended parameter set including emerging contaminants
-   - Frequency: Weekly (`0 8 * * 1`)
+   - DC FIPS US:11
+   - Frequency: Weekly Monday (Azure Container Apps Job 08:00 UTC)
+   - **Also migrated to WQX3** in same commit `f7bdc9b`
 
 ### Source Tagging
 Every reading is tagged with its provenance:
@@ -202,13 +206,35 @@ Every reading is tagged with its provenance:
 - [x] **Cloud Run redeployed** — ADK 1.0.0 with JSON encoder patch, tools.py _fix function
 
 ### Phase 10: Business Development — IN PROGRESS
-- [x] **Pitch deck created** — 8-slide Gamma presentation for stakeholders/investors
-- [ ] **White-label configuration system** — config.json for multi-watershed deployment
-  - Configurable: watershed name, station list, USGS site mappings, branding (logo, colors), map center/zoom
-  - Target: any state EPA or university can deploy their own instance
-  - Pricing model: $5K setup + $500/mo per watershed
+- [x] **Pitch deck created** — 8-slide Gamma investor presentation for stakeholders
+- [x] **White-label configuration system** — committed (commit 3428c64), Footer/About/Export/Chat connected to site.config
+- [x] **UDC sovereign deployment pitch** — 10-slide Gamma deck (https://gamma.app/docs/fih6z4q0bpgp6n5), Stratos dark theme matching investor deck
 - [ ] **Demo video** — 2-minute screen recording for LinkedIn/website
-- [ ] **Grant applications** — EPA EJCPS ($500K), NSF Smart Communities ($1.5M)
+- [ ] **Grant applications** — EPA EJCPS ($500K), NSF Smart Communities ($1.5M) — requires UDC + Dr. Tolessa partnership; no submission yet
+- [ ] **Domain purchase** — udcwqis.com/.org/.io/.us all available; Oli to purchase
+
+### Phase 11: UDC Sovereign Deployment — PENDING UDC IT CONFIRMATION
+
+#### What was decided (2026-05-12)
+- Dr. Tolessa (UDC WRRI/CAUSES) wants WQIS on UDC's own Azure — not DAPS infrastructure
+- Reason: data sovereignty + cost separation (DAPS will charge UDC if they use DAPS Azure)
+- Delivery model chosen: **pre-built Docker image from `udcwqisacr` + scoped pull token as license**
+- Pull token = license key. Token renewal = subscription renewal. Source code never leaves DAPS.
+- Backup option: Docker Hub private repo (if UDC IT prefers cloud-agnostic)
+- Both options ready to execute — waiting on UDC IT confirmation
+
+#### Pending from UDC IT (after Dr. Tolessa meeting)
+1. Azure subscription type — Education or enterprise? (affects whether hosting is free)
+2. Preferred delivery path — ACR (Option A) or Docker Hub (Option B)?
+3. IT deployment contact person for onboarding
+
+#### Work to build once UDC IT confirms
+- [ ] **Built-in `node-cron` scheduler** — replaces external cron for standalone Docker deployments
+- [ ] **Email alerting on ingest failure** — built into the app, replaces Azure Monitor dependency
+- [ ] **Bicep/ARM deployment template** — "Deploy to Azure" one-click button for UDC IT
+- [ ] **`.env.example`** — complete documented list of all env vars UDC needs to configure
+- [ ] **Seed-on-first-boot** — auto-run DB schema + seed if tables don't exist on startup
+- [ ] **Phase 6** — DNS cutover + Vercel decommission (still pending since April 2026)
 
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)

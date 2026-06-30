@@ -40,3 +40,5 @@ yarn-error.log*
 next-env.d.ts
 src/data/geojson/*-raw.geojson
 src/data/geojson/*.geojson
+
+.env*

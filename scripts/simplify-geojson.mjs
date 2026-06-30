@@ -177,4 +177,13 @@ processLayer('dc-waterbodies-raw.geojson', 0.0002, ['FEATURECODE', 'DESCRIPTION'
 // Floodplains 2023: keep zone info, aggressive simplification (402 features, 7MB)
 processLayer('dc-floodplains-raw.geojson', 0.0003, ['FLD_ZONE', 'ZONE_SUBTY', 'STATIC_BFE']);
 
+// Green Infrastructure (DDOT): 881 features, small polygons — light simplification
+processLayer('dc-green-infrastructure-raw.geojson', 0.00005, ['GI_TYPE', 'WARD', 'CONDITION', 'SEWER_SYSTEM', 'GI_OWNER', 'VICINITY', 'FACILITY_TYPE']);
+
+// CSO Sewershed: 1 large polygon — moderate simplification
+processLayer('dc-cso-sewershed-raw.geojson', 0.0002, ['NAME', 'SEWERSYSTEM']);
+
+// MS4 Sewersheds: 556 features, 3MB — aggressive simplification
+processLayer('dc-ms4-sewershed-raw.geojson', 0.0002, ['WATERSHED', 'SUBSHED', 'ACRES', 'SUSCEPTIBILITY']);
+
 console.log('\nDone! Optimized files written to src/data/geojson/');
