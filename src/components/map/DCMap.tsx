@@ -549,12 +549,21 @@ export default function DCMap({
     };
     legend.addTo(map);
 
+    // Force Leaflet to recalculate container size after render
+    // Fixes tiles not loading until user zooms/pans
+    requestAnimationFrame(() => {
+      map.invalidateSize();
+    });
+    // Secondary invalidation for slow-rendering containers (sidebar open, etc.)
+    const resizeTimer = setTimeout(() => map.invalidateSize(), 300);
+
     // Station navigation bridge
     if (onStationNavigate) {
       (window as unknown as Record<string, unknown>).__navigateStation = (id: string) => onStationNavigate(id);
     }
 
     return () => {
+      clearTimeout(resizeTimer);
       map.remove();
       if (typeof window !== "undefined") {
         delete (window as unknown as Record<string, unknown>).__navigateStation;

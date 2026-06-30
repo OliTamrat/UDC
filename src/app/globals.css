@@ -377,3 +377,83 @@ html.light .ward-label::before { display: none !important; }
 /* Hide scrollbar */
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   PRINT / PDF STYLESHEET
+   Professional research paper output for Water Quality Reports
+   ============================================================ */
+@media print {
+  /* Hide everything except the report */
+  body { background: white !important; color: #111827 !important; font-size: 11pt !important; }
+  body > * { display: none !important; }
+
+  /* Show only the report modal content */
+  .print-report-area,
+  .print-report-area * { display: revert !important; }
+
+  /* The modal becomes the page */
+  .fixed { position: static !important; inset: auto !important; transform: none !important; }
+  .fixed.z-50 {
+    display: block !important;
+    max-width: none !important;
+    max-height: none !important;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  /* Hide backdrop, buttons, UI chrome */
+  .print\:hidden,
+  .bg-black\/60,
+  button,
+  nav, aside, header, footer,
+  .leaflet-container,
+  [aria-label="Close"] { display: none !important; }
+
+  /* Show print-only elements */
+  .print\:block { display: block !important; }
+
+  /* Report content styling */
+  .report-content {
+    color: #1F2937 !important;
+    font-size: 11pt !important;
+    line-height: 1.8 !important;
+  }
+  .report-content p {
+    text-align: justify !important;
+    orphans: 3 !important;
+    widows: 3 !important;
+  }
+  .report-section-heading {
+    color: #002B5C !important;
+    font-size: 13pt !important;
+    border-bottom: 2px solid #002B5C !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  .report-content li {
+    color: #374151 !important;
+  }
+
+  /* Print letterhead */
+  .print-letterhead {
+    border-bottom: 3px solid #002B5C !important;
+  }
+
+  /* Print footer */
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  /* Page setup */
+  @page {
+    size: letter;
+    margin: 0.75in 1in;
+  }
+}
