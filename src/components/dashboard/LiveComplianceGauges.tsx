@@ -105,7 +105,7 @@ export default function LiveComplianceGauges() {
 
   if (!loaded) {
     return (
-      <div className="flex items-center justify-center gap-6 py-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 justify-items-center py-2">
         {[1,2,3,4].map((i) => (
           <div key={i} className="w-[88px] h-[108px] rounded-full animate-pulse bg-white/5" />
         ))}
@@ -114,7 +114,7 @@ export default function LiveComplianceGauges() {
   }
 
   return (
-    <div className="flex items-center justify-center gap-6 flex-wrap">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
       <RadialGauge value={scores.wqi} max={100} label="Water Quality Index" unit="WQI" color="#14B8A6" />
       <RadialGauge value={scores.doCompliance} max={100} label="DO Compliance" unit="EPA 5mg/L" color="#3B82F6" />
       <RadialGauge value={scores.phCompliance} max={100} label="pH Compliance" unit="EPA 6.5-9" color="#10B981" />
