@@ -550,12 +550,15 @@ export default function DCMap({
     legend.addTo(map);
 
     // Force Leaflet to recalculate container size after render
-    // Fixes tiles not loading until user zooms/pans
-    requestAnimationFrame(() => {
-      map.invalidateSize();
-    });
-    // Secondary invalidation for slow-rendering containers (sidebar open, etc.)
-    const resizeTimer = setTimeout(() => map.invalidateSize(), 300);
+    // Fixes tiles not loading until user zooms/pans (especially mobile)
+    requestAnimationFrame(() => map.invalidateSize());
+    const t1 = setTimeout(() => map.invalidateSize(), 200);
+    const t2 = setTimeout(() => map.invalidateSize(), 600);
+    const t3 = setTimeout(() => map.invalidateSize(), 1500);
+
+    // ResizeObserver catches layout shifts (sidebar open/close, orientation change)
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(container);
 
     // Station navigation bridge
     if (onStationNavigate) {
@@ -563,7 +566,8 @@ export default function DCMap({
     }
 
     return () => {
-      clearTimeout(resizeTimer);
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+      ro.disconnect();
       map.remove();
       if (typeof window !== "undefined") {
         delete (window as unknown as Record<string, unknown>).__navigateStation;
@@ -576,7 +580,7 @@ export default function DCMap({
       isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"
     }`}>
       <MapLayerControls layers={layers} onLayerToggle={handleLayerToggle} />
-      <div id="dc-map" className="w-full h-full min-h-[100vh] sm:min-h-[700px] rounded-xl overflow-hidden" />
+      <div id="dc-map" className="w-full h-full min-h-[450px] sm:min-h-[700px] rounded-xl overflow-hidden" />
       {!mapReady && (
         <div className={`absolute inset-0 flex items-center justify-center ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
           <div className="flex flex-col items-center gap-3">
