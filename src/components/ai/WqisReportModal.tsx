@@ -295,14 +295,30 @@ export function WqisReportModal({ onClose }: Props) {
 
   const openPrintWindow = useCallback(() => {
     if (!report) return;
-    const periodLabel = PERIODS.find(p => p.key === report.period)?.label ?? 'Weekly';
-    const html = buildPrintHTML(report.report, periodLabel, report.generatedAt);
-    const win = window.open('', '_blank');
-    if (!win) return;
-    win.document.write(html);
-    win.document.close();
-    // Small delay to let styles render before print dialog
-    setTimeout(() => win.print(), 400);
+    const pLabel = PERIODS.find(p => p.key === report.period)?.label ?? 'Weekly';
+    const html = buildPrintHTML(report.report, pLabel, report.generatedAt);
+
+    // Use a hidden iframe to print — avoids popup blockers and
+    // ensures only the report prints (not the app behind the modal)
+    const id = 'wqis-print-frame';
+    let frame = document.getElementById(id) as HTMLIFrameElement | null;
+    if (frame) frame.remove();
+
+    frame = document.createElement('iframe');
+    frame.id = id;
+    frame.style.cssText = 'position:fixed;width:0;height:0;border:none;left:-9999px;top:-9999px;';
+    document.body.appendChild(frame);
+
+    const doc = frame.contentDocument || frame.contentWindow?.document;
+    if (!doc) return;
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    // Wait for content to render, then trigger print on the iframe only
+    setTimeout(() => {
+      frame?.contentWindow?.print();
+    }, 500);
   }, [report]);
 
   const reportPeriodLabel = report ? (PERIODS.find(p => p.key === report.period)?.label ?? 'Weekly') : (PERIODS.find(p => p.key === period)?.label ?? 'Weekly');
