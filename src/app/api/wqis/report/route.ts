@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDbClient } from '@/lib/db';
 import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
+import { enforceAiRateLimit } from '@/lib/ai-rate-limit';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -11,6 +12,11 @@ const LABELS: Record<Period, string> = { '7d': 'weekly', '30d': 'monthly', '90d'
 const DAYS: Record<Period, number> = { '7d': 7, '30d': 30, '90d': 90 };
 
 export async function POST(req: NextRequest) {
+  // Report generation is the heaviest AI call in the app - 90 days of readings
+  // summarised by the model - so it gets the tightest budget.
+  const limited = enforceAiRateLimit(req, 'wqis:report', { limit: 3, windowMs: 60_000 });
+  if (limited) return limited;
+
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: 'AI not configured.' }, { status: 503 });
 

@@ -7,40 +7,20 @@ const nextConfig: NextConfig = {
   },
   // standalone output required for Docker/Azure Container Apps deployment
   output: "standalone",
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          {
-            key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://*.vercel.live",
-              "script-src-elem 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
-              "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://unpkg.com https://vercel.live https://*.vercel.live",
-              "connect-src 'self' https://waterservices.usgs.gov https://www.waterqualitydata.us https://*.basemaps.cartocdn.com https://vercel.live https://*.vercel.live wss://ws-us3.pusher.com",
-              "frame-src 'self' https://vercel.live https://*.vercel.live",
-            ].join("; "),
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-        ],
-      },
-    ];
-  },
+
+  // NOTE: Security headers (CSP, X-Frame-Options, X-Content-Type-Options,
+  // Referrer-Policy, HSTS) are set in src/middleware.ts, not here.
+  //
+  // Two reasons:
+  //   1. The /embed route needs a different `frame-ancestors` value than the
+  //      rest of the app. Headers defined here are static and would emit a
+  //      SECOND Content-Security-Policy header on /embed; browsers intersect
+  //      multiple CSP headers, so the stricter one wins and the embed breaks.
+  //   2. next.config headers are baked in at build time. In middleware the
+  //      allow-list is read at request time, so approving a new UDC host is an
+  //      environment-variable change plus a restart — not a rebuild.
+  //
+  // See src/config/embed.config.ts for the allow-list.
 };
 
 export default nextConfig;

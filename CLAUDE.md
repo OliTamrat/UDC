@@ -102,7 +102,7 @@ Every reading is tagged with its provenance:
 - [x] **Logger utility** — `src/lib/logger.ts` with buffered client-side logging (info/warn/error)
 - [x] **Input validation** — `src/lib/validation.ts` with XSS sanitization, applied to Header search
 - [x] **Deployment docs** — README updated with Docker, Vercel, health check, and testing instructions
-- [x] **Security headers** — CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy in next.config.ts
+- [x] **Security headers** — CSP, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, HSTS in `src/middleware.ts` (moved out of next.config.ts when the /embed route landed — see Phase 12)
 
 ### Phase 3: Backend & Data — DONE (Local SQLite, Azure-ready)
 - [x] **Database** — SQLite via better-sqlite3 (`data/udc-water.db`), schema in `src/lib/db.ts`
@@ -235,6 +235,45 @@ Every reading is tagged with its provenance:
 - [ ] **`.env.example`** — complete documented list of all env vars UDC needs to configure
 - [ ] **Seed-on-first-boot** — auto-run DB schema + seed if tables don't exist on startup
 - [ ] **Phase 6** — DNS cutover + Vercel decommission (still pending since April 2026)
+
+### Phase 12: UDC Website Embed — CODE DONE, DEPLOY PENDING
+
+UDC's web agency built the WRRI page on staging and pasted our embed snippet into it
+before we had built the route. Two blockers, both ours, now fixed:
+
+- [x] **`/embed` route** — `src/app/embed/page.tsx` + `src/components/embed/EmbedDashboard.tsx`.
+      Chrome-free: no Sidebar, no Header, no Footer, no admin links. Was returning HTTP 404.
+- [x] **Frame policy** — `X-Frame-Options: DENY` blocked framing from everywhere.
+      Now `/embed` sends CSP `frame-ancestors` with the approved UDC hosts and NO
+      X-Frame-Options; every other route keeps `frame-ancestors 'none'` + `DENY`.
+- [x] **Security headers moved to `src/middleware.ts`** — they were in `next.config.ts`.
+      Two reasons: next.config emits one static header set, so /embed would have received
+      a SECOND CSP header (browsers intersect them — the embed would stay blocked); and
+      next.config headers bake in at build time, while middleware reads the allow-list per
+      request. Middleware matcher widened from `/api/:path*` to all routes, which is also
+      why dashboard pages now finally get HSTS.
+- [x] **localStorage guarded** in ThemeContext + LanguageContext — browsers block storage
+      for third-party iframes and the bare call threw inside a provider effect, which would
+      have white-screened the whole embed.
+- [x] **Appearance toggle in embed** — light/dark button in the embed header strip
+      (the embed has no navbar). `?theme=` sets the start, `?toggle=0` hides the control.
+- [x] **AI token hole closed** — `/api/wqis/analyze` (10/min) and `/api/wqis/report` (3/min)
+      had NO rate limiting and both call Gemini. Shared guard in `src/lib/ai-rate-limit.ts`.
+      `/api/wqis/insights` needed none — DB-only, 5-min cache. This is a per-IP SPEND CEILING,
+      not the per-student quota WRRI wants; see Phase 13.
+- [x] **Tests** — `src/__tests__/embed-headers.test.ts`, 15 cases. Full suite 67 passing.
+
+**Config:** `WQIS_EMBED_ANCESTORS` (comma-separated origins, read at runtime) on the Azure
+Container App. Unset = defaults in `src/config/embed.config.ts`. Adding an approved UDC host
+is an env change + revision restart, never a rebuild.
+
+**Staging page:** https://udc-dev.abcdandcompany.com/causes/land-grant/center-for-urban-resilience-innovation-and-infrastructure/wrri/water-quality-intelligence-system
+
+**Pending from UDC:** production URL for the allow-list; what "Request Researcher Access"
+should do (Level 2 / authenticated access does NOT exist — platform has no user auth);
+body copy for two placeholders; go-live date. See `docs/WQIS_EMBED_INTEGRATION.md`.
+
+**Not yet deployed to Azure** — awaiting Oli's go-ahead.
 
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)
