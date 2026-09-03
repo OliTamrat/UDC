@@ -58,7 +58,12 @@ const keywordEntries: { keywords: string; result: SearchResult }[] = [
   { keywords: "udc wrri causes university district columbia deksissa", result: { id: "kw-udc", name: "UDC WRRI Research", type: "page", href: "/research" } },
 ];
 
-export default function Header() {
+/**
+ * `showMenuButton` is false inside the /embed route: the hamburger opens the
+ * site sidebar, and there is no sidebar in an embed, so the button would do
+ * nothing. Everything else - search, language, appearance - works the same.
+ */
+export default function Header({ showMenuButton = true }: { showMenuButton?: boolean } = {}) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { openMobile } = useSidebar();
   const { locale, setLocale, t } = useLanguage();
@@ -181,6 +186,7 @@ export default function Header() {
       {/* Left side: hamburger + logo + search */}
       <div className="flex items-center gap-1.5 sm:gap-3 flex-1 min-w-0">
         {/* Hamburger — mobile/tablet only */}
+        {showMenuButton && (
         <button
           onClick={openMobile}
           aria-label={t("header.open_nav")}
@@ -190,6 +196,7 @@ export default function Header() {
         >
           <Menu className="w-5 h-5" />
         </button>
+        )}
 
         {/* Mobile logo badge — visible only when sidebar is hidden */}
         <div className="lg:hidden w-7 h-7 rounded-md bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-[8px] flex-shrink-0">
