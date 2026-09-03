@@ -155,7 +155,10 @@ export default function EmbedDashboard() {
                     : "bg-gradient-to-b from-white/30 via-transparent to-white/20"
                 }`}
               />
-              <div className="absolute bottom-3 left-3 z-[500] flex flex-wrap gap-2 pointer-events-none">
+              {/* Hidden on phones: these wrap onto a second row in a narrow frame
+                  and collide with the map's own Legend control at bottom-right.
+                  The same three facts are already in the header chips. */}
+              <div className="absolute bottom-3 left-3 z-[500] hidden sm:flex flex-wrap gap-2 pointer-events-none max-w-[60%]">
                 {[
                   { icon: Radio, label: "12 Stations", color: "text-env-teal" },
                   { icon: Activity, label: "Real-time USGS", color: "text-cyan-400" },

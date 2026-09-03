@@ -222,7 +222,7 @@ export function getInstitutionLabel(): string {
 }
 
 export function getFullTitle(): string {
-  return `${institution.shortName} Water Resources Dashboard | Data Integration, Analysis & Visualization`;
+  return `${institution.shortName} Water Quality Intelligence System | Real-Time ${watershed.name} Monitoring`;
 }
 
 export function getDescription(): string {
