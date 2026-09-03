@@ -17,7 +17,7 @@ function makeRequest(url: string) {
 
 describe("GET /api/stations/:id/history", () => {
   it("returns 12 months of data for ANA-001", async () => {
-    const request = makeRequest("/api/stations/ANA-001/history");
+    const request = makeRequest("/api/stations/ANA-001/history?includeSeed=true");
     const response = await GET(request, { params: Promise.resolve({ id: "ANA-001" }) });
     const body = await response.json();
 
@@ -28,7 +28,7 @@ describe("GET /api/stations/:id/history", () => {
   });
 
   it("returns readings with correct fields", async () => {
-    const request = makeRequest("/api/stations/ANA-001/history");
+    const request = makeRequest("/api/stations/ANA-001/history?includeSeed=true");
     const response = await GET(request, { params: Promise.resolve({ id: "ANA-001" }) });
     const body = await response.json();
 
@@ -52,7 +52,7 @@ describe("GET /api/stations/:id/history", () => {
   });
 
   it("respects date range filters", async () => {
-    const request = makeRequest("/api/stations/ANA-001/history?from=2025-06-01&to=2025-08-31");
+    const request = makeRequest("/api/stations/ANA-001/history?includeSeed=true&from=2025-06-01&to=2025-08-31");
     const response = await GET(request, { params: Promise.resolve({ id: "ANA-001" }) });
     const body = await response.json();
 
@@ -64,8 +64,21 @@ describe("GET /api/stations/:id/history", () => {
     }
   });
 
+  it("excludes seed readings by default", async () => {
+    // The seeded database holds nothing but seed rows, so the default response
+    // must be empty. This is what stops a station with no working gauge from
+    // reporting December 2025 values as current readings.
+    const request = makeRequest("/api/stations/ANA-001/history");
+    const response = await GET(request, { params: Promise.resolve({ id: "ANA-001" }) });
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.count).toBe(0);
+    expect(body.data).toHaveLength(0);
+  });
+
   it("respects limit parameter", async () => {
-    const request = makeRequest("/api/stations/ANA-001/history?limit=3");
+    const request = makeRequest("/api/stations/ANA-001/history?limit=3&includeSeed=true");
     const response = await GET(request, { params: Promise.resolve({ id: "ANA-001" }) });
     const body = await response.json();
 

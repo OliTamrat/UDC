@@ -15,9 +15,15 @@ function makeRequest(url: string) {
   return new NextRequest(new URL(url, "http://localhost:3000"));
 }
 
+// The seeded test database contains only seed rows, and /api/measurements now
+// excludes those unless a caller names them. These cases are about paging and
+// filtering rather than provenance, so they opt in the same way the admin
+// explorer does. Default-exclusion is covered by its own case below.
+const ALL_SOURCES = "sources=usgs,wqp,epa,manual,seed";
+
 describe("GET /api/measurements", () => {
   it("returns measurements with pagination metadata", async () => {
-    const request = makeRequest("/api/measurements?limit=10");
+    const request = makeRequest(`/api/measurements?limit=10&${ALL_SOURCES}`);
     const response = await GET(request);
     const body = await response.json();
 
@@ -31,7 +37,7 @@ describe("GET /api/measurements", () => {
   });
 
   it("each measurement has required fields", async () => {
-    const request = makeRequest("/api/measurements?limit=5");
+    const request = makeRequest(`/api/measurements?limit=5&${ALL_SOURCES}`);
     const response = await GET(request);
     const body = await response.json();
 
@@ -50,7 +56,7 @@ describe("GET /api/measurements", () => {
   });
 
   it("filters by station ID", async () => {
-    const request = makeRequest("/api/measurements?stations=ANA-001&limit=20");
+    const request = makeRequest(`/api/measurements?stations=ANA-001&limit=20&${ALL_SOURCES}`);
     const response = await GET(request);
     const body = await response.json();
 
@@ -61,7 +67,7 @@ describe("GET /api/measurements", () => {
   });
 
   it("filters by parameter ID", async () => {
-    const request = makeRequest("/api/measurements?params=temperature&limit=20");
+    const request = makeRequest(`/api/measurements?params=temperature&limit=20&${ALL_SOURCES}`);
     const response = await GET(request);
     const body = await response.json();
 
@@ -72,7 +78,7 @@ describe("GET /api/measurements", () => {
   });
 
   it("filters by category", async () => {
-    const request = makeRequest("/api/measurements?category=nutrients&limit=20");
+    const request = makeRequest(`/api/measurements?category=nutrients&limit=20&${ALL_SOURCES}`);
     const response = await GET(request);
     const body = await response.json();
 
@@ -83,11 +89,11 @@ describe("GET /api/measurements", () => {
   });
 
   it("respects pagination offset", async () => {
-    const req1 = makeRequest("/api/measurements?limit=5&offset=0");
+    const req1 = makeRequest(`/api/measurements?limit=5&offset=0&${ALL_SOURCES}`);
     const res1 = await GET(req1);
     const body1 = await res1.json();
 
-    const req2 = makeRequest("/api/measurements?limit=5&offset=5");
+    const req2 = makeRequest(`/api/measurements?limit=5&offset=5&${ALL_SOURCES}`);
     const res2 = await GET(req2);
     const body2 = await res2.json();
 
@@ -100,8 +106,21 @@ describe("GET /api/measurements", () => {
     expect(overlap.length).toBe(0);
   });
 
+  it("excludes seed measurements by default", async () => {
+    // Every row in the seeded database is a seed row, so the unfiltered
+    // response must be empty. This is what keeps December 2025 demonstration
+    // values out of the dashboard, the station page and the AI assistant.
+    const request = makeRequest("/api/measurements?limit=10");
+    const response = await GET(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.total).toBe(0);
+    expect(body.data).toHaveLength(0);
+  });
+
   it("limits max results to 10000", async () => {
-    const request = makeRequest("/api/measurements?limit=99999");
+    const request = makeRequest(`/api/measurements?limit=99999&${ALL_SOURCES}`);
     const response = await GET(request);
     const body = await response.json();
 
