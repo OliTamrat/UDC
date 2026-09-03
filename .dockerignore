@@ -8,3 +8,12 @@ node_modules
 data/*.db
 data/*.db-wal
 data/*.db-shm
+
+# Nested node_modules: a bare "node_modules" entry only matches the context
+# root, so azure-functions/node_modules was being uploaded on every build.
+**/node_modules
+
+# The cron runner is a separate Container Apps Job with its own image; it is
+# not part of the web app build context. Its deploy.zip alone is ~529MB.
+azure-functions
+**/*.zip

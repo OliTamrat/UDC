@@ -252,9 +252,13 @@ const PG_SCHEMA = `
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 
-  DELETE FROM readings WHERE id NOT IN (
-    SELECT MIN(id) FROM readings GROUP BY station_id, timestamp, source
-  );
+  -- NOTE: a one-off de-duplication DELETE used to run here on every schema
+  -- init. It was a full sequential scan of readings (~237k rows) plus a
+  -- HashAggregate, executed by every cold container before it could serve a
+  -- single request -- and it deleted nothing, because the unique index below
+  -- has prevented duplicates since it was created. That scan is what pushed
+  -- /api/ingest past the ingress timeout and stalled ingestion. The cleanup
+  -- lives in scripts/dedupe-legacy-rows.sql now; run it by hand if needed.
 
   CREATE UNIQUE INDEX IF NOT EXISTS idx_readings_station_time_source
     ON readings(station_id, timestamp, source);
@@ -296,9 +300,13 @@ const PG_SCHEMA = `
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 
-  DELETE FROM measurements WHERE id NOT IN (
-    SELECT MIN(id) FROM measurements GROUP BY station_id, parameter_id, timestamp, source
-  );
+  -- NOTE: a one-off de-duplication DELETE used to run here on every schema
+  -- init. It was a full sequential scan of measurements (~682k rows) plus a
+  -- HashAggregate, executed by every cold container before it could serve a
+  -- single request -- and it deleted nothing, because the unique index below
+  -- has prevented duplicates since it was created. That scan is what pushed
+  -- /api/ingest past the ingress timeout and stalled ingestion. The cleanup
+  -- lives in scripts/dedupe-legacy-rows.sql now; run it by hand if needed.
 
   CREATE UNIQUE INDEX IF NOT EXISTS idx_measurements_station_param_time_source
     ON measurements(station_id, parameter_id, timestamp, source);
