@@ -115,6 +115,31 @@ async function insertMeasurements(
   return count;
 }
 
+
+// ---------------------------------------------------------------------------
+// Helper: multi-row upsert
+// ---------------------------------------------------------------------------
+// Chunk sizes stay well under both the Postgres 65535-parameter ceiling and
+// SQLite's lower SQLITE_MAX_VARIABLE_NUMBER, so the same path works for the
+// Azure production database and the local SQLite fallback.
+const READING_BATCH_ROWS = 200;      // x10 params = 2000 per statement
+const MEASUREMENT_BATCH_ROWS = 500;  // x4  params = 2000 per statement
+
+async function batchUpsert(
+  db: DbClient,
+  insertInto: string,
+  rowTemplate: string,
+  conflictClause: string,
+  rows: unknown[][],
+  batchRows: number,
+): Promise<void> {
+  for (let i = 0; i < rows.length; i += batchRows) {
+    const chunk = rows.slice(i, i + batchRows);
+    const sql = `${insertInto} VALUES ${chunk.map(() => rowTemplate).join(", ")} ${conflictClause}`;
+    await db.query(sql, chunk.flat());
+  }
+}
+
 // ---------------------------------------------------------------------------
 // USGS NWIS integration
 // ---------------------------------------------------------------------------
@@ -238,58 +263,73 @@ async function ingestUSGS(): Promise<{ count: number; measurementCount: number; 
         }
       }
 
-      // Insert grouped readings (legacy + EAV)
-      let count = 0;
+      // Insert grouped readings (legacy + EAV).
+      //
+      // These used to go out one row at a time. A single run covers 12 sites at
+      // 5-minute resolution over P1D, which is ~2,850 reading upserts plus
+      // ~8,550 measurement upserts -- around 11,400 sequential round trips to
+      // Azure Postgres. At even 5ms each that is 57s, and the Container Apps
+      // ingress cuts the request at 60s, so usgs-ingest-cron failed on every
+      // run while the USGS fetches themselves took only 6.7s total. Batching
+      // into multi-row upserts turns those round trips into a few dozen.
+      const pg = !!process.env.DATABASE_URL;
+      const readingConflict = pg
+        ? "ON CONFLICT (station_id, timestamp, source) DO UPDATE SET temperature=EXCLUDED.temperature, dissolved_oxygen=EXCLUDED.dissolved_oxygen, ph=EXCLUDED.ph, turbidity=EXCLUDED.turbidity, conductivity=EXCLUDED.conductivity, ecoli_count=EXCLUDED.ecoli_count, nitrate_n=EXCLUDED.nitrate_n, phosphorus=EXCLUDED.phosphorus"
+        : "ON CONFLICT (station_id, timestamp, source) DO UPDATE SET temperature=excluded.temperature, dissolved_oxygen=excluded.dissolved_oxygen, ph=excluded.ph, turbidity=excluded.turbidity, conductivity=excluded.conductivity, ecoli_count=excluded.ecoli_count, nitrate_n=excluded.nitrate_n, phosphorus=excluded.phosphorus";
+      const eavConflict = pg
+        ? "ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = EXCLUDED.value"
+        : "ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = excluded.value";
+
+      const readingRows: unknown[][] = [];
+      const eavRows: unknown[][] = [];
+
       for (const [timestamp, values] of Object.entries(readingsByTime)) {
         const { valid, warnings } = validateReading(values as ReadingValues);
         if (warnings.length > 0) {
           validationWarnings.push(...warnings.map((w) => `USGS ${site.usgs} @ ${timestamp}: ${w}`));
         }
 
-        // Legacy readings table (upsert to avoid duplicates)
-        const pg = !!process.env.DATABASE_URL;
-        const readingConflict = pg
-          ? "ON CONFLICT (station_id, timestamp, source) DO UPDATE SET temperature=EXCLUDED.temperature, dissolved_oxygen=EXCLUDED.dissolved_oxygen, ph=EXCLUDED.ph, turbidity=EXCLUDED.turbidity, conductivity=EXCLUDED.conductivity, ecoli_count=EXCLUDED.ecoli_count, nitrate_n=EXCLUDED.nitrate_n, phosphorus=EXCLUDED.phosphorus"
-          : "ON CONFLICT (station_id, timestamp, source) DO UPDATE SET temperature=excluded.temperature, dissolved_oxygen=excluded.dissolved_oxygen, ph=excluded.ph, turbidity=excluded.turbidity, conductivity=excluded.conductivity, ecoli_count=excluded.ecoli_count, nitrate_n=excluded.nitrate_n, phosphorus=excluded.phosphorus";
-        await db.query(
-          `INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli_count, nitrate_n, phosphorus, source)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'usgs')
-           ${readingConflict}`,
-          [
-            site.stationId,
-            timestamp,
-            valid.temperature ?? null,
-            valid.dissolved_oxygen ?? null,
-            valid.ph ?? null,
-            valid.turbidity ?? null,
-            valid.conductivity ?? null,
-            valid.ecoli_count ?? null,
-            valid.nitrate_n ?? null,
-            valid.phosphorus ?? null,
-          ]
-        );
-        count++;
+        readingRows.push([
+          site.stationId,
+          timestamp,
+          valid.temperature ?? null,
+          valid.dissolved_oxygen ?? null,
+          valid.ph ?? null,
+          valid.turbidity ?? null,
+          valid.conductivity ?? null,
+          valid.ecoli_count ?? null,
+          valid.nitrate_n ?? null,
+          valid.phosphorus ?? null,
+        ]);
 
-        // EAV measurements table (upsert to avoid duplicates)
-        const eavEntries = Object.entries(eavByTimeParam[timestamp] ?? {}).map(
-          ([paramId, value]) => ({ paramId, value })
-        );
-        const eavConflict = pg
-          ? "ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = EXCLUDED.value"
-          : "ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = excluded.value";
-        for (const entry of eavEntries) {
-          if (validateMeasurement(entry.paramId, entry.value)) {
-            await db.query(
-              `INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)
-               VALUES (?, ?, ?, ?, 'usgs')
-               ${eavConflict}`,
-              [site.stationId, entry.paramId, timestamp, entry.value]
-            );
-            totalMeasurements++;
+        for (const [paramId, value] of Object.entries(eavByTimeParam[timestamp] ?? {})) {
+          if (validateMeasurement(paramId, value)) {
+            eavRows.push([site.stationId, paramId, timestamp, value]);
           }
         }
       }
 
+      const count = readingRows.length;
+
+      await batchUpsert(
+        db,
+        "INSERT INTO readings (station_id, timestamp, temperature, dissolved_oxygen, ph, turbidity, conductivity, ecoli_count, nitrate_n, phosphorus, source)",
+        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'usgs')",
+        readingConflict,
+        readingRows,
+        READING_BATCH_ROWS,
+      );
+
+      await batchUpsert(
+        db,
+        "INSERT INTO measurements (station_id, parameter_id, timestamp, value, source)",
+        "(?, ?, ?, ?, 'usgs')",
+        eavConflict,
+        eavRows,
+        MEASUREMENT_BATCH_ROWS,
+      );
+
+      totalMeasurements += eavRows.length;
       totalCount += count;
       logger.info(`USGS ingest: ${count} readings from site ${site.usgs}`);
     } catch (err) {
