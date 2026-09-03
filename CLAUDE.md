@@ -273,7 +273,33 @@ is an env change + revision restart, never a rebuild.
 should do (Level 2 / authenticated access does NOT exist — platform has no user auth);
 body copy for two placeholders; go-live date. See `docs/WQIS_EMBED_INTEGRATION.md`.
 
-**Not yet deployed to Azure** — awaiting Oli's go-ahead.
+**DEPLOYED to Azure 2026-09-02** — revision `udc-wqis--0000039`, image tag `cfcf639`.
+Verified live: `/embed` 200 (was 404), frame-ancestors set, no X-Frame-Options; `/` and
+`/admin` still DENY; `/api/health` 200.
+
+### Phase 13: Level 2 Access & AI Quota — DESIGNED, NOT BUILT
+
+Full design note: `docs/WQIS_LEVEL2_ACCESS_DESIGN.md`. Key points:
+
+- **Admin is NOT ungated** — `/api/admin/*` all check `ADMIN_API_KEY` server-side. The real
+  weakness is that it is ONE SHARED SECRET for all faculty: no per-person audit, and
+  revoking one person means rotating the key for everyone. Level 2 should replace it.
+- **Per-student quota is unimplementable today** — the limiter keys on IP (a lecture hall
+  behind campus NAT is one bucket; cellular resets it), the counter is in process memory,
+  and there is no user/role/session anywhere in the app.
+- **Per-replica gotcha** — Container App scales to `maxReplicas=3` and each replica keeps
+  its own counter, so a configured 3/min ceiling is really up to 9/min. Confirmed in prod.
+  Durable quota must live in Postgres.
+- **Recommend quota in weighted units** (chat=1, analyze=3, report=10), not raw request
+  counts, and "no practical ceiling" (~200/day) for researchers rather than literally
+  unlimited — an uncapped AI endpoint is an uncapped invoice.
+- **Identity decision is UDC IT's** — Option A: UDC SSO via Entra ID/Shibboleth
+  (recommended). Option B: local accounts + WRRI approval queue (interim; subset of A).
+- **Phase 13a can start now, unblocked** — point the already-published "Request Researcher
+  Access" button at a request form writing to `access_requests` + notifying WRRI.
+
+**Open with WRRI:** student daily allowance, researcher cap, who approves and SLA, per-class
+vs per-student, whether anonymous users get any AI, what "restricted datasets" means.
 
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)
