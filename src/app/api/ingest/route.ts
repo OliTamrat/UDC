@@ -168,7 +168,7 @@ const USGS_PCODE_TO_PARAM: Record<string, string> = {
 
 // Active USGS sites with water-quality sensors in the DC/Anacostia watershed
 const USGS_SITES = [
-  { usgs: "01651000", stationId: "ANA-001" }, // NW Branch Anacostia nr Hyattsville, MD
+  { usgs: "01651003", stationId: "ANA-001" }, // NW Branch Anacostia at Brentwood, MD — replaces 01651000 (Hyattsville), whose WQ sensors ended 2022-08-10
   { usgs: "01649500", stationId: "ANA-002" }, // NE Branch Anacostia at Riverdale, MD (active WQ)
   { usgs: "01651827", stationId: "ANA-003" }, // Anacostia River nr Buzzard Point at Washington, DC
   { usgs: "01651750", stationId: "ANA-004" }, // Anacostia River at Washington, DC (near Anacostia Park)
@@ -360,7 +360,7 @@ const EPA_CHARACTERISTICS: Record<string, string> = {
 const EPA_HUC = "02070010"; // Anacostia River watershed
 
 const EPA_STATION_MAP: Record<string, string> = {
-  "USGS-01651000": "ANA-001",
+  "USGS-01651003": "ANA-001",  // Brentwood — 01651000 (Hyattsville) retired its WQ sensors 2022-08-10
   "USGS-01649500": "ANA-002",
   "USGS-01651827": "ANA-003",
   "USGS-01651750": "ANA-004",
