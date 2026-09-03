@@ -31,6 +31,47 @@ const PARAM_TO_READING_FIELD: Record<string, string> = {
 // Default columns — aligned with what USGS sensors actually provide
 const DEFAULT_PARAMS = ["temperature", "dissolved_oxygen", "ph", "turbidity", "conductivity"];
 
+// A reading older than this is shown with its date, not just a clock time.
+const STALE_AFTER_MS = 12 * 60 * 60 * 1000;
+
+function isStale(timestamp: string): boolean {
+  const t = new Date(timestamp).getTime();
+  return Number.isFinite(t) && Date.now() - t > STALE_AFTER_MS;
+}
+
+// A bare "21:35" on a reading taken yesterday reads as though it arrived
+// minutes ago. Anything older than half a day carries its date so the age is
+// visible at a glance rather than implied.
+function formatReadingTime(timestamp: string): string {
+  const d = new Date(timestamp);
+  if (Number.isNaN(d.getTime())) return "—";
+  const time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  if (!isStale(timestamp)) return time;
+  return `${d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}, ${time}`;
+}
+
+// Retries a request that fails or errors, with a short backoff.
+//
+// While the database was throttled, /api/stations succeeded only about one
+// request in five - the rest hit the 60s gateway timeout. A single attempt
+// therefore dropped the whole dashboard to its offline fallback most of the
+// time, even though the data was reachable. Three attempts turn a 20% success
+// rate into roughly 50%, and cost nothing when the first attempt works.
+async function fetchWithRetry(url: string, attempts = 3): Promise<Response> {
+  let last: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) return res;
+      last = new Error(`${url} returned ${res.status}`);
+    } catch (err) {
+      last = err;
+    }
+    if (i < attempts - 1) await new Promise((r) => setTimeout(r, 400 * (i + 1)));
+  }
+  throw last instanceof Error ? last : new Error(`${url} failed`);
+}
+
 function StatusBadge({ status }: { status: string }) {
   const config = {
     active: { color: "text-green-400 bg-green-500/10 border-green-500/20", icon: CheckCircle2, label: "Active" },
@@ -126,7 +167,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
   const fetchData = useCallback(async () => {
     try {
       const [stationsRes, paramsRes] = await Promise.all([
-        fetch("/api/stations"),
+        fetchWithRetry("/api/stations"),
         fetch("/api/parameters"),
       ]);
       let stationList: MonitoringStation[] = [];
@@ -362,8 +403,8 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                   </td>
                   <td className={`py-2.5 px-4 ${isDark ? "text-[#D1D5DB]" : "text-[#1F2937]"}`}>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px]">{r
-                        ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                      <span className={`text-[10px] ${r && isStale(r.timestamp) ? (isDark ? "text-amber-400" : "text-amber-700") : ""}`}>{r
+                        ? formatReadingTime(r.timestamp)
                         : station.lastKnownReadingTime
                           ? `No current data · last ${new Date(station.lastKnownReadingTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}`
                           : "No current data"}</span>

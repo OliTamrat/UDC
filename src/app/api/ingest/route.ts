@@ -198,14 +198,26 @@ interface USGSResponse {
   };
 }
 
-async function ingestUSGS(): Promise<{ count: number; measurementCount: number; errors: string[]; validationWarnings: string[] }> {
+// `stationFilter` restricts the run to specific station IDs.
+//
+// A full 12-site run has to finish inside the 60s Container Apps ingress
+// timeout. When the database is slow that is not achievable, and because every
+// call restarts at the first site, repeated attempts only ever refresh that one
+// station while the rest stay stale. Ingesting a subset lets the work be split
+// across several short calls that each complete comfortably, which also makes
+// the scheduled job resilient to a slow database rather than all-or-nothing.
+async function ingestUSGS(stationFilter?: string[]): Promise<{ count: number; measurementCount: number; errors: string[]; validationWarnings: string[] }> {
   const db = await getDbClient();
   const errors: string[] = [];
   const validationWarnings: string[] = [];
   let totalCount = 0;
   let totalMeasurements = 0;
 
-  for (const site of USGS_SITES) {
+  const sites = stationFilter && stationFilter.length > 0
+    ? USGS_SITES.filter((site) => stationFilter.includes(site.stationId))
+    : USGS_SITES;
+
+  for (const site of sites) {
     const paramCodes = Object.keys(USGS_PARAMS).join(",");
     const url = `https://waterservices.usgs.gov/nwis/iv/?format=json&sites=${site.usgs}&parameterCd=${paramCodes}&period=P1D`;
 
@@ -707,7 +719,9 @@ async function runIngest(request: NextRequest) {
     let result: { count: number; measurementCount: number; errors: string[]; validationWarnings: string[] };
 
     if (source === "usgs") {
-      result = await ingestUSGS();
+      // ?stations=ANA-002,ANA-003 restricts the run to those stations.
+      const stationFilter = searchParams.get("stations")?.split(",").map((x) => x.trim()).filter(Boolean);
+      result = await ingestUSGS(stationFilter);
     } else if (source === "epa") {
       result = await ingestEPA();
     } else if (source === "wqp") {
