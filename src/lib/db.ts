@@ -150,6 +150,7 @@ function createSqliteClient(): DbClient {
 // Singleton & schema init
 // ---------------------------------------------------------------------------
 let client: DbClient | null = null;
+let clientPromise: Promise<DbClient> | null = null;
 let schemaReady = false;
 
 const SQLITE_SCHEMA = `
@@ -354,6 +355,11 @@ const PG_SCHEMA = `
   CREATE INDEX IF NOT EXISTS idx_measurements_parameter
     ON measurements(parameter_id);
 
+  -- access_requests is created after the index statements above. That is safe only
+  -- because the expensive dedup DELETE that used to sit here is gone: execute() runs
+  -- statements in order, so a slow or failing step skips every CREATE after it, which
+  -- is how this table ended up missing in production on first deploy. Keep schema init
+  -- cheap and idempotent -- every request waits for it.
   -- See the matching note in SQLITE_SCHEMA.
   CREATE TABLE IF NOT EXISTS access_requests (
     id SERIAL PRIMARY KEY,
@@ -376,6 +382,7 @@ const PG_SCHEMA = `
 
   CREATE INDEX IF NOT EXISTS idx_access_requests_status
     ON access_requests(status, created_at DESC);
+
 `;
 
 function useNeon(): boolean {
@@ -392,12 +399,28 @@ async function initSchema(db: DbClient): Promise<void> {
  * Get the database client. Initialises schema on first call.
  */
 export async function getDbClient(): Promise<DbClient> {
-  if (!client) {
-    const databaseUrl = process.env.DATABASE_URL;
-    client = databaseUrl ? createPgClient(databaseUrl) : createSqliteClient();
-    await initSchema(client);
+  // Every caller awaits the SAME initialisation promise.
+  //
+  // This previously assigned `client` and then awaited initSchema separately,
+  // which had two consequences: a concurrent request could receive the client
+  // before the schema existed, and if initSchema threw, the half-built client
+  // stayed cached so no later request ever retried it. A single failed startup
+  // left tables permanently missing while unrelated endpoints kept working.
+  if (!clientPromise) {
+    clientPromise = (async () => {
+      const databaseUrl = process.env.DATABASE_URL;
+      const created = databaseUrl ? createPgClient(databaseUrl) : createSqliteClient();
+      await initSchema(created);
+      client = created;
+      return created;
+    })().catch((error) => {
+      // Clear the cache so the next request retries rather than inheriting a
+      // permanently broken connection.
+      clientPromise = null;
+      throw error;
+    });
   }
-  return client;
+  return clientPromise;
 }
 
 // ---------------------------------------------------------------------------
