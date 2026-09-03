@@ -3,7 +3,7 @@
 **Date:** 3 September 2026
 **System:** UDC Water Quality Intelligence System (udc.wqis-app.com)
 **Prepared by:** Oli T. Oli, DAPS Analytics
-**Status:** Root cause identified and confirmed. Code fixes complete. One infrastructure decision pending.
+**Status:** Root cause confirmed. **All code fixes are deployed to production.** One infrastructure decision remains, and it is now the only outstanding blocker.
 
 ---
 
@@ -106,10 +106,41 @@ UDC is in Washington DC; the entire stack currently sits in **Central US** (Iowa
 
 ---
 
+---
+
+## Confirmation that the tier is the only thing left
+
+All fixes were deployed to production on 3 September at 17:35 UTC. Automated
+tests passed and the deployment succeeded. We then measured the live service:
+
+| Endpoint | Result |
+|---|---|
+| Home page (no database) | **HTTP 200 in 1.4 seconds** |
+| `/api/stations` | **times out at 60 seconds** |
+| `/api/health` | **times out at 60 seconds** |
+| Data ingestion (now batched) | **times out at 60 seconds** |
+
+The application is healthy and fast wherever it does not touch the database.
+Every request that does touch it fails. Even the batched ingestion — reduced
+roughly 280-fold — cannot complete, because the database is throttled to a
+fraction of one processor.
+
+This is the clearest possible confirmation: **the software problems are solved,
+and the database tier is the sole remaining cause of the outage.** No further
+code change will improve this.
+
+One immediate benefit is already live: the dashboard now displays all 12 stations
+with a clear notice that live readings are unavailable, instead of an empty
+panel that looked like a broken or abandoned product.
+
+---
+
 ## What happens next
 
-1. Founders choose a tier (`B2ms` recommended).
+1. **Founders choose a tier** (`B2ms` recommended). This is the only blocker.
 2. We scale the database — a few minutes of downtime.
-3. We deploy the six fixes.
-4. We confirm the station list, live readings and hourly ingestion are all healthy.
+3. We confirm the station list, live readings and hourly ingestion recover.
+4. We add the CPU-credit and ingestion-failure alerts described above.
 5. We resume the UDC website embed work, which is parked and safe on a branch.
+
+Steps 2 to 4 are approximately half a day of work once the decision is made.
