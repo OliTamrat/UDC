@@ -15,6 +15,12 @@ export interface DbResult {
 export interface DbClient {
   query(sql: string, params?: unknown[]): Promise<DbResult>;
   execute(sql: string): Promise<void>;
+  /**
+   * Releases the underlying connection pool. Only the Postgres client holds
+   * server connections, so only it implements this. Must be called before a
+   * client is discarded, or its connections stay checked out on the server.
+   */
+  close?(): Promise<void>;
 }
 
 // ---------------------------------------------------------------------------
@@ -88,7 +94,10 @@ function createPgClient(databaseUrl: string): DbClient {
   // standard pg driver for everything else (Azure, local PG, etc.)
   const isNeon = databaseUrl.includes(".neon.tech");
 
-  let pool: { query: (q: string, p?: unknown[]) => Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> };
+  let pool: {
+    query: (q: string, p?: unknown[]) => Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }>;
+    end: () => Promise<void>;
+  };
 
   if (isNeon) {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -126,6 +135,10 @@ function createPgClient(databaseUrl: string): DbClient {
       for (const part of splitSqlStatements(statements)) {
         await pool.query(part);
       }
+    },
+
+    async close(): Promise<void> {
+      await pool.end();
     },
   };
 }
@@ -468,7 +481,20 @@ export async function getDbClient(): Promise<DbClient> {
     clientPromise = (async () => {
       const databaseUrl = process.env.DATABASE_URL;
       const created = databaseUrl ? createPgClient(databaseUrl) : createSqliteClient();
-      await initSchema(created);
+      try {
+        await initSchema(created);
+      } catch (error) {
+        // Release the pool before discarding this client.
+        //
+        // Retrying a failed initialisation (below) is only safe if the failed
+        // attempt gives its connections back. createPgClient opens a NEW pool
+        // every call, so without this a database that is briefly unreachable
+        // turns into a spiral: each request leaks up to `max` server
+        // connections, which exhausts the connection slots, which makes the
+        // next initSchema fail, which leaks another pool.
+        await created.close?.().catch(() => {});
+        throw error;
+      }
       client = created;
       return created;
     })().catch((error) => {

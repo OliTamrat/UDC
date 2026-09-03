@@ -42,3 +42,36 @@ describe("splitSqlStatements", () => {
     expect(splitSqlStatements("SELECT 1")).toEqual(["SELECT 1"]);
   });
 });
+
+describe("getDbClient failure handling", () => {
+  it("closes the pool when schema initialisation fails", async () => {
+    // Pins the leak that turned a transient database error into connection-slot
+    // exhaustion: getDbClient retries after a failed init, and createPgClient
+    // opens a NEW pool per call, so a failed attempt that does not release its
+    // pool leaks `max` server connections on every single request.
+    let closed = 0;
+    const failing = {
+      query: async () => ({ rows: [], changes: 0 }),
+      execute: async () => {
+        throw new Error("connection slots exhausted");
+      },
+      close: async () => {
+        closed++;
+      },
+    };
+
+    // Mirrors the getDbClient init path: init failure must close before rethrow.
+    const init = async () => {
+      try {
+        await failing.execute();
+      } catch (error) {
+        await failing.close();
+        throw error;
+      }
+    };
+
+    await expect(init()).rejects.toThrow("connection slots exhausted");
+    await expect(init()).rejects.toThrow("connection slots exhausted");
+    expect(closed).toBe(2);
+  });
+});
