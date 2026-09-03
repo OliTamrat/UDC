@@ -19,6 +19,69 @@ export interface DbClient {
 
 // ---------------------------------------------------------------------------
 // PostgreSQL (standard pg) implementation — works with Azure, Neon, any PG
+/**
+ * Splits multi-statement DDL into individual statements.
+ *
+ * The node-postgres pool sends one statement per query, so the schema string has
+ * to be split first. A plain `statements.split(";")` is not safe enough: a
+ * semicolon inside a `--` comment splits the comment in half and the remainder
+ * of the prose is handed to Postgres as SQL. That is not hypothetical — the
+ * comment "...lives in scripts/dedupe-legacy-rows.sql now; run it by hand..."
+ * produced `syntax error at or near "run"`, which made initSchema throw on every
+ * cold start and took every Postgres-backed endpoint down with it.
+ *
+ * So walk the string instead: skip over `--` line comments and single-quoted
+ * literals, and split only on semicolons at the top level. Comments are dropped
+ * rather than forwarded, since a statement that is only a comment is not valid
+ * to send on its own.
+ */
+export function splitSqlStatements(sql: string): string[] {
+  const statements: string[] = [];
+  let current = "";
+
+  for (let i = 0; i < sql.length; i++) {
+    const char = sql[i];
+
+    // Line comment: drop everything through the newline, which keeps any
+    // semicolon in the prose out of the statement stream.
+    if (char === "-" && sql[i + 1] === "-") {
+      const newline = sql.indexOf("\n", i);
+      if (newline === -1) break;
+      i = newline;
+      current += "\n";
+      continue;
+    }
+
+    // String literal: copy verbatim, including any semicolon inside it. '' is
+    // an escaped quote in SQL, so it does not end the literal.
+    if (char === "'") {
+      const start = i;
+      i++;
+      while (i < sql.length) {
+        if (sql[i] === "'" && sql[i + 1] === "'") i += 2;
+        else if (sql[i] === "'") break;
+        else i++;
+      }
+      current += sql.slice(start, i + 1);
+      continue;
+    }
+
+    if (char === ";") {
+      const trimmed = current.trim();
+      if (trimmed) statements.push(trimmed);
+      current = "";
+      continue;
+    }
+
+    current += char;
+  }
+
+  const last = current.trim();
+  if (last) statements.push(last);
+
+  return statements;
+}
+
 // ---------------------------------------------------------------------------
 function createPgClient(databaseUrl: string): DbClient {
   // Use Neon serverless driver for Neon URLs (WebSocket-based),
@@ -60,12 +123,7 @@ function createPgClient(databaseUrl: string): DbClient {
     },
 
     async execute(statements: string): Promise<void> {
-      // Split on semicolons for multi-statement DDL
-      const parts = statements
-        .split(";")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      for (const part of parts) {
+      for (const part of splitSqlStatements(statements)) {
         await pool.query(part);
       }
     },
