@@ -334,7 +334,9 @@ export default function StationTable({ onStationClick, selectedParams }: Station
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px]">{r
                         ? new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-                        : "—"}</span>
+                        : station.lastKnownReadingTime
+                          ? `No current data · last ${new Date(station.lastKnownReadingTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}`
+                          : "No current data"}</span>
                       {r && <SourceBadge source={(r as unknown as Record<string, unknown>).source as string | undefined} />}
                     </div>
                   </td>

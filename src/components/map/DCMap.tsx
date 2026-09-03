@@ -475,6 +475,19 @@ export default function DCMap({
                     : "Seed"
               }</span>
             </div>`;
+        } else {
+          // No working gauge. Say so plainly instead of leaving the popup blank
+          // or, as before, filling it with December 2025 seed values.
+          const lastHeard = station.lastKnownReadingTime
+            ? new Date(station.lastKnownReadingTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+            : null;
+          popupHtml += `
+            <div style="background:${popupDataBg};border-radius:6px;padding:10px;text-align:center;">
+              <div style="font-size:12px;font-weight:600;color:${popupText};">No current data</div>
+              <div style="font-size:10px;color:${popupMuted};margin-top:3px;">${
+                lastHeard ? `Last reading ${lastHeard}` : "This station has no active gauge"
+              }</div>
+            </div>`;
         }
 
         popupHtml += viewDetailBtn + `</div>`;

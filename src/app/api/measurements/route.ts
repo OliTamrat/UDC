@@ -53,6 +53,14 @@ export async function GET(request: NextRequest) {
     if (sources && sources.length > 0) {
       conditions.push(`m.source IN (${sources.map(() => "?").join(",")})`);
       queryParams.push(...sources);
+    } else {
+      // Seed rows are December 2025 demonstration values. They were being
+      // returned by default, so the dashboard table, the station detail page
+      // and the AI assistant could all present a nine-month-old seed number as
+      // a current measurement - which is how an AI answer came back citing 2025
+      // readings. Callers that genuinely want them (the admin explorer) ask for
+      // them by name via ?sources=...,seed.
+      conditions.push("m.source != 'seed'");
     }
 
     if (from) {

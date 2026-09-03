@@ -31,6 +31,15 @@ export async function GET(
   `;
   const queryParams: unknown[] = [id];
 
+  // Seed rows are December 2025 demonstration values and were previously
+  // returned alongside real readings. For a station with no working gauge the
+  // response contained nothing but seed rows, so the AI assistant answering
+  // from this endpoint reported 2025 numbers as the station's readings.
+  // ?includeSeed=true restores the old behaviour for data-export use.
+  if (searchParams.get("includeSeed") !== "true") {
+    query += " AND source != 'seed'";
+  }
+
   if (from) {
     query += " AND timestamp >= ?";
     queryParams.push(from);

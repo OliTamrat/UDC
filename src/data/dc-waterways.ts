@@ -9,6 +9,13 @@ export interface MonitoringStation {
   status: "active" | "maintenance" | "offline";
   parameters: string[];
   lastReading?: WaterQualityReading;
+  /** "current" when a real reading exists; "no_current_data" when the station
+   *  has no working gauge. Seed rows are never surfaced as lastReading. */
+  dataStatus?: "current" | "no_current_data";
+  /** When the station was last heard from — a timestamp only, never a value. */
+  lastKnownReadingTime?: string | null;
+  /** The status column as configured, kept for reference; `status` is derived. */
+  configuredStatus?: string;
 }
 
 export interface WaterQualityReading {

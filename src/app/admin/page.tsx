@@ -1215,6 +1215,9 @@ function MeasurementsTab({ isDark, adminKey }: { isDark: boolean; adminKey: stri
   const fetchMeasurements = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+    // The admin explorer is a raw data browser and should still show seed rows,
+    // which /api/measurements now excludes unless asked for by name.
+    params.set("sources", "usgs,wqp,epa,manual,seed");
     if (stationFilter) params.set("stations", stationFilter);
     if (categoryFilter) params.set("category", categoryFilter);
     if (violationsOnly) params.set("violations", "true");
