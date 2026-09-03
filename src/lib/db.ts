@@ -150,6 +150,7 @@ function createSqliteClient(): DbClient {
 // Singleton & schema init
 // ---------------------------------------------------------------------------
 let client: DbClient | null = null;
+let clientPromise: Promise<DbClient> | null = null;
 let schemaReady = false;
 
 const SQLITE_SCHEMA = `
@@ -333,19 +334,10 @@ const PG_SCHEMA = `
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 
-  DELETE FROM measurements WHERE id NOT IN (
-    SELECT MIN(id) FROM measurements GROUP BY station_id, parameter_id, timestamp, source
-  );
-
-  CREATE UNIQUE INDEX IF NOT EXISTS idx_measurements_station_param_time_source
-    ON measurements(station_id, parameter_id, timestamp, source);
-
-  CREATE INDEX IF NOT EXISTS idx_measurements_timestamp
-    ON measurements(timestamp DESC);
-
-  CREATE INDEX IF NOT EXISTS idx_measurements_parameter
-    ON measurements(parameter_id);
-
+  -- Created BEFORE the maintenance statements below. The measurements dedup
+  -- DELETE grows more expensive as the table grows, and if it fails or times
+  -- out every statement after it is skipped - which is exactly how this table
+  -- ended up missing in production on first deploy.
   -- See the matching note in SQLITE_SCHEMA.
   CREATE TABLE IF NOT EXISTS access_requests (
     id SERIAL PRIMARY KEY,
@@ -368,6 +360,20 @@ const PG_SCHEMA = `
 
   CREATE INDEX IF NOT EXISTS idx_access_requests_status
     ON access_requests(status, created_at DESC);
+
+  DELETE FROM measurements WHERE id NOT IN (
+    SELECT MIN(id) FROM measurements GROUP BY station_id, parameter_id, timestamp, source
+  );
+
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_measurements_station_param_time_source
+    ON measurements(station_id, parameter_id, timestamp, source);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_timestamp
+    ON measurements(timestamp DESC);
+
+  CREATE INDEX IF NOT EXISTS idx_measurements_parameter
+    ON measurements(parameter_id);
+
 `;
 
 function useNeon(): boolean {
@@ -384,12 +390,28 @@ async function initSchema(db: DbClient): Promise<void> {
  * Get the database client. Initialises schema on first call.
  */
 export async function getDbClient(): Promise<DbClient> {
-  if (!client) {
-    const databaseUrl = process.env.DATABASE_URL;
-    client = databaseUrl ? createPgClient(databaseUrl) : createSqliteClient();
-    await initSchema(client);
+  // Every caller awaits the SAME initialisation promise.
+  //
+  // This previously assigned `client` and then awaited initSchema separately,
+  // which had two consequences: a concurrent request could receive the client
+  // before the schema existed, and if initSchema threw, the half-built client
+  // stayed cached so no later request ever retried it. A single failed startup
+  // left tables permanently missing while unrelated endpoints kept working.
+  if (!clientPromise) {
+    clientPromise = (async () => {
+      const databaseUrl = process.env.DATABASE_URL;
+      const created = databaseUrl ? createPgClient(databaseUrl) : createSqliteClient();
+      await initSchema(created);
+      client = created;
+      return created;
+    })().catch((error) => {
+      // Clear the cache so the next request retries rather than inheriting a
+      // permanently broken connection.
+      clientPromise = null;
+      throw error;
+    });
   }
-  return client;
+  return clientPromise;
 }
 
 // ---------------------------------------------------------------------------

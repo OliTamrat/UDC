@@ -100,10 +100,24 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("[access-requests] insert failed", error);
     return NextResponse.json(
-      { error: "Could not record the request. Please try again later." },
+      {
+        error: "Could not record the request. Please try again later.",
+        // The SQLSTATE code only - never the message, which can quote row data.
+        // Standard five-character codes (42P01 undefined_table, 42703
+        // undefined_column, 23514 check_violation) leak nothing about the
+        // database or its contents, and are the difference between diagnosing a
+        // production failure in seconds and guessing at it.
+        code: sqlStateOf(error),
+      },
       { status: 500 },
     );
   }
+}
+
+/** Extracts a PostgreSQL SQLSTATE code, if the driver supplied one. */
+function sqlStateOf(error: unknown): string | undefined {
+  const code = (error as { code?: unknown } | null)?.code;
+  return typeof code === "string" && /^[0-9A-Z]{5}$/.test(code) ? code : undefined;
 }
 
 /**
