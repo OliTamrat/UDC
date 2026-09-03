@@ -200,8 +200,9 @@ async function ingestUSGS(): Promise<{ count: number; measurementCount: number; 
 
       // Group values by timestamp
       const readingsByTime: Record<string, Record<string, number>> = {};
-      // Also track per-timestamp per-pcode for EAV
-      const eavByTime: Record<string, Array<{ paramId: string; value: number }>> = {};
+      // Also track per-timestamp per-pcode for EAV, keyed to keep one value per
+      // (timestamp, parameter) — see the multi-block note below.
+      const eavByTimeParam: Record<string, Record<string, number>> = {};
 
       for (const series of timeSeries) {
         const paramCode = series.variable?.variableCode?.[0]?.value;
@@ -209,17 +210,30 @@ async function ingestUSGS(): Promise<{ count: number; measurementCount: number; 
         const eavParamId = paramCode ? USGS_PCODE_TO_PARAM[paramCode] : undefined;
         if (!dbField) continue;
 
-        for (const val of series.values?.[0]?.value ?? []) {
-          if (!val.value || val.value === "-999999") continue;
-          const ts = val.dateTime;
-          const numVal = parseFloat(val.value);
+        // A time series carries one `values` block per measurement method, not
+        // one block overall. Retired sensors keep their block and sort FIRST,
+        // empty; the live sensor's data sits in a later block. Reading only
+        // values[0] therefore silently discarded every reading at sites whose
+        // sensors have ever been replaced:
+        //   01646500 (GI-001) - all 5 parameters live in blocks 1-4
+        //   01651730 (SW-001) - turbidity live in block 1
+        //   01649500 (ANA-002) - turbidity live in block 1
+        // Those stations looked dead and fell back to December 2025 seed rows.
+        // Iterate every block; later blocks win, which is the live sensor.
+        for (const block of series.values ?? []) {
+          for (const val of block?.value ?? []) {
+            if (!val.value || val.value === "-999999") continue;
+            const ts = val.dateTime;
+            const numVal = parseFloat(val.value);
+            if (!Number.isFinite(numVal)) continue;
 
-          if (!readingsByTime[ts]) readingsByTime[ts] = {};
-          readingsByTime[ts][dbField] = numVal;
+            if (!readingsByTime[ts]) readingsByTime[ts] = {};
+            readingsByTime[ts][dbField] = numVal;
 
-          if (eavParamId) {
-            if (!eavByTime[ts]) eavByTime[ts] = [];
-            eavByTime[ts].push({ paramId: eavParamId, value: numVal });
+            if (eavParamId) {
+              if (!eavByTimeParam[ts]) eavByTimeParam[ts] = {};
+              eavByTimeParam[ts][eavParamId] = numVal;
+            }
           }
         }
       }
@@ -257,7 +271,9 @@ async function ingestUSGS(): Promise<{ count: number; measurementCount: number; 
         count++;
 
         // EAV measurements table (upsert to avoid duplicates)
-        const eavEntries = eavByTime[timestamp] || [];
+        const eavEntries = Object.entries(eavByTimeParam[timestamp] ?? {}).map(
+          ([paramId, value]) => ({ paramId, value })
+        );
         const eavConflict = pg
           ? "ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = EXCLUDED.value"
           : "ON CONFLICT (station_id, parameter_id, timestamp, source) DO UPDATE SET value = excluded.value";
