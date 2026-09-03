@@ -121,6 +121,7 @@ export default function StationTable({ onStationClick, selectedParams }: Station
   // EAV measurements: stationId -> parameterId -> { value, source, timestamp }
   const [eavData, setEavData] = useState<Record<string, Record<string, MeasurementLatest>>>({});
   const [loading, setLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -132,6 +133,15 @@ export default function StationTable({ onStationClick, selectedParams }: Station
       if (stationsRes.ok) {
         stationList = await stationsRes.json();
         setStations(stationList);
+        setLoadFailed(false);
+      } else {
+        // A non-ok response is a failure, not an empty station list. This used
+        // to be ignored, so when /api/stations timed out the table rendered its
+        // header over an empty body with no message at all - which is how the
+        // Monitoring Stations section appeared blank on the live dashboard
+        // while the database was throttled. Fall back to the bundled station
+        // list and say plainly that the readings are not live.
+        throw new Error(`/api/stations returned ${stationsRes.status}`);
       }
       if (paramsRes.ok) setParamDefs(await paramsRes.json());
 
@@ -156,7 +166,10 @@ export default function StationTable({ onStationClick, selectedParams }: Station
       }
     } catch {
       const { monitoringStations } = await import("@/data/dc-waterways");
-      setStations(monitoringStations);
+      // Station identities and locations only - the bundled readings are not
+      // current, so they are stripped rather than shown as live values.
+      setStations(monitoringStations.map((st) => ({ ...st, lastReading: undefined })));
+      setLoadFailed(true);
     } finally {
       setLoading(false);
     }
@@ -234,6 +247,16 @@ export default function StationTable({ onStationClick, selectedParams }: Station
       <div className={`px-5 py-4 border-b ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
         <h3 className={`text-sm font-semibold flex items-center gap-1.5 ${isDark ? "text-[#F3F4F6]" : "text-[#1F2937]"}`}><span className="w-1.5 h-1.5 rounded-full bg-env-teal inline-block" />{t("table.title")}</h3>
         <p className={`text-xs mt-0.5 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{t("table.subtitle")}</p>
+        {loadFailed && (
+          <p className={`text-xs mt-2 rounded-md px-2.5 py-1.5 ${
+            isDark
+              ? "bg-amber-500/10 text-amber-300 border border-amber-500/20"
+              : "bg-amber-50 text-amber-800 border border-amber-200"
+          }`}>
+            Live readings are unavailable right now. Showing the station list only — the
+            values below are not current.
+          </p>
+        )}
       </div>
       <div className="station-table-wrap">
         <table className="w-full text-sm min-w-[700px]" aria-label="Monitoring stations with latest water quality readings">
@@ -255,6 +278,13 @@ export default function StationTable({ onStationClick, selectedParams }: Station
             </tr>
           </thead>
           <tbody>
+            {stations.length === 0 && (
+              <tr>
+                <td colSpan={visibleParams.length + 5} className={`py-8 px-4 text-center text-xs ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`}>
+                  No monitoring stations could be loaded. Please refresh the page.
+                </td>
+              </tr>
+            )}
             {stations.map((station) => {
               const r = station.lastReading;
               const stationEav = eavData[station.id] || {};
