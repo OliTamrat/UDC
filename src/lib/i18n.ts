@@ -53,8 +53,8 @@ export const translations = {
 
     // Dashboard hero
     "hero.badge": "CAUSES / WRRI",
-    "hero.title": "DC Water Resources",
-    "hero.title_highlight": "Data Dashboard",
+    "hero.title": "Water Quality",
+    "hero.title_highlight": "Intelligence System",
     "hero.description": "Monitoring, analysis, and visualization of water quality data across the Anacostia River watershed. Integrating research from UDC's Water Resources Research Institute with environmental data for DC communities.",
     "hero.stations": "12 Monitoring Stations",
     "hero.watershed": "Anacostia Watershed",
@@ -240,8 +240,8 @@ export const translations = {
 
     // Dashboard hero
     "hero.badge": "CAUSES / WRRI",
-    "hero.title": "Recursos Hídricos de DC",
-    "hero.title_highlight": "Panel de Datos",
+    "hero.title": "Sistema de Inteligencia",
+    "hero.title_highlight": "de Calidad del Agua",
     "hero.description": "Monitoreo, análisis y visualización de datos de calidad del agua en la cuenca del río Anacostia. Integrando investigación del Instituto de Investigación de Recursos Hídricos de UDC con datos ambientales para las comunidades de DC.",
     "hero.stations": "12 Estaciones de Monitoreo",
     "hero.watershed": "Cuenca del Anacostia",

@@ -75,10 +75,10 @@ export default function Dashboard() {
               isDark ? "bg-gradient-to-r from-teal-600/5 via-transparent to-cyan-600/5" : "bg-gradient-to-r from-teal-100/20 via-transparent to-cyan-100/20"
             }`} />
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              {/* No UDC mark here on purpose: the sidebar (and the top bar on
+                  mobile) already shows one, and a second badge directly under it
+                  read as a duplicate logo. */}
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-[10px] shadow-lg shadow-udc-gold/20">
-                  UDC
-                </div>
                 <div>
                   <h1 className={`text-base sm:text-lg font-bold leading-tight ${isDark ? "text-white" : "text-[#111827]"}`}>
                     {t("hero.title")}{" "}
