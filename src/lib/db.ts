@@ -290,10 +290,8 @@ const PG_SCHEMA = `
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 
-  DELETE FROM readings WHERE id NOT IN (
-    SELECT MIN(id) FROM readings GROUP BY station_id, timestamp, source
-  );
-
+  -- NOTE: a one-off duplicate cleanup used to run here on every boot. See
+  -- scripts/dedupe-legacy-rows.sql - it is a migration, not a startup step.
   CREATE UNIQUE INDEX IF NOT EXISTS idx_readings_station_time_source
     ON readings(station_id, timestamp, source);
 
@@ -361,10 +359,7 @@ const PG_SCHEMA = `
   CREATE INDEX IF NOT EXISTS idx_access_requests_status
     ON access_requests(status, created_at DESC);
 
-  DELETE FROM measurements WHERE id NOT IN (
-    SELECT MIN(id) FROM measurements GROUP BY station_id, parameter_id, timestamp, source
-  );
-
+  -- NOTE: see the matching note above readings' unique index.
   CREATE UNIQUE INDEX IF NOT EXISTS idx_measurements_station_param_time_source
     ON measurements(station_id, parameter_id, timestamp, source);
 
@@ -380,6 +375,21 @@ function useNeon(): boolean {
   return !!process.env.DATABASE_URL;
 }
 
+/**
+ * Applies the schema. Runs once per process, awaited by every caller.
+ *
+ * Everything here must be CHEAP and IDEMPOTENT. It runs on every cold start, and
+ * every request waits for it.
+ *
+ * Two `DELETE ... WHERE id NOT IN (SELECT MIN(id) ... GROUP BY ...)` statements
+ * used to sit in this path to clear duplicates before the unique indexes were
+ * created. They were fine against a small table and became full anti-join scans
+ * as readings and measurements grew into the millions - taking over 60s and
+ * timing out every database-backed request on a cold container. They have moved
+ * to scripts/dedupe-legacy-rows.sql, to be run by hand if a database ever needs
+ * it. The unique indexes plus ON CONFLICT upserts in the ingestion pipeline mean
+ * new duplicates cannot occur.
+ */
 async function initSchema(db: DbClient): Promise<void> {
   if (schemaReady) return;
   await db.execute(useNeon() ? PG_SCHEMA : SQLITE_SCHEMA);
