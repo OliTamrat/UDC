@@ -20,8 +20,19 @@ export async function POST(req: NextRequest) {
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: 'AI not configured.' }, { status: 503 });
 
+  // A malformed body used to fall through to the '7d' default, which meant any
+  // junk POST triggered a full Gemini report. The dashboard always sends a
+  // valid period, so reject anything else rather than paying for it.
   let period: Period = '7d';
-  try { const b = await req.json(); if (['7d', '30d', '90d'].includes(b.period)) period = b.period; } catch { /* default */ }
+  try {
+    const b = await req.json();
+    if (!['7d', '30d', '90d'].includes(b?.period)) {
+      return NextResponse.json({ error: 'period must be one of 7d, 30d, 90d' }, { status: 400 });
+    }
+    period = b.period;
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+  }
 
   const days = DAYS[period];
   const label = LABELS[period];

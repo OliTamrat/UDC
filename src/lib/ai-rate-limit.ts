@@ -16,7 +16,9 @@ import { checkRateLimit, type RateLimitConfig } from "@/lib/rate-limit";
  *   - A whole UDC lecture hall behind campus NAT shares ONE bucket.
  *   - A student on mobile data gets a fresh bucket by cycling airplane mode.
  *   - The counter resets on every container restart and is not shared between
- *     replicas.
+ *     replicas. The Container App scales to maxReplicas=3, so the EFFECTIVE
+ *     ceiling is up to 3x the number configured here - confirmed in production,
+ *     where concurrent /wqis/report calls were served by more than one replica.
  *
  * It is deliberately not the per-student query quota WRRI wants. That needs
  * identity and durable storage - see docs/WQIS_LEVEL2_ACCESS_DESIGN.md.
