@@ -38,14 +38,22 @@ function getStationColor(station: MonitoringStation, ecoliMultiplier?: number): 
   return "#22C55E";
 }
 
+// Basemap tiles.
+//
+// CARTO basemaps were used here until they began requiring an API key for
+// anonymous traffic. They do not fail cleanly: the tile server still returns
+// HTTP 200, but every tile is stamped "API KEY REQUIRED" - which is how it
+// reached UDC's live page before anyone noticed, and why nothing logged an
+// error. Esri's Canvas basemaps serve dark and light variants with no key, and
+// their attribution requirement is met below.
 const TILE_LAYERS = {
   dark: {
-    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
   },
   light: {
-    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
   },
 };
 
