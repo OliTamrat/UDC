@@ -19,6 +19,7 @@ import {
   MultiParameterChart,
   TempUnitProvider,
 } from "@/components/charts/WaterQualityCharts";
+import Header from "@/components/layout/Header";
 import { useTheme } from "@/context/ThemeContext";
 import type { MonitoringStation } from "@/data/dc-waterways";
 import { useEmbedAutoHeight } from "./useEmbedAutoHeight";
@@ -118,7 +119,10 @@ export default function EmbedDashboard() {
 
   return (
     <div className={`min-h-screen ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
-      <main id="main-content" className="p-3 sm:p-4 space-y-4">
+      {/* The app's real top bar - search, language and appearance - minus the
+          hamburger, which would open a sidebar the embed does not have. */}
+      <Header showMenuButton={false} />
+      <main id="main-content" className="p-2 sm:p-4 space-y-3 sm:space-y-4">
         <EmbedHeader
           isDark={isDark}
           showCta={showCta}
@@ -133,7 +137,7 @@ export default function EmbedDashboard() {
               className={`${
                 view === "map"
                   ? "h-[calc(100vh-140px)] min-h-[420px]"
-                  : "h-[460px] sm:h-[520px] md:h-[600px]"
+                  : "h-[560px] sm:h-[600px] md:h-[680px]"
               } rounded-2xl clip-contents glass-panel-hero`}
               aria-label="Interactive watershed map"
             >
@@ -293,10 +297,8 @@ function EmbedHeader({
       }`}
     >
       <div className="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {/* No UDC mark here: the top bar above already shows one. */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-udc-gold to-udc-red flex items-center justify-center font-extrabold text-white text-[10px] shadow-lg shadow-udc-gold/20">
-            UDC
-          </div>
           <div>
             <h1
               className={`text-base sm:text-lg font-bold leading-tight ${
