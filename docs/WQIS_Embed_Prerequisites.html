@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WQIS Dashboard Embedding — Prerequisites &amp; Technical Requirements</title>
+<style>
+  @page { size: letter; margin: 0.85in 1in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 11.5pt;
+    line-height: 1.65;
+    color: #1a1a1a;
+    max-width: 7.5in;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* Header */
+  .doc-header {
+    border-bottom: 3px solid #002B5C;
+    padding-bottom: 16px;
+    margin-bottom: 30px;
+  }
+  .doc-header .org {
+    font-size: 9.5pt;
+    font-variant: small-caps;
+    letter-spacing: 1.5px;
+    color: #002B5C;
+  }
+  .doc-header .dept {
+    font-size: 8.5pt;
+    color: #666;
+    margin-bottom: 18px;
+  }
+  .doc-header h1 {
+    font-size: 20pt;
+    font-weight: bold;
+    color: #002B5C;
+    margin-bottom: 4px;
+  }
+  .doc-header .subtitle {
+    font-size: 11pt;
+    color: #444;
+  }
+  .doc-header .meta {
+    font-size: 9pt;
+    color: #888;
+    margin-top: 12px;
+  }
+
+  /* Sections */
+  h2 {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #002B5C;
+    margin-top: 28px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #333;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+  p {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+  ul, ol {
+    margin-left: 22px;
+    margin-bottom: 12px;
+  }
+  li {
+    margin-bottom: 6px;
+  }
+  strong { font-weight: bold; }
+  em { font-style: italic; }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 18px;
+    font-size: 10.5pt;
+  }
+  th {
+    background: #002B5C;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 9.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8f9fa; }
+
+  /* Code */
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 9.5pt;
+    background: #f4f4f4;
+    padding: 2px 5px;
+    border-radius: 3px;
+    border: 1px solid #e0e0e0;
+  }
+  pre {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 14px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    overflow-x: auto;
+    margin: 10px 0 16px;
+    white-space: pre-wrap;
+  }
+
+  /* Callout */
+  .callout {
+    border-left: 4px solid #002B5C;
+    background: #f0f4f8;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 10.5pt;
+  }
+  .callout.warning {
+    border-left-color: #d97706;
+    background: #fffbeb;
+  }
+
+  /* Footer */
+  .doc-footer {
+    margin-top: 40px;
+    padding-top: 12px;
+    border-top: 1px solid #ccc;
+    font-size: 8.5pt;
+    color: #999;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Checkbox list */
+  .checklist { list-style: none; margin-left: 0; }
+  .checklist li::before {
+    content: "\2610  ";
+    font-size: 12pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div class="org">DAPS Analytics PLC</div>
+  <div class="dept">Water Quality Intelligent Service (WQIS) &mdash; Technical Integration Team</div>
+  <h1>WQIS Dashboard Embedding</h1>
+  <div class="subtitle">Prerequisites &amp; Technical Requirements for UDC WRRI Website Integration</div>
+  <div class="meta">Document Version: 1.0 &nbsp;|&nbsp; Prepared: July 1, 2026 &nbsp;|&nbsp; Classification: Internal / UDC IT</div>
+</div>
+
+
+<h2>1. Purpose</h2>
+<p>
+  This document outlines the technical prerequisites and information required from the University of the District of Columbia (UDC) Marketing and/or IT teams before DAPS Analytics can prepare the embed integration of the Water Quality Intelligent Service (WQIS) dashboard into the existing UDC WRRI homepage.
+</p>
+<p>
+  The WQIS dashboard is currently live at <code>udc.wqis-app.com</code>, hosted on Microsoft Azure Container Apps. The goal is to embed this application directly into the UDC WRRI website so that visitors can interact with real-time water quality data without leaving the university's domain.
+</p>
+
+
+<h2>2. Recommended Integration Approach</h2>
+<p>
+  We recommend an <strong>iframe-based embed</strong> as the initial integration method. This approach:
+</p>
+<ul>
+  <li>Requires minimal changes on the UDC website (a single HTML snippet)</li>
+  <li>Keeps the dashboard fully managed and updated by DAPS Analytics</li>
+  <li>Maintains security isolation between the UDC site and the dashboard</li>
+  <li>Can be deployed in under one business day once prerequisites are met</li>
+</ul>
+
+<p>The embed code will look similar to:</p>
+<pre>&lt;iframe
+  src="https://udc.wqis-app.com/embed"
+  width="100%"
+  height="900"
+  style="border: none; border-radius: 8px;"
+  title="UDC Water Quality Dashboard"
+  loading="lazy"
+  allow="fullscreen"
+&gt;&lt;/iframe&gt;</pre>
+
+<div class="callout">
+  <strong>Note:</strong> DAPS Analytics will create a dedicated <code>/embed</code> route that removes the application's own navigation header and sidebar, providing a clean, chrome-free view optimized for embedding. The full standalone dashboard will remain available at the current URL.
+</div>
+
+<p>If UDC later wishes to serve the dashboard under a university-owned subdomain (e.g., <code>wqis.udc.edu</code>), this can be achieved with a DNS CNAME record — no re-deployment required.</p>
+
+
+<h2>3. Information Required from UDC</h2>
+<p>Please provide the following information so we can configure the embed correctly and securely.</p>
+
+<h3>3.1 Target Website Details</h3>
+<table>
+  <tr>
+    <th style="width:40%">Item</th>
+    <th>Details Needed</th>
+  </tr>
+  <tr>
+    <td><strong>Target page URL</strong></td>
+    <td>The exact URL of the WRRI homepage or page where the dashboard will be embedded (e.g., <code>https://www.udc.edu/causes/wrri/dashboard</code>)</td>
+  </tr>
+  <tr>
+    <td><strong>Domain(s) to whitelist</strong></td>
+    <td>All domains that will host the embed. We must whitelist these in our security headers (<code>frame-ancestors</code>). Examples: <code>www.udc.edu</code>, <code>causes.udc.edu</code>, <code>wrri.udc.edu</code></td>
+  </tr>
+  <tr>
+    <td><strong>CMS / Website platform</strong></td>
+    <td>What platform powers the WRRI website? (e.g., WordPress, Drupal, Sitecore, custom HTML, SharePoint). This determines how the iframe code is inserted.</td>
+  </tr>
+  <tr>
+    <td><strong>Content Security Policy</strong></td>
+    <td>Does the UDC website enforce a Content Security Policy (CSP) header? If so, <code>frame-src</code> must allow <code>udc.wqis-app.com</code>. UDC IT may need to update this.</td>
+  </tr>
+</table>
+
+<h3>3.2 Layout &amp; Design Preferences</h3>
+<table>
+  <tr>
+    <th style="width:40%">Item</th>
+    <th>Details Needed</th>
+  </tr>
+  <tr>
+    <td><strong>Available width</strong></td>
+    <td>What is the content area width on the target page? (e.g., 1200px, full-width, sidebar layout). This determines responsive behavior.</td>
+  </tr>
+  <tr>
+    <td><strong>Desired height</strong></td>
+    <td>Preferred dashboard height in pixels, or should it auto-expand? Typical: 800&ndash;1000px. Full-page embed is also possible.</td>
+  </tr>
+  <tr>
+    <td><strong>Theme preference</strong></td>
+    <td>Should the embedded dashboard use dark mode, light mode, or match the UDC site's theme? The current UDC site appears to use a light theme.</td>
+  </tr>
+  <tr>
+    <td><strong>Default view</strong></td>
+    <td>Which section should load first? Options: Main dashboard (map + metrics), Station table, Research portal, or a specific station detail page.</td>
+  </tr>
+  <tr>
+    <td><strong>Navigation scope</strong></td>
+    <td>Should users be able to navigate within the embed (e.g., click a station to see detail), or should it be locked to a single view?</td>
+  </tr>
+</table>
+
+<h3>3.3 Technical &amp; IT Requirements</h3>
+<table>
+  <tr>
+    <th style="width:40%">Item</th>
+    <th>Details Needed</th>
+  </tr>
+  <tr>
+    <td><strong>IT contact person</strong></td>
+    <td>Name, email, and role of the UDC IT or web team member who can insert HTML into the WRRI page and modify server headers if needed.</td>
+  </tr>
+  <tr>
+    <td><strong>Staging/test environment</strong></td>
+    <td>Is there a staging or development version of the WRRI site where we can test the embed before going live?</td>
+  </tr>
+  <tr>
+    <td><strong>SSL certificate</strong></td>
+    <td>Confirm the target page is served over HTTPS. Browsers block mixed content (HTTPS page embedding HTTP iframe).</td>
+  </tr>
+  <tr>
+    <td><strong>iframe restrictions</strong></td>
+    <td>Does the UDC hosting environment impose any restrictions on iframes? Some enterprise CMS platforms or WAFs block iframe embeds.</td>
+  </tr>
+  <tr>
+    <td><strong>Custom subdomain (optional)</strong></td>
+    <td>If UDC wants the dashboard accessible at a university-owned URL (e.g., <code>wqis.udc.edu</code>), we need UDC IT to create a DNS CNAME record pointing to our Azure endpoint.</td>
+  </tr>
+</table>
+
+<h3>3.4 Branding &amp; Attribution</h3>
+<table>
+  <tr>
+    <th style="width:40%">Item</th>
+    <th>Details Needed</th>
+  </tr>
+  <tr>
+    <td><strong>UDC logo file</strong></td>
+    <td>If UDC wants their logo displayed within the embedded dashboard header, provide an SVG or high-resolution PNG with transparent background.</td>
+  </tr>
+  <tr>
+    <td><strong>Attribution requirements</strong></td>
+    <td>Should the embed include "Powered by DAPS Analytics" or similar attribution? Or should it appear fully UDC-branded?</td>
+  </tr>
+  <tr>
+    <td><strong>Color overrides</strong></td>
+    <td>Should the embed use UDC brand colors (Gold #FDB927, Red #CE1141, Navy #002B5C) — which are already the defaults — or match the WRRI page's color scheme?</td>
+  </tr>
+</table>
+
+
+<h2>4. What DAPS Analytics Will Provide</h2>
+<p>Once the above information is received, DAPS Analytics will:</p>
+<ol>
+  <li><strong>Create the <code>/embed</code> route</strong> — a chrome-free version of the dashboard with no sidebar or top navigation, optimized for iframe display</li>
+  <li><strong>Configure security headers</strong> — update <code>Content-Security-Policy frame-ancestors</code> and remove <code>X-Frame-Options</code> restrictions for the approved UDC domain(s)</li>
+  <li><strong>Apply theme/branding</strong> — set the default theme, colors, and attribution based on UDC preferences</li>
+  <li><strong>Provide the embed snippet</strong> — ready-to-paste HTML code with the correct dimensions and parameters</li>
+  <li><strong>Test on staging</strong> — verify the embed works on the UDC staging site before production deployment</li>
+  <li><strong>Deploy and monitor</strong> — push the embed-ready build to Azure and confirm everything renders correctly on the live WRRI page</li>
+</ol>
+
+<p><strong>Estimated turnaround:</strong> 2&ndash;3 business days after receiving all prerequisites.</p>
+
+
+<h2>5. Security Considerations</h2>
+<ul>
+  <li>The iframe embed is <strong>read-only for public visitors</strong> — no authentication is exposed. The admin panel and data ingestion APIs are not accessible through the embed route.</li>
+  <li>The embed route will be restricted via <code>frame-ancestors</code> to <strong>only the approved UDC domain(s)</strong>. No other website will be able to embed the dashboard.</li>
+  <li>All communication is over <strong>HTTPS</strong> with TLS 1.2+.</li>
+  <li>The dashboard does not set cookies or collect personal data from visitors.</li>
+  <li>The AI Research Assistant (chat feature) can be included or excluded from the embed based on UDC preference.</li>
+</ul>
+
+
+<h2>6. Future Options</h2>
+<table>
+  <tr>
+    <th style="width:35%">Option</th>
+    <th>Description</th>
+    <th style="width:20%">Requires</th>
+  </tr>
+  <tr>
+    <td><strong>Custom subdomain</strong></td>
+    <td>Serve the dashboard at <code>wqis.udc.edu</code> with full UDC branding — appears native to the university's web presence</td>
+    <td>UDC IT: DNS CNAME + SSL cert</td>
+  </tr>
+  <tr>
+    <td><strong>Sovereign deployment</strong></td>
+    <td>Run the entire WQIS application on UDC's own Azure subscription for full data sovereignty and cost separation</td>
+    <td>UDC IT: Azure subscription + deployment coordination</td>
+  </tr>
+  <tr>
+    <td><strong>Single Sign-On</strong></td>
+    <td>Integrate with UDC's identity provider (Azure AD / Shibboleth) for faculty/researcher authentication</td>
+    <td>UDC IT: IdP configuration + SAML/OIDC metadata</td>
+  </tr>
+</table>
+
+
+<h2>7. Prerequisite Checklist</h2>
+<p>Please complete and return this checklist to confirm readiness:</p>
+<ul class="checklist">
+  <li>Target page URL confirmed</li>
+  <li>Domain(s) for whitelist provided</li>
+  <li>CMS / website platform identified</li>
+  <li>IT contact person assigned</li>
+  <li>Content area width and height preference confirmed</li>
+  <li>Theme preference selected (dark / light / match site)</li>
+  <li>Default view selected</li>
+  <li>Staging environment URL provided (if available)</li>
+  <li>HTTPS confirmed on target page</li>
+  <li>CSP header status confirmed (allows iframes or not)</li>
+  <li>Branding and attribution preferences confirmed</li>
+  <li>AI Research Assistant inclusion decision (yes / no)</li>
+</ul>
+
+
+<div class="callout">
+  <strong>Contact:</strong> For questions regarding this document or the integration process, please contact DAPS Analytics at the email address provided in your project correspondence.
+</div>
+
+
+<div class="doc-footer">
+  <span>DAPS Analytics PLC &mdash; Water Quality Intelligent Service</span>
+  <span>Document v1.0 &mdash; July 1, 2026</span>
+</div>
+
+</body>
+</html>

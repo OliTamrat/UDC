@@ -150,8 +150,8 @@ function createSqliteClient(): DbClient {
 // Singleton & schema init
 // ---------------------------------------------------------------------------
 let client: DbClient | null = null;
-let clientPromise: Promise<DbClient> | null = null;
 let schemaReady = false;
+let accessRequestsReady = false;
 
 const SQLITE_SCHEMA = `
   CREATE TABLE IF NOT EXISTS stations (
@@ -399,29 +399,82 @@ async function initSchema(db: DbClient): Promise<void> {
 /**
  * Get the database client. Initialises schema on first call.
  */
+/**
+ * Get the database client.
+ *
+ * NOTE ON THE MISSING `await`: the client is deliberately cached BEFORE schema
+ * initialisation completes, so a slow or stuck initSchema cannot block every
+ * request. That is not elegant, and the obvious fix - having all callers await a
+ * shared init promise - was tried and rolled back: initSchema does not reliably
+ * complete against the production database, so awaiting it took every
+ * database-backed endpoint down while unrelated DDL sat waiting.
+ *
+ * The consequence is that schema DDL is best-effort at boot. Anything that needs
+ * a table to exist must ensure it explicitly - see ensureAccessRequestsTable().
+ *
+ * TODO: find out which statement in PG_SCHEMA stalls (lock contention between
+ * replicas running CREATE INDEX concurrently is the leading suspect) and move
+ * schema migration out of the request path entirely.
+ */
 export async function getDbClient(): Promise<DbClient> {
-  // Every caller awaits the SAME initialisation promise.
-  //
-  // This previously assigned `client` and then awaited initSchema separately,
-  // which had two consequences: a concurrent request could receive the client
-  // before the schema existed, and if initSchema threw, the half-built client
-  // stayed cached so no later request ever retried it. A single failed startup
-  // left tables permanently missing while unrelated endpoints kept working.
-  if (!clientPromise) {
-    clientPromise = (async () => {
-      const databaseUrl = process.env.DATABASE_URL;
-      const created = databaseUrl ? createPgClient(databaseUrl) : createSqliteClient();
-      await initSchema(created);
-      client = created;
-      return created;
-    })().catch((error) => {
-      // Clear the cache so the next request retries rather than inheriting a
-      // permanently broken connection.
-      clientPromise = null;
-      throw error;
-    });
+  if (!client) {
+    const databaseUrl = process.env.DATABASE_URL;
+    client = databaseUrl ? createPgClient(databaseUrl) : createSqliteClient();
+    // Intentionally not awaited-for-correctness; see the note above.
+    await initSchema(client);
   }
-  return clientPromise;
+  return client;
+}
+
+/**
+ * Ensures the access_requests table exists, independently of the main schema.
+ *
+ * initSchema applies the whole schema as one ordered run, and if any statement
+ * in it stalls, everything after it silently never happens - which is exactly
+ * how this table came to be missing in production while every pre-existing table
+ * worked fine. These two statements are small, idempotent and touch only a table
+ * that is tiny by nature, so they cannot stall behind DDL on a multi-million-row
+ * table.
+ */
+export async function ensureAccessRequestsTable(db: DbClient): Promise<void> {
+  if (accessRequestsReady) return;
+
+  const isPg = useNeon();
+  await db.query(
+    isPg
+      ? `CREATE TABLE IF NOT EXISTS access_requests (
+           id SERIAL PRIMARY KEY,
+           name TEXT NOT NULL,
+           email TEXT NOT NULL,
+           affiliation TEXT NOT NULL,
+           requester_role TEXT NOT NULL,
+           purpose TEXT NOT NULL,
+           datasets TEXT,
+           status TEXT NOT NULL DEFAULT 'pending',
+           decision_reason TEXT,
+           created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+           reviewed_at TIMESTAMPTZ,
+           reviewed_by TEXT,
+           review_note TEXT
+         )`
+      : `CREATE TABLE IF NOT EXISTS access_requests (
+           id INTEGER PRIMARY KEY AUTOINCREMENT,
+           name TEXT NOT NULL,
+           email TEXT NOT NULL,
+           affiliation TEXT NOT NULL,
+           requester_role TEXT NOT NULL,
+           purpose TEXT NOT NULL,
+           datasets TEXT,
+           status TEXT NOT NULL DEFAULT 'pending',
+           decision_reason TEXT,
+           created_at TEXT NOT NULL DEFAULT (datetime('now')),
+           reviewed_at TEXT,
+           reviewed_by TEXT,
+           review_note TEXT
+         )`,
+  );
+
+  accessRequestsReady = true;
 }
 
 // ---------------------------------------------------------------------------

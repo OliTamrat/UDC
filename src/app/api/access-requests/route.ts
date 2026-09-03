@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getDbClient } from "@/lib/db";
+import { ensureAccessRequestsTable, getDbClient } from "@/lib/db";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { notifyAccessRequest } from "@/lib/notify";
 import {
@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const db = await getDbClient();
+    await ensureAccessRequestsTable(db);
 
     // Enforce retention opportunistically on write, so expired records fall out
     // without needing a scheduled job.
@@ -140,6 +141,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const db = await getDbClient();
+    await ensureAccessRequestsTable(db);
     const { rows } = status
       ? await db.query(
           `SELECT id, name, email, affiliation, requester_role, purpose,

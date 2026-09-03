@@ -82,7 +82,7 @@ Append these to the `src` URL to retune the embed. No redeploy on either side.
 | `view` | `full`, `compact`, `map` | `full` | How much to show. `compact` = map, recreation safety and headline metrics. `map` = watershed map only. |
 | `theme` | `dark`, `light` | `dark` | Colour scheme. Use `light` to match the UDC page. |
 | `nav` | `blank`, `inline` | `blank` | Where a station link opens. `blank` = new tab (recommended — station pages carry full app chrome). `inline` = inside the frame. |
-| `cta` | `0`, `1` | `1` | Show the "Open full dashboard" link. |
+| `cta` | `0`, `1` | `0` | Show the "Open full dashboard" link. **Off by default** so no link out to a non-UDC domain appears on a UDC page. |
 | `ai` | `0`, `1` | `0` | Include the AI research assistant. Off by default pending UDC's decision. |
 | `toggle` | `0`, `1` | `1` | Show the light/dark appearance button in the embed header. |
 
@@ -98,6 +98,19 @@ Example — light theme, compact, matching a light UDC page:
 ```
 https://udc.wqis-app.com/embed?view=compact&theme=light
 ```
+
+### Keeping everything on a UDC domain
+
+The embed no longer shows any outbound link by default. The iframe itself still
+loads from `udc.wqis-app.com`, which is visible to anyone who inspects the page.
+
+The clean fix is a DNS record on UDC's side: point **`wqis.udc.edu`** at our Azure
+endpoint with a CNAME, and the dashboard is served from a university host end to
+end. No redeployment is needed — we add the hostname to the Container App, and
+the embed URL becomes `https://wqis.udc.edu/embed`. UDC IT needs to create one
+CNAME and we handle the rest.
+
+Until then, `?cta=0` (the default) keeps the page free of vendor-facing links.
 
 ---
 

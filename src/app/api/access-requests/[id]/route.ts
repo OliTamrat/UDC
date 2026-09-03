@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getDbClient } from "@/lib/db";
+import { ensureAccessRequestsTable, getDbClient } from "@/lib/db";
 import { requireAdmin } from "../route";
 import {
   DECISION_REASONS,
@@ -68,6 +68,7 @@ export async function PATCH(
 
   try {
     const db = await getDbClient();
+    await ensureAccessRequestsTable(db);
     const { changes } = await db.query(
       // CURRENT_TIMESTAMP is valid in both SQLite and PostgreSQL.
       `UPDATE access_requests
@@ -112,6 +113,7 @@ export async function DELETE(
 
   try {
     const db = await getDbClient();
+    await ensureAccessRequestsTable(db);
     const { changes } = await db.query(`DELETE FROM access_requests WHERE id = ?`, [id]);
 
     if (!changes) {

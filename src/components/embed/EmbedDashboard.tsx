@@ -74,7 +74,12 @@ export default function EmbedDashboard() {
   const view = parseView(searchParams.get("view"));
   const themeParam = searchParams.get("theme");
   const navMode = searchParams.get("nav") === "inline" ? "inline" : "blank";
-  const showCta = searchParams.get("cta") !== "0";
+  // OFF by default. UDC is promoting this as a university research tool, and a
+  // prominent link out to a vendor-owned domain on their own page invites exactly
+  // the question "why is UDC sending people to udc.wqis-app.com?". Opt in with
+  // ?cta=1, or better, serve the whole thing from a UDC host - see the CNAME note
+  // in docs/WQIS_EMBED_INTEGRATION.md.
+  const showCta = searchParams.get("cta") === "1";
   // The embed has no navbar to hang an appearance control on, so the toggle
   // lives in the identity strip. UDC can hide it with ?toggle=0 once they have
   // settled on one look.
@@ -118,7 +123,7 @@ export default function EmbedDashboard() {
 
   return (
     <div className={`min-h-screen ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
-      <main id="main-content" className="p-3 sm:p-4 space-y-4">
+      <main id="main-content" className="p-2 sm:p-4 space-y-3 sm:space-y-4">
         <EmbedHeader
           isDark={isDark}
           showCta={showCta}
@@ -133,7 +138,7 @@ export default function EmbedDashboard() {
               className={`${
                 view === "map"
                   ? "h-[calc(100vh-140px)] min-h-[420px]"
-                  : "h-[460px] sm:h-[520px] md:h-[600px]"
+                  : "h-[340px] sm:h-[480px] md:h-[600px]"
               } rounded-2xl clip-contents glass-panel-hero`}
               aria-label="Interactive watershed map"
             >
@@ -283,7 +288,7 @@ function EmbedHeader({
 }) {
   return (
     <header
-      className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-3 sm:p-4 ${
+      className={`relative overflow-hidden rounded-xl sm:rounded-2xl border p-2.5 sm:p-4 ${
         isDark
           ? "border-white/[0.06] bg-gradient-to-br from-[#13161F] via-[#0C0F17] to-[#0C0F17]"
           : "border-[#D1D5DB] bg-gradient-to-br from-white via-teal-50/20 to-[#F9FAFB]"
@@ -373,8 +378,22 @@ function EmbedFooter({ isDark }: { isDark: boolean }) {
       }`}
     >
       <span>Live data from USGS NWIS, EPA Water Quality Portal and DOEE. Updated daily.</span>
-      <span className={isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}>
+      <span className={`flex items-center gap-1.5 ${isDark ? "text-[#9CA3AF]" : "text-[#6B7280]"}`}>
         UDC CAUSES &middot; Water Resources Research Institute
+        <span aria-hidden="true">&middot;</span>
+        <span className="whitespace-nowrap">
+          Powered by{" "}
+          <a
+            href="https://dapsanalytics.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`font-semibold underline-offset-2 hover:underline ${
+              isDark ? "text-[#E5E7EB]" : "text-[#374151]"
+            }`}
+          >
+            DAPS Analytics
+          </a>
+        </span>
       </span>
     </footer>
   );
