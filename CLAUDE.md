@@ -273,7 +273,79 @@ is an env change + revision restart, never a rebuild.
 should do (Level 2 / authenticated access does NOT exist — platform has no user auth);
 body copy for two placeholders; go-live date. See `docs/WQIS_EMBED_INTEGRATION.md`.
 
-**Not yet deployed to Azure** — awaiting Oli's go-ahead.
+**Deployment history — read this before assuming the embed is live.**
+
+Deployed to Azure 2026-09-02 from the `feature/phase-13a-access-requests` branch, revision
+`udc-wqis--0000039`, image tag `cfcf639`. Verified live that night: `/embed` 200,
+frame-ancestors set, no X-Frame-Options.
+
+**It was then overwritten.** On 2026-09-03 `main` was reset to `746cbdb`, discarding all ten
+of the 09-02 commits, and the ingestion fixes were built on the reset branch instead. Each
+push to `main` triggers `.github/workflows/deploy-azure.yml`, which redeploys `udc-wqis` from
+that SHA — and those SHAs had no `/embed` route. So the deploy that shipped the ingestion fix
+also silently reverted the embed: `/embed` went back to 404 and UDC's staging iframe rendered
+an empty box again.
+
+**The lesson: this app has ONE deploy target and `main` is the only branch that reaches it.**
+Anything deployed from a side branch is live only until the next push to `main`. Land embed
+work on `main` or it will be reverted without warning.
+
+Recovered onto `main` on 2026-09-03: `4a49b86` (as `c3ac417`), `b076c6b`, `33462ff`,
+`0996693`, `5e47131`. `dfefaa7` and `cfcf639` were skipped — superseded by `5b5fd5c`, which
+fixes the same schema-init scan and `.dockerignore` independently.
+
+### Phase 13a: Researcher Access Request Queue — BUILT (redeploy pending)
+
+Gives UDC's already-published "Request Researcher Access" button a real destination.
+It is a REQUEST QUEUE, not auth — creates no account, grants no access.
+
+- `/request-access` public form; `POST /api/access-requests` (rate-limited 5/10min per IP)
+- `GET /api/access-requests` + `PATCH|DELETE /api/access-requests/[id]` — ADMIN_API_KEY gated
+- Admin panel "Access Requests" tab for WRRI review
+- Notification via `ACCESS_REQUEST_WEBHOOK_URL` (Teams/Slack incoming webhook, no new
+  dependency). Unset = degrades to the admin panel. Never blocks a submission.
+- `access_requests` table added to BOTH SQLite and PG schemas (CREATE TABLE IF NOT EXISTS,
+  auto-migrates on first request)
+- SQLite client now routes `RETURNING` mutations to `.all()` — better-sqlite3 throws on
+  `.run()` for statements that return rows, so inserts would have worked on PG only
+
+**PRIVACY (enforced in code, tested):** only name/email/affiliation/purpose are stored.
+NO IP, user agent, referrer, cookies, demographics, student ID. IP is a transient in-memory
+rate-limit key only, never written to the DB. 365-day retention purged on write; DELETE
+endpoint + per-record delete for erasure requests; disclosure shown next to the form inputs.
+**UDC/WRRI own the final retention period and privacy notice — 365 days is a default, not
+legal advice.**
+
+**NON-DISCRIMINATION (enforced in code, tested):** role is a TIER (sets AI allowance), never
+a gate — validation accepts every role. Decisions require a reason from a fixed list; the UI
+cannot deny without one. Every reason describes the request, none the person. A test scans
+the reason list for terms naming personal characteristics (age/sex/race/nationality/religion/
+disability/citizenship/language) and fails if any appears. Criteria are published on the form
+above the fields. WRRI should periodically review the decision log for patterns.
+
+### Phase 13b–13d: Level 2 Auth & AI Quota — DESIGNED, NOT BUILT
+
+Full design note: `docs/WQIS_LEVEL2_ACCESS_DESIGN.md`. Key points:
+
+- **Admin is NOT ungated** — `/api/admin/*` all check `ADMIN_API_KEY` server-side. The real
+  weakness is that it is ONE SHARED SECRET for all faculty: no per-person audit, and
+  revoking one person means rotating the key for everyone. Level 2 should replace it.
+- **Per-student quota is unimplementable today** — the limiter keys on IP (a lecture hall
+  behind campus NAT is one bucket; cellular resets it), the counter is in process memory,
+  and there is no user/role/session anywhere in the app.
+- **Per-replica gotcha** — Container App scales to `maxReplicas=3` and each replica keeps
+  its own counter, so a configured 3/min ceiling is really up to 9/min. Confirmed in prod.
+  Durable quota must live in Postgres.
+- **Recommend quota in weighted units** (chat=1, analyze=3, report=10), not raw request
+  counts, and "no practical ceiling" (~200/day) for researchers rather than literally
+  unlimited — an uncapped AI endpoint is an uncapped invoice.
+- **Identity decision is UDC IT's** — Option A: UDC SSO via Entra ID/Shibboleth
+  (recommended). Option B: local accounts + WRRI approval queue (interim; subset of A).
+- **Phase 13a can start now, unblocked** — point the already-published "Request Researcher
+  Access" button at a request form writing to `access_requests` + notifying WRRI.
+
+**Open with WRRI:** student daily allowance, researcher cap, who approves and SLA, per-class
+vs per-student, whether anonymous users get any AI, what "restricted datasets" means.
 
 ## Database Setup
 - **Local dev**: SQLite via better-sqlite3 (default, no config needed)
