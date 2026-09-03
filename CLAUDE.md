@@ -277,7 +277,36 @@ body copy for two placeholders; go-live date. See `docs/WQIS_EMBED_INTEGRATION.m
 Verified live: `/embed` 200 (was 404), frame-ancestors set, no X-Frame-Options; `/` and
 `/admin` still DENY; `/api/health` 200.
 
-### Phase 13: Level 2 Access & AI Quota — DESIGNED, NOT BUILT
+### Phase 13a: Researcher Access Request Queue — BUILT & DEPLOYED
+
+Gives UDC's already-published "Request Researcher Access" button a real destination.
+It is a REQUEST QUEUE, not auth — creates no account, grants no access.
+
+- `/request-access` public form; `POST /api/access-requests` (rate-limited 5/10min per IP)
+- `GET /api/access-requests` + `PATCH|DELETE /api/access-requests/[id]` — ADMIN_API_KEY gated
+- Admin panel "Access Requests" tab for WRRI review
+- Notification via `ACCESS_REQUEST_WEBHOOK_URL` (Teams/Slack incoming webhook, no new
+  dependency). Unset = degrades to the admin panel. Never blocks a submission.
+- `access_requests` table added to BOTH SQLite and PG schemas (CREATE TABLE IF NOT EXISTS,
+  auto-migrates on first request)
+- SQLite client now routes `RETURNING` mutations to `.all()` — better-sqlite3 throws on
+  `.run()` for statements that return rows, so inserts would have worked on PG only
+
+**PRIVACY (enforced in code, tested):** only name/email/affiliation/purpose are stored.
+NO IP, user agent, referrer, cookies, demographics, student ID. IP is a transient in-memory
+rate-limit key only, never written to the DB. 365-day retention purged on write; DELETE
+endpoint + per-record delete for erasure requests; disclosure shown next to the form inputs.
+**UDC/WRRI own the final retention period and privacy notice — 365 days is a default, not
+legal advice.**
+
+**NON-DISCRIMINATION (enforced in code, tested):** role is a TIER (sets AI allowance), never
+a gate — validation accepts every role. Decisions require a reason from a fixed list; the UI
+cannot deny without one. Every reason describes the request, none the person. A test scans
+the reason list for terms naming personal characteristics (age/sex/race/nationality/religion/
+disability/citizenship/language) and fails if any appears. Criteria are published on the form
+above the fields. WRRI should periodically review the decision log for patterns.
+
+### Phase 13b–13d: Level 2 Auth & AI Quota — DESIGNED, NOT BUILT
 
 Full design note: `docs/WQIS_LEVEL2_ACCESS_DESIGN.md`. Key points:
 

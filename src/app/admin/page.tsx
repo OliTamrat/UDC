@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTheme } from "@/context/ThemeContext";
+import AccessRequestsTab from "@/components/access/AccessRequestsTab";
 import {
   Upload,
   Database,
@@ -24,6 +25,7 @@ import {
   Download,
   Sparkles,
   FlaskConical,
+  UserCheck,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -94,7 +96,7 @@ interface UploadResult {
   errors: string[];
 }
 
-type Tab = "stations" | "readings" | "measurements" | "upload" | "logs";
+type Tab = "stations" | "readings" | "measurements" | "upload" | "logs" | "access";
 
 // ---------------------------------------------------------------------------
 // Helper: Auth headers
@@ -288,6 +290,7 @@ export default function AdminPage() {
             { id: "readings" as Tab, label: "Readings", icon: Activity },
             { id: "measurements" as Tab, label: "Measurements", icon: FlaskConical },
             { id: "logs" as Tab, label: "Ingestion Log", icon: Clock },
+            { id: "access" as Tab, label: "Access Requests", icon: UserCheck },
           ]).map((tab) => (
             <button
               key={tab.id}
@@ -316,6 +319,7 @@ export default function AdminPage() {
         {activeTab === "readings" && <ReadingsTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "measurements" && <MeasurementsTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "logs" && <LogsTab isDark={isDark} adminKey={adminKey} />}
+        {activeTab === "access" && <AccessRequestsTab isDark={isDark} adminKey={adminKey} />}
       </div>
     </div>
   );

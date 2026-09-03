@@ -125,6 +125,14 @@ function createSqliteClient(): DbClient {
         trimmed.startsWith("UPDATE") ||
         trimmed.startsWith("DELETE")
       ) {
+        // A mutation with RETURNING produces rows, and better-sqlite3 throws if
+        // such a statement is run with .run(). Postgres has always supported
+        // RETURNING here, so route it to .all() to keep both backends
+        // behaviourally identical for callers that need the inserted id.
+        if (/\bRETURNING\b/i.test(sql)) {
+          const rows = db.prepare(sql).all(...params) as Record<string, unknown>[];
+          return { rows, changes: rows.length };
+        }
         const info = db.prepare(sql).run(...params);
         return { rows: [], changes: info.changes };
       }
@@ -221,6 +229,35 @@ const SQLITE_SCHEMA = `
 
   CREATE INDEX IF NOT EXISTS idx_measurements_parameter
     ON measurements(parameter_id);
+
+  -- Level 2 researcher access requests. Backs the "Request Researcher Access"
+  -- button published on UDC's WRRI page. This is a request queue, NOT an auth
+  -- system - approval is recorded here and acted on by WRRI manually until
+  -- identity lands (see docs/WQIS_LEVEL2_ACCESS_DESIGN.md).
+  CREATE TABLE IF NOT EXISTS access_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    affiliation TEXT NOT NULL,
+    requester_role TEXT NOT NULL CHECK(requester_role IN ('student', 'faculty', 'researcher', 'partner', 'other')),
+    purpose TEXT NOT NULL,
+    datasets TEXT,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'approved', 'denied')),
+    -- A denial must name a reason from a fixed list. Free-form judgement is
+    -- where inconsistent treatment hides; a controlled vocabulary makes the
+    -- basis for every refusal reviewable.
+    decision_reason TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    -- Retention: rows are purged after RETENTION days (see purgeExpiredRequests).
+    -- No IP address, user agent or any other identifier beyond what the person
+    -- typed is stored against a request.
+    reviewed_at TEXT,
+    reviewed_by TEXT,
+    review_note TEXT
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_access_requests_status
+    ON access_requests(status, created_at DESC);
 `;
 
 const PG_SCHEMA = `
@@ -308,6 +345,29 @@ const PG_SCHEMA = `
 
   CREATE INDEX IF NOT EXISTS idx_measurements_parameter
     ON measurements(parameter_id);
+
+  -- See the matching note in SQLITE_SCHEMA.
+  CREATE TABLE IF NOT EXISTS access_requests (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    affiliation TEXT NOT NULL,
+    requester_role TEXT NOT NULL CHECK(requester_role IN ('student', 'faculty', 'researcher', 'partner', 'other')),
+    purpose TEXT NOT NULL,
+    datasets TEXT,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'approved', 'denied')),
+    -- See the matching note in SQLITE_SCHEMA.
+    decision_reason TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    reviewed_at TIMESTAMPTZ,
+    reviewed_by TEXT,
+    review_note TEXT
+  );
+
+  ALTER TABLE access_requests ADD COLUMN IF NOT EXISTS decision_reason TEXT;
+
+  CREATE INDEX IF NOT EXISTS idx_access_requests_status
+    ON access_requests(status, created_at DESC);
 `;
 
 function useNeon(): boolean {

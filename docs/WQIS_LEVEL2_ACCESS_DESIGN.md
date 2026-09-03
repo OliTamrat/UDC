@@ -149,11 +149,66 @@ Roughly a day of work, and it unblocks UDC's page.
 
 ---
 
+## 6a. Privacy and fairness constraints (Phase 13a — BUILT)
+
+Two constraints were set for the request queue and are enforced in code, not
+policy documents.
+
+### Data minimisation
+
+Four fields are collected: **name, email, affiliation, purpose**. Nothing else.
+
+Explicitly not collected or stored: IP address, user agent, referrer, cookies,
+device identifiers, demographics, student ID, nationality. The IP address is used
+only as a transient in-memory rate-limit key and is never written to the
+database. A test asserts that unknown fields submitted by a client are dropped
+rather than persisted, so this cannot regress quietly.
+
+- **Retention:** records are purged after `RETENTION_DAYS` (365), enforced on
+  write so no scheduled job is required.
+- **Erasure:** a `DELETE` endpoint and a per-record delete control exist so a
+  removal request can be honoured immediately, before retention expires.
+- **Disclosure at point of entry:** what is stored, who sees it, how long it is
+  kept, and how to have it deleted are stated on the form next to the inputs —
+  not buried in a policy page.
+
+> **UDC/WRRI own the final retention period and the privacy notice.** 365 days is
+> a conservative default, not legal advice. If UDC counsel or the registrar has a
+> position — particularly on student data — that value should change to match.
+
+### Non-discrimination
+
+Access is decided on the stated purpose, never on who is asking. Two structural
+controls enforce that:
+
+1. **Role is a tier, not a gate.** `requesterRole` sets the AI usage allowance,
+   the way a library sets borrowing limits. A student and a faculty member with
+   the same legitimate purpose both get access. Validation accepts every role —
+   none is barred.
+2. **A decision requires a named reason** from a fixed list. The UI offers no way
+   to deny without selecting one, and the API rejects the attempt. Every reason
+   describes the *request* (purpose not stated, outside scope, affiliation
+   unverifiable, duplicate, suspected abuse) and none describes the *person*. A
+   test scans the reason list for terms naming personal characteristics — age,
+   sex, race, nationality, religion, disability, citizenship, language and others
+   — and fails if one appears.
+
+The published criteria are shown on the form *before* the fields, so nobody is
+judged against something they were not shown, and denials cite the ground so a
+refused applicant can be told why.
+
+**Still a judgement call by a person.** These controls make decisions
+consistent, recorded and reviewable; they cannot make them automatically fair.
+WRRI should review the decision log periodically for patterns — that is what the
+reason codes are for.
+
+---
+
 ## 7. Sequencing
 
 | Phase | Work | Blocked on |
 |---|---|---|
-| **13a** | Access-request form + WRRI notification | Nothing — can start now |
+| **13a** | Access-request form + WRRI notification | ✅ **BUILT** |
 | **13b** | Identity decision, app registration | **UDC IT** |
 | **13c** | `users` / `ai_usage` tables, durable unit quota at the single choke point | 13b |
 | **13d** | Retire `ADMIN_API_KEY` in favour of roles | 13c |
