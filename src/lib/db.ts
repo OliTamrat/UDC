@@ -1,7 +1,13 @@
 /**
  * Database abstraction layer.
- * Uses Neon PostgreSQL when DATABASE_URL is set (production/Vercel),
- * falls back to SQLite via better-sqlite3 for local development.
+ *
+ * Uses PostgreSQL when DATABASE_URL is set, and SQLite via better-sqlite3 for
+ * local development when it is not.
+ *
+ * PRODUCTION IS AZURE DATABASE FOR POSTGRESQL — `udc-wqis-db` in Central US,
+ * reached with the standard `pg` driver. There is no Neon database. The
+ * `.neon.tech` branch in createPgClient below is provider portability left over
+ * from the migration off Neon, not a description of what runs today.
  */
 
 // ---------------------------------------------------------------------------
@@ -456,13 +462,20 @@ const PG_SCHEMA = `
 
 `;
 
-function useNeon(): boolean {
+/**
+ * True when the app is talking to PostgreSQL rather than local SQLite.
+ *
+ * Named useNeon() until the provider labels were corrected. It never actually
+ * tested for Neon — only for DATABASE_URL being set — and production has been
+ * Azure PostgreSQL since the migration.
+ */
+function usePostgres(): boolean {
   return !!process.env.DATABASE_URL;
 }
 
 async function initSchema(db: DbClient): Promise<void> {
   if (schemaReady) return;
-  await db.execute(useNeon() ? PG_SCHEMA : SQLITE_SCHEMA);
+  await db.execute(usePostgres() ? PG_SCHEMA : SQLITE_SCHEMA);
   schemaReady = true;
 }
 
@@ -518,7 +531,7 @@ let legacyDb: Database.Database | null = null;
 
 /** @deprecated Use getDbClient() instead */
 export function getDb(): Database.Database {
-  if (useNeon()) {
+  if (usePostgres()) {
     throw new Error("getDb() is not supported with PostgreSQL. Use getDbClient() instead.");
   }
   if (!legacyDb) {
