@@ -1,28 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDbClient } from "@/lib/db";
-
-function checkAuth(request: NextRequest): NextResponse | null {
-  const adminKey = process.env.ADMIN_API_KEY?.trim();
-
-  if (!adminKey && process.env.NODE_ENV === "production") {
-    return NextResponse.json(
-      { error: "ADMIN_API_KEY not configured. Admin access is disabled." },
-      { status: 503 }
-    );
-  }
-
-  const authHeader = request.headers.get("authorization");
-  const token = authHeader?.replace(/^Bearer\s+/i, "").trim();
-  if (adminKey && token !== adminKey) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  return null;
-}
+import { requireAdmin } from "@/lib/admin-guard";
 
 // GET — List readings with optional filters
 export async function GET(request: NextRequest) {
-  const authErr = checkAuth(request);
+  const authErr = await requireAdmin(request);
   if (authErr) return authErr;
 
   const db = await getDbClient();
@@ -59,7 +41,7 @@ export async function GET(request: NextRequest) {
 
 // POST — Add reading(s)
 export async function POST(request: NextRequest) {
-  const authErr = checkAuth(request);
+  const authErr = await requireAdmin(request);
   if (authErr) return authErr;
 
   const db = await getDbClient();
@@ -105,7 +87,7 @@ export async function POST(request: NextRequest) {
 
 // DELETE — Remove a reading by id
 export async function DELETE(request: NextRequest) {
-  const authErr = checkAuth(request);
+  const authErr = await requireAdmin(request);
   if (authErr) return authErr;
 
   const db = await getDbClient();

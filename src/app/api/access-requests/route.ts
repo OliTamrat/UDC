@@ -3,6 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDbClient } from "@/lib/db";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { notifyAccessRequest } from "@/lib/notify";
+import { requireAdmin } from "@/lib/admin-guard";
+
+// Re-exported so src/app/api/access-requests/[id]/route.ts keeps importing it
+// from here, as it did when the guard lived in this file.
+export { requireAdmin };
 import {
   REQUEST_STATUSES,
   RETENTION_DAYS,
@@ -123,14 +128,13 @@ function sqlStateOf(error: unknown): string | undefined {
 /**
  * GET — list requests for WRRI review. Admin only.
  *
- * Gated by the same shared ADMIN_API_KEY as the rest of /api/admin. That key is
- * a known weakness (one secret for all faculty, no per-person audit) and is
- * scheduled for replacement in Phase 13d — but these records carry names, email
- * addresses and stated research intent, so they must not be readable publicly in
- * the meantime.
+ * Gated by the shared admin guard, which now resolves a per-person session
+ * before falling back to the legacy shared key. These records carry names, email
+ * addresses and stated research intent, so who reads them is worth knowing —
+ * which is precisely what the shared key could never tell us.
  */
 export async function GET(request: NextRequest) {
-  const authError = requireAdmin(request);
+  const authError = await requireAdmin(request);
   if (authError) return authError;
 
   const statusParam = request.nextUrl.searchParams.get("status");
@@ -182,23 +186,6 @@ export async function purgeExpiredRequests(db: {
   }
 }
 
-export function requireAdmin(request: NextRequest): NextResponse | null {
-  const adminKey = process.env.ADMIN_API_KEY?.trim();
-
-  if (!adminKey && process.env.NODE_ENV === "production") {
-    return NextResponse.json(
-      { error: "ADMIN_API_KEY not configured. Admin access is disabled." },
-      { status: 503 },
-    );
-  }
-
-  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
-  if (adminKey && token !== adminKey) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  return null;
-}
 
 function getClientIp(request: NextRequest): string {
   return (

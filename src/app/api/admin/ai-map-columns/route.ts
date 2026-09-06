@@ -1,23 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-function checkAuth(request: NextRequest): NextResponse | null {
-  const adminKey = process.env.ADMIN_API_KEY?.trim();
-
-  if (!adminKey && process.env.NODE_ENV === "production") {
-    return NextResponse.json(
-      { error: "ADMIN_API_KEY not configured. Admin access is disabled." },
-      { status: 503 }
-    );
-  }
-
-  const authHeader = request.headers.get("authorization");
-  const token = authHeader?.replace(/^Bearer\s+/i, "").trim();
-  if (adminKey && token !== adminKey) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  return null;
-}
+import { requireAdmin } from "@/lib/admin-guard";
 
 /**
  * POST /api/admin/ai-map-columns
@@ -25,7 +7,7 @@ function checkAuth(request: NextRequest): NextResponse | null {
  * Falls back to basic heuristics if ANTHROPIC_API_KEY is not set.
  */
 export async function POST(request: NextRequest) {
-  const authErr = checkAuth(request);
+  const authErr = await requireAdmin(request);
   if (authErr) return authErr;
 
   const { columns, sampleRows, dataType } = await request.json();

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import AccessRequestsTab from "@/components/access/AccessRequestsTab";
+import UsersTab from "@/components/admin/UsersTab";
 import {
   Upload,
   Database,
@@ -26,6 +27,7 @@ import {
   Sparkles,
   FlaskConical,
   UserCheck,
+  Users,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -96,7 +98,14 @@ interface UploadResult {
   errors: string[];
 }
 
-type Tab = "stations" | "readings" | "measurements" | "upload" | "logs" | "access";
+interface AdminIdentity {
+  email: string;
+  name: string;
+  role: "admin" | "owner";
+  mustChangePassword: boolean;
+}
+
+type Tab = "stations" | "readings" | "measurements" | "upload" | "logs" | "access" | "users";
 
 // ---------------------------------------------------------------------------
 // Helper: Auth headers
@@ -120,46 +129,84 @@ export default function AdminPage() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const [activeTab, setActiveTab] = useState<Tab>("upload");
+  // adminKey stays for the legacy shared-key path. Session logins leave it empty
+  // and authenticate by cookie, which same-origin fetches send automatically —
+  // so the data tabs below need no change.
   const [adminKey, setAdminKey] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [currentUser, setCurrentUser] = useState<AdminIdentity | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [authChecked, setAuthChecked] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  // Login check
   const handleLogin = useCallback(async () => {
     setLoginError("");
     try {
-      const res = await fetch("/api/admin/stations", {
-        headers: authHeadersNoBody(adminKey),
+      const res = await fetch("/api/admin/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
+      const body = await res.json();
       if (res.ok) {
-        sessionStorage.setItem("udc-admin-key", adminKey);
+        setCurrentUser(body.user);
         setAuthenticated(true);
-      } else if (res.status === 503) {
-        setLoginError("Admin access requires ADMIN_API_KEY to be configured on the server.");
       } else {
-        setLoginError("Invalid admin key. Please check your credentials.");
+        setLoginError(body.error || "Email or password is incorrect.");
       }
     } catch {
       setLoginError("Unable to connect to the server.");
     }
-  }, [adminKey]);
+  }, [email, password]);
 
-  // On mount: try stored key from sessionStorage, then try no-auth (dev mode)
-  useEffect(() => {
-    const storedKey = sessionStorage.getItem("udc-admin-key") || "";
-    if (storedKey) setAdminKey(storedKey);
-
-    fetch("/api/admin/stations", {
-      headers: storedKey ? { Authorization: `Bearer ${storedKey}` } : {},
-    })
-      .then((r) => {
-        if (r.ok) setAuthenticated(true);
-        setAuthChecked(true);
-      })
-      .catch(() => {
-        setAuthChecked(true);
+  const handleChangePassword = useCallback(async () => {
+    setPasswordError("");
+    if (newPassword !== confirmPassword) {
+      setPasswordError("The two passwords do not match.");
+      return;
+    }
+    try {
+      const res = await fetch("/api/admin/auth/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword: password, newPassword }),
       });
+      const body = await res.json();
+      if (!res.ok) {
+        setPasswordError(body.error || "Could not change the password.");
+        return;
+      }
+      // Changing the password signs every device out, this one included.
+      setPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setCurrentUser(null);
+      setAuthenticated(false);
+      setLoginError("Password updated. Please sign in again.");
+    } catch {
+      setPasswordError("Unable to connect to the server.");
+    }
+  }, [password, newPassword, confirmPassword]);
+
+
+  // On mount, ask who we are rather than probing a data endpoint. This also
+  // reports whether the session came from the legacy shared key, which the
+  // banner below uses to nudge people onto a named account.
+  useEffect(() => {
+    fetch("/api/admin/auth/me")
+      .then(async (r) => {
+        if (r.ok) {
+          const body = await r.json();
+          setCurrentUser(body.user ?? null);
+          setAuthenticated(true);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setAuthChecked(true));
   }, []);
 
   if (!authenticated) {
@@ -193,20 +240,38 @@ export default function AdminPage() {
           {/* Form */}
           <div className="p-6 pt-4">
             <label className={`block text-xs font-semibold uppercase tracking-wide mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
-              Admin API Key
+              Email
             </label>
             <input
-              type="password"
-              value={adminKey}
-              onChange={(e) => setAdminKey(e.target.value)}
+              type="email"
+              autoComplete="username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              placeholder="Enter your admin key..."
-              className={`w-full px-4 py-2.5 rounded-xl border text-sm mb-4 outline-none transition-all ${
+              placeholder="you@udc.edu"
+              className={`w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-all ${
                 isDark
-                  ? "bg-[#090B11] border-white/[0.08] text-white placeholder:text-[#1F2937] focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
+                  ? "bg-[#090B11] border-white/[0.08] text-white placeholder:text-[#4B5563] focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
                   : "bg-[#F0F1F3] border-[#D1D5DB] text-[#374151] placeholder:text-[#6B7280] focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
               }`}
             />
+            <label className={`block text-xs font-semibold uppercase tracking-wide mb-2 mt-4 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
+              Password
+            </label>
+            <input
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              placeholder="Your password"
+              className={`w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-all ${
+                isDark
+                  ? "bg-[#090B11] border-white/[0.08] text-white placeholder:text-[#4B5563] focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20"
+                  : "bg-[#F0F1F3] border-[#D1D5DB] text-[#374151] placeholder:text-[#6B7280] focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
+              }`}
+            />
+            <div className="mb-4" />
             {loginError && (
               <div className={`flex items-start gap-2 p-3 rounded-xl text-xs mb-4 ${
                 isDark ? "bg-red-500/10 border border-red-500/20 text-red-300" : "bg-red-100 border border-red-300 text-red-700"
@@ -233,6 +298,74 @@ export default function AdminPage() {
         >
           &larr; Back to Dashboard
         </a>
+      </div>
+    );
+  }
+
+  if (currentUser?.mustChangePassword) {
+    return (
+      <div className={`min-h-screen flex flex-col items-center justify-center px-4 ${isDark ? "bg-udc-dark" : "bg-[#F0F1F3]"}`}>
+        <div className={`w-full max-w-sm rounded-2xl border overflow-hidden ${
+          isDark ? "bg-[#13161F] border-white/[0.06] shadow-2xl shadow-black/40" : "bg-white border-[#D1D5DB] shadow-xl shadow-black/[0.06]"
+        }`}>
+          <div className="bg-gradient-to-r from-udc-gold/10 via-udc-red/5 to-transparent p-6 pb-5">
+            <h1 className={`text-lg font-bold ${isDark ? "text-white" : "text-[#111827]"}`}>Choose your password</h1>
+            <p className={`text-xs mt-1 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
+              You signed in with a temporary password. Pick your own to finish setting up the account.
+            </p>
+          </div>
+          <div className="p-6 pt-4">
+            <label className={`block text-xs font-semibold uppercase tracking-wide mb-2 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
+              New password
+            </label>
+            <input
+              type="password"
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="At least 12 characters"
+              className={`w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-all ${
+                isDark
+                  ? "bg-[#090B11] border-white/[0.08] text-white placeholder:text-[#4B5563] focus:border-blue-500/50"
+                  : "bg-[#F0F1F3] border-[#D1D5DB] text-[#374151] placeholder:text-[#6B7280] focus:border-blue-500"
+              }`}
+            />
+            <label className={`block text-xs font-semibold uppercase tracking-wide mb-2 mt-4 ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>
+              Confirm password
+            </label>
+            <input
+              type="password"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleChangePassword()}
+              placeholder="Type it again"
+              className={`w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-all ${
+                isDark
+                  ? "bg-[#090B11] border-white/[0.08] text-white placeholder:text-[#4B5563] focus:border-blue-500/50"
+                  : "bg-[#F0F1F3] border-[#D1D5DB] text-[#374151] placeholder:text-[#6B7280] focus:border-blue-500"
+              }`}
+            />
+            <p className={`text-[11px] mt-2 ${isDark ? "text-[#6B7280]" : "text-[#6B7280]"}`}>
+              A long phrase you can remember beats a short jumble you cannot.
+            </p>
+            {passwordError && (
+              <div className={`flex items-start gap-2 p-3 rounded-xl text-xs mt-4 ${
+                isDark ? "bg-red-500/10 border border-red-500/20 text-red-300" : "bg-red-100 border border-red-300 text-red-700"
+              }`}>
+                <XCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                <span>{passwordError}</span>
+              </div>
+            )}
+            <button
+              onClick={handleChangePassword}
+              disabled={!newPassword || !confirmPassword}
+              className="w-full mt-4 py-2.5 rounded-xl bg-gradient-to-r from-udc-gold to-udc-red text-white text-sm font-semibold disabled:opacity-40 transition-all active:scale-[0.98]"
+            >
+              Save password
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -264,10 +397,25 @@ export default function AdminPage() {
               </div>
             </div>
           </div>
+          <div className="flex items-center gap-3">
+            {currentUser && (
+              <div className="text-right hidden sm:block">
+                <p className={`text-xs font-semibold ${isDark ? "text-white" : "text-[#111827]"}`}>{currentUser.name}</p>
+                <p className={`text-[10px] ${isDark ? "text-[#D1D5DB]" : "text-[#374151]"}`}>{currentUser.role}</p>
+              </div>
+            )}
           <button
-            onClick={() => {
+            onClick={async () => {
+              // Clearing local state alone would leave the session valid on the
+              // server, so a refresh would sign straight back in.
+              try {
+                await fetch("/api/admin/auth/logout", { method: "POST" });
+              } catch {
+                // Fall through — the local state is still cleared below.
+              }
               sessionStorage.removeItem("udc-admin-key");
               setAdminKey("");
+              setCurrentUser(null);
               setAuthenticated(false);
             }}
             className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
@@ -278,8 +426,20 @@ export default function AdminPage() {
           >
             Sign Out
           </button>
+          </div>
         </div>
       </header>
+
+      {!currentUser && (
+        <div className={`px-4 sm:px-6 py-2.5 text-xs ${
+          isDark ? "bg-amber-500/10 text-amber-200 border-b border-amber-500/20" : "bg-amber-50 text-amber-900 border-b border-amber-200"
+        }`}>
+          <div className="max-w-7xl mx-auto">
+            Signed in with the shared admin key. Actions here cannot be attributed to a person —
+            ask a WRRI owner to create your own account.
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className={`border-b ${isDark ? "border-white/[0.06]" : "border-[#D1D5DB]"}`}>
@@ -291,6 +451,9 @@ export default function AdminPage() {
             { id: "measurements" as Tab, label: "Measurements", icon: FlaskConical },
             { id: "logs" as Tab, label: "Ingestion Log", icon: Clock },
             { id: "access" as Tab, label: "Access Requests", icon: UserCheck },
+            ...(currentUser?.role === "owner"
+              ? [{ id: "users" as Tab, label: "Admin Accounts", icon: Users }]
+              : []),
           ]).map((tab) => (
             <button
               key={tab.id}
@@ -320,6 +483,9 @@ export default function AdminPage() {
         {activeTab === "measurements" && <MeasurementsTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "logs" && <LogsTab isDark={isDark} adminKey={adminKey} />}
         {activeTab === "access" && <AccessRequestsTab isDark={isDark} adminKey={adminKey} />}
+        {activeTab === "users" && currentUser?.role === "owner" && (
+          <UsersTab isDark={isDark} currentEmail={currentUser.email} />
+        )}
       </div>
     </div>
   );

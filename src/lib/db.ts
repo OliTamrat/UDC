@@ -349,6 +349,42 @@ const SQLITE_SCHEMA = `
     units INTEGER NOT NULL DEFAULT 0
   );
 
+
+  -- Per-person admin accounts, replacing the single shared ADMIN_API_KEY.
+  --
+  -- One shared bearer token meant no per-person audit trail and no way to
+  -- revoke one person without rotating for everyone -- and it asked
+  -- non-technical WRRI staff to handle a 40-character secret. These tables are
+  -- deliberately a SUBSET of what UDC SSO will need, so when Entra ID lands the
+  -- roles and sessions survive and only the credential check is replaced.
+  CREATE TABLE IF NOT EXISTS admin_users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    -- scrypt, stored as "salt:hash". Never a bare digest: an unsalted hash of a
+    -- human-chosen password is a lookup away from plaintext.
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'admin' CHECK(role IN ('admin', 'owner')),
+    status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'disabled')),
+    must_change_password INTEGER NOT NULL DEFAULT 0,
+    failed_attempts INTEGER NOT NULL DEFAULT 0,
+    locked_until TEXT,
+    last_login_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    created_by TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS admin_sessions (
+    -- The SHA-256 of the cookie value, never the value itself, so a dump of this
+    -- table cannot be replayed as a live session.
+    token_hash TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    expires_at TEXT NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_admin_sessions_user ON admin_sessions(user_id);
+
 `;
 
 const PG_SCHEMA = `
@@ -485,6 +521,42 @@ const PG_SCHEMA = `
     day TEXT PRIMARY KEY,
     units INTEGER NOT NULL DEFAULT 0
   );
+
+
+  -- Per-person admin accounts, replacing the single shared ADMIN_API_KEY.
+  --
+  -- One shared bearer token meant no per-person audit trail and no way to
+  -- revoke one person without rotating for everyone -- and it asked
+  -- non-technical WRRI staff to handle a 40-character secret. These tables are
+  -- deliberately a SUBSET of what UDC SSO will need, so when Entra ID lands the
+  -- roles and sessions survive and only the credential check is replaced.
+  CREATE TABLE IF NOT EXISTS admin_users (
+    id SERIAL PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    -- See the matching note in SQLITE_SCHEMA.
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'admin' CHECK(role IN ('admin', 'owner')),
+    status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'disabled')),
+    -- INTEGER, not BOOLEAN: better-sqlite3 refuses to bind a JS boolean, so a
+    -- shared column type keeps the same query working against both drivers.
+    must_change_password INTEGER NOT NULL DEFAULT 0,
+    failed_attempts INTEGER NOT NULL DEFAULT 0,
+    locked_until TIMESTAMPTZ,
+    last_login_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS admin_sessions (
+    -- See the matching note in SQLITE_SCHEMA.
+    token_hash TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    expires_at TIMESTAMPTZ NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_admin_sessions_user ON admin_sessions(user_id);
 
 `;
 
