@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDbClient } from '@/lib/db';
 import { generateText } from 'ai';
 import { google } from '@ai-sdk/google';
-import { enforceAiRateLimit } from '@/lib/ai-rate-limit';
+import { enforceAiRateLimit, enforceAiDailyBudget } from '@/lib/ai-rate-limit';
 
 export const runtime = 'nodejs';
 export const maxDuration = 30;
@@ -19,6 +19,12 @@ const EPA: Record<string, { min?: number; max?: number; unit: string; label: str
 export async function POST(req: NextRequest) {
   const limited = enforceAiRateLimit(req, 'wqis:analyze', { limit: 10, windowMs: 60_000 });
   if (limited) return limited;
+
+  // Shared daily ceiling across all callers and replicas. The burst limit above
+  // bounds one caller's rate; this bounds the day's spend, which is the number
+  // that reaches the invoice.
+  const overBudget = await enforceAiDailyBudget('analyze');
+  if (overBudget) return overBudget;
 
   const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   if (!apiKey) return NextResponse.json({ error: 'AI not configured.' }, { status: 503 });

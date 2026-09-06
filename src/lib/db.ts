@@ -336,6 +336,19 @@ const SQLITE_SCHEMA = `
 
   CREATE INDEX IF NOT EXISTS idx_access_requests_status
     ON access_requests(status, created_at DESC);
+
+  -- Daily ceiling on AI spend, shared by every replica.
+  --
+  -- The per-IP burst limiters live in each replica's memory, so with
+  -- maxReplicas=3 a configured 10/min is really up to 30/min, and none of them
+  -- bound a DAY. That leaves the Gemini and Anthropic bills with no ceiling at
+  -- all. This counter is the ceiling: one row per UTC day, incremented
+  -- atomically, checked before every model call. See src/lib/ai-budget.ts.
+  CREATE TABLE IF NOT EXISTS ai_usage_daily (
+    day TEXT PRIMARY KEY,
+    units INTEGER NOT NULL DEFAULT 0
+  );
+
 `;
 
 const PG_SCHEMA = `
@@ -459,6 +472,19 @@ const PG_SCHEMA = `
 
   CREATE INDEX IF NOT EXISTS idx_access_requests_status
     ON access_requests(status, created_at DESC);
+
+
+  -- Daily ceiling on AI spend, shared by every replica.
+  --
+  -- The per-IP burst limiters live in each replica's memory, so with
+  -- maxReplicas=3 a configured 10/min is really up to 30/min, and none of them
+  -- bound a DAY. That leaves the Gemini and Anthropic bills with no ceiling at
+  -- all. This counter is the ceiling: one row per UTC day, incremented
+  -- atomically, checked before every model call. See src/lib/ai-budget.ts.
+  CREATE TABLE IF NOT EXISTS ai_usage_daily (
+    day TEXT PRIMARY KEY,
+    units INTEGER NOT NULL DEFAULT 0
+  );
 
 `;
 

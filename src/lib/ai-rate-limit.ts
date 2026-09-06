@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { checkRateLimit, type RateLimitConfig } from "@/lib/rate-limit";
+import { consumeAiUnits, type AiRouteKind } from "@/lib/ai-budget";
 
 /**
  * Shared guard for endpoints that spend AI tokens.
@@ -46,4 +47,42 @@ export function enforceAiRateLimit(
       },
     },
   );
+}
+
+/**
+ * Second gate: the shared daily ceiling.
+ *
+ * `enforceAiRateLimit` above bounds one caller's rate. This bounds the whole
+ * day's spend across every caller and every replica, which is the number that
+ * shows up on the invoice. Call it after the burst check so a caller who is
+ * already being throttled does not consume the shared allowance.
+ */
+export async function enforceAiDailyBudget(
+  kind: AiRouteKind,
+): Promise<NextResponse | null> {
+  const { allowed, used, budget } = await consumeAiUnits(kind);
+  if (allowed) return null;
+
+  console.warn(`[ai-budget] daily ceiling reached: ${used}/${budget} units`);
+
+  return NextResponse.json(
+    {
+      error:
+        "The daily AI allowance for this service has been reached. " +
+        "Dashboard data, charts and exports are unaffected. AI features return tomorrow (00:00 UTC).",
+    },
+    {
+      status: 429,
+      headers: { "Retry-After": String(secondsUntilUtcMidnight()) },
+    },
+  );
+}
+
+function secondsUntilUtcMidnight(now: Date = new Date()): number {
+  const midnight = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate() + 1,
+  );
+  return Math.max(1, Math.ceil((midnight - now.getTime()) / 1000));
 }
