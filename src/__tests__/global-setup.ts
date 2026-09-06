@@ -15,7 +15,14 @@ const SQLITE_FILES = ["", "-wal", "-shm"];
 
 function removeTestDb(): void {
   for (const suffix of SQLITE_FILES) {
-    fs.rmSync(`${TEST_DB_PATH}${suffix}`, { force: true });
+    try {
+      fs.rmSync(`${TEST_DB_PATH}${suffix}`, { force: true });
+    } catch {
+      // On Windows better-sqlite3 can still hold the file open when the run
+      // ends, and unlink fails with EBUSY. Cleanup is best-effort: setup
+      // deletes the file before seeding, so a leftover never leaks into the
+      // next run. Throwing here would fail an otherwise green suite.
+    }
   }
 }
 
